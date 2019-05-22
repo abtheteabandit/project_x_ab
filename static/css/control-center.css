@@ -601,7 +601,7 @@ open gig Elements
 
 /* Modal Content Box */
 .modal-content {
-  background-image: url("/assets/Control-Center/new-gig-bg.png");
+  background-image: url("../assets/Control-Center/new-gig-bg.png");
   background-color: transparent;
   background-size: cover;
   background-clip: border-box;
@@ -3562,6 +3562,67 @@ bank modal
   }
   label[for = new-band-pic]{
     padding-right: 0px;
+    background-color: #333d44;
+    color: red;
+    margin-right: 50px;
+  }
+  #new-band-pic{
+    position: absolute;
+    left: 0px;
+    width: 150px;
+    opacity: 0;
+  }
+  #new-band-clip{
+    position: absolute;
+    left: 0px;
+    bottom: -600px;
+    opacity: 0;
+  }
+  label[for = new-band-clip]{
+    background-color: #333d44;
+    color: red;
+  }
+  #new-band-clip-pic{
+    position: absolute;
+    left: 0;
+    opacity: 0;
+  }
+  label[for= new-band-clip-pic ]{
+    background-color: #333d44;
+    color: red;
+  }
+  @media(max-width: 450px){
+    #new-band-form{
+
+      width: 325px;
+    }
+    #new-band-content{
+      max-width: 325px;
+
+    }
+    #new-band-title{
+      width: 140px;
+      margin-left: 110px;
+    }
+    .new-band-schedule-select, .new-band-schedule-start-time, .new-band-schedule-end-time{
+      width: 70px;
+      height: 35px;
+      font-size: 12px;
+    }
+    #new-band-description{
+      height: 350px;
+    }
+    #new-band-pic-preview {
+      width: 80px;
+      height: 80px;
+    }
+    #new-band-clip-preview{
+      width: 80px;
+      height: 80px;
+    }#new-band-create{
+      font-size: 35pt;
+    }
+
   }
 }
 /* Create An Event Modal Edit Ends */
