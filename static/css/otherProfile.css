@@ -998,6 +998,10 @@ margin-top: 100px;
 .mobile-menu img{
   height: 100%;
 }
+
+#mobile-menu-button{
+  background-color: transparent;
+}
 .mobile-menu button{
   position: relative;
   width: 100px;
