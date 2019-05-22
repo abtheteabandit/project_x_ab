@@ -1,7 +1,7 @@
 getLocation();
 
 function init(){
-  screen.orientation.lock();
+  // screen.orientation.lock(); maybe?
 }
 
 function flipTicker(){
