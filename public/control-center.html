@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Your Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Fontawesome Icons -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- Popper JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- External CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/control-center.css">
+    <!-- jquery -->
+    <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
+    <!-- socket io -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <!-- Radial Menu -->
+    <script type="text/javascript">
+			(function($) {
+				$(function() {
+					$('#mainbtn').mouseover(function(){
+						$('.deg30, .deg60, .deg90').toggleClass('open')
+					});
+				});
+			})(jQuery);
+		</script>
+  </head>
+  <body onload="init();">
+    <!--done-->
+    <div id="modal-wrapper-support" class="modal-support">
+
+      <form class="modal-content-support animate">
+        <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close Pop Up">&times;</span>
+        <div class="container">
+          <h1 id="account-support-header">account support</h1>
+          <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
+          <textarea id="request-support-textarea" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+          <button id="request-support-btn" class="popUpButtons" type="submit" onclick="requestSupport()">Make Request</button>
+          <p class="support-text-small">Alternatively, reach out to the team directly:</p>
+          <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
+        </div>
+      </form>
+
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-confirmation-code">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <span onclick="document.getElementById('modal-wrapper-confirmation-code').style.display='none'" class="cancel-close" title="Close PopUp" id="close-cancel">&times;</span>
+        <p id="confirmation-code-p" class="modal-p">Enter the confirmation code provided by the event host upon completion of this event. After both parties submit their confirmation codes, we will issue a payment to the account associated with this band profile.</p>
+        <input id="confirmation-code-input"/>
+        <input type="button" class="confirm-modal-btn" id="submit-confirmation-code" value="submit confirmation code"/>
+      </div>
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-cancel">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <span onclick="document.getElementById('modal-wrapper-cancel').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
+        <p id="cancel-text"></p>
+        <input type="button" id="confirm-cancel" />
+        <div id="loader-cancel-booked-event" class="loader"></div>
+      </div>
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-confirm-booking">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <input type="hidden" name="bandID" />
+        <input type="hidden" name="gigID" />
+        <span onclick="document.getElementById('modal-wrapper-confirm-booking').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
+        <p id="confirm-booking-text" class="modal-p">"Are you sure you want to book This Band With a Name for this event? You will be charged 5% of the price you set for this event right now. However, you choose to cancel this event you will be issued a full refund."</p>
+        <input type="button" class="confirm-modal-btn" id="confirm-booking" value="confirm"/>
+        <div id="loader-book" class="loader"></div>
+      </div>
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-report-absent-band">
+      <div  id="cancel-content" class="modal-content-cancel animate">
+        <input type="hidden" name="bandID" id="report-absent-band-bandID"/>
+        <input type="hidden" name="gigID" id="report-absent-band-gigID"/>
+        <span onclick="document.getElementById('modal-wrapper-report-absent-band').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
+        <p id="report-band-text" class="modal-p">
+          By filing this report, the band you booked for this event will receive a
+          negative mark on their reliability record. Your payment to this band will be refunded
+          to you only if we can confirm that neither party submitted a confirmation code.
+        </p>
+        <input type="button" id="report-band" value="submit report" onclick="handleReportFormSubmission()"/>
+      </div>
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-link-application" class="modal2">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp" id="cancel-link">&times;</span>
+        <h1 class="share-event-title">share event</h1>
+      </div>
+      <form id="link-application-form" class="modal-content2 animate" method="post" action="#" >
+        <div id="dropdown-container" style="text-align:center">
+          <p id="searching-as-link-app" class="share-event-subtitle">Send user event application link:</p>
+          <select id='selectDrop' class="modal-input"></select>
+          <input type="button" id="link-applicaiton-button" value="Share Gig" onclick="submitGig()" class="modal-input"/>
+        </div>
+      </form>
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-choose-band-for-app" class="modal3">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'" class="close" title="Close PopUp">&times;</span>
+        <h1 id="confirm-app-header">confirm application</h1>
+      </div>
+      <form id="link-application-form" class="modal-content3 animate" method="post" action="#" >
+        <div id="dropdown-container" style="text-align:center">
+          <p id="band-select-p" id="select-a-band-text">select a band:</p>
+          <br>
+          <select id='selectDropBand' class="modal-input"></select>
+          <br>
+          <input type="button" id="choose-band-button" value="apply" onclick="submitBand()" class="modal-input"/>
+          <br>
+          <input type="button" id="view-event-details-button" value="view event page" onclick="viewGigPage()" class="modal-input"/>
+        </div>
+      </form>
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-new-gig" class="modal">
+      <form id="new-gig-form" class="modal-content animate" enctype="multipart/form-data">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-new-gig').style.display='none'" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new gig</h1>
+        </div>
+        <div class="container" id="new-gig-content">
+          <input minlength="3" maxlength="65" id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new event" required></input>
+          <label for="new-gig-date">date</label>
+          <input id="new-gig-date" class="modal-input" type="date" required></input>
+          <label for="new-gig-start-time">from</label>
+          <input id="new-gig-start-time" class="modal-input" type="time" required></input>
+          <label for="new-gig-end-time">to</label>
+          <input id="new-gig-end-time" class="modal-input" type="time" required></input>
+          <label for="new-gig-loc">location</label>
+          <input id="new-gig-loc" class="modal-input" type="text" required></input>
+          <label for="new-gig-zip">zipcode</label>
+          <input id="new-gig-zip" class="modal-input" type="number" required></input>
+          <label for="new-gig-pay">pay rate ($/event)</label>
+          <input id="new-gig-pay" class="modal-input" type="number" required></input>
+          <br>
+          <label for="new-gig-pic">upload image</label>
+          <input id="new-gig-pic" class="modal-input" type="file" required></input>
+          <img id="new-gig-pic-preview"/>
+          <br>
+          <label id="new-gig-description-label" for="new-gig-description" required>description</label>
+          <textarea id="new-gig-description" class="modal-textarea" required></textarea>
+          <button type='button' class="popUpButtons" id="new-gig-post" onclick="postGig()">post</button>
+          <div id="loader-new-gig" class="loader"></div>
+        </div>
+      </form>
+    </div>
+    <!--mihn-->
+    <div id="modal-wrapper-new-band" class="modal">
+      <form id="new-band-form" class="modal-content animate" enctype="multipart/form-data">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-new-band').style.display='none'" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new band</h1>
+        </div>
+        <div class="container" id="new-band-content">
+          <input minlength="3" maxlength="50" id="new-band-title" class="modal-input" type="text" placeholder="enter a name for your new band/act" required ></input>
+          <label for="new-band-zip">zip code</label>
+          <input id="new-band-zip" class="modal-input" type="number" pattern='{5}' placeholder="" required></input>
+          <label for="new-band-dist">max travel distance (mi.)</label>
+          <input id="new-band-dist" class="modal-input" type="text" placeholder="" required></input>
+          <label for="new-band-pay">price ($/event)</label>
+          <input id="new-band-pay" class="modal-input" type="text" placeholder="" required></input>
+          <h3 id="new-band-schedule-label">weekly schedule</h3><h5>add your band's open time slots in the table below</h5>
+          <br>
+          <table id="new-band-schedule">
+            <thead>
+              <th>day of the week</th>
+              <th>start time</th>
+              <th>end time</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <select onchange="selectOnChange(this)" class="new-band-schedule-select" required>
+                    <option value='Sunday'>Sunday</option>
+                    <option value='Monday'>Monday</option>
+                    <option value='Tuesday'>Tuesday</option>
+                    <option value='Wednesday'>Wednesday</option>
+                    <option value='Thursday'>Thursday</option>
+                    <option value='Friday'>Friday</option>
+                    <option value='Saturday'>Saturday</option>
+                  </select>
+                </td>
+                <td><input type="time" onchange='startTimeChange(this)' class="new-band-schedule-start-time" required></input></td>
+                <td><input type="time" onchange='endTimeChange(this)' class="new-band-schedule-end-time" required></input></td>
+                <td><input type="button" value="remove"onclick="deleteRow(this)" class="new-band-schedule-remove"></input>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td><a class="new-band-schedule-add" href="javascript:addRow()">add another day</a></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+          <br>
+          <label id="new-band-description-label" for="new-band-description" >description</label>
+          <textarea id="new-band-description" class="modal-textarea" placeholder='Enter some genres and instruments you play. As well as some "vibes" or feelings your music creates. Also, add some types of events you are interested in playing.'></textarea>
+          <h3>avatar</h3>
+          <label for"new-band-pic">upload image</label>
+          <input id="new-band-pic" class="modal-input" name="avatar" type="file"required ></input>
+          <img id="new-band-pic-preview"/>
+          <br>
+          <h3>soundbyte</h3>
+          <br>
+          <label for"new-band-clip">upload audio clip</label>
+          <input id="new-band-clip" class="modal-input" name="soundbyte" type="file" required></input>
+          <br>
+          <label for"new-band-clip-pic">upload clip image</label>
+          <input id="new-band-clip-pic" class="modal-input" name="soundbyte-img" type="file" required></input>
+          <img id="new-band-clip-preview"/>
+          <div id="loader-new-band" class="loader"></div>
+          <button type='button' class="popUpButtons" id="new-band-create" onclick="createBand()" >create</button>
+        </div>
+      </form>
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-credit" class="modal-card">
+      <span onclick="document.getElementById('modal-wrapper-credit').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
+      <form id="payment-form">
+        <input type="hidden" name="gigID" id="payment-gigID"/>
+        <input type="hidden" name="bandID" id="payment-bandID"/>
+        <div class="form-row">
+          <label for="card-element">
+            Credit or debit card
+          </label>
+          <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+          </div>
+
+          <!-- Used to display form errors. -->
+          <div id="card-errors" role="alert"></div>
+        </div>
+        <button class="stripe-button" style="display: block" >Connect Payment Method</button>
+        <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
+          to guarantee swift and easy compensation of the artists that you book.</p>
+        <div id="loader-new-card" class="loader"></div>
+      </form>
+    </div>
+    <!--done-->
+    <div id="modal-wrapper-bank">
+      <div id="bank-content">
+        <span onclick="document.getElementById('modal-wrapper-bank').style.display='none'" class="close-bank" title="Close PopUp">&times;</span>
+        <div id="bank-grid">
+          <div class="grid-item">
+            <label class="bank-modal-label" for="bank-form-first-name">
+              Legal First Name
+            </label>
+            <input id="bank-form-first-name" name="firstName" placeholder="enter name..." required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for="bank-form-last-name">
+              Legal Last Name
+            </label>
+            <input id="bank-form-last-name" name="lastName" placeholder="enter name..." required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for="bank-form-dob">
+              Date Of Birth
+            </label>
+            <input id="bank-form-dob" name="dateOfBrith" type="date" required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for"bank-form-routing-number">
+              Bank Routing Number
+            </label>
+            <input id="bank-form-routing-number" class="num-without" name="routing_number" type="number" placeholder="0" max="999999999" min="0" required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for"bank-form-acct-num">
+              Bank Account Number
+            </label>
+            <input id="bank-form-acct-num" class="num-without" name="acct_number" type="number" placeholder="0" max="999999999" min="0" required>
+          </div>
+          <div class="grid-item">
+            <label class="bank-modal-label" for"bank-form-holder">
+              Full Account Holder Name
+            </label>
+            <input id="bank-form-holder" name="holder_name" required>
+          </div>
+        </div>
+        <button class="stripe-button" onclick='attemptBankSubmission()' id="bank-account-button">Connect Account</button>
+        <!-- Used to display form errors. -->
+        <div id="error-message" role="alert"></div>
+        <!-- Display mandate acceptance text. -->
+        <div id="mandate-acceptance">
+          <p class="bank-footer-p">
+            We use <a href="https://stripe.com/" class="stripe-link">Stripe</a>, a
+            secure payment platform, to ensure that you always get what you earn.
+            Banda does not store your credit card or bank account
+            information. We use this information to make
+            deposits in your account on behalf of an event host.
+            Banda handles artist compensation so that you can
+            focus on making art and expanding your music career.
+          </p>
+        </div>
+        <div id="loader-new-bank" class="loader"></div>
+        <img alt="stripe"src="/assets/Control-Center/stripelogo.png" class="stripe-logo" />
+      </div>
+    </div>
+    <div id="modal-wrapper-current-band" class="modal">
+      <form id="current-band-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">
+        <div class="imgcontainer">
+          <span id="close-edit-band" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">your band</h1>
+        </div>
+        <div class="container" id="current-band-content">
+          <input id="current-band-title" class="modal-input" type="text"></input>
+          <label for="current-gig-zip">zip code</label>
+          <input id="current-band-zip" class="modal-input" type="text"></input>
+          <label for="current-gig-pay">max travel distance (mi.)</label>
+          <input id="current-band-dist" class="modal-input" type="text"></input>
+          <label for="current-band-pay">avg. pay ($/hr)</label>
+          <input id="current-band-pay" class="modal-input" type="text"></input>
+          <h3 id="current-band-schedule-label">weekly schedule</h3><h5>add your band's open time slots in the table below</h5>
+          <br>
+          <table id="current-band-schedule">
+            <thead>
+              <th>day of the week</th>
+              <th>start time</th>
+              <th>end time</th>
+            </thead>
+            <tbody id="current-band-schedule-tbody"></tbody>
+            <tfoot id="current-band-schedule-tfoot"></tfoot>
+          </table>
+          <br>
+          <label id="current-band-description-label" for="current-band-description">description</label>
+          <textarea id="current-band-description" class="modal-textarea"></textarea>
+          <h3>avatar</h3>
+          <label for"current-band-pic">upload image</label>
+          <input id="current-band-pic" class="modal-input" name="avatar" type="file"></input>
+          <img id="current-band-pic-preview"/>
+          <br>
+          <button type='button' class="popUpButtons" id="current-band-edit">confirm</button>
+        </div>
+      </form>
+    </div>
+    <div id="body-container">
+
+      <div class="mobile-menu">
+           <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+           <ul id = "mobile-menu-ul" class="mobile-active">
+             <li><a href='about'><p class="radialText">About</p></a></li>
+             <li><a href='index'><p class="radialText">Landing</p></a></li>
+             <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+           </ul>
+       </div>
+
+      <div id="container">
+        <img id="menuBacking" src="/assets/Home/menu.png" />
+        <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
+        </div>
+      </div>
+
+      <div class='circle-container'>
+        <a href='about' class='deg30'><p class="radialText">About</p></a>
+        <a href='index' class='deg60'><p class="radialText">Landing</p></a>
+        <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
+      </div>
+
+      <div id="loader-page" class="loader"></div>
+
+      <div class="profile-header">
+        <p class="profile-header-text" id='userNameHeader'></p>
+      </div>
+
+      <div class="profiles-list">
+        <ul id='profiles-list'>
+          <li><a href="#" onclick="prepareBankElement()">+ Create a Band</a></li>
+          <li><a href="#" onclick="prepareCardElement()">+ Post an Event</a></li>
+        </ul>
+      </div>
+
+      <div class="profile-gigs" id="profile-gigs">
+      </div>
+
+      <div class="bottom-bar" id="bottom-bar-mobile">
+        <img id="ticker-img" src="/assets/Control-Center/bottom-bar.png" alt="ticker" />
+        <!-- Minh's Edit -->
+         <div class="container">
+           <div class="row">
+             <div class="col-4">
+                 <div class="dropup-create">
+                     <div class="dropup-create-content">
+                         <a href="#" onclick="prepareBankElement()">Create Band</a>
+                         <a href="#" onclick="prepareCardElement()">Post Event</a>
+                       </div>
+                   <button id = "create-button"><i class="fas fa-plus"></i></button>
+                 </div>
+             </div>
+             <div class="col-4">
+               <div class="dropup-profile">
+                   <div id="mobile-profiles-list" class="dropup-profile-content">
+                   </div>
+                 <button id="profile-button"><i class="far fa-user"></i></button>
+               </div>
+             </div>
+             <div class="col-4" id ="contact-button-mobile-wrapper">
+               <button id="contact-button-mobile"><i class="fas fa-comments"></i></button>
+             </div>
+           </div>
+         </div>
+         <!-- Minh end -->
+         <button href="#" id="select-gig-to-ad" onclick="document.getElementById('modal-wrapper-link-application').style.display='block'">Ask user to apply to event...</button>
+        <button href="#" id="contacts-button">contacts</button>
+      </div>
+
+      <div id="contacts-sidebar">
+          <img id="contacts-bg" src="/assets/Control-Center/contacts-bg.png" alt="contacts" />
+          <div id="contacts-content"></div>
+      </div>
+
+      <div id="main-content-wrapper"></div>
+
+
+    </div>
+    <div id="chat-div"></div>
+  </body>
+  <!-- Minh Script -->
+
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
+  <!-- //MINH -->
+  <!-- External JS -->
+  <script type="text/javascript" src="/scripts/control-center.js"></script>
+</html>

@@ -1,0 +1,9 @@
+@media(max-width: 800px){
+    #modal-wrapper-login{
+        height: 3000px;
+        width: 218px;
+    }
+    #rain{
+        display: none;
+    }
+  }

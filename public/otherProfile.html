@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Other Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Fontawesome Icons -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script> -->
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+        <!-- Popper JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- External CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/otherProfile.css">
+
+    <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
+    <!-- socket io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- Radial Menu -->
+    <script type="text/javascript">
+            (function($) {
+                $(function() {
+                    $('#mainbtn').mouseover(function(){
+                      $('.deg0, .deg30, .deg60, .deg90').toggleClass('open')                    });
+                });
+            })(jQuery);
+        </script>
+  </head>
+  <!-- <body onload="init();"> -->
+  <body onload="javascript:init();">
+    <div id="modal-wrapper-support" class="modal">
+
+      <div class="modal-content animate">
+
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close" title="Close PopUp">&times;</span>
+          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">account support</h1>
+        </div>
+
+        <div class="container">
+          <p class="support-text">Having any issues? Want to promote an event or grow your following? Let us know!</p>
+          <textarea class="modal-textarea" id='support_text' placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you.'></textarea>
+          <button id='send_report_button' class="popUpButtons">Make Request</button>
+        </div>
+      </div>
+
+    </div>
+    <div id="modal-wrapper-link-application" class="modal2">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp">&times;</span>
+        <h1 class="share-event-title">share event</h1>
+      </div>
+      <form id="link-application-form" class="modal-content2 animate" method="post" action="#" >
+        <div id="dropdown-container" style="text-align:center">
+          <p id="searching-as-link-app" class="share-event-subtitle">Send user event application link:</p>
+          <select id='selectDropEvent' class="modal-input-select"></select>
+          <input type="button" id="link-application-button" value="Share Gig" onclick="submitGig()" class="modal-input"/>
+        </div>
+      </form>
+    </div>
+    <div id="modal-wrapper-choose-band-for-app" class="modal3">
+      <div class="imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'" class="close" title="Close PopUp">&times;</span>
+        <h1 style="text-align:center; font-size: 50pt; color:white">confirm application</h1>
+      </div>
+      <form id="link-application-form" class="modal-content3 animate" method="post" action="#" >
+        <div id="dropdown-container" style="text-align:center">
+          <p id="band-select-p" style="text-align:center; font-size: 30pt;">select a band:</p>
+          <br>
+          <select id='selectDropBand' class="modal-input-select"></select>
+          <br>
+          <input type="button" id="choose-band-button" value="apply" onclick="submitBand()" class="modal-input"/>
+          <br>
+          <input type="button" id="view-event-details-button" value="view event page" onclick="viewGigPage()" class="modal-input"/>
+        </div>
+      </form>
+    </div>
+    <div id="body-container">
+
+      <div class="mobile-menu">
+           <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+           <ul id = "mobile-menu-ul" class="mobile-active">
+             <li><a href='control-center'><p class="radialText">Home</p></a></li>
+             <li><a href='about'><p class="radialText">About</p></a></li>
+             <li><a href='index'><p class="radialText">Landing</p></a></li>
+             <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+           </ul>
+       </div>
+      <div id="container">
+        <img id="menuBacking" src="/assets/Home/menu.png" />
+        <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
+        </div>
+      </div>
+      <div class='circle-container'>
+        <a href='control-center' class='deg0'><p class="radialText">Home</p></a>
+        <a href='#' class='deg30'><p class="radialText">About</p></a>
+        <a href='index' class='deg60'><p class="radialText">Landing</p></a>
+        <a class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
+      </div>
+      <div class="profile-header" id="profile-header">
+        <p class="profile-header-text" id="profile-title"></p>
+        <p class="profile-creator-text" id="profile-creator"></p>
+        <div id="user-stars">
+          <img class="star" id="user-star-1" src="/assets/Control-Center/star.png" style="display: none"/>
+          <img class="star" id="user-star-2" src="/assets/Control-Center/star.png" style="display: none"/>
+          <img class="star" id="user-star-3" src="/assets/Control-Center/star.png" style="display: none"/>
+          <img class="star" id="user-star-4" src="/assets/Control-Center/star.png" style="display: none"/>
+          <img class="star" id="user-star-5" src="/assets/Control-Center/star.png" style="display: none"/>
+        </div>
+        <p class="band-reliability" id="reliability"></p>
+      </div>
+      <div class="profiles-list">
+        <ul id="profile-controls">
+          <li>
+            <p>Viewing profile as: </p>
+            <select id="selectDrop" class="modal-input-select"></select>
+          </li>
+        </ul>
+      </div>
+      <div class="bottom-bar">
+        <img id="ticker-img" src="/assets/Control-Center/bottom-bar.png" alt="ticker" />
+        <button href="#" id="select-gig-to-ad" onclick="document.getElementById('modal-wrapper-link-application').style.display='block'">Ask user to apply to event...</button>
+        <button href="#" id="contacts-button">contacts</button>
+      </div>
+
+
+      <div class = "container-fluid" id = "bottom-bar-mobile">
+        <div class="row">
+          <div class="col dropup-profile">
+            <div id="mobile-profiles-list" class="dropup-profile-content">
+
+            </div>
+            <button type="submit" name="button"><i class="fas fa-user"></i></button>
+          </div>
+          <div class="col">
+            <button id="mobile_apply_button" type="submit" name="button"><i class="fas fa-file-invoice-dollar"></i></button>
+          </div>
+          <div class="col">
+            <button id="mobile_message_button" type="submit" name="button"><i class="far fa-address-book"></i></button>
+          </div>
+          <div class="col">
+            <button id="contact-button-mobile" type="submit" name="button"><i class="fas fa-comments"></i></button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class = "container-fluid" id ="bottom-bar-mobile-bands">
+        <div class="row">
+          <div class="col dropup-profile">
+            <div id="mobile-profiles-list-bands" class="dropup-profile-content">
+            </div>
+            <button type="submit" name="button"><i class="fas fa-user"></i></button>
+          </div>
+          <div class="col">
+            <button id="mobile_message_band_button" type="submit" name="button"><i class="far fa-address-book"></i></button>
+          </div>
+          <div class="col">
+            <button type="submit" name="button"><i class="fas fa-comments"></i></button>
+          </div>
+        </div>
+
+      </div>
+      <!-- bottom bar mobile end  -->
+
+
+      <div id="contacts-sidebar">
+        <img id="contacts-bg" src="/assets/Control-Center/contacts-bg.png" alt="contacts" />
+        <div id="contacts-content"></div>
+      </div>
+      <div id="main-content-wrapper">
+        <div class="img-price-grid">
+          <div class="profile-img-container">
+            <img class="profile-img" id="profile-img" src="/assets/Home/Art/12.jpeg"/>
+            <img class="profile-img-frame" id="profile-img-frame" src = "/assets/Home/purplebox.png" />
+          </div>
+          <div class="profile-price-container">
+            <h1 id="profile-price-text" class="profile-price-text">The asking price for this band is</h1>
+            <h1 id="profile-price"></h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="chat-div">
+    </div>
+  </body>
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
+  <script type="text/javascript" src="/scripts/otherProfile.js"></script>
+</html>

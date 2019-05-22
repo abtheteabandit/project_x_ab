@@ -1,0 +1,139 @@
+<!--
+*************************************************************************
+ *
+ * BANDA CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright (C) 2019
+ *  Banda Incorporated
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Banda Incorporated and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Banda Incorporated
+ * and its suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Banda Incorporated.
+ *
+*************************************************************************
+-->
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Banda, Inc.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Fontawesome Icons -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+		<!-- jQuery library -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- Popper JS -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- External CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/search.css">
+    <!-- External JS -->
+    <script type="text/javascript" src="/scripts/search.js"></script>
+    <!-- Radial Menu -->
+    <script type="text/javascript">
+			(function($) {
+				$(function() {
+					$('#mainbtn').mouseover(function(){
+						$('.deg0, .deg30, .deg60, .deg90').toggleClass('open')
+					});
+				});
+			})(jQuery);
+		</script>
+
+  </head>
+  <body onload="init();">
+
+    <div id="modal-wrapper-support" class="modal-support">
+
+      <form class="modal-content-support animate">
+        <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
+        <div class="container">
+          <h1 id="account-support-header">account support</h1>
+          <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
+          <textarea id="request-support-textarea" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+          <button id="request-support-btn" class="popUpButtons" type="submit" onclick="requestSupport()">Make Request</button>
+          <p class="support-text-small">Alternatively, reach out to the team directly:</p>
+          <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
+        </div>
+      </form>
+
+    </div>
+
+    <div id="body-container">
+
+      <div class="mobile-menu">
+         <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+         <ul id = "mobile-menu-ul" class="mobile-active">
+           <li><a href='control-center'><p class="radialText">Home</p></a></li>
+           <li><a href='about'><p class="radialText">About</p></a></li>
+           <li><a href='index'><p class="radialText">Landing</p></a></li>
+           <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+         </ul>
+     </div>
+
+      <div id="container">
+        <img id="menuBacking" src="/assets/Home/menu.png" />
+        <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
+        </div>
+      </div>
+
+      <div class='circle-container'>
+        <a href='control-center' class='deg0'><p class="radialText">Home</p></a>
+        <a href='about' class='deg30'><p class="radialText">About</p></a>
+        <a href='index' class='deg60'><p class="radialText">Landing</p></a>
+        <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
+      </div>
+
+      <div id="header-container">
+        <div id="searchbar-container">
+          <img id="searchbar" src="/assets/Search/searchbar.png" />
+          <input id='search_input'>
+        </div>
+        <div id="dropdown-container">
+          <p>you are searching as:</p>
+          <select id='selectDrop'>
+            <!--
+            <option value="0">Madeline Shade</option>
+            <option value="1">Band 1</option>
+            <option value="2">Band 2</option>
+            <option value="3">Band 3</option>
+          -->
+          </select>
+        </div>
+      </div>
+
+      <div id="filters">
+        <ul>
+        <!-- <li><a href="javascript:searchForBoth()"></a></li> -->
+        <li><a class="filter_text" href="javascript:searchForBands()">Find Bands</a></li>
+        <li><a class="filter_text" href="javascript:searchForGigs()">Find Gigs</a></li>
+        </ul>
+      </div>
+      <div id="loader-page" class="loader"></div>
+
+      <p id="no-res-p" class="no-results-p"></p>
+
+      <div class="grid-container" id="grid-container"></div>
+    </div>
+  </body>
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
+</html>
