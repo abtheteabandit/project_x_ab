@@ -555,7 +555,6 @@ strong:hover{
 /* Minh's Code */
 
 .mobile-menu{
-
   position: fixed;
   top:30px;
   left: 40px;
@@ -566,6 +565,10 @@ strong:hover{
 }
 .mobile-menu img{
   height: 100%;
+}
+
+#mobile-menu-button{
+  background-color: transparent;
 }
 .mobile-menu button{
   position: relative;
