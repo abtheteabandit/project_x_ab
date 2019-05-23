@@ -362,7 +362,7 @@ Dropdown menu
 
 #dropdown-container > select{
   color: white;
-  width: 250%;
+  width: 300px;
   background-color: rgba(0,0,0,0.7);
   border-radius: 12px;
   font-family: Industry, sans-serif;
