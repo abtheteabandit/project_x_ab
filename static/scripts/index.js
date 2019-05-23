@@ -635,3 +635,10 @@ function diff_minutes(dt2, dt1) {
 		 console.log('Random Code: ' + code);
 		 return code;
 	 }
+document.getElementById('search_input').addEventListener('keyup', function(e){
+	if (e.keyCode===13){
+		e.preventDefault();
+		alert('Sorry, you must click "bands" or "events" to perform a search.');
+		return;
+	}
+});
