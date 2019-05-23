@@ -379,6 +379,7 @@ flip box containe;;;; got rid of it cuz im using flipp */
   width: 100%;
   height: 100%;
   overflow: scroll;
+  overflow-x: hidden;
 }
 
 #about-title{

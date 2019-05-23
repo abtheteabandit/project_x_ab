@@ -155,3 +155,34 @@ var email_port = 3000;
 app.listen(email_port, function(req, res){
   console.log('Email is running on port: ',email_port);
 });
+
+router.post('/messages', (req, res)=>{
+  if (!req.body) {
+     console.log("No body recived for messaging");
+     res.status(400).send('No body sent').end();
+  }
+  var {senderID, recieverID, body, timeStamp} = req.body;
+  console.log('made it into messagin on router and sender id was: ' + senderID);
+  database.connect(db=>{
+    let messages = db.db('messages').collection('messages');
+    messages.insertOne({'senderID':senderID, 'recieverID':recieverID, 'body':body, 'timeStamp': timeStamp}, (err2, result)=>{
+      if (err2){
+        consoel.log("There was an error adding the message from " + senderID + "Error was: " + err2);
+        res.status(500).end();
+        db.close();
+      }
+      else{
+        console.log("Message with body: "+ body +"was instered into db");
+        console.log("Message with recID: "+ recieverID +"was instered into db");
+        //io.emit('message, recID:'+recieverID+'', {'senderID':senderID, 'recieverID':recieverID, 'body':body, 'timeStamp': timeStamp});
+        io.emit(recieverID, {'senderID':senderID, 'recieverID':recieverID, 'body':body, 'timeStamp': timeStamp});
+        res.status(200).send(result);
+        db.close();
+      }
+    });
+  }, err=>{
+    console.log("Couldn't connect to mongo with error: "+err);
+    res.status(500).end();
+  });
+
+});
