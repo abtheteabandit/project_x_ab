@@ -117,6 +117,13 @@ function init(){
   console.log(JSON.stringify(urlJSON));
   performSearch(urlJSON);
 
+  document.getElementById('search_input').addEventListener('keyup', function(e){
+  	if (e.keyCode===13){
+  		alert('Sorry, you must click "Find Bands" or "Find Events" to perform a search.');
+  		return;
+  	}
+  });
+
   var theGrid = document.getElementById("grid-container");
   /*
   var images = ["1.jpg","2.jpeg","3.jpeg","4.jpeg","5.jpeg","6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg","11.jpeg","12.jpeg","13.jpeg","14.jpeg","15.jpeg","16.jpeg","17.jpeg","18.jpeg","19.jpeg","20.jpeg"];

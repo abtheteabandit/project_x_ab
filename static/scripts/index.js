@@ -34,6 +34,15 @@ var isLoggedIn=false;
 //setInterval(getCurrentEvents, 60000);
 // AB document stuff//
 function init(){
+
+  document.getElementById('search_input').addEventListener('keyup', function(e){
+  	if (e.keyCode===13){
+  		e.preventDefault();
+  		alert('Sorry, you must click "bands" or "events" to perform a search.');
+  		return;
+  	}
+  });
+
 	var logged = checkSession();
 
 
