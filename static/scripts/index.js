@@ -582,6 +582,8 @@ function diff_minutes(dt2, dt1) {
         document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-login").style.display="block";
 				});
+        document.getElementById("home_button").style.display = "none";
+        document.getElementById("mobile_home_button").style.display = "none";
         document.getElementById('mobile_login_or_out').innerHTML = 'Login';
         document.getElementById('mobile_login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-login").style.display="block";

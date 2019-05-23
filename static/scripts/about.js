@@ -2,6 +2,24 @@ getLocation();
 
 function init(){
   // screen.orientation.lock(); maybe?
+	checkSession();
+}
+
+function checkSession(){
+	console.log("checking if a session exists (checking if a user is logged in)");
+	$.get('/hasSession', {}, res=>{
+		console.log('res for check log in is: ' + JSON.stringify(res))
+		if(res.success){
+			console.log(res.success + " is returned value");
+
+			return true;
+		}else{
+			console.log(res.success + " is returned value");
+			document.getElementById("mobile_home_button").style.display = "none";
+			document.getElementById("home_button").style.display = "none";
+			return false;
+		}
+	});
 }
 
 function flipTicker(){
