@@ -36,11 +36,12 @@ var isLoggedIn=false;
 function init(){
 
   document.getElementById('search_input').addEventListener('keyup', function(e){
-  	if (e.keyCode===13){
-  		e.preventDefault();
-  		alert('Sorry, you must click "bands" or "events" to perform a search.');
-  		return;
-  	}
+    var keyCode = e.keyCode || e.which;
+    if (keyCode === 13) {
+      e.preventDefault();
+      alert('Sorry, you must click "bands" or "events" to perform a search.');
+      return false;
+    }
   });
 
 	var logged = checkSession();
