@@ -537,7 +537,7 @@ open gig Elements
 }
 
 #profiles-list{
-  overflow: scroll;
+  overflow-y: scroll;
   height: 500px;
 }
 
