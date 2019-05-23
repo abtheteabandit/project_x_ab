@@ -713,6 +713,21 @@ function loginToReg(){
 	login.style.display = "none";
 }
 
+function requestSupport(){
+  var supportText = document.getElementById("request-support-textarea").value;
+  console.log("User has requested support, text is: ");
+  console.log(supportText);
+  if (supportText == "" || supportText == " " || supportText == null){
+    alert('Please enter some text to send to us if you would like to receive help. Thank You!');
+    return;
+  }
+  $.post('/contact_support', {message: supportText}, res=>{
+    alert(res);
+    var modal = document.getElementById("modal-wrapper-support");
+    modal.style.display = "none";
+  });
+}
+
 document.getElementById('search_input').addEventListener('keyup', function(e){
 	if (e.keyCode===13){
 		alert('Sorry, you must click "Find Bands" or "Find Events" to perform a search.');

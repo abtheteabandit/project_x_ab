@@ -4415,5 +4415,4 @@ function requestSupport(){
     var modal = document.getElementById("modal-wrapper-support");
     modal.style.display = "none";
   });
-
 }
