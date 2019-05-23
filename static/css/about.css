@@ -311,6 +311,7 @@ flip box containe;;;; got rid of it cuz im using flipp */
 /* Style the front side */
 .front {
     color: white;
+    padding-top: 5px;
 }
 
 /* Style the back side */
@@ -318,6 +319,7 @@ flip box containe;;;; got rid of it cuz im using flipp */
   /*  background-color: dodgerblue;*/
     color: white;
     transform: rotateX(180deg);
+    padding-top: 5px;
 }
 
 #frontText{
