@@ -4416,3 +4416,17 @@ function requestSupport(){
     modal.style.display = "none";
   });
 }
+
+// delete
+function delete_object(id, mode){
+  $.post('/delete', {'id':id, 'mode':mode}, res=>{
+    if (res==""){
+      alert('Hmmm... seems something went wrong on our end. Please try again. If this problem persists please use "support" on the Banda "b" to contact a member of our team.');
+      return;
+    }
+    else{
+      alert(res);
+      return;
+    }
+  });
+}
