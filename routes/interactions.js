@@ -374,7 +374,6 @@ module.exports = router => {
         db.db('users').collection('users').findOne({'username':req.session.key}, (err2, result2)=>{
           if (err2){
             console.log("THere was an error getting user out of db with name: " +req.session.key );
-             ourUser=result2;
             res.status(500).end();
             db.close();
           }
