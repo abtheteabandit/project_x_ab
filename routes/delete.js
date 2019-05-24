@@ -3,7 +3,7 @@ module.exports = router => {
 const database = require('../database.js')
 
 //post request to delete objects for the database
-  router.post('/delete' ,(req, res)=>{
+  router.post('/admin_delete' ,(req, res)=>{
     var {mode} = req.body;
     database.connect(db=>{
       //delete a gig
@@ -42,5 +42,73 @@ const database = require('../database.js')
       res.status(500).end();
     });
   });
+
+  //for deleteing user created objects
+  router.post('/delete', (req, res)=>{
+    if (!req.session.key){
+      console.log('No signed in user tried to call delete');
+      res.status(404).end();
+    }
+    if (!req.body){
+      console.log('No req body sent it delete');
+      res.status(401).end();
+    }
+    else{
+      var {mode, id} = req.body;
+      database.connect(db=>{
+        switch(mode){
+          case 'bands':
+          db.db('bands').collection('bands').deleteOne({'_id':database.objectId(id)}, (err, res2)=>{
+            if (err){
+              console.log('There was an error deleteing band with id: ' + id);
+              res.status(500).end();
+              db.close();
+            }
+            else{
+              console.log('deleted band: ' + id);
+              res.status(200).send('We have deleted this band from Banda!');
+              db.close();
+            }
+          });
+          break;
+          case 'gigs':
+          db.db('gigs').collection('gigs').deleteOne({'_id':database.objectId(id)}, (err2, res3)=>{
+            if (err2){
+              console.log('There was an error deleteing gig with id: ' + id);
+              res.status(500).end();
+              db.close();
+            }
+            else{
+              console.log('deleted gig: ' + id);
+              res.status(200).send('We have deleted this event from Banda!');
+              db.close();
+            }
+          });
+          break;
+          case 'users':
+          db.db('users').collection('users').deleteOne({'username':id}, (err3, res4)=>{
+            if (err3){
+              console.log('There was an error deleteing user with username: ' + id);
+              res.status(500).end();
+              db.close();
+            }
+            else{
+              console.log('deleted user: ' + id);
+              res.status(200).send('We have deleted your account, '+id+' from Banda!');
+              db.close();
+            }
+          });
+          break;
+          default:
+          res.status(401).end();
+          db.close();
+          break;
+        }
+      }, dbErr=>{
+        console.log('THere was an error connecting ot mongo: ' + dbErr);
+        res.status(500).end();
+      })
+    }
+  })
 
 }
