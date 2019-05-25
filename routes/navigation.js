@@ -31,4 +31,7 @@ module.exports = router => {
   router.get('/search_page', (req,res) => {
     res.render('search.html');
   });
+  router.get('/about', (req,res)=>{
+    res.render('about.html');
+  })
 }
