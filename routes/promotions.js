@@ -160,3 +160,34 @@ module.exports = router =>{
     }
   });
 }
+
+router.post('/promotion', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to cross promote');
+    req.status(404).end();
+  }
+  if (!req.body){
+    console.log('promotion had no body');
+    req.status(401).end();
+  }
+  else{
+    var {name, imgURL, caption, handles, location, mode, medias, preferences} = req.body;
+    database.connect(db=>{
+      db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'promotion':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias, 'preferences':preferences}}}, (err2, res2)=>{
+        if (err2){
+          console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
+          res.status(500).end();
+          db.close();
+        }
+        else{
+          console.log('Set promotion ' +name+ ' for user: '+req.session.key);
+          res.status(200).send('Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "Add". To begin running this promo simply go to you contacts and hit the promotion button. If they accept ')
+        }
+      });
+    }, dbErr=>{
+      console.log('There was an error connecting to mongo: ' + dbErr);
+      res.status(500).end();
+    });
+  }
+
+});

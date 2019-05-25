@@ -55,7 +55,7 @@
    "gay","pride","festival","radio","hall","dance","bachelor","bachelorette","show","talent","chill","kickback","hangout","mobile","car","house","home","parade",
    "street","theater","exhibition","show","event","wedding","funeral","burial","eccentric","church","synagouge","mosque","temple","circle","meditation","studio session",
    "performance","rally","march","protest","ceremony","holiday","christmas","new years","halloween","valentines","bash","mosh","orgy","date","night out","night in",
-   "night-in","service","store","opening","closing","buisness","booth","meeting","introduction","orientation","graduation"];
+   "night-in","service","store","opening","closing","buisness","booth","meeting","introduction","orientation","graduation", "free drinks"];
 
    //list of descriptions/vibes
   var vibeBank=["anthem","aria","ariose","arioso","assonance","atmospheric","background","banging","banger","bangers","baroque","beat","bell-like","bombastic",
@@ -423,7 +423,7 @@ module.exports = {
             }
           }
         }
-        //add all matches 
+        //add all matches
         queryGigsToScore.push([theGig,numMatches]);
       }
       //sort all of the matches
@@ -433,6 +433,184 @@ module.exports = {
       okCb(sortedGigs);
     });
   }
+  //this is a function to find matches for users looking to cross promote on social medias
+  const DEFAULT_ENGAGE_SCORE = 0.3;
+  //the default enagaement score serves as a backup if there is no known eng score for a user on a Platform
+
+  findCrossPromoters: function findCrossPromoters(ourUsername, query, db, errCB, okCB){
+    // validate fields
+    if (!db){
+      console.log('No db passed in.');
+      errCB('Internal Server Error');
+    }
+    if (!query){
+      console.log('No query passed in.');
+      errCB('Internal Server Error');
+    }
+    if (!ourUsername){
+      console.log('No username in.');
+      errCB('Internal Server Error');
+    }
+    else{
+      var {lat, lng, searchText} = query.body;
+
+      // get the searching users from mongo
+      db.db('users').collection('users').findOne({'username':ourUsername}, (err1, ourUser)=>{
+        if (err1){
+          console.log('There was an error finding user with username: ' +ourUsername+' Error: ' + err1);
+          errCB('Internal Server Error');
+          db.close();
+        }
+        else{
+          //check if searching user has a promo to run/ pull data from
+          if (!ourUser.hasOwnProperty('promotion')){
+            console.log('Our user: ' + ourUsername+' did not have its own promo.');
+            cbErr('Sorry, you must create and save your own promotion before you can begin searching for people to post your promotion.');
+            db.close();
+          }
+          else{
+            //find all other users to cross promote with
+            var usersToScore = [];
+            db.db('users').collection('users').find({}, (err2, allUsers)=>{
+              if (err2){
+                console.log('There was an error finding all users: ' + err2);
+                errCB('Internal Server Error');
+                db.close();
+              }
+              else{
+                var ourPromo = ourUser.promotion;
+                //pull is defined as the sum of followers for each platform * the engagement score on each platform
+                var ourPull = 0;
+
+                if (ourUser.hasOwnProperty('followers') && ourUser.hasOwnProperty('engagement')){
+                  if (ourUser.followers.hasOwnProperty('twitter')){
+                    if (ourUser.engagement.hasOwnProperty('twitter')){
+                      ourPull += ourUser.followers.twitter * ourUser.engagement.twitter ;
+                    }
+                    else{
+                      ourPull += ourUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
+                    }
+                  }
+                  if (ourUser.followers.hasOwnProperty('facebook')){
+                    if (ourUser.engagement.hasOwnProperty('facebook')){
+                      ourPull += ourUser.followers.facebook * ourUser.engagement.facebook ;
+                    }
+                    else{
+                      ourPull += ourUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
+                    }
+                  }
+                  if (ourUser.followers.hasOwnProperty('instagram')){
+                    if (ourUser.engagement.hasOwnProperty('instagram')){
+                      ourPull += ourUser.followers.instagram * ourUser.engagement.instagram ;
+                    }
+                    else{
+                      ourPull += ourUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
+                    }
+                  }
+                }
+                // now we have ourUsers value set, moving on to looping through all users to find a match
+                for (var user in allUsers){
+                  var otherUser = allUsers[user];
+                  if (!otherUser.hasOwnProperty('promotion')){
+                    continue;
+                  }
+                  else{
+                    var otherPromotion = otherUser.promotion;
+                    if(!otherPromotion){
+                      continue;
+                    }
+                    else{
+                      if (!otherUser.hasOwnProperty('followers')){
+                          continue;
+                      }
+                      var otherUserPull = 0;
+                      if (otherUser.followers.hasOwnProperty('twitter')){
+                        if (otherUser.engagement.hasOwnProperty('twitter')){
+                          otherUserPull += otherUser.followers.twitter * otherUser.engagement.twitter ;
+                        }
+                        else{
+                          otherUserPull += otherUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
+                        }
+                      }
+                      if (otherUser.followers.hasOwnProperty('facebook')){
+                        if (otherUser.engagement.hasOwnProperty('facebook')){
+                          otherUserPull += otherUser.followers.facebook * otherUser.engagement.facebook ;
+                        }
+                        else{
+                          otherUserPull += otherUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
+                        }
+                      }
+                      if (otherUser.followers.hasOwnProperty('instagram')){
+                        if (otherUser.engagement.hasOwnProperty('instagram')){
+                          otherUserPull += otherUser.followers.instagram * otherUser.engagement.instagram ;
+                        }
+                        else{
+                          otherUserPull += otherUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
+                        }
+                      }
+
+                      // now we have the other users value set.
+                      var pullDiff = Math.abs(otherUserPull-ourPull);
+
+                      console.log('Our user pull is: ' + ourPull + ' Other user pull is: ' + otherUserPull);
+
+                      //setting up query parser
+                      var genresFromStr=[];
+                      var instsFromStr=[];
+                      var gigTypesFromStr=[];
+                      var vibesFromStr=[];
+                      var promoGenreMult = 5;
+                      var categories={"genres":[genreBank,genresFromStr,promoGenreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
+                      var catsAfterParse = parseQueryString(searchText, categories);
+                      console.log('Cats after parse in cross promo is: ' + JSON.stringify(catsAfterParse));
+
+                      var queryStrScore = 0;
+                      var numMatches = 0;
+
+                      //goes through a finds mathces from the query string to matches in the promotion of the user were currently evaluting
+                      for (var key in catsAfterParse){
+                        if (catsAfterParse.hasOwnProperty(key)){
+                          var contents = cats[key];
+                          var fromStr=contents[1];
+                          var mult=contents[2];
+                          for (var word in fromStr){
+                            var cleanedDescription = otherPromotion.description.replace("," , " ");
+                            cleanedDescription = cleanedDescription.toLowerCase();
+                            cleanedDescription = cleanedDescription.replace("." , " ");
+                            cleanedDescription = cleanedDescription.replace("!" , " ");
+                            cleanedDescription = cleanedDescription.replace(";" , " ");
+                            cleanedDescription = cleanedDescription.replace("?" , " ");
+                            if (cleanedDescription.includes(fromStr[word])){
+                              queryStrScore+=(1*mult);
+                              numMatches+=1;
+                            }
+                          }
+                        }
+                      }
+
+                      //such that targeting zipcodes works
+                      const DEFAULT_TOTAL_DIST = 50;
+                      var totalDist = 0;
+                      console.log('IN CROSS promo: query string score is: ' + queryStrScore);
+                      if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
+                        var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
+                        var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
+                        var totalDist = Math.sqrt(distY+distX);
+                      }
+                      else{
+                        totalDist = DEFAULT_TOTAL_DIST;
+                      }
+                      console.log('Total dist is: ' + totalDist);
+                    }
+                  }
+                }
+              }
+            });
+          }
+      });
+    }
+  }
+
 }
 
   //parses a string for categories
@@ -557,7 +735,7 @@ module.exports = {
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c;
 
-    //return the negated difference 
+    //return the negated difference
     d /= 1.60934;
     if (myBandMaxDist<d){
       return -d*100;
