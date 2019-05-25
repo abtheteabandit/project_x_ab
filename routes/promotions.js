@@ -239,7 +239,7 @@ router.post('/user_socials', (req, res)=>{
     database.connect(db=>{
       for (var key in medias){
         //post our thign to that media
-        
+
       }
     }, errDB=>{
       console.log('There was an error connectiong to mongo: ' + errDB);
@@ -258,6 +258,7 @@ router.post('/add_pull', (req, res)=>{
     var {id, mode} = req.body;
     database.connect(db=>{
       switch(mode){
+        // adds 1 pull to a band, gig or user depending on what mode we recieved. That mode should be set in the route above
         case "bands":
         db.db('bands').collection('bands').updateOne({'_id':database.objectId(id)}, {$inc:{'pull':1}}, (err1, res1)=>{
           if (err1){
