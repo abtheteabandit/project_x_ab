@@ -209,9 +209,14 @@ router.get('/search_promos', (req, res)=>{
           res.status(200).json({success:false, data:'Sorry, there was an error on our end. Please try searching again. If this error persits please notify us via our support tab on the Banda "b"'});
           db.close();
         }
+        else{
+          res.status(500).json({success:false, data:errCB});
+          db.close();
+        }
       }, okCB=>{
         console.log('Got in ok CB');
         res.status(200).json({success: true, data:okCB});
+        db.close();
       });
     }, dbErr=>{
       console.log('There was an error connectiong to mongo: ' + dbErr);
