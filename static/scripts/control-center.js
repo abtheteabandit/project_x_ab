@@ -3834,7 +3834,7 @@ function convertZipGig(myGig){
         return;
     }
   }, 5000);
-    $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+    $.getJSON('https://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
       console.log(JSON.stringify(data));
       success=true;
       var lat = data.coord.lat;
@@ -3859,7 +3859,7 @@ function convertZipBand(myBand){
         return;
     }
   }, 5000);
-    $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+    $.getJSON('https://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
       console.log(JSON.stringify(data));
       success=true;
       var lat = data.coord.lat;
@@ -3875,7 +3875,7 @@ function convertZip(zipcode, cb){
       cb(null);
     }
   }, 5000);
-  $.getJSON('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+  $.getJSON('https://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
     console.log(JSON.stringify(data));
     success=true;
     var lat = data.coord.lat;
