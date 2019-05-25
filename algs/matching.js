@@ -437,7 +437,7 @@ module.exports = {
   const DEFAULT_ENGAGE_SCORE = 0.3;
   //the default enagaement score serves as a backup if there is no known eng score for a user on a Platform
 
-  findCrossPromoters: function findCrossPromoters(ourUsername, query, db, errCB, okCB){
+  findCrossPromoters: function findCrossPromoters(ourUsername, lat, lng, searchText, db, errCB, okCB){
     // validate fields
     if (!db){
       console.log('No db passed in.');
@@ -452,21 +452,17 @@ module.exports = {
       errCB('Internal Server Error');
     }
     else{
-      var {lat, lng, searchText} = query.body;
-
       // get the searching users from mongo
       db.db('users').collection('users').findOne({'username':ourUsername}, (err1, ourUser)=>{
         if (err1){
           console.log('There was an error finding user with username: ' +ourUsername+' Error: ' + err1);
           errCB('Internal Server Error');
-          db.close();
         }
         else{
           //check if searching user has a promo to run/ pull data from
           if (!ourUser.hasOwnProperty('promotion')){
             console.log('Our user: ' + ourUsername+' did not have its own promo.');
             cbErr('Sorry, you must create and save your own promotion before you can begin searching for people to post your promotion.');
-            db.close();
           }
           else{
             //find all other users to cross promote with
@@ -475,7 +471,6 @@ module.exports = {
               if (err2){
                 console.log('There was an error finding all users: ' + err2);
                 errCB('Internal Server Error');
-                db.close();
               }
               else{
                 var ourPromo = ourUser.promotion;
@@ -600,10 +595,15 @@ module.exports = {
                       else{
                         totalDist = DEFAULT_TOTAL_DIST;
                       }
+                      var totalScore = queryStrScore - totalDist - pullDiff;
+                      usersToScore.push([otherUser, totalScore]);
                       console.log('Total dist is: ' + totalDist);
                     }
                   }
                 }
+                var results = {'overallMatchers':sortDict(usersToScore)};
+                console.log('Got results they are: ' + JSON.stringify(results));
+                cbOK(results);
               }
             });
           }

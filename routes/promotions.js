@@ -1,5 +1,6 @@
 module.exports = router =>{
-  const database = require ('../database');
+  const database = require ('../database'),
+        matching = require('../algs/matching.js');
   router.post('/cross_promote', (req, res)=>{
     if (!req.session.key){
       console.log('No logged in user tried to cross promote');
@@ -159,7 +160,6 @@ module.exports = router =>{
       });
     }
   });
-}
 
 router.post('/promotion', (req, res)=>{
   if (!req.session.key){
@@ -189,5 +189,35 @@ router.post('/promotion', (req, res)=>{
       res.status(500).end();
     });
   }
-
 });
+
+router.get('/search_promos', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to cross promote');
+    req.status(404).end();
+  }
+  if (!req.query){
+    console.log('Cross promote had no body');
+    req.status(401).end();
+  }
+  else{
+    var {lat, lng, searchText} = req.query;
+    database.connect(db=>{
+      matching.findCrossPromoters(req.session.key, lat, lng, searchText, db, errCB=>{
+        console.log('There was an error : ' + errCB);
+        if (errCB=="Internal Server Error"){
+          res.status(200).json({success:false, data:'Sorry, there was an error on our end. Please try searching again. If this error persits please notify us via our support tab on the Banda "b"'});
+          db.close();
+        }
+      }, okCB=>{
+        console.log('Got in ok CB');
+        res.status(200).json({success: true, data:okCB});
+      });
+    }, dbErr=>{
+      console.log('There was an error connectiong to mongo: ' + dbErr);
+      res.status(500).end();
+    });
+
+  }
+});
+} //end of exports
