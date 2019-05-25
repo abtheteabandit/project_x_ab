@@ -239,6 +239,7 @@ router.post('/user_socials', (req, res)=>{
     database.connect(db=>{
       for (var key in medias){
         //post our thign to that media
+        
       }
     }, errDB=>{
       console.log('There was an error connectiong to mongo: ' + errDB);
