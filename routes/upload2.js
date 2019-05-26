@@ -23,6 +23,9 @@ const database = require('../database.js'),
       var uploadingPromoPic = multer({
         dest: './public/tmp/'
       });
+      var uploadingVideoSample = multer({
+        dest: './public/tmp'
+      });
 
       //post request to upload a gig's pic
   router.post('/uploadGigPic', uploadingGigPics.single('image'), function(req, res) {
@@ -187,4 +190,34 @@ const database = require('../database.js'),
       }
     });
   });
-}
+  router.post('/uploadVideoSample', uploadingPromoPic.single('promoPic'), (req,res)=>{
+    if (!req.session.key){
+      console.log('User tried to upload gig pic while not logged in');
+      res.status(401).end();
+    }
+    if (!req.file){
+      console.log('No file sent');
+      res.status(400).end();
+    }
+    if (!(req.file.mimetype=='video/mp4'){
+      console.log('Wrong mimetype')
+      res.status(200).send("Wrong mimeType");
+      return;
+    }
+    console.log(req.file);
+    var fileName = 'static/uploads/VideoSamples/'+req.file.filename;
+    console.log(req.file);
+    fs.rename(req.file.path, fileName, err2=>{
+      if(err2){
+        console.log('Could not rename file, error: ' + err2);
+        res.status(500).end();
+      }
+      else{
+        var finalName = fileName.replace('static', "");
+        console.log('Final name is: ' + finalName);
+        res.status(200).send(finalName);
+      }
+    });
+  });
+
+} // end of exports
