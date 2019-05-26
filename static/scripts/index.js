@@ -46,7 +46,6 @@ function init(){
 
 	var logged = checkSession();
 
-
 	console.log("checking session, session is: "+logged);
 
 	container = document.getElementById("container");
