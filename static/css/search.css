@@ -144,171 +144,6 @@ p{
 .open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);}
 
 /*
-support modal
-*/
-
-#modal-wrapper-support{
-  z-index: 5;
-  width: 100%;
-  overflow: hidden;
-}
-
-/* The Modal (background) */
-.modal-support {
-  display:none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-
-/* The Modal (background) */
-.modal {
-  display:none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-
-/* Modal Content Box */
-.modal-content-support {
-  background-image: url("/assets/Home/modalbg.png");
-  background-color: transparent;
-  background-size: cover;
-  background-clip: border-box;
-  background-repeat: no-repeat;
-  margin: 4% auto 15% auto;
-  width: 40%;
-  height: 80%;
-  padding-bottom: 80px;
-  color: white;
-}
-
-/* Modal Content Box */
-.modal-content {
-  background-image: url("/assets/Home/modalbg.png");
-  background-color: transparent;
-  background-size: contain;
-  background-clip: border-box;
-  background-repeat: no-repeat;
-  margin: 4% auto 15% auto;
-  width: 40%;
-  height: 80%;
-  padding-bottom: 80px;
-  color: white;
-}
-
-
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
-    position: relative;
-}
-
-#request-support-btn{
-  margin-top: -20px;
-}
-
-#account-support-header{
-  text-align:left;
-  padding-left: 20px;
-  font-size: 50pt;
-}
-
-.support-text{
-  text-align: center;
-  font-size: 18pt;
-  margin-bottom: 20px;
-}
-
-.support-text-small{
-  text-align: center;
-  font-size: 12pt;
-}
-.close-support{
-  z-index: 100;
-  float: right;
-  font-size: 35pt;
-  margin-right: 10px;
-  display: inline;
-}
-.close-support:hover,.close-support:focus {
-    alpha: 0.6;
-    cursor: pointer;
-}
-
-.modal-textarea{
-  color: white;
-  background-color: #333d44;
-  border-radius: 8px;
-  padding: 10px;
-  width: 80%;
-  height: 300px;
-  border: none !important;
-  margin-left: 10%;
-  resize: none;
-}
-
-.modal-button{
-  color: white;
-  font-family: Industry, sans-serif;
-  font-size: 14pt;
-}
-
-.modal-button:hover{
-  color: #56dff0;
-}
-
-/* Set a style for all buttons */
-.popUpButtons {
-  background-color: transparent;
-  color: #56dff0;
-  padding: 14px 20px;
-  margin: 8px 26px;
-  border: none;
-  cursor: pointer;
-  width: 90%;
-  font-size: 32px;
-}
-.popUpButtons:hover {
-    opacity: 0.8;
-}
-
-/* The Close Button (x) */
-.close {
-    position: absolute;
-    right: 20px;
-    top: 0;
-    color: #fff;
-    font-size: 35px;
-    font-weight: bold;
-}
-.close:hover,.close:focus {
-    alpha: 0.6;
-    cursor: pointer;
-}
-
-
-/* Add Zoom Animation */
-.animate {
-    animation: zoom 0.6s
-}
-
-@keyframes zoom {
-    from {transform: scale(0)}
-    to {transform: scale(1)}
-}
-
-/*
 search bar
 */
 
@@ -648,12 +483,6 @@ body elements
   }
 }
 
-@media(max-width: 1300px){
-  .modal-content-support{
-    width: 70%;
-  }
-}
-
 @media(max-width: 1000px){
   .grid-container {
     grid-template-columns:  auto auto;
@@ -712,15 +541,6 @@ body elements
     font-size: 20pt;
     margin-left: -180px;
     margin-top: -30px;
-  }
-}
-
-@media(max-width: 800px){
-  #account-support-header{
-    font-size: 28pt;
-  }
-  .support-text{
-    font-size: 16pt;
   }
 }
 
@@ -798,22 +618,8 @@ body elements
   }
 }
 
-@media(max-width: 550px){
-  #request-support-textarea{
-    height: 200px;
-  }
-}
 
 @media(max-width: 500px){
-  .modal-content-support{
-    overflow: scroll;
-    margin-top: 80px;
-    width: 90%;
-    margin-left: 5%;
-  }
-  .modal-content-support::-webkit-scrollbar{
-    width: 4px;
-  }
   #searchbar{
     display: none;
   }
@@ -856,14 +662,6 @@ body elements
     height: 40px;
   } */
 
-}
-@media(max-width: 400px){
-  #account-support-header{
-    font-size: 20pt;
-  }
-  .support-text{
-    font-size: 12pt;
-  }
 }
 
 #mobile-menu-button{
