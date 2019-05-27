@@ -805,7 +805,6 @@ body elements
 }
 
 @media(max-width: 500px){
-
   .modal-content-support{
     overflow: scroll;
     margin-top: 80px;

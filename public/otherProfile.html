@@ -35,23 +35,23 @@
   </head>
   <!-- <body onload="init();"> -->
   <body onload="javascript:init();">
-    <div id="modal-wrapper-support" class="modal">
 
-      <div class="modal-content animate">
+    <div id="modal-wrapper-support" class="modal-support">
 
-        <div class="imgcontainer">
-          <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close" title="Close PopUp">&times;</span>
-          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">account support</h1>
-        </div>
-
+      <form class="modal-content-support animate">
+        <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
         <div class="container">
-          <p class="support-text">Having any issues? Want to promote an event or grow your following? Let us know!</p>
-          <textarea class="modal-textarea" data-gramm_editor="false" id='support_text' placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you.'></textarea>
-          <button id='send_report_button' class="popUpButtons">Make Request</button>
+          <h1 id="account-support-header">account support</h1>
+          <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
+          <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+          <button id="request-support-btn" class="popUpButtons" type="submit" onclick="requestSupport()">Make Request</button>
+          <p class="support-text-small">Alternatively, reach out to the team directly:</p>
+          <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
         </div>
-      </div>
+      </form>
 
     </div>
+
     <div id="modal-wrapper-link-application" class="modal2">
       <div class="imgcontainer">
         <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp">&times;</span>
