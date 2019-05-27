@@ -46,7 +46,7 @@
         <div class="container">
           <h1 id="account-support-header">account support</h1>
           <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
-          <textarea id="request-support-textarea" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+          <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
           <button id="request-support-btn" class="popUpButtons" type="submit" onclick="requestSupport()">Make Request</button>
           <p class="support-text-small">Alternatively, reach out to the team directly:</p>
           <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
@@ -156,7 +156,7 @@
           <img id="new-gig-pic-preview"/>
           <br>
           <label id="new-gig-description-label" for="new-gig-description" required>description</label>
-          <textarea id="new-gig-description" class="modal-textarea" required></textarea>
+          <textarea id="new-gig-description" data-gramm_editor="false" class="modal-textarea" required></textarea>
           <button type='button' class="popUpButtons" id="new-gig-post" onclick="postGig()">post</button>
           <div id="loader-new-gig" class="loader"></div>
         </div>
@@ -214,7 +214,7 @@
           </table>
           <br>
           <label id="new-band-description-label" for="new-band-description" >description</label>
-          <textarea id="new-band-description" class="modal-textarea" placeholder='Enter some genres and instruments you play. As well as some "vibes" or feelings your music creates. Also, add some types of events you are interested in playing.'></textarea>
+          <textarea id="new-band-description" data-gramm_editor="false" class="modal-textarea" placeholder='Enter some genres and instruments you play. As well as some "vibes" or feelings your music creates. Also, add some types of events you are interested in playing.'></textarea>
           <h3>avatar</h3>
           <label for="new-band-pic">upload image</label>
           <input id="new-band-pic" class="modal-input" name="avatar" type="file"required ></input>
@@ -346,7 +346,7 @@
           </table>
           <br>
           <label id="current-band-description-label" for="current-band-description">description</label>
-          <textarea id="current-band-description" class="modal-textarea"></textarea>
+          <textarea id="current-band-description" data-gramm_editor="false" class="modal-textarea"></textarea>
           <h3>avatar</h3>
           <label for"current-band-pic">upload image</label>
           <input id="current-band-pic" class="modal-input" name="avatar" type="file"></input>
