@@ -414,8 +414,30 @@ module.exports = router => {
                     else{
                       console.log('got user set with the contact' + contactName);
                     //  console.log(JSON.stringify(result));
-                      res.status(200).end();
-                      db.close();
+                      var newConHasPoster = false;
+                      for (var con2 in result4.contacts){
+                        if (req.session.key==result4.contacts[con2].name){
+                          newConHasPoster=true;
+                        }
+                      }
+                      if (newConHasPoster){
+                        res.status(200).send('We have added '+contactName+' to your contacts. To find them and begin messaging click "contacts" and look for ' + contactName);
+                        db.close();
+                      }
+                      else{
+                        db.db('users').collection('users').updateOne({'username':contactName}, {$push:{'contacts':{'id':result2._id, 'name':req.session.key}}}, (err10, res10)=>{
+                          if (err10){
+                            console.log('There was an error adding ' + req.session.key +' to: ' +contactName + ' contact list');
+                            res.status(500).end();
+                            db.close();
+                          }
+                          else{
+                            res.status(200).send('We have added '+contactName+' to your contacts. To find them and begin messaging click "contacts" and look for ' + contactName);
+                            db.close();
+                          }
+                        });
+                      }
+
                     }
                   });
                 }
