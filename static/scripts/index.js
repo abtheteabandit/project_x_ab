@@ -46,6 +46,14 @@ function init(){
 
 	var logged = checkSession();
 
+  if (document.cookie.indexOf("visited") >= 0) {
+	   // don't show modal
+  } else {
+  	// show modal
+    document.getElementById("modal-wrapper-index-help").style.display = "block";
+  	document.cookie = "visited";
+  }
+
 	console.log("checking session, session is: "+logged);
 
 	container = document.getElementById("container");
@@ -555,6 +563,15 @@ function diff_minutes(dt2, dt1) {
 				document.getElementById("modal-wrapper-login").style.display = "none";
 				checkSession();
 				alert('You have logged in, '+content.username);
+        var menuIndexZero = document.getElementById("home_button");
+        menuIndexZero.href = "control-center";
+        var menuTextZero = document.getElementById("menuTextZero");
+        menuTextZero.innerHTML = "Home";
+
+        var mobileMenuIndexZero = document.getElementById("mobile_home_button");
+        mobileMenuIndexZero.href = "control-center";
+        var mobileMenuTextZero = document.getElementById("mobileMenuTextZero");
+        mobileMenuTextZero.innerHTML = "Home";
       }
       else{
 				alert(res);
@@ -571,8 +588,21 @@ function diff_minutes(dt2, dt1) {
 				console.log(res.success + " is returned value");
 				document.getElementById('login_or_out').innerHTML = 'Log Out';
         document.getElementById('mobile_login_or_out').innerHTML = 'Log Out';
-        document.getElementById("sign_in_button").outerHTML = "";
-        document.getElementById("mobile_sign_in_button").outerHTML = "";
+
+        var menuIndexThree = document.getElementById("sign_in_button");
+        var menuTextThree = document.getElementById("register_text");
+        menuTextThree.innerHTML = "Support";
+        menuIndexThree.onclick = "";
+        menuIndexThree.addEventListener("click",function(){
+          document.getElementById("modal-wrapper-support").style.display = "block";
+        });
+        var mobileMenuIndexThree = document.getElementById("mobile_sign_in_button");
+        var mobileMenuTextThree = document.getElementById("mobile_register_text");
+        mobileMenuTextThree.innerHTML = "Support";
+        mobileMenuIndexThree.onclick = "";
+        mobileMenuIndexThree.addEventListener("click",function(){
+          document.getElementById("modal-wrapper-support").style.display = "block";
+        });
 				document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
 				});
@@ -586,8 +616,20 @@ function diff_minutes(dt2, dt1) {
         document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-login").style.display="block";
 				});
-        document.getElementById("home_button").style.display = "none";
-        document.getElementById("mobile_home_button").style.display = "none";
+        var menuTextZero = document.getElementById("menuTextZero");
+        menuTextZero.innerHTML = "Support";
+        var menuIndexZero = document.getElementById("home_button");
+        menuIndexZero.href = "#";
+        menuIndexZero.addEventListener("click",function(){
+          document.getElementById("modal-wrapper-support").style.display = "block";
+        });
+        var mobileMenuIndexZero = document.getElementById("mobile_home_button");
+        var mobileMenuTextZero = document.getElementById("mobileMenuTextZero");
+        mobileMenuTextZero.innerHTML = "Support";
+        mobileMenuIndexZero.href = "#";
+        mobileMenuIndexZero.addEventListener("click",function(){
+          document.getElementById("modal-wrapper-support").style.display = "block";
+        });
         document.getElementById('mobile_login_or_out').innerHTML = 'Login';
         document.getElementById('mobile_login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-login").style.display="block";
@@ -596,6 +638,21 @@ function diff_minutes(dt2, dt1) {
 			}
 		});
 	}
+
+  function requestSupport(){
+    var supportText = document.getElementById("request-support-textarea").value;
+    console.log("User has requested support, text is: ");
+    console.log(supportText);
+    if (supportText == "" || supportText == " " || supportText == null){
+      alert('Please enter some text to send to us if you would like to receive help. Thank You!');
+      return;
+    }
+    $.post('/contact_support', {message: supportText}, res=>{
+      alert(res);
+      var modal = document.getElementById("modal-wrapper-support");
+      modal.style.display = "none";
+    });
+  }
 
 
   function register() {

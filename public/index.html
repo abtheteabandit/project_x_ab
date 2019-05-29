@@ -55,6 +55,8 @@
 		<script type="text/javascript" src="/scripts/index.js"></script>
 		<link rel="stylesheet" type="text/css" href="/css/index.css">
 		<link rel="stylesheet" type="text/css" href="/css/responseModel.css">
+		<link rel="stylesheet" type="text/css" href="/css/modals/indexHelpModal.css">
+		<link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 		</head>
@@ -72,7 +74,7 @@
 					</div>
 
 					<div class='circle-container'>
-						<a href='control-center' id="home_button" class='deg0'><p class="radialText">Home</p></a>
+						<a href='control-center' id="home_button" class='deg0'><p class="radialText" id="menuTextZero">Home</p></a>
 						<a href='about' class='deg30'><p class="radialText">About</p></a>
 						<a href='#' class='deg60' id="login_button"><p class="radialText" id='login_or_out'>Login</p></a>
 						<a href='#' class='deg90' id="sign_in_button" onclick="document.getElementById('modal-wrapper-tos').style.display='block'"><p class="radialText" id='register_text'>Register</p></a>
@@ -81,12 +83,16 @@
 					<div class="mobile-menu">
 	           <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
 	           <ul id = "mobile-menu-ul" class="mobile-active">
-	             <li><a href='control-center' id="mobile_home_button"><p class="radialText">Home</p></a></li>
+	             <li><a href='control-center' id="mobile_home_button"><p class="radialText" id="mobileMenuTextZero">Home</p></a></li>
 	             <li><a href='about'><p class="radialText">About</p></a></li>
 	             <li><a href='#' id="mobile_login_button"><p class="radialText" id='mobile_login_or_out'>Login</p></a></li>
 							 <li><a href='#' id="mobile_sign_in_button" onclick="document.getElementById('modal-wrapper-tos').style.display='block'"><p class="radialText" id='mobile_register_text'>Register</p></a></li>
 	           </ul>
 	       	</div>
+
+					<div class="help-div">
+						<img class="help-icon" alt="help" src="/assets/Home/help.png" onclick="document.getElementById('modal-wrapper-index-help').style.display = 'block';"/>
+					</div>
 
 					<div class="search">
 						<img id="barImg" alt="searchbar" src="/assets/Home/searchbar.png" />
@@ -98,6 +104,37 @@
 							<img src="/assets/Home/dot.png" class="options-dot" />
 							<button class="options-buttons" onclick="search_gigs()">events</button>
 							<!-- <button class="btn btn-sm" id="b3" onclick="document.getElementById('modal-wrapper-gig').style.display='block'">Post a Gig</button> -->
+						</div>
+					</div>
+
+					<div id="modal-wrapper-support" class="modal-support">
+
+			      <form class="modal-content-support animate">
+			        <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close Pop Up">&times;</span>
+			        <div class="container">
+			          <h1 id="account-support-header">account support</h1>
+			          <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
+			          <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+			          <button id="request-support-btn" type="submit" onclick="requestSupport()">Make Request</button>
+			          <p class="support-text-small">Alternatively, reach out to the team directly:</p>
+			          <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
+			        </div>
+			      </form>
+
+			    </div>
+
+					<div id="modal-wrapper-index-help">
+						<div class="modal-content-help animate">
+							<div class="imgcontainer">
+								<h1 class="index-help-h1">welcome!</h1>
+							</div>
+							<div class="container">
+								<h2 class="index-help-h2">Just type in what you're looking for and hit the "<span class="help-blue">band</span>" or "<span class="help-blue">event</span>" buttons.</h2>
+								<p class="index-help-p">[ex. "jazz" then click "band" to search for jazz bands]</p>
+								<h2 class="index-help-h2">This is a <em class="help-blue">beta</em> version of our website. We appreciate your patience and encourage you to send bugs to: <span class="help-blue index-help-email">banda.help.customers@gmail.com</span></h2>
+								<p class="index-help-p">This message will be shown once. To see it again, click help<img class="index-help-img" alt="help" src="/assets/Home/help.png" /></p>
+								<input id="enter-site-btn" type="button" value="enter site" onclick="document.getElementById('modal-wrapper-index-help').style.display = 'none';"/>
+							</div>
 						</div>
 					</div>
 
