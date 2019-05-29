@@ -427,6 +427,10 @@ strong:hover{
   cursor: pointer;
 }
 
+.band-together-a:hover{
+  text-decoration: none;
+}
+
 .mission-p{
   text-align: center;
   width: 60%;
