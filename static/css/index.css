@@ -29,6 +29,24 @@ h1, h2, h3, h4, h6, p, button, input, textarea{
   font-family: Industry, sans-serif;
 }
 
+.help-div{
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 44px;
+  height: 44px;
+  z-index: 70;
+}
+
+.help-icon{
+  width: 44px;
+  height: 44px;
+}
+
+.help-icon:hover{
+  cursor: pointer;
+}
+
 
 .radialText{
   color: white;

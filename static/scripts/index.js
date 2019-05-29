@@ -46,6 +46,14 @@ function init(){
 
 	var logged = checkSession();
 
+  if (document.cookie.indexOf("visited") >= 0) {
+	   // don't show modal
+  } else {
+  	// show modal
+    document.getElementById("modal-wrapper-index-help").style.display = "block";
+  	document.cookie = "visited";
+  }
+
 	console.log("checking session, session is: "+logged);
 
 	container = document.getElementById("container");
@@ -72,8 +80,8 @@ function init(){
         samples.push(aSample);
       }
       if(container.width >= 600){
-        rainTimer = setInterval(addDrop, 1600);
-      	setInterval(animate, 40);
+        // rainTimer = setInterval(addDrop, 1600);
+      	// setInterval(animate, 40);
       }
     });
   }
