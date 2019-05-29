@@ -558,6 +558,15 @@ function diff_minutes(dt2, dt1) {
 				document.getElementById("modal-wrapper-login").style.display = "none";
 				checkSession();
 				alert('You have logged in, '+content.username);
+        var menuIndexZero = document.getElementById("home_button");
+        menuIndexZero.href = "control-center";
+        var menuTextZero = document.getElementById("menuTextZero");
+        menuTextZero.innerHTML = "Home";
+
+        var mobileMenuIndexZero = document.getElementById("mobile_home_button");
+        mobileMenuIndexZero.href = "control-center";
+        var mobileMenuTextZero = document.getElementById("mobileMenuTextZero");
+        mobileMenuTextZero.innerHTML = "Home";
       }
       else{
 				alert(res);
@@ -574,6 +583,7 @@ function diff_minutes(dt2, dt1) {
 				console.log(res.success + " is returned value");
 				document.getElementById('login_or_out').innerHTML = 'Log Out';
         document.getElementById('mobile_login_or_out').innerHTML = 'Log Out';
+
         var menuIndexThree = document.getElementById("sign_in_button");
         var menuTextThree = document.getElementById("register_text");
         menuTextThree.innerHTML = "Support";
