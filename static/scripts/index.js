@@ -215,8 +215,14 @@ class Drop {
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
 		this.audio = new Audio();
-		this.audio.src = samples[dropOn]['audio'];
-		this.audio.type='audio/mp3';
+    if (samples[dropOn]['audio'].includes('mp3')){
+      this.audio.type = 'audio/mp3';
+    }
+    else{
+      this.audio.type = 'audio/wav';
+    }
+    this.audio.src = samples[dropOn]['audio'];
+
 		// this.theButton = document.createElement("p");
 		// this.theButton.innerHTML = "text";
 		// this.theDiv.appendChild(this.theButton);
@@ -233,7 +239,6 @@ class Drop {
 
 	playAudio() {
 		 var playPromise = this.audio.play();
-
 		 if (playPromise !== undefined) {
 				 playPromise.then(function () {
 						 console.log('Playing....');
