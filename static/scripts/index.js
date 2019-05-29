@@ -80,8 +80,8 @@ function init(){
         samples.push(aSample);
       }
       if(container.width >= 600){
-        // rainTimer = setInterval(addDrop, 1600);
-      	// setInterval(animate, 40);
+        rainTimer = setInterval(addDrop, 1600);
+      	setInterval(animate, 40);
       }
     });
   }
