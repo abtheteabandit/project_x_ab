@@ -94,7 +94,42 @@ module.exports = router =>{
     }
   });
 
-
+  router.get('/account_status', (req, res)=>{
+    if (!req.session.key){
+      console.log('No logged in user tried to create an account');
+      res.status(404).end();
+    }
+    if (!req.query){
+      console.log('no req query sent');
+      res.status(401).end();
+    }
+    else{
+      database.connect(db=>{
+        db.db('users').collection('stripe_users').findOne({'username':req.session.key}, (err2, res2)=>{
+          if (err2){
+            console.log('There was an error finding acct for: ' + req.session.key+' Error:'+err2);
+            res.status(200).send(false);
+            db.close();
+          }
+          else{
+            if (res2==null || res2.length==0){
+              console.log('There was no stripe acct for: ' + req.session.key);
+              res.status(200).send(false);
+              db.close();
+            }
+            else{
+              console.log('There was stripe acct for: ' + req.session.key);
+              res.status(200).send(true);
+              db.close();
+            }
+          }
+        })
+      }, errDB=>{
+        console.log('There was an error conencting to mongo: ' + err3);
+        res.status(500).end();
+      });
+    }
+  });
 }
 
 
