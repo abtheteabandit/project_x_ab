@@ -56,6 +56,7 @@
 		<link rel="stylesheet" type="text/css" href="/css/index.css">
 		<link rel="stylesheet" type="text/css" href="/css/responseModel.css">
 		<link rel="stylesheet" type="text/css" href="/css/modals/indexHelpModal.css">
+		<link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 		</head>
@@ -73,7 +74,7 @@
 					</div>
 
 					<div class='circle-container'>
-						<a href='control-center' id="home_button" class='deg0'><p class="radialText">Home</p></a>
+						<a href='control-center' id="home_button" class='deg0'><p class="radialText" id="menuTextZero">Home</p></a>
 						<a href='about' class='deg30'><p class="radialText">About</p></a>
 						<a href='#' class='deg60' id="login_button"><p class="radialText" id='login_or_out'>Login</p></a>
 						<a href='#' class='deg90' id="sign_in_button" onclick="document.getElementById('modal-wrapper-tos').style.display='block'"><p class="radialText" id='register_text'>Register</p></a>
@@ -82,7 +83,7 @@
 					<div class="mobile-menu">
 	           <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
 	           <ul id = "mobile-menu-ul" class="mobile-active">
-	             <li><a href='control-center' id="mobile_home_button"><p class="radialText">Home</p></a></li>
+	             <li><a href='control-center' id="mobile_home_button"><p class="radialText" id="mobileMenuTextZero">Home</p></a></li>
 	             <li><a href='about'><p class="radialText">About</p></a></li>
 	             <li><a href='#' id="mobile_login_button"><p class="radialText" id='mobile_login_or_out'>Login</p></a></li>
 							 <li><a href='#' id="mobile_sign_in_button" onclick="document.getElementById('modal-wrapper-tos').style.display='block'"><p class="radialText" id='mobile_register_text'>Register</p></a></li>
@@ -105,6 +106,22 @@
 							<!-- <button class="btn btn-sm" id="b3" onclick="document.getElementById('modal-wrapper-gig').style.display='block'">Post a Gig</button> -->
 						</div>
 					</div>
+
+					<div id="modal-wrapper-support" class="modal-support">
+
+			      <form class="modal-content-support animate">
+			        <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close Pop Up">&times;</span>
+			        <div class="container">
+			          <h1 id="account-support-header">account support</h1>
+			          <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
+			          <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+			          <button id="request-support-btn" type="submit" onclick="requestSupport()">Make Request</button>
+			          <p class="support-text-small">Alternatively, reach out to the team directly:</p>
+			          <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
+			        </div>
+			      </form>
+
+			    </div>
 
 					<div id="modal-wrapper-index-help">
 						<div class="modal-content-help animate">
