@@ -19,6 +19,7 @@
     <!-- External CSS -->
     <link rel="stylesheet" type="text/css" href="/css/control-center.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/createBandModal.css">
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
@@ -166,13 +167,13 @@
     </div>
     <!--mihn-->
     <div id="modal-wrapper-new-band" class="modal">
-      <form id="new-band-form" class="modal-content animate" enctype="multipart/form-data">
-        <div class="imgcontainer">
-          <span onclick="document.getElementById('modal-wrapper-new-band').style.display='none'" class="close" title="Close PopUp">&times;</span>
-          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new band</h1>
+      <form id="new-band-form" class="animate" enctype="multipart/form-data">
+        <div>
+          <h1 class="new-band-modal-title">new band</h1>
+          <input minlength="3" maxlength="50" id="new-band-title" class="modal-input" type="text" placeholder="enter a name for your new band/act" required ></input>
+          <span onclick="document.getElementById('modal-wrapper-new-band').style.display='none'" class="close-new-band" title="Close PopUp">&times;</span>
         </div>
         <div class="container" id="new-band-content">
-          <input minlength="3" maxlength="50" id="new-band-title" class="modal-input" type="text" placeholder="enter a name for your new band/act" required ></input>
           <label for="new-band-zip">zip code</label>
           <input id="new-band-zip" class="modal-input" type="number" pattern='{5}' placeholder="" required></input>
           <label for="new-band-dist">max travel distance (mi.)</label>
