@@ -20,6 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/css/control-center.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createBandModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/createEventModal.css">
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
@@ -133,14 +134,14 @@
       </form>
     </div>
     <!--done-->
-    <div id="modal-wrapper-new-gig" class="modal">
-      <form id="new-gig-form" class="modal-content animate" enctype="multipart/form-data">
-        <div class="imgcontainer">
-          <span onclick="document.getElementById('modal-wrapper-new-gig').style.display='none'" class="close" title="Close PopUp">&times;</span>
-          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new gig</h1>
+    <div id="modal-wrapper-new-gig">
+      <form id="new-gig-form" class="animate" enctype="multipart/form-data">
+        <div>
+          <h1 class="new-event-modal-title">new gig</h1>
+          <input minlength="3" maxlength="65" id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new event" required></input>
+          <span onclick="document.getElementById('modal-wrapper-new-gig').style.display='none'" class="close-new-gig" title="Close PopUp">&times;</span>
         </div>
         <div class="container" id="new-gig-content">
-          <input minlength="3" maxlength="65" id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new event" required></input>
           <label for="new-gig-date">date</label>
           <input id="new-gig-date" class="modal-input" type="date" required></input>
           <label for="new-gig-start-time">from</label>
@@ -166,7 +167,7 @@
       </form>
     </div>
     <!--mihn-->
-    <div id="modal-wrapper-new-band" class="modal">
+    <div id="modal-wrapper-new-band">
       <form id="new-band-form" class="animate" enctype="multipart/form-data">
         <div>
           <h1 class="new-band-modal-title">new band</h1>
