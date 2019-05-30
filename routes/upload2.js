@@ -199,7 +199,7 @@ const database = require('../database.js'),
       console.log('No file sent');
       res.status(400).end();
     }
-    if (!(req.file.mimetype=='video/mp4'){
+    if (!(req.file.mimetype=='video/mp4')){
       console.log('Wrong mimetype')
       res.status(200).send("Wrong mimeType");
       return;

@@ -434,7 +434,7 @@ module.exports = {
     });
   }
   //this is a function to find matches for users looking to cross promote on social medias
-  const DEFAULT_ENGAGE_SCORE = 0.3; // AB Was here. Writing for commit revert purposes.
+  const DEFAULT_ENGAGE_SCORE = 0.3;
   //the default enagaement score serves as a backup if there is no known eng score for a user on a Platform
 
   findCrossPromoters: function findCrossPromoters(ourUsername, lat, lng, searchText, db, errCB, okCB){
