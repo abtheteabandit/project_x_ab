@@ -283,9 +283,15 @@ function submitBand(){
   //alert(gigID);
   console.log('IN SUBMIT BAND ID IS :' + bandID);
   console.log('IN SUBMIT GIG ID IS :' + gigID);
-
-  $.post('/apply', {'bandID':bandID, 'gigID':gigID}, result=>{
-    alert('Congratulations! You have applied to this event. Check your home page regularly to see whether they accepted your application.');
+  $.get('/account_status', {'id':bandID}, res2=>{
+    if(res2==true){
+      $.post('/apply', {'bandID':bandID, 'gigID':gigID}, result=>{
+        alert('Congratulations! You have applied to this event. Check your home page regularly to see whether they accepted your application.');
+      });
+    }
+    else{
+      alert('Sorry, you must connect a bank account on your home page to apply to events. Banda asks for this information so that we can transfer the full pay from a gig directly into your account. Banda does not store this information. We do this to simplify the booking proccess for venues and to ensure you always get what you deserve.');
+    }
   });
   document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'
 }

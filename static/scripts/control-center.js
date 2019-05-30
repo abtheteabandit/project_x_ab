@@ -2427,13 +2427,23 @@ function presentConfirmBookingModal(bandName, bandID, gigID, theGig){
   var bookBtn = document.getElementById("confirm-booking");
   bookBtn.addEventListener("click",function(){
     document.getElementById("loader-book").style.display = "inline";
-    $.post('/accept', {'gigID':gigID, 'bandID':bandID}, res=>{
-      alert('Congratulations! You have accepted the application for this band. Be sure to check the email associated with your account regulary to recieve the confirmation code. You should exchange this code with the artist at the time of the event.');
-      var modal = document.getElementById("modal-wrapper-confirm-booking");
-      modal.style.display = "none";
-      document.getElementById("loader-book").style.display = "none";
-      document.location.reload();
-    });
+    $.get('/customer_status', {'id':gigID}, res2=>{
+      if (res2==true){
+        $.post('/accept', {'gigID':gigID, 'bandID':bandID}, res=>{
+          alert('Congratulations! You have accepted the application for this band. Be sure to check the email associated with your account regulary to recieve the confirmation code. You should exchange this code with the artist at the time of the event.');
+          var modal = document.getElementById("modal-wrapper-confirm-booking");
+          modal.style.display = "none";
+          document.getElementById("loader-book").style.display = "none";
+          document.location.reload();
+        });
+      }
+      else{
+        alert('Sorry, you must add credit card information (on this page) before you can accept a band to play at your event. Banda does not store this information. We do this to simplify the booking proccess, once you have confirmed that the artist plays at your event we will transfer the pay you set for this event to the artist directly.');
+        modal.style.display = "none";
+        document.getElementById("loader-book").style.display = "none";
+      }
+    })
+
   });
 }
 
