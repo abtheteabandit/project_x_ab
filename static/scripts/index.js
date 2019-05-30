@@ -222,9 +222,30 @@ class Drop {
 		//this.theDiv.style.backgroundColor = colorString;
 		this.theDiv.paused = false;
 		this.theDiv.dropRef = this;
+    //NEW AUDIO Code
+     this.audioTag = document.createElement('AUDIO');
+     if (samples[dropOn]['audio'].includes('mp3')){
+       this.audioTag.innerHTML='<source src="'+samples[dropOn]['audio']+'" type="audio/mp3">';
+     }
+     else{
+       this.audioTag.innerHTML='<source src="'+samples[dropOn]['audio']+'" type="audio/wav">';
+     }
+
+    //END OF NEW AUDIO CODE
+    //OLD AUDIO CODE
+    /*
 		this.audio = new Audio();
-		this.audio.src = samples[dropOn]['audio'];
-		this.audio.type='audio/mp3';
+    if (samples[dropOn]['audio'].includes('mp3')){
+      this.audio.type = 'audio/mp3';
+    }
+    else{
+      this.audio.type = 'audio/wav';
+    }
+    this.audio.src = samples[dropOn]['audio'];
+    */
+    //END OF OLD AUDIO Code
+
+
 		// this.theButton = document.createElement("p");
 		// this.theButton.innerHTML = "text";
 		// this.theDiv.appendChild(this.theButton);
@@ -240,8 +261,7 @@ class Drop {
 	}
 
 	playAudio() {
-		 var playPromise = this.audio.play();
-
+		 var playPromise = this.audioTag.play();
 		 if (playPromise !== undefined) {
 				 playPromise.then(function () {
 						 console.log('Playing....');
@@ -259,7 +279,7 @@ class Drop {
        this.theDiv.style.zIndex = "1";
 			 }
 		else{
-			this.audio.pause();
+			this.audioTag.pause();
       this.theImg.style.opacity = "0.6";
       this.theDiv.style.zIndex = "0";
 			}

@@ -414,8 +414,30 @@ module.exports = router => {
                     else{
                       console.log('got user set with the contact' + contactName);
                     //  console.log(JSON.stringify(result));
-                      res.status(200).end();
-                      db.close();
+                      var newConHasPoster = false;
+                      for (var con2 in result4.contacts){
+                        if (req.session.key==result4.contacts[con2].name){
+                          newConHasPoster=true;
+                        }
+                      }
+                      if (newConHasPoster){
+                        res.status(200).send('We have added '+contactName+' to your contacts. To find them and begin messaging click "contacts" and look for ' + contactName);
+                        db.close();
+                      }
+                      else{
+                        db.db('users').collection('users').updateOne({'username':contactName}, {$push:{'contacts':{'id':result2._id, 'name':req.session.key}}}, (err10, res10)=>{
+                          if (err10){
+                            console.log('There was an error adding ' + req.session.key +' to: ' +contactName + ' contact list');
+                            res.status(500).end();
+                            db.close();
+                          }
+                          else{
+                            res.status(200).send('We have added '+contactName+' to your contacts. To find them and begin messaging click "contacts" and look for ' + contactName);
+                            db.close();
+                          }
+                        });
+                      }
+
                     }
                   });
                 }
@@ -1451,7 +1473,7 @@ function diff_hours(dt1, dt2) {
            //send the condimatiopn email to the acceptor
            var acceptor_email = accept_user.email;
            var applier_email = applier_user.email;
-           sendAConfirmEmail(req, acceptor_email, true, bandCodeToGig, gig, sending_error=>{
+           sendAConfirmEmail(req, acceptor_email, true, bandCodeToGig, band_creator, gig, sending_error=>{
              if (sending_error){
                console.log('Got callback error from send a confrim: ' + sending_error);
                cb(sending_error)
@@ -1459,7 +1481,7 @@ function diff_hours(dt1, dt2) {
              else{
                //send the confirmation to the applier
                console.log('A confirm email was sent to: ' + acceptor_email+ ' about to send second email to applier');
-               sendAConfirmEmail(req, applier_email, false, gigCodeToBand, gig, sending_error2=>{
+               sendAConfirmEmail(req, applier_email, false, gigCodeToBand, band_creator, gig, sending_error2=>{
                  if (sending_error2){
                    console.log('Got callback error from send a confrim (second call): ' + sending_error2);
                    cb(sending_error2)
@@ -1478,7 +1500,7 @@ function diff_hours(dt1, dt2) {
  }
 
  //helper function that sends a single email, mostly setup
-  function sendAConfirmEmail(req, address, acceptor, code, theGig, cb){
+  function sendAConfirmEmail(req, address, acceptor, code, band_creator, theGig, cb){
      console.log('In sendAConfirmEmail and address is:  ' +address);
      //setup the transporter for banda
      let transporter = nodeMailer.createTransport({
@@ -1518,7 +1540,7 @@ function diff_hours(dt1, dt2) {
            from: OUR_ADDRESS, // our address
            to: address, // who we sending to
            subject: "Confirmation Code From Banda For "+theGig.name+"", // Subject line
-           text: "Hello, "+req.session.key+". Here is your confirmation code for the event "+theGig.name+"         -----                 "+code+"                -----               Give this code to the event manager at the time of the event. They should submit this code on their home page. Also, be sure to submit the code the event manager gives you on your home page (this is how we make sure you get paid). DO NOT SEND THIS CODE TO ANYONE. You should exchange codes in person at the time of the event. We do this to ensure fair transactions between our customers. Once both codes have been sent we will securly charge the event and deposit $"+theGig.price+" in your associated bank account. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.", // plain text body
+           text: "Hello, "+band_creator+". Here is your confirmation code for the event "+theGig.name+"         -----                 "+code+"                -----               Give this code to the event manager at the time of the event. They should submit this code on their home page. Also, be sure to submit the code the event manager gives you on your home page (this is how we make sure you get paid). DO NOT SEND THIS CODE TO ANYONE. You should exchange codes in person at the time of the event. We do this to ensure fair transactions between our customers. Once both codes have been sent we will securly charge the event and deposit $"+theGig.price+" in your associated bank account. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.", // plain text body
            html: '' // html body
        };
        //send the email
