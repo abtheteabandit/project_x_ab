@@ -17,6 +17,7 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <!-- External CSS -->
     <link rel="stylesheet" type="text/css" href="/css/control-center.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
@@ -46,8 +47,8 @@
         <div class="container">
           <h1 id="account-support-header">account support</h1>
           <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
-          <textarea id="request-support-textarea" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
-          <button id="request-support-btn" class="popUpButtons" type="submit" onclick="requestSupport()">Make Request</button>
+          <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+          <button id="request-support-btn" type="submit" onclick="requestSupport()">Make Request</button>
           <p class="support-text-small">Alternatively, reach out to the team directly:</p>
           <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
         </div>
@@ -156,7 +157,7 @@
           <img id="new-gig-pic-preview"/>
           <br>
           <label id="new-gig-description-label" for="new-gig-description" required>description</label>
-          <textarea id="new-gig-description" class="modal-textarea" required></textarea>
+          <textarea id="new-gig-description" data-gramm_editor="false" class="modal-textarea" required></textarea>
           <button type='button' class="popUpButtons" id="new-gig-post" onclick="postGig()">post</button>
           <div id="loader-new-gig" class="loader"></div>
         </div>
@@ -214,7 +215,7 @@
           </table>
           <br>
           <label id="new-band-description-label" for="new-band-description" >description</label>
-          <textarea id="new-band-description" class="modal-textarea" placeholder='Enter some genres and instruments you play. As well as some "vibes" or feelings your music creates. Also, add some types of events you are interested in playing.'></textarea>
+          <textarea id="new-band-description" data-gramm_editor="false" class="modal-textarea" placeholder='Enter some genres and instruments you play. As well as some "vibes" or feelings your music creates. Also, add some types of events you are interested in playing.'></textarea>
           <h3>avatar</h3>
           <label for="new-band-pic">upload image</label>
           <input id="new-band-pic" class="modal-input" name="avatar" type="file"required ></input>
@@ -252,7 +253,7 @@
         </div>
         <button class="stripe-button" style="display: block" >Connect Payment Method</button>
         <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
-          to guarantee swift and easy compensation of the artists that you book.</p>
+          to guarantee swift and easy compensation of the artists that you book. We ask for your credit information one time upfront for convience and then you can post as many events as you would like. Banda does not store your credit-card information in anyway.</p>
         <div id="loader-new-card" class="loader"></div>
       </form>
     </div>
@@ -311,6 +312,8 @@
             deposits in your account on behalf of an event host.
             Banda handles artist compensation so that you can
             focus on making art and expanding your music career.
+            Once you enter this information once, you will be able to create
+            as many bands as you like and start booking gigs today.
           </p>
         </div>
         <div id="loader-new-bank" class="loader"></div>
@@ -344,7 +347,7 @@
           </table>
           <br>
           <label id="current-band-description-label" for="current-band-description">description</label>
-          <textarea id="current-band-description" class="modal-textarea"></textarea>
+          <textarea id="current-band-description" data-gramm_editor="false" class="modal-textarea"></textarea>
           <h3>avatar</h3>
           <label for"current-band-pic">upload image</label>
           <input id="current-band-pic" class="modal-input" name="avatar" type="file"></input>

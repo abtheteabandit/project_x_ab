@@ -1,6 +1,7 @@
 module.exports = router =>{
   //stripe credentials
   stripe_private_key = process.env.STRIPE_SECRET_KEY || 'sk_test_t6hlsKu6iehEdJhV9KzITmxm00flbTdrG5';
+  console.log('Stripe priv key is: ' + stripe_private_key);
   stripe = require('stripe')(stripe_private_key);
   const database = require('../database.js');
 
