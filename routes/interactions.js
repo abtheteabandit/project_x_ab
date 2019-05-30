@@ -23,73 +23,88 @@ module.exports = router => {
 
     //database query to retrieve the gig
     database.connect(db=>{
-      var {gigID, bandID}=req.body;
-      var newValues = {$push: {'applications':bandID}};
-
-      //query the database
-      db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err5, result5)=>{
-        if(err5){
-          console.log('There was an error getting gi with id: '+gigID+' out of db, error: ' + err5);
-          res.status(500).end();
+      db.db('users').collection('stripe_users').findOne({'username':req.session.key}, (connect_acct_err, connect_acct_res)=>{
+        if (connect_acct_err){
+          console.log('there was an error finding stripe connected account for user: ' + req.session.key+' Error: '+ connect_acct_err);
+          res.status(200).send('You must add bank account information before your band can apply to gigs. This allows Banda to transfer money directly to your account. We will never store this information in anyway. We do this to simplify the proccess for venues and to make sure you always get what you deserve.');
           db.close();
         }
         else{
-
-          //if the gig is taken
-          if (result5['isFilled']){
-            console.log('A band applied to a gig that was filled.');
-            res.status(200).send('Event already filled');
+          if (connect_acct_res==null || connect_acct_res.length==0){
+            res.status(200).send('You must add bank account information before your band can apply to gigs. This allows Banda to transfer money directly to your account. We will never store this information in anyway. We do this to simplify the proccess for venues and to make sure you always get what you deserve.');
             db.close();
           }
           else{
+            var {gigID, bandID}=req.body;
+            var newValues = {$push: {'applications':bandID}};
 
-            //otherwise apply to the gig
-            var applicantExists = false;
-            for (var key in result5['applications']){
-              if(result5['applications'][key]==bandID){
-                applicantExists=true;
+            //query the database
+            db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err5, result5)=>{
+              if(err5){
+                console.log('There was an error getting gi with id: '+gigID+' out of db, error: ' + err5);
+                res.status(500).end();
+                db.close();
               }
-            }
+              else{
 
-            //if the user tries to apply to the gig twice
-            if(applicantExists){
-              console.log('Band with id : '+bandID+' tried to apply to a gig it already applied to.');
-              res.status(200).send('You already applied to this gig with this band.');
-              db.close();
-            }
-            else{
-
-              //else update the gigs
-              db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err2 , result)=>{
-                if (err2){
-                  console.log('There was an error tryign to append application to gig, error was: ' + err2);
-                  res.status(500).end();
+                //if the gig is taken
+                if (result5['isFilled']){
+                  console.log('A band applied to a gig that was filled.');
+                  res.status(200).send('Event already filled');
                   db.close();
                 }
-                console.log('Appended application ' + bandID + ' To gig with id: ' + gigID);
-                var gigApplied = [gigID, false]
-                var newValues2 = {$push:{ 'appliedGigs':gigApplied}};
+                else{
 
-                //update the band's applied gigs
-                db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err3, result3)=>{
-                  if (err3){
-                    console.log('There was an error tryign to append application to gig, error was: ' + err3);
-                    res.status(500).end();
-                    db.close();
+                  //otherwise apply to the gig
+                  var applicantExists = false;
+                  for (var key in result5['applications']){
+                    if(result5['applications'][key]==bandID){
+                      applicantExists=true;
+                    }
                   }
 
-                  //success case
+                  //if the user tries to apply to the gig twice
+                  if(applicantExists){
+                    console.log('Band with id : '+bandID+' tried to apply to a gig it already applied to.');
+                    res.status(200).send('You already applied to this gig with this band.');
+                    db.close();
+                  }
                   else{
-                    console.log('Appended gig ' + gigID + ' To band with id: ' + bandID);
-                    res.status(200).end();
-                    db.close();
+                    //else update the gigs
+                    db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err2 , result)=>{
+                      if (err2){
+                        console.log('There was an error tryign to append application to gig, error was: ' + err2);
+                        res.status(500).end();
+                        db.close();
+                      }
+                      console.log('Appended application ' + bandID + ' To gig with id: ' + gigID);
+                      var gigApplied = [gigID, false]
+                      var newValues2 = {$push:{ 'appliedGigs':gigApplied}};
+
+                      //update the band's applied gigs
+                      db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err3, result3)=>{
+                        if (err3){
+                          console.log('There was an error tryign to append application to gig, error was: ' + err3);
+                          res.status(500).end();
+                          db.close();
+                        }
+
+                        //success case
+                        else{
+                          console.log('Appended gig ' + gigID + ' To band with id: ' + bandID);
+                          res.status(200).end();
+                          db.close();
+                        }
+                      });
+                    });
                   }
-                });
-              });
-            }
+                }
+              }
+            });
           }
         }
       });
+
     }, err=>{
       console.log("Couldn't connec to mongo with error: "+err);
       res.status(500).end();
@@ -116,167 +131,182 @@ module.exports = router => {
 
     //query the database
     database.connect(db=>{
-
-      //select the accepted gig from the database
-      db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err5, result5)=>{
-        //catch errors
-        if (err5){
-          console.log("Couldnt find gig with id " + gigID + " Error: " + err5);
-          res.status(500).end();
+      db.db('users').collection('stripe_customers').findOne({'username':req.session.key}, (cus_err_2, res_cus_2)=>{
+        if (cus_err_2){
+          console.log('There was an error finding customer info for: ' + req.session.key + ' Error:' + cus_err_2);
+          res.status(200).send('To accept a band to play at your event you must add credit information so that the artist can be transfered the pay you set.');
+          db.close();
         }
         else{
-          //if the gig is already filled reject the request
-          theGig=result5;
-          console.log('Result for finding the gig in accept is: ' + JSON.stringify(result5));
-          if(result5['isFilled']==true){
-            console.log("Gig with id: "+ gigID + "tried to acccept a gig when alreay isFilled");
-            res.status(200).send("That gig is already filled");
+          if (res_cus_2==null || res_cus_2.length==0){
+            console.log('There was no customer info for: ' + req.session.key);
+            res.status(200).send('To accept a band to play at your event you must add credit information so that the artist can be transfered the pay you set.');
             db.close();
           }
-
-          //otherwise accept the request
           else{
-            console.log("Gig with id: "+ gigID + 'is not filled');
-            var newValues = {$set: {'bandFor':bandID, 'isFilled':true}};
-
-            //update the database for the gig
-            db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err2, result)=>{
-              if (err2){
-                console.log('There was an error tryign to append set gig stuff, error was: ' + err2);
+            //select the accepted gig from the database
+            db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err5, result5)=>{
+              //catch errors
+              if (err5){
+                console.log("Couldnt find gig with id " + gigID + " Error: " + err5);
                 res.status(500).end();
-                db.close();
-
               }
               else{
+                //if the gig is already filled reject the request
+                theGig=result5;
+                console.log('Result for finding the gig in accept is: ' + JSON.stringify(result5));
+                if(result5['isFilled']==true){
+                  console.log("Gig with id: "+ gigID + "tried to acccept a gig when alreay isFilled");
+                  res.status(200).send("That gig is already filled");
+                  db.close();
+                }
 
-                //call the change user to update the gig
-                console.log('got gig set with the band' + bandID);
-                console.log(JSON.stringify(result));
-                chargeUser(req, theGig.price, theGig._id, (ourError)=>{
-                  if(ourError){
-                    console.log('We had an error chraging customer: ' + ourError);
-                  }
-                });
-              }
-            });
+                //otherwise accept the request
+                else{
+                  console.log("Gig with id: "+ gigID + 'is not filled');
+                  var newValues = {$set: {'bandFor':bandID, 'isFilled':true}};
 
-            //create confirmation information
-            var newCode = createBandConfirmCode(gigID, bandID);
-            var upGig = {'gigID':gigID, 'confirmationCode':newCode};
+                  //update the database for the gig
+                  db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, newValues, (err2, result)=>{
+                    if (err2){
+                      console.log('There was an error tryign to append set gig stuff, error was: ' + err2);
+                      res.status(500).end();
+                      db.close();
 
-            //find the band that accepted it
-            db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err6, result6)=>{
-              if (err6){
-                console.log('THre was an error finding band : ' + bandID +' from mongo. '+err6);
-                res.status(500).end();
-                db.close();
-              }
-              else{
-
-                //send a confirmation email to the band
-                sendConfirmEmails(db, result6, result5.confirmationCode, result5, newCode, req, email_error=>{
-
-                  //catch error
-                  if (email_error){
-                    console.log('There was an error sending confirm emails: ' + email_error);
-                    res.status(500).end();
-                    db.close();
-                    return;
-                  }
-                  else{
-
-                    //add to the applied gigs of the band if it does not exist
-                    console.log('Sent codes to users');
-                    var stillAppliedTo=[];
-                    for (var g in result6['appliedGigs']){
-                      if(gigID==result6['appliedGigs'][g][0]){
-
-                      }
-                      else{
-                        stillAppliedTo.push(result6['appliedGigs'][g]);
-                      }
                     }
-                    var newValues2 = {
-                      $push: {'upcomingGigs':upGig},
-                      $set:{'appliedGigs': stillAppliedTo}
-                    };
+                    else{
 
-                    //requery for the bands request
-                    db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err3, result3)=>{
-                      if (err3){
-                        console.log('There was an error tryign to append set band stuff, error was: ' + err3);
-                        res.status(500).end();
-                        db.close();
-                      }
-                      else{
-
-                        //add the application to the gigs application
-                        console.log('got band set with the band' + bandID);
-                        console.log(JSON.stringify(result3));
-                        var denied = [];
-                        for (var ap in theGig['applications']){
-                          if (theGig['applications'][ap]==bandID){
-
-                          }
-                          else{
-                            denied.push({'_id':database.objectId(theGig['applications'][ap])});
-                          }
+                      //call the change user to update the gig
+                      console.log('got gig set with the band' + bandID);
+                      console.log(JSON.stringify(result));
+                      chargeUser(req, theGig.price, theGig._id, (ourError)=>{
+                        if(ourError){
+                          console.log('We had an error chraging customer: ' + ourError);
                         }
+                      });
+                    }
+                  });
 
-                        //if they cannot accept any more, deny request
-                        if (denied.length==0){
-                          res.status(200).end();
+                  //create confirmation information
+                  var newCode = createBandConfirmCode(gigID, bandID);
+                  var upGig = {'gigID':gigID, 'confirmationCode':newCode};
+
+                  //find the band that accepted it
+                  db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err6, result6)=>{
+                    if (err6){
+                      console.log('THre was an error finding band : ' + bandID +' from mongo. '+err6);
+                      res.status(500).end();
+                      db.close();
+                    }
+                    else{
+
+                      //send a confirmation email to the band
+                      sendConfirmEmails(db, result6, result5.confirmationCode, result5, newCode, req, email_error=>{
+
+                        //catch error
+                        if (email_error){
+                          console.log('There was an error sending confirm emails: ' + email_error);
+                          res.status(500).end();
                           db.close();
                           return;
                         }
+                        else{
 
-                        //requery for the bands request
-                        db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
-                          if (err4){
-                            console.log('Faild to get the batch of denied bands ' +err4);
-                            res.status(500).end();
-                            db.close();
-                          }
+                          //add to the applied gigs of the band if it does not exist
+                          console.log('Sent codes to users');
+                          var stillAppliedTo=[];
+                          for (var g in result6['appliedGigs']){
+                            if(gigID==result6['appliedGigs'][g][0]){
 
-                          //for each result
-                          var on = 0;
-                          result4.forEach(bandOn=>{
-                            on+=1;
-                            var nonDeniedGigs=[];
-                            for (var gigAppliedTo in bandOn['appliedGigs']){
-
-                              //if it is the applied gig add the band
-                              if (bandOn['appliedGigs'][gigAppliedTo][0]==gigID){
-                                nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
-                              }
-
-                              //if the band has already been applied to add it to the list
-                              else{
-                                bandOn['appliedGigs'][gigAppliedTo][1]=true;
-                                nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
-                              }
                             }
+                            else{
+                              stillAppliedTo.push(result6['appliedGigs'][g]);
+                            }
+                          }
+                          var newValues2 = {
+                            $push: {'upcomingGigs':upGig},
+                            $set:{'appliedGigs': stillAppliedTo}
+                          };
 
-                            //update the bands object with a new list
-                            var newValues7 = {$set:{'appliedGigs':nonDeniedGigs}};
-                            db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandOn['_id'])}, newValues7, (err7, res7)=>{
-                              if (err7){
-                                console.log('THere was an error updating one of the denied bands: ' + bandOn['_id']+' Error: '+err7);
-                                res.status(500).end();
-                              }
-                              else{
-                                if (on>result4.length){
-                                  res.status(200).end();
-                                  db.close();
+                          //requery for the bands request
+                          db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandID)}, newValues2, (err3, result3)=>{
+                            if (err3){
+                              console.log('There was an error tryign to append set band stuff, error was: ' + err3);
+                              res.status(500).end();
+                              db.close();
+                            }
+                            else{
+
+                              //add the application to the gigs application
+                              console.log('got band set with the band' + bandID);
+                              console.log(JSON.stringify(result3));
+                              var denied = [];
+                              for (var ap in theGig['applications']){
+                                if (theGig['applications'][ap]==bandID){
+
+                                }
+                                else{
+                                  denied.push({'_id':database.objectId(theGig['applications'][ap])});
                                 }
                               }
-                            });
+
+                              //if they cannot accept any more, deny request
+                              if (denied.length==0){
+                                res.status(200).end();
+                                db.close();
+                                return;
+                              }
+
+                              //requery for the bands request
+                              db.db('bands').collection('bands').find({$or:denied}).toArray((err4, result4)=>{
+                                if (err4){
+                                  console.log('Faild to get the batch of denied bands ' +err4);
+                                  res.status(500).end();
+                                  db.close();
+                                }
+
+                                //for each result
+                                var on = 0;
+                                result4.forEach(bandOn=>{
+                                  on+=1;
+                                  var nonDeniedGigs=[];
+                                  for (var gigAppliedTo in bandOn['appliedGigs']){
+
+                                    //if it is the applied gig add the band
+                                    if (bandOn['appliedGigs'][gigAppliedTo][0]==gigID){
+                                      nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                                    }
+
+                                    //if the band has already been applied to add it to the list
+                                    else{
+                                      bandOn['appliedGigs'][gigAppliedTo][1]=true;
+                                      nonDeniedGigs.push(bandOn['appliedGigs'][gigAppliedTo]);
+                                    }
+                                  }
+
+                                  //update the bands object with a new list
+                                  var newValues7 = {$set:{'appliedGigs':nonDeniedGigs}};
+                                  db.db('bands').collection('bands').updateOne({'_id':database.objectId(bandOn['_id'])}, newValues7, (err7, res7)=>{
+                                    if (err7){
+                                      console.log('THere was an error updating one of the denied bands: ' + bandOn['_id']+' Error: '+err7);
+                                      res.status(500).end();
+                                    }
+                                    else{
+                                      if (on>result4.length){
+                                        res.status(200).end();
+                                        db.close();
+                                      }
+                                    }
+                                  });
+                                });
+                              });
+                            }
                           });
-                        });
-                      }
-                    });
-                  }
-                });
+                        }
+                      });
+                    }
+                  });
+                }
               }
             });
           }
@@ -413,8 +443,30 @@ module.exports = router => {
                     else{
                       console.log('got user set with the contact' + contactName);
                     //  console.log(JSON.stringify(result));
-                      res.status(200).end();
-                      db.close();
+                      var newConHasPoster = false;
+                      for (var con2 in result4.contacts){
+                        if (req.session.key==result4.contacts[con2].name){
+                          newConHasPoster=true;
+                        }
+                      }
+                      if (newConHasPoster){
+                        res.status(200).send('We have added '+contactName+' to your contacts. To find them and begin messaging click "contacts" and look for ' + contactName);
+                        db.close();
+                      }
+                      else{
+                        db.db('users').collection('users').updateOne({'username':contactName}, {$push:{'contacts':{'id':result2._id, 'name':req.session.key}}}, (err10, res10)=>{
+                          if (err10){
+                            console.log('There was an error adding ' + req.session.key +' to: ' +contactName + ' contact list');
+                            res.status(500).end();
+                            db.close();
+                          }
+                          else{
+                            res.status(200).send('We have added '+contactName+' to your contacts. To find them and begin messaging click "contacts" and look for ' + contactName);
+                            db.close();
+                          }
+                        });
+                      }
+
                     }
                   });
                 }
@@ -1450,7 +1502,7 @@ function diff_hours(dt1, dt2) {
            //send the condimatiopn email to the acceptor
            var acceptor_email = accept_user.email;
            var applier_email = applier_user.email;
-           sendAConfirmEmail(req, acceptor_email, true, bandCodeToGig, gig, sending_error=>{
+           sendAConfirmEmail(req, acceptor_email, true, bandCodeToGig, band_creator, gig, sending_error=>{
              if (sending_error){
                console.log('Got callback error from send a confrim: ' + sending_error);
                cb(sending_error)
@@ -1458,7 +1510,7 @@ function diff_hours(dt1, dt2) {
              else{
                //send the confirmation to the applier
                console.log('A confirm email was sent to: ' + acceptor_email+ ' about to send second email to applier');
-               sendAConfirmEmail(req, applier_email, false, gigCodeToBand, gig, sending_error2=>{
+               sendAConfirmEmail(req, applier_email, false, gigCodeToBand, band_creator, gig, sending_error2=>{
                  if (sending_error2){
                    console.log('Got callback error from send a confrim (second call): ' + sending_error2);
                    cb(sending_error2)
@@ -1477,7 +1529,7 @@ function diff_hours(dt1, dt2) {
  }
 
  //helper function that sends a single email, mostly setup
-  function sendAConfirmEmail(req, address, acceptor, code, theGig, cb){
+  function sendAConfirmEmail(req, address, acceptor, code, band_creator, theGig, cb){
      console.log('In sendAConfirmEmail and address is:  ' +address);
      //setup the transporter for banda
      let transporter = nodeMailer.createTransport({
@@ -1517,7 +1569,7 @@ function diff_hours(dt1, dt2) {
            from: OUR_ADDRESS, // our address
            to: address, // who we sending to
            subject: "Confirmation Code From Banda For "+theGig.name+"", // Subject line
-           text: "Hello, "+req.session.key+". Here is your confirmation code for the event "+theGig.name+"         -----                 "+code+"                -----               Give this code to the event manager at the time of the event. They should submit this code on their home page. Also, be sure to submit the code the event manager gives you on your home page (this is how we make sure you get paid). DO NOT SEND THIS CODE TO ANYONE. You should exchange codes in person at the time of the event. We do this to ensure fair transactions between our customers. Once both codes have been sent we will securly charge the event and deposit $"+theGig.price+" in your associated bank account. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.", // plain text body
+           text: "Hello, "+band_creator+". Here is your confirmation code for the event "+theGig.name+"         -----                 "+code+"                -----               Give this code to the event manager at the time of the event. They should submit this code on their home page. Also, be sure to submit the code the event manager gives you on your home page (this is how we make sure you get paid). DO NOT SEND THIS CODE TO ANYONE. You should exchange codes in person at the time of the event. We do this to ensure fair transactions between our customers. Once both codes have been sent we will securly charge the event and deposit $"+theGig.price+" in your associated bank account. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.", // plain text body
            html: '' // html body
        };
        //send the email

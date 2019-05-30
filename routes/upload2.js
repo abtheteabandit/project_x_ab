@@ -77,7 +77,7 @@ const database = require('../database.js'),
         return;
       }
     console.log(req.file);
-    var fileName = 'static/uploads/BandPics/'+req.file.filename;
+    var fileName = '/static/uploads/BandPics/'+req.file.filename;
     console.log(req.file);      //res.send(req.file);
 
     //store the image
@@ -199,7 +199,7 @@ const database = require('../database.js'),
       console.log('No file sent');
       res.status(400).end();
     }
-    if (!(req.file.mimetype=='video/mp4'){
+    if (!(req.file.mimetype=='video/mp4')){
       console.log('Wrong mimetype')
       res.status(200).send("Wrong mimeType");
       return;

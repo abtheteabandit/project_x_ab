@@ -432,12 +432,12 @@ module.exports = {
       db.close();
       okCb(sortedGigs);
     });
-  }
+  },
   //this is a function to find matches for users looking to cross promote on social medias
-  const DEFAULT_ENGAGE_SCORE = 0.3;
-  //the default enagaement score serves as a backup if there is no known eng score for a user on a Platform
 
   findCrossPromoters: function findCrossPromoters(ourUsername, lat, lng, searchText, db, errCB, okCB){
+    const DEFAULT_ENGAGE_SCORE = 0.3;
+    //the default enagaement score serves as a backup if there is no known eng score for a user on a Platform
     // validate fields
     if (!db){
       console.log('No db passed in.');
@@ -607,10 +607,10 @@ module.exports = {
               }
             });
           }
+        }
       });
     }
   }
-
 }
 
   //parses a string for categories

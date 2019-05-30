@@ -41,6 +41,7 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <!-- External CSS -->
     <link rel="stylesheet" type="text/css" href="/css/search.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
     <!-- External JS -->
     <script type="text/javascript" src="/scripts/search.js"></script>
     <!-- Radial Menu -->
@@ -58,14 +59,13 @@
   <body onload="init();">
 
     <div id="modal-wrapper-support" class="modal-support">
-
       <form class="modal-content-support animate">
         <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
         <div class="container">
           <h1 id="account-support-header">account support</h1>
           <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
-          <textarea id="request-support-textarea" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
-          <button id="request-support-btn" class="popUpButtons" type="submit" onclick="requestSupport()">Make Request</button>
+          <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+          <button id="request-support-btn" type="submit" onclick="requestSupport()">Make Request</button>
           <p class="support-text-small">Alternatively, reach out to the team directly:</p>
           <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
         </div>
