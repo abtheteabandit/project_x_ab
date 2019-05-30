@@ -22,7 +22,8 @@
     "redis": "^2.8.0",
     "redis-server": "^1.2.2",
     "socket.io": "^2.2.0",
-    "stripe": "^6.28.0"
+    "stripe": "^6.28.0",
+    "twilio": "^3.31.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.11"
