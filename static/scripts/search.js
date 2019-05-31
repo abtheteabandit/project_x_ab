@@ -87,6 +87,7 @@ function parseURL(url){
    var textForSearchInput = queries[0];
    textForSearchInput = decodeURI(textForSearchInput);
    textForSearchInput = textForSearchInput.replace("query=","");
+   textForSearchInput = textForSearchInput.substring(1,textForSearchInput.length);
    document.getElementById("search_input").value = textForSearchInput;
    for( i = 0; i < queries.length; i++ ) {
        split = queries[i].split('=');
@@ -107,8 +108,12 @@ function parseURL(url){
 
 var hasCreditCard = false;
 
+var isLoggedIn;
+
 function init(){
   checkSession();
+  console.log("isLoggedIn: "+isLoggedIn);
+
   /*
   if the user has a credit card
     hasCreditCard = true;
@@ -154,12 +159,13 @@ function checkSession(){
 		console.log('res for check log in is: ' + JSON.stringify(res))
 		if(res.success){
 			console.log(res.success + " is returned value");
-
+      isLoggedIn = true;
 			return true;
 		}else{
 			console.log(res.success + " is returned value");
 			document.getElementById("mobile_home_button").style.display = "none";
 			document.getElementById("home_button").style.display = "none";
+      isLoggedIn = false;
 			return false;
 		}
 	});
@@ -665,9 +671,15 @@ class GigCell{
       this.nameP.innerHTML = gig.name;
       console.log("not blurring");
     }else{
-      console.log("blurring it");
-      this.nameP.innerHTML = this.GenerateString(gig.name.length);
-      this.nameP.className = "result-p-blurred";
+      console.log("isLoggedIn: "+isLoggedIn);
+      if(isLoggedIn){
+        this.nameP.innerHTML = gig.name;
+        this.nameP.className = "result-p-visible";
+      }else{
+        console.log("blurring it");
+        this.nameP.innerHTML = this.GenerateString(gig.name.length);
+        this.nameP.className = "result-p-blurred";
+      }
     }
     // appends
     this.newOverlay.appendChild(this.priceText);
@@ -745,10 +757,3 @@ function requestSupport(){
     modal.style.display = "none";
   });
 }
-
-document.getElementById('search_input').addEventListener('keyup', function(e){
-	if (e.keyCode===13){
-		alert('Sorry, you must click "Find Bands" or "Find Events" to perform a search.');
-		return;
-	}
-});
