@@ -617,17 +617,6 @@ open gig Elements
     to {transform: scale(1)}
 }
 
-#loader-new-bank{
-  display: none;
-}
-
-#loader-new-card{
-  display: none;
-  position: absolute;
-  margin-top: 4px;
-  margin-left: -10px;
-}
-
 #loader-book{
   display: none;
   position: absolute;
@@ -1564,200 +1553,12 @@ margin-top: 100px;
   cursor: pointer;
 }
 
-/*
-bank modal
-*/
-
-#modal-wrapper-bank{
-  display: none;
-  z-index: 11;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.8);
-}
-
-.bank-modal-label{
-  font-size: 12pt;
-}
-
-#bank-content{
-  background-color: rgba(240,240,240,1.0);
-  border-radius: 10px;
-  margin: 10% auto 15% auto;
-  width: 40%;
-  height: 60%;
-  color: white;
-  padding: 20px;
-  color: black;
-}
-
-#bank-grid{
-  display: grid;
-  grid-template-columns: 50% 50%;
-}
-
-#bank-content input{
-  width: 80%;
-  margin-left: 10%;
-  background-color: white;
-  border: none;
-  border-radius: 4px;
-  height: 40px;
-  padding: 10px;
-  text-align: center;
-}
-
-#mandate-acceptance{
-  color: rgba(0,0,0,0.6);
-  font-size: 10pt;
-  margin-top: 60px;
-  width: 90%;
-  margin-left: 5%;
-}
-
-.stripe-logo{
-  width: 60px;
-  height: auto;
-  float: right;
-}
-
-.stripe-link{
-  color: #32325d;
-  text-decoration: underline;
-}
-
-.stripe-link:hover{
-  color: black;
-}
-
-.num-without::-webkit-outer-spin-button, .num-without::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.num-without {
-    -moz-appearance: textfield;
-}
-
-#modal-wrapper-credit{
-  display:none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 230px;
-  overflow: hidden;
-  background-color: rgba(240,240,240,1.0);
-  border-radius: 10px;
-  z-index: 110;
-  text-align: center;
-  padding: 20px;
-}
-
-.StripeElement {
-  box-sizing: border-box;
-  width: 75%;
-  height: 40px;
-  margin-left: 12.5%;
-  padding: 10px 12px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background-color: white;
-  box-shadow: 0 1px 3px 0 #e6ebf1;
-  -webkit-transition: box-shadow 150ms ease;
-  transition: box-shadow 150ms ease;
-}
-.StripeElement--focus {
-  box-shadow: 0 1px 3px 0 #cfd7df;
-}
-.StripeElement--invalid {
-  border-color: #fa755a;
-}
-.StripeElement--webkit-autofill {
-  background-color: #fefde5 !important;
-}
-.stripe-button{
-  border: none;
-  border-radius: 4px;
-  outline: none;
-  text-decoration: none;
-  color: #fff;
-  background: #32325d;
-  white-space: nowrap;
-  display: inline-block;
-  width: 75%;
-  height: 40px;
-  line-height: 40px;
-  padding: 0 14px;
-  box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
-  border-radius: 4px;
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.025em;
-  text-decoration: none;
-  -webkit-transition: all 150ms ease;
-  transition: all 150ms ease;
-  float: left;
-  margin-left:12.5%;
-  margin-top: 8px;
-}
-
-.stripe-button:hover{
-  cursor: pointer;
-}
 .stripe-header{
   width: 100%;
   text-align: center;
   font-size: 18pt;
   color: black;
   opacity: 0.8;
-}
-.stripe-footer{
-  position: absolute;
-  bottom: 10px;
-  width: 93%;
-  text-align: center;
-  font-size: 8pt;
-  color: black;
-  opacity: 0.6;
-}
-#card-errors{
-  width: 75%;
-  margin-left: 12.5%;
-  font-family: Industry, sans-serif;
-  text-align: center;
-  margin-top: 8px;
-  font-size: 10pt;
-  color: #f8765f;
-}
-.close-stripe {
-    position: absolute;
-    right: 40px;
-    top: 0;
-    color: #000;
-    opacity: 0.6;
-    font-size: 35px;
-    font-weight: bold;
-    z-index: 3;
-}
-.close-stripe:hover,.close-stripe:focus {
-    opacity: 0.5;
-    cursor: pointer;
-}
-.close-bank {
-    float: right;
-    margin-top: -15px;
-    color: #000;
-    opacity: 0.6;
-    font-size: 35px;
-    font-weight: bold;
-    z-index: 99;
-}
-.close-bank:hover,.close-bank:focus {
-    opacity: 0.5;
-    cursor: pointer;
 }
 
 .report-band-btn{
@@ -2341,27 +2142,7 @@ bank modal
   /* open-gig styling <600 END */
 }
 @media(max-width: 550px){
-  #bank-content{
-    margin-top: 20%;
-    margin-left: 5%;
-    width: 90% !important;
-  }
 
-  #modal-wrapper-credit{
-    display:none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 250px;
-    overflow: hidden;
-    background-color: rgba(240,240,240,1.0);
-    border-radius: 10px;
-    z-index: 110;
-    text-align: center;
-    padding: 20px;
-  }
 
 #mobile-menu-button{
   background-color: transparent;
@@ -2679,8 +2460,6 @@ bank modal
   }
 }
 
-/*mobile rescaling credit card info*/
-
 #searching-as-link-app{
   text-align:center;
   font-size: 12pt;
@@ -2786,17 +2565,6 @@ bank modal
 @media(max-width: 1150px){
   #confirm-app-header{
     font-size: 30pt;
-  }
-  #bank-grid{
-    grid-template-columns: 100%;
-  }
-  #bank-content{
-    overflow: scroll;
-    width: 60%;
-    height: 80%;
-  }
-  #bank-content::-webkit-scrollbar{
-    width: 6px;
   }
 }
 

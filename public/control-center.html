@@ -21,6 +21,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createBandModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createEventModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/creditCardModal.css">
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
@@ -166,7 +167,6 @@
         </div>
       </form>
     </div>
-    <!--mihn-->
     <div id="modal-wrapper-new-band">
       <form id="new-band-form" class="animate" enctype="multipart/form-data">
         <div>
@@ -237,7 +237,6 @@
         </div>
       </form>
     </div>
-    <!--done-->
     <div id="modal-wrapper-credit" class="modal-card">
       <span onclick="document.getElementById('modal-wrapper-credit').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
       <form id="payment-form">
@@ -254,7 +253,7 @@
           <!-- Used to display form errors. -->
           <div id="card-errors" role="alert"></div>
         </div>
-        <button class="stripe-button" style="display: block" >Connect Payment Method</button>
+        <button class="stripe-button-card" >Connect Payment Method</button>
         <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
           to guarantee swift and easy compensation of the artists that you book. We ask for your credit information one time upfront for convience and then you can post as many events as you would like. Banda does not store your credit-card information in anyway.</p>
         <div id="loader-new-card" class="loader"></div>
@@ -302,7 +301,7 @@
             <input id="bank-form-holder" name="holder_name" required>
           </div>
         </div>
-        <button class="stripe-button" onclick='attemptBankSubmission()' id="bank-account-button">Connect Account</button>
+        <button class="stripe-button-bank" onclick='attemptBankSubmission()' id="bank-account-button">Connect Account</button>
         <!-- Used to display form errors. -->
         <div id="error-message" role="alert"></div>
         <!-- Display mandate acceptance text. -->
