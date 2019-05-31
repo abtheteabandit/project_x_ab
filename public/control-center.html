@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/confirmationCodeModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/cancelModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/confirmBookingModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/deleteModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/reportAbsentBandModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/linkApplicationModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/chooseBandForAppModal.css">
@@ -90,6 +91,16 @@
         <p id="confirm-booking-text" class="modal-p">Are you sure you want to book This Band With a Name for this event? You will be charged 5% of the price you set for this event right now. However, you choose to cancel this event you will be issued a full refund.</p>
         <input type="button" class="confirm-modal-btn" id="confirm-booking" value="confirm"/>
         <div id="loader-book" class="loader"></div>
+      </div>
+    </div>
+    <div id="modal-wrapper-delete">
+      <div  id="delete-content" class="animate">
+        <span onclick="document.location.reload()" class="cancel-close" title="Close PopUp">&times;</span>
+        <p id="confirm-delete-text" class="modal-p"></p>
+        <div id="delete-controls">
+          <input type="button" id="confirm-delete-btn" value="Yes"/>
+          <input type="button" id="dont-delete-btn" value="No" onclick="document.location.reload()"/>
+        </div>
       </div>
     </div>
     <div id="modal-wrapper-report-absent-band">

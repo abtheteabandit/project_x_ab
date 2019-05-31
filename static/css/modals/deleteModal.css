@@ -1,0 +1,73 @@
+#modal-wrapper-delete{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#delete-content{
+  background-image: url("/assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: cover;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 40%;
+  height: 80%;
+  padding-bottom: 80px;
+  color: white;
+}
+
+#delete-controls{
+  display: grid;
+  width: 80%;
+  margin-left: 10%;
+  grid-template-columns: auto auto;
+}
+
+#confirm-delete-btn, #dont-delete-btn{
+  margin: 0 auto;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  color: #56dff0;
+  border-color: #56dff0;
+  height: 30px;
+  width: 80px;
+}
+
+#confirm-cancel{
+  margin-top: 40px;
+  width: 80%;
+  height: 60px;
+  margin-left: 10%;
+  border: 2px solid red;
+  border-radius: 10px;
+  text-align: center;
+  color: red;
+  background-color: rgba(0,0,0,0.8);
+}
+
+#confirm-cancel:hover{
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+#loader-cancel-booked-event{
+  display: none;
+  position: absolute;
+  margin-top: 150px;
+  margin-left: -255px;
+}
+
+@media(max-width:550px){
+  #delete-content {
+    width: 80%;
+    height: 80%;
+    padding-bottom: 80px;
+    color: white;
+  }
+}

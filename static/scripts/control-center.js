@@ -562,6 +562,33 @@ function handleReportFormSubmission(){
   });
 }
 
+function presentDeleteModal(mode,objName,objID){
+  var modal = document.getElementById("modal-wrapper-delete");
+  var text = document.getElementById("confirm-delete-text");
+  var button = document.getElementById("confirm-delete-btn");
+  switch(mode){
+    case "band":
+    text.innerHTML = "Are you sure you want to delete the band '"+objName+"'? Doing so will erase all the content associated with this band.";
+    button.addEventListener("click",function(){
+      delete_object(objID, "bands");
+    });
+    break;
+    case "gig":
+    text.innerHTML = "Are you sure you want to delete the event '"+objName+"'? Doing so will erase all the content associated with this event.";
+    button.addEventListener("click",function(){
+      delete_object(objID, "gigs");
+    });
+    break;
+    case "user":
+    text.innerHTML = "Are you sure you want to delete the account associated with the username: '"+objName+"'? Doing so will erase all the content associated with this account.";
+    button.addEventListener("click",function(){
+      delete_object(objID, "users");
+    });
+    break;
+  }
+  modal.style.display = "block";
+}
+
 function presentCancelModal(state, bandID, gigID){
   switch(state){
     case "BookedGig":
@@ -745,6 +772,15 @@ class BandSection{
       this.editButton.type = 'button';
       this.editButton.value = "edit band";
       this.editButton.className = "edit-band-button";
+
+      this.deleteButton = document.createElement("input");
+      this.deleteButton.type = 'button';
+      this.deleteButton.value = "delete band";
+      this.deleteButton.className = "delete-band-button";
+      this.deleteButton.addEventListener("click",function(){
+        console.log(band.name);
+        presentDeleteModal("band",band.name,band._id);
+      });
 
       //edit begins
       this.editButton.addEventListener('click',function(){
@@ -1175,6 +1211,7 @@ class BandSection{
         modalWrapCurrent.style.display='block';
       });
       this.container.append(this.editButton);
+      this.container.append(this.deleteButton);
       bandSectionCallback(this);
       break;
 
@@ -4432,10 +4469,12 @@ function delete_object(id, mode){
   $.post('/delete', {'id':id, 'mode':mode}, res=>{
     if (res==""){
       alert('Hmmm... seems something went wrong on our end. Please try again. If this problem persists please use "support" on the Banda "b" to contact a member of our team.');
+      document.location.reload();
       return;
     }
     else{
       alert(res);
+      document.location.reload();
       return;
     }
   });

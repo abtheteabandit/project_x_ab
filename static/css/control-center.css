@@ -1138,6 +1138,20 @@ chat boxes
   cursor: pointer;
 }
 
+.delete-band-button{
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  height: 40px;
+  color: red;
+  border-color: red;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.delete-band-button:hover{
+  cursor: pointer;
+}
+
 .flake-p{
   margin: 0;
   color: white;
