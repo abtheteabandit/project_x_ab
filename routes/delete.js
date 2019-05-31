@@ -58,46 +58,86 @@ const database = require('../database.js')
       database.connect(db=>{
         switch(mode){
           case 'bands':
-          db.db('bands').collection('bands').deleteOne({'_id':database.objectId(id)}, (err, res2)=>{
-            if (err){
-              console.log('There was an error deleteing band with id: ' + id);
+          db.db('bands').collection('bands').findOne({'_id':database.objectId(id)}, (errFind, band)=>{
+            if (errFind){
+              console.log('There was an error deleting band: ' + id + ' Error: ' + errFind);
               res.status(500).end();
               db.close();
             }
             else{
-              console.log('deleted band: ' + id);
-              res.status(200).send('We have deleted this band from Banda!');
-              db.close();
+              if (band.creator != req.session.key){
+                console.log('*****************SOMEONE IS TRYING TO HACK BANDA!******************** USERNAME: ' + req.session.key);
+                res.status(200).send('You can only delete bands you have created, nice try ;).');
+                db.close();
+              }
+              else{
+                db.db('bands').collection('bands').deleteOne({'_id':database.objectId(id)}, (err, res2)=>{
+                  if (err){
+                    console.log('There was an error deleteing band with id: ' + id);
+                    res.status(500).end();
+                    db.close();
+                  }
+                  else{
+                    console.log('deleted band: ' + id);
+                    res.status(200).send('We have deleted this band from Banda!');
+                    db.close();
+                  }
+                });
+              }
             }
           });
+
           break;
           case 'gigs':
-          db.db('gigs').collection('gigs').deleteOne({'_id':database.objectId(id)}, (err2, res3)=>{
-            if (err2){
-              console.log('There was an error deleteing gig with id: ' + id);
+          db.db('gigs').collection('gigs').findOne({'_id':database.objectId(id)}, (err4, theGig)=>{
+            if (err4){
+              console.log('There was an error deleting gig: ' + id + ' Error: ' + err4);
               res.status(500).end();
               db.close();
             }
             else{
-              console.log('deleted gig: ' + id);
-              res.status(200).send('We have deleted this event from Banda!');
-              db.close();
+              if (theGig.creator != req.session.key){
+                console.log('*****************SOMEONE IS TRYING TO HACK BANDA!******************** USERNAME: ' + req.session.key);
+                res.status(200).send('You can only delete events you have created, nice try ;).');
+                db.close();
+              }
+              else{
+                db.db('gigs').collection('gigs').deleteOne({'_id':database.objectId(id)}, (err2, res3)=>{
+                  if (err2){
+                    console.log('There was an error deleteing gig with id: ' + id);
+                    res.status(500).end();
+                    db.close();
+                  }
+                  else{
+                    console.log('deleted gig: ' + id);
+                    res.status(200).send('We have deleted this event from Banda!');
+                    db.close();
+                  }
+                });
+              }
             }
           });
           break;
           case 'users':
-          db.db('users').collection('users').deleteOne({'username':id}, (err3, res4)=>{
-            if (err3){
-              console.log('There was an error deleteing user with username: ' + id);
-              res.status(500).end();
-              db.close();
-            }
-            else{
-              console.log('deleted user: ' + id);
-              res.status(200).send('We have deleted your account, '+id+' from Banda!');
-              db.close();
-            }
-          });
+          if (id != req.session.key){
+            console.log('*****************SOMEONE IS TRYING TO HACK BANDA!******************** USERNAME: ' + req.session.key);
+            res.status(200).send('You can only delete your own user, nice try ;).');
+            db.close();
+          }
+          else{
+            db.db('users').collection('users').deleteOne({'username':id}, (err3, res4)=>{
+              if (err3){
+                console.log('There was an error deleteing user with username: ' + id);
+                res.status(500).end();
+                db.close();
+              }
+              else{
+                console.log('deleted user: ' + id);
+                res.status(200).send('We have deleted your account, '+id+' from Banda!');
+                db.close();
+              }
+            });
+          }
           break;
           default:
           res.status(401).end();
