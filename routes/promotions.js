@@ -294,9 +294,29 @@ router.post('/add_pull', (req, res)=>{
           }
           else{
             console.log('Set promotion ' +name+ ' for user: '+req.session.key);
-            res.status(200).send('Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "Add". To begin running this promo simply go to you contacts and hit the promotion button. If they accept ')
+            res.redirect('/about');
+            db.close();
           }
         });
+        case "gigs":
+        db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(id)}, {$inc:{'pull':1}}, (err1, res1)=>{
+          if (err1){
+            console.log('There was an an error incrementing pull for band:: ' + err1);
+            res.status(500).end();
+            db.close();
+          }
+          else{
+            console.log('Set promotion ' +name+ ' for user: '+req.session.key);
+            res.redirect('/about');
+            db.close();
+          }
+        });
+        break;
+        default:
+        console.log('On recognized mode in pull.' + mode);
+        res.status(404).end();
+        db.close();
+        break;
         }
       }, dbErr=>{
         console.log('There was an error connecting to mongo: ' + dbErr);
@@ -453,7 +473,7 @@ router.post('/add_pull', (req, res)=>{
   ));
 
   //route to get request for getting the facebook token with ONLY instagram permissions
-  app.get('/login/instagram', passport.authenticate('facebook', { scope: [
+  router.get('/login/instagram', passport.authenticate('facebook', { scope: [
     'instagram_basic',
      //'instagram_content_publish', uncomment this when/if this feature leaves closed beta
     'instagram_manage_comments',
