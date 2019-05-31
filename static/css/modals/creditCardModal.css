@@ -1,0 +1,94 @@
+#modal-wrapper-credit{
+  display:none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 230px;
+  overflow: hidden;
+  background-color: rgba(240,240,240,1.0);
+  border-radius: 10px;
+  z-index: 110;
+  text-align: center;
+  padding: 20px;
+}
+
+.close-stripe {
+    position: absolute;
+    right: 40px;
+    top: 0;
+    color: #000;
+    opacity: 0.6;
+    font-size: 35px;
+    font-weight: bold;
+    z-index: 3;
+}
+.close-stripe:hover,.close-stripe:focus {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+#card-errors{
+  width: 75%;
+  margin-left: 12.5%;
+  font-family: Industry, sans-serif;
+  text-align: center;
+  margin-top: 8px;
+  font-size: 10pt;
+  color: #f8765f;
+}
+
+.stripe-button-card{
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  text-decoration: none;
+  color: #fff;
+  background: #32325d;
+  white-space: nowrap;
+  display: block;
+  width: 75%;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 14px;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-decoration: none;
+  -webkit-transition: all 150ms ease;
+  transition: all 150ms ease;
+  float: left;
+  margin-left:12.5%;
+  margin-top: 8px;
+}
+.stripe-button-card:hover{
+  cursor: pointer;
+}
+
+.stripe-footer{
+  position: absolute;
+  bottom: 10px;
+  width: 93%;
+  text-align: center;
+  font-size: 8pt;
+  color: black;
+  opacity: 0.6;
+}
+
+#loader-new-card{
+  display: none;
+  position: absolute;
+  margin-top: 4px;
+  margin-left: -10px;
+}
+
+@media(max-width: 550px){
+  #modal-wrapper-credit{
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+  }
+}
