@@ -23,6 +23,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/createEventModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/creditCardModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/bankModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/currentBandModal.css">
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
@@ -260,7 +261,6 @@
         <div id="loader-new-card" class="loader"></div>
       </form>
     </div>
-    <!--done-->
     <div id="modal-wrapper-bank">
       <div id="bank-content">
         <span onclick="document.getElementById('modal-wrapper-bank').style.display='none'" class="close-bank" title="Close PopUp">&times;</span>
@@ -323,14 +323,14 @@
         <img alt="stripe"src="/assets/Control-Center/stripelogo.png" class="stripe-logo" />
       </div>
     </div>
-    <div id="modal-wrapper-current-band" class="modal">
-      <form id="current-band-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">
-        <div class="imgcontainer">
+    <div id="modal-wrapper-current-band">
+      <form id="current-band-form" class="animate" enctype="multipart/form-data" method="post" action="#">
+        <div>
+          <h1 class="current-band-modal-title">your band</h1>
+          <input id="current-band-title" class="modal-input" type="text"></input>
           <span id="close-edit-band" class="close" title="Close PopUp">&times;</span>
-          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">your band</h1>
         </div>
         <div class="container" id="current-band-content">
-          <input id="current-band-title" class="modal-input" type="text"></input>
           <label for="current-gig-zip">zip code</label>
           <input id="current-band-zip" class="modal-input" type="text"></input>
           <label for="current-gig-pay">max travel distance (mi.)</label>

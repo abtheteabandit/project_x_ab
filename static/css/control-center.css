@@ -1070,122 +1070,6 @@ chat boxes
   margin-right: 15px;
 }
 
-#modal-wrapper-current-band{
-  z-index: 50;
-}
-
-#current-band-content > input{
-  height: 50px;
-  text-indent: 20px;
-  font-family: Industry, sans-serif;
-  font-size: 16pt;
-}
-
-#current-band-title{
-  width: 60%;
-  top: 25px;
-  position: absolute;
-  margin-left: 320px;
-}
-
-#current-band-zip{
-  width: 150px;
-  margin-right: 20px;
-}
-
-#current-band-dist,#current-band-pay{
-  width: 100px;
-}
-
-#current-band-dist{
-  margin-right: 20px;
-}
-
-#current-band-schedule-label{
-  margin-top: 12px;
-}
-
-#current-band-schedule{
-  text-align: center;
-  font-family: Industry,sans-serif;
-  font-size: 18pt;
-  width: 75%;
-}
-
-.current-band-schedule-select,.current-band-schedule-start-time, .current-band-schedule-end-time{
-  height: 50px;
-  font-family: Industry, sans-serif;
-  font-size: 16pt;
-  width: 150px;
-  color: white;
-  background-color: #333d44;
-  border-radius: 8px;
-  border: none !important;
-  text-indent: 8px;
-}
-
-.current-band-schedule-remove,.current-band-schedule-add{
-  color: #56dff0;
-  font-family: Industry, sans-serif;
-  font-size: 14pt;
-  background-color: transparent;
-  border: none;
-}
-
-.current-band-schedule-remove:hover,.current-band-schedule-add:hover{
-  color: white;
-  text-decoration: none;
-  cursor:pointer;
-}
-
-#current-band-description-label{
-  margin-top: 12px;
-  vertical-align:top;
-}
-
-#current-band-description{
-  margin-top: 12px;
-  width: 80%;
-  height: 35%;
-  border: none;
-  border-radius: 14px;
-  background-color: #333d44;
-  color: white;
-  resize: none;
-  font-size: 16pt;
-}
-
-#current-band-pic, #current-band-clip, #current-band-clip-pic{
-  margin-top: 24px;
-  margin-right: 12px;
-  width: 400px;
-  line-height: 40px;
-  text-align: left;
-}
-
-#current-band-pic::-webkit-file-upload-button, #current-band-clip::-webkit-file-upload-button, #current-band-clip-pic::-webkit-file-upload-button {
-  visibility: hidden;
-}
-
-#current-band-pic-preview, #current-band-clip-preview{
-  height: 124px;
-  width: 124px;
-  margin-top: 0px;
-  border: none !important;
-  border-radius: 8px;
-  background-color: #333d44;
-  object-fit: cover;
-}
-
-#current-band-clip-preview{
-  margin-top: -76px;
-}
-
-#current-band-create{
-  font-size: 48pt;
-  margin-top: 24px;
-}
-
 #contacts-sidebar{
   z-index: 99;
   width: 300px;
@@ -2549,18 +2433,6 @@ margin-top: 100px;
 }
 
 /*........................... Minh's Modal Edits................................ */
-#close-edit-band{
-  z-index: 100;
-}
-#current-band-title{
-  top: -1px;
-}
-@media(max-width: 1300px){
-  #current-band-form{
-    margin: 0 auto;
-    width: 900px;
-  }
-}
 
 @media(max-width: 1150px){
   #confirm-app-header{
@@ -2568,149 +2440,22 @@ margin-top: 100px;
   }
 }
 
-@media(max-width: 1000px){
-  #current-band-form{
-    width: 700px;
-  }
-  #current-band-title{
-    width: 300px;
-  }
-  #current-band-pic{
-    width: 300px;
-  }
-}
+
 
 @media(max-width: 850px){
   #confirm-app-header{
     padding-top: 40px;
   }
-
   #choose-band-button{
     margin-top: 60px;
   }
 }
 
-@media(max-width: 800px ){
-  #current-band-form{
-    width: 600px;
-    top: 55px;
-  }
-  #current-band-title{
-    width: 200px;
-  }
- .imgcontainer h1{
-   font-size: 40px !important;
- }
- #current-band-pic{
-   text-indent: 0px;
-   font-size: 15px;
-   width: 300px;
- }
-}
+
 @media(max-width: 650px){
 
   #select-drop-band{
     width: 200px !important;
-  }
-  #current-band-form{
-    width: 500px;
-  }
-  #current-band-title{
-    width: 150px;
-  }
-  #current-band-zip{
-    width: 105px;
-  }
-}
-@media(max-width: 650px){
-  .current-band-schedule-select, .current-band-schedule-start-time, .current-band-schedule-end-time{
-    height: 50px;
-    width: 110px;
-    font-size: 12px;
-  }
-  #current-band-schedule th{
-    font-size: 23px;
-  }
-}
-@media(max-width: 500px){
-  #current-band-form{
-    width: 360px;
-  }
-  .imgcontainer h1{
-    font-size: 25px !important;
-  }
-  #current-band-title{
-    height: 30px;
-    width: 80px;
-
-  }
-  #current-band-content > input {
-    font-size: 14px;
-  }
-  label[for = current-gig-zip]{
-
-    font-size: 20px;
-  }
-  #current-band-zip{
-    width: 80px;
-  }
-  label[for = current-gig-pay]{
-    font-size: 14px;
-  }
-  label[for = current-band-pay]{
-    font-size: 14px;
-  }
-  .current-band-schedule-select, .current-band-schedule-start-time, .current-band-schedule-end-time{
-    height: 50px;
-    width: 80px;
-    font-size: 12px;
-  }
-  #current-band-schedule th{
-    font-size: 16px;
-  }
-  .current-band-schedule-remove{
-    font-size: 16px;
-  }
-}
-@media(max-width: 350px){
-  #current-band-form{
-    width: 310px;
-  }
-  #current-band-title{
-    margin-right: 15px;
-    width: 70px;
-  }
-  label[for = current-gig-zip]{
-
-    padding-right: 0px;
-  }
-  #current-band-zip{
-    margin-right: 0px;
-  }
-  #current-band-dist{
-    width: 60px;
-  }
-  #current-band-pay{
-    width: 60px;
-  }
-  .current-band-schedule-select, .current-band-schedule-start-time, .current-band-schedule-end-time{
-    height: 30px;
-    width: 70px;
-    font-size: 12px;
-  }
-  #current-band-schedule th{
-    font-size: 15px;
-  }
-  .current-band-schedule-remove{
-    font-size: 13px;
-  }
-  #current-band-pic{
-    width: 230px;
-    height: 40px;
-  }
-  .current-band-schedule-add{
-    font-size: 15px;
-    width: 200px;
   }
 
 }
