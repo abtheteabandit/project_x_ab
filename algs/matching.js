@@ -529,94 +529,92 @@ module.exports = {
                           else{
                             if (otherPromos==null || otherPromos.length==0){
                               console.log('THe other user: '+otherUser.username+' does not have any promos');
-                              continue;
                             }
                             else{
-                              if (!otherUser.hasOwnProperty('followers')){
-                                  continue;
+                              if (otherUser.hasOwnProperty('followers')){
+                                var otherUserPull = 0;
+                                if (otherUser.followers.hasOwnProperty('twitter')){
+                                  if (otherUser.engagement.hasOwnProperty('twitter')){
+                                    otherUserPull += otherUser.followers.twitter * otherUser.engagement.twitter ;
+                                  }
+                                  else{
+                                    otherUserPull += otherUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
+                                  }
                                 }
-                              var otherUserPull = 0;
-                              if (otherUser.followers.hasOwnProperty('twitter')){
-                                if (otherUser.engagement.hasOwnProperty('twitter')){
-                                  otherUserPull += otherUser.followers.twitter * otherUser.engagement.twitter ;
+                                if (otherUser.followers.hasOwnProperty('facebook')){
+                                  if (otherUser.engagement.hasOwnProperty('facebook')){
+                                    otherUserPull += otherUser.followers.facebook * otherUser.engagement.facebook ;
+                                  }
+                                  else{
+                                    otherUserPull += otherUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
+                                  }
                                 }
-                                else{
-                                  otherUserPull += otherUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
+                                if (otherUser.followers.hasOwnProperty('instagram')){
+                                  if (otherUser.engagement.hasOwnProperty('instagram')){
+                                    otherUserPull += otherUser.followers.instagram * otherUser.engagement.instagram ;
+                                  }
+                                  else{
+                                    otherUserPull += otherUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
+                                  }
                                 }
-                              }
-                              if (otherUser.followers.hasOwnProperty('facebook')){
-                                if (otherUser.engagement.hasOwnProperty('facebook')){
-                                  otherUserPull += otherUser.followers.facebook * otherUser.engagement.facebook ;
-                                }
-                                else{
-                                  otherUserPull += otherUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
-                                }
-                              }
-                              if (otherUser.followers.hasOwnProperty('instagram')){
-                                if (otherUser.engagement.hasOwnProperty('instagram')){
-                                  otherUserPull += otherUser.followers.instagram * otherUser.engagement.instagram ;
-                                }
-                                else{
-                                  otherUserPull += otherUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
-                                }
-                              }
 
-                              // now we have the other users value set.
-                              var pullDiff = Math.abs(otherUserPull-ourPull);
+                                // now we have the other users value set.
+                                var pullDiff = Math.abs(otherUserPull-ourPull);
 
-                              console.log('Our user pull is: ' + ourPull + ' Other user pull is: ' + otherUserPull);
+                                console.log('Our user pull is: ' + ourPull + ' Other user pull is: ' + otherUserPull);
 
-                              //setting up query parser
-                              var genresFromStr=[];
-                              var instsFromStr=[];
-                              var gigTypesFromStr=[];
-                              var vibesFromStr=[];
-                              var promoGenreMult = 5;
-                              var categories={"genres":[genreBank,genresFromStr,promoGenreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
-                              var catsAfterParse = parseQueryString(searchText, categories);
-                              console.log('Cats after parse in cross promo is: ' + JSON.stringify(catsAfterParse));
+                                //setting up query parser
+                                var genresFromStr=[];
+                                var instsFromStr=[];
+                                var gigTypesFromStr=[];
+                                var vibesFromStr=[];
+                                var promoGenreMult = 5;
+                                var categories={"genres":[genreBank,genresFromStr,promoGenreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
+                                var catsAfterParse = parseQueryString(searchText, categories);
+                                console.log('Cats after parse in cross promo is: ' + JSON.stringify(catsAfterParse));
 
-                              var queryStrScore = 0;
-                              var numMatches = 0;
+                                var queryStrScore = 0;
+                                var numMatches = 0;
 
-                              //goes through a finds mathces from the query string to matches in the promotion of the user were currently evaluting
-                              for (var oPromo in otherPromos){
-                                var otherPromotion = otherPromos[oPromo];
-                                for (var key in catsAfterParse){
-                                  if (catsAfterParse.hasOwnProperty(key)){
-                                    var contents = cats[key];
-                                    var fromStr=contents[1];
-                                    var mult=contents[2];
-                                    for (var word in fromStr){
-                                      var cleanedDescription = otherPromotion.description.replace("," , " ");
-                                      cleanedDescription = cleanedDescription.toLowerCase();
-                                      cleanedDescription = cleanedDescription.replace("." , " ");
-                                      cleanedDescription = cleanedDescription.replace("!" , " ");
-                                      cleanedDescription = cleanedDescription.replace(";" , " ");
-                                      cleanedDescription = cleanedDescription.replace("?" , " ");
-                                      if (cleanedDescription.includes(fromStr[word])){
-                                        queryStrScore+=(1*mult);
-                                        numMatches+=1;
+                                //goes through a finds mathces from the query string to matches in the promotion of the user were currently evaluting
+                                for (var oPromo in otherPromos){
+                                  var otherPromotion = otherPromos[oPromo];
+                                  for (var key in catsAfterParse){
+                                    if (catsAfterParse.hasOwnProperty(key)){
+                                      var contents = cats[key];
+                                      var fromStr=contents[1];
+                                      var mult=contents[2];
+                                      for (var word in fromStr){
+                                        var cleanedDescription = otherPromotion.description.replace("," , " ");
+                                        cleanedDescription = cleanedDescription.toLowerCase();
+                                        cleanedDescription = cleanedDescription.replace("." , " ");
+                                        cleanedDescription = cleanedDescription.replace("!" , " ");
+                                        cleanedDescription = cleanedDescription.replace(";" , " ");
+                                        cleanedDescription = cleanedDescription.replace("?" , " ");
+                                        if (cleanedDescription.includes(fromStr[word])){
+                                          queryStrScore+=(1*mult);
+                                          numMatches+=1;
+                                        }
                                       }
                                     }
                                   }
                                 }
+                                //such that targeting zipcodes works
+                                const DEFAULT_TOTAL_DIST = 50;
+                                var totalDist = 0;
+                                console.log('IN CROSS promo: query string score is: ' + queryStrScore);
+                                if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
+                                  var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
+                                  var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
+                                  var totalDist = Math.sqrt(distY+distX);
+                                }
+                                else{
+                                  totalDist = DEFAULT_TOTAL_DIST;
+                                }
+                                var totalScore = queryStrScore - totalDist - pullDiff;
+                                usersToScore.push([otherUser, totalScore]);
+                                console.log('Total dist is: ' + totalDist);
                               }
-                              //such that targeting zipcodes works
-                              const DEFAULT_TOTAL_DIST = 50;
-                              var totalDist = 0;
-                              console.log('IN CROSS promo: query string score is: ' + queryStrScore);
-                              if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
-                                var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
-                                var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
-                                var totalDist = Math.sqrt(distY+distX);
-                              }
-                              else{
-                                totalDist = DEFAULT_TOTAL_DIST;
-                              }
-                              var totalScore = queryStrScore - totalDist - pullDiff;
-                              usersToScore.push([otherUser, totalScore]);
-                              console.log('Total dist is: ' + totalDist);
                             }
                           }
                         });

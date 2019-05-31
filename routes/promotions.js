@@ -297,6 +297,7 @@ router.post('/add_pull', (req, res)=>{
             res.status(200).send('Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "Add". To begin running this promo simply go to you contacts and hit the promotion button. If they accept ')
           }
         });
+        }
       }, dbErr=>{
         console.log('There was an error connecting to mongo: ' + dbErr);
         res.status(500).end();
