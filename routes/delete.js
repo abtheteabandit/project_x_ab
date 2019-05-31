@@ -121,7 +121,7 @@ const database = require('../database.js')
           case 'users':
           if (id != req.session.key){
             console.log('*****************SOMEONE IS TRYING TO HACK BANDA!******************** USERNAME: ' + req.session.key);
-            res.status(200).send('You can only delete your own user, nice try ;).');
+            res.status(200).send('Delete yourself, nice try ;)');
             db.close();
           }
           else{
