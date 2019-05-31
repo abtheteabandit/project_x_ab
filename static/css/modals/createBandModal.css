@@ -1,0 +1,316 @@
+#modal-wrapper-new-band{
+  z-index: 50;
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.new-band-modal-title{
+  display: inline;
+  text-align: left;
+  padding-left: 20px;
+  font-size: 40pt;
+  width: 340px;
+  margin: 0px;
+  margin-block-end: 0px;
+}
+
+#new-band-title{
+  width: 60%;
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+  display: inline;
+  margin-top: -60px;
+  margin-bottom: 20px;
+}
+
+.close-new-band {
+  position: absolute;
+  right: 20px;
+  top: 0;
+  color: #fff;
+  font-size: 35px;
+  font-weight: bold;
+}
+.close-new-band:hover,.close-new-band:focus {
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+#new-band-form{
+  background-image: url("/assets/Control-Center/new-gig-bg.png");
+  background-color: transparent;
+  background-size: cover;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  overflow: scroll;
+  margin: 4% auto 15% auto;
+  width: 75%;
+  height: 80%;
+  margin-left: 200px;
+  padding-bottom: 80px;
+  color: white;
+}
+
+#new-band-content > input, #new-band-title{
+  height: 50px;
+  text-indent: 20px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+}
+
+#new-band-zip{
+  width: 150px;
+  margin-right: 20px;
+}
+
+#new-band-dist,#new-band-pay{
+  width: 100px;
+}
+
+#new-band-dist{
+  margin-right: 20px;
+}
+
+#new-band-schedule-label{
+  margin-top: 12px;
+}
+
+#new-band-schedule{
+  text-align: center;
+  font-family: Industry,sans-serif;
+  font-size: 18pt;
+  width: 75%;
+}
+
+.new-band-schedule-select,.new-band-schedule-start-time, .new-band-schedule-end-time{
+  height: 50px;
+  font-family: Industry, sans-serif;
+  font-size: 16pt;
+  width: 150px;
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+  text-indent: 8px;
+}
+
+.new-band-schedule-remove,.new-band-schedule-add{
+  color: #56dff0;
+  font-family: Industry, sans-serif;
+  font-size: 14pt;
+  background-color: transparent;
+  border: none;
+}
+
+.new-band-schedule-remove:hover,.new-band-schedule-add:hover{
+  color: white;
+  text-decoration: none;
+  cursor:pointer;
+}
+
+#new-band-description-label{
+  margin-top: 12px;
+  vertical-align:top;
+}
+
+#new-band-description{
+  margin-top: 12px;
+  width: 80%;
+  height: 35%;
+  border: none;
+  border-radius: 14px;
+  background-color: #333d44;
+  color: white;
+  resize: none;
+  font-size: 16pt;
+}
+
+#new-band-pic, #new-band-clip, #new-band-clip-pic{
+  margin-top: 24px;
+  margin-right: 12px;
+  width: 400px;
+  line-height: 40px;
+  text-align: left;
+}
+
+#new-band-pic::-webkit-file-upload-button, #new-band-clip::-webkit-file-upload-button, #new-band-clip-pic::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+#new-band-pic-preview, #new-band-clip-preview{
+  object-fit: cover;
+  height: 124px;
+  width: 124px;
+  margin-top: 5px;
+  border: none !important;
+  border-radius: 8px;
+  background-color: #333d44;
+}
+
+#new-band-clip-preview{
+  margin-top: -40px;
+}
+
+#new-band-create{
+  font-size: 48pt;
+  margin-top: 24px;
+}
+
+#loader-new-band{
+  margin-top: 140px;
+  margin-left: -10%;
+  display: none;
+  position: absolute;
+}
+
+@media(max-width: 1300px){
+  #new-band-form{
+    width: 1000px;
+    margin: 0 auto;
+    margin-top: 40px;
+  }
+}
+
+@media(max-width: 1000px){
+  #new-band-form{
+    width: 800px;
+  }
+  #new-band-content{
+    max-width: 800px;
+  }
+  #new-band-form h1{
+    font-size: 30px !important;
+  }
+  #new-band-title{
+    margin-left: 200px;
+  }
+}
+@media(max-width: 800px){
+  #new-band-form{
+    width: 650px;
+  }
+  #new-band-content{
+    max-width: 650px;
+  }
+  #new-band-title{
+    margin-left: 160px;
+  }
+  #new-band-pic{
+    width: 300px;
+    text-indent: 10px;
+  }
+  #new-band-content > input, #new-band-title {
+    text-indent: 10px !important;
+    text-align: left;
+    font-size: 13px;
+  }
+  #new-band-clip{
+    width: 200px;
+  }
+  #new-band-clip-pic{
+    width: 200px;
+  }
+  #new-band-zip{
+    width: 60px;
+  }
+}
+@media(max-width: 600px){
+  #new-band-form{
+    margin-top: 50px;
+    width: 450px;
+  }
+  #new-band-content{
+    max-width: 450px;
+
+  }
+  #new-band-form h1{
+    font-size: 20px !important;
+  }
+  #new-band-title{
+    margin-left: 130px;
+    height: 35px;
+    width: 230px;
+  }
+  #new-band-schedule th{
+    font-size: 15px;
+  }
+  .new-band-schedule-select, .new-band-schedule-start-time, .new-band-schedule-end-time{
+    width: 100px;
+    font-size: 14px;
+  }
+  #new-band-content > input, #new-band-title{
+    height: 35px;
+  }
+  label[for = new-band-pic]{
+    padding-right: 0px;
+    background-color: #333d44;
+    color: red;
+    margin-right: 50px;
+  }
+  #new-band-pic{
+    position: absolute;
+    left: 0px;
+    width: 150px;
+    opacity: 0;
+  }
+  #new-band-clip{
+    position: absolute;
+    left: 0px;
+    bottom: -600px;
+    opacity: 0;
+  }
+  label[for = new-band-clip]{
+    background-color: #333d44;
+    color: red;
+  }
+  #new-band-clip-pic{
+    position: absolute;
+    left: 0;
+    opacity: 0;
+  }
+  label[for= new-band-clip-pic ]{
+    background-color: #333d44;
+    color: red;
+  }
+  @media(max-width: 450px){
+    #new-band-form{
+
+      width: 325px;
+    }
+    #new-band-content{
+      max-width: 325px;
+
+    }
+    #new-band-title{
+      width: 140px;
+      margin-left: 110px;
+    }
+    .new-band-schedule-select, .new-band-schedule-start-time, .new-band-schedule-end-time{
+      width: 70px;
+      height: 35px;
+      font-size: 12px;
+    }
+    #new-band-description{
+      height: 350px;
+    }
+    #new-band-pic-preview {
+      width: 80px;
+      height: 80px;
+    }
+    #new-band-clip-preview{
+      width: 80px;
+      height: 80px;
+    }#new-band-create{
+      font-size: 35pt;
+    }
+
+  }
+}

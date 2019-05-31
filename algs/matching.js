@@ -435,7 +435,7 @@ module.exports = {
   },
   //this is a function to find matches for users looking to cross promote on social medias
 
-  findCrossPromoters: function findCrossPromoters(ourUsername, lat, lng, searchText, db, errCB, okCB){
+  findCrossPromoters: function findCrossPromoters(ourUsername, promoSearchingAs, lat, lng, searchText, db, errCB, okCB){
     const DEFAULT_ENGAGE_SCORE = 0.3;
     //the default enagaement score serves as a backup if there is no known eng score for a user on a Platform
     // validate fields
@@ -443,7 +443,7 @@ module.exports = {
       console.log('No db passed in.');
       errCB('Internal Server Error');
     }
-    if (!query){
+    if (!searchText){
       console.log('No query passed in.');
       errCB('Internal Server Error');
     }
@@ -459,154 +459,177 @@ module.exports = {
           errCB('Internal Server Error');
         }
         else{
-          //check if searching user has a promo to run/ pull data from
-          if (!ourUser.hasOwnProperty('promotion')){
-            console.log('Our user: ' + ourUsername+' did not have its own promo.');
-            cbErr('Sorry, you must create and save your own promotion before you can begin searching for people to post your promotion.');
-          }
-          else{
-            //find all other users to cross promote with
-            var usersToScore = [];
-            db.db('users').collection('users').find({}, (err2, allUsers)=>{
-              if (err2){
-                console.log('There was an error finding all users: ' + err2);
-                errCB('Internal Server Error');
+          db.db('promotions').collection('promotions').findOne({'creator':ourUsername}, (errPromo, promos)=>{
+            if (errPromo){
+              console.log('There waz an error finding promos for creator: ' + ourUsername + 'Error: ' + errPromo);
+              errCB('Internal Server Error');
+            }
+            else{
+              if (promos == null || promos.length==0){
+                cbErr('Sorry, you must create and save your own promotion before you can begin searching for people to post your promotion.');
               }
               else{
-                var ourPromo = ourUser.promotion;
-                //pull is defined as the sum of followers for each platform * the engagement score on each platform
-                var ourPull = 0;
-
-                if (ourUser.hasOwnProperty('followers') && ourUser.hasOwnProperty('engagement')){
-                  if (ourUser.followers.hasOwnProperty('twitter')){
-                    if (ourUser.engagement.hasOwnProperty('twitter')){
-                      ourPull += ourUser.followers.twitter * ourUser.engagement.twitter ;
-                    }
-                    else{
-                      ourPull += ourUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
-                    }
-                  }
-                  if (ourUser.followers.hasOwnProperty('facebook')){
-                    if (ourUser.engagement.hasOwnProperty('facebook')){
-                      ourPull += ourUser.followers.facebook * ourUser.engagement.facebook ;
-                    }
-                    else{
-                      ourPull += ourUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
-                    }
-                  }
-                  if (ourUser.followers.hasOwnProperty('instagram')){
-                    if (ourUser.engagement.hasOwnProperty('instagram')){
-                      ourPull += ourUser.followers.instagram * ourUser.engagement.instagram ;
-                    }
-                    else{
-                      ourPull += ourUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
-                    }
+                //check if searching user has a promo to run/ pull data from
+                var ourPromo = null
+                for (var aPromo in promos){
+                  if (promos[aPromo].name==promoSearchingAs){
+                    ourPromo=promos[aPromo];
                   }
                 }
-                // now we have ourUsers value set, moving on to looping through all users to find a match
-                for (var user in allUsers){
-                  var otherUser = allUsers[user];
-                  if (!otherUser.hasOwnProperty('promotion')){
-                    continue;
-                  }
-                  else{
-                    var otherPromotion = otherUser.promotion;
-                    if(!otherPromotion){
-                      continue;
+                if (!ourPromo){
+                  console.log('Could not find promo with searching name: ' + promoSearchingAs+ ' in our user: '+ourUsername+' array of promos. ')
+                  cbErr('Sorry, it seems you do not have a promotion named: ' + promoSearchingAs+ ' saved to Banda yet. Feel free to create a new promo with this name and search again, or try searching as a different promotion.');
+                }
+                else{
+                  //find all other users to cross promote with
+                  var usersToScore = [];
+                  db.db('users').collection('users').find({}, (err2, allUsers)=>{
+                    if (err2){
+                      console.log('There was an error finding all users: ' + err2);
+                      errCB('Internal Server Error');
                     }
                     else{
-                      if (!otherUser.hasOwnProperty('followers')){
-                          continue;
-                      }
-                      var otherUserPull = 0;
-                      if (otherUser.followers.hasOwnProperty('twitter')){
-                        if (otherUser.engagement.hasOwnProperty('twitter')){
-                          otherUserPull += otherUser.followers.twitter * otherUser.engagement.twitter ;
-                        }
-                        else{
-                          otherUserPull += otherUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
-                        }
-                      }
-                      if (otherUser.followers.hasOwnProperty('facebook')){
-                        if (otherUser.engagement.hasOwnProperty('facebook')){
-                          otherUserPull += otherUser.followers.facebook * otherUser.engagement.facebook ;
-                        }
-                        else{
-                          otherUserPull += otherUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
-                        }
-                      }
-                      if (otherUser.followers.hasOwnProperty('instagram')){
-                        if (otherUser.engagement.hasOwnProperty('instagram')){
-                          otherUserPull += otherUser.followers.instagram * otherUser.engagement.instagram ;
-                        }
-                        else{
-                          otherUserPull += otherUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
-                        }
-                      }
+                      //pull is defined as the sum of followers for each platform * the engagement score on each platform
+                      var ourPull = 0;
 
-                      // now we have the other users value set.
-                      var pullDiff = Math.abs(otherUserPull-ourPull);
-
-                      console.log('Our user pull is: ' + ourPull + ' Other user pull is: ' + otherUserPull);
-
-                      //setting up query parser
-                      var genresFromStr=[];
-                      var instsFromStr=[];
-                      var gigTypesFromStr=[];
-                      var vibesFromStr=[];
-                      var promoGenreMult = 5;
-                      var categories={"genres":[genreBank,genresFromStr,promoGenreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
-                      var catsAfterParse = parseQueryString(searchText, categories);
-                      console.log('Cats after parse in cross promo is: ' + JSON.stringify(catsAfterParse));
-
-                      var queryStrScore = 0;
-                      var numMatches = 0;
-
-                      //goes through a finds mathces from the query string to matches in the promotion of the user were currently evaluting
-                      for (var key in catsAfterParse){
-                        if (catsAfterParse.hasOwnProperty(key)){
-                          var contents = cats[key];
-                          var fromStr=contents[1];
-                          var mult=contents[2];
-                          for (var word in fromStr){
-                            var cleanedDescription = otherPromotion.description.replace("," , " ");
-                            cleanedDescription = cleanedDescription.toLowerCase();
-                            cleanedDescription = cleanedDescription.replace("." , " ");
-                            cleanedDescription = cleanedDescription.replace("!" , " ");
-                            cleanedDescription = cleanedDescription.replace(";" , " ");
-                            cleanedDescription = cleanedDescription.replace("?" , " ");
-                            if (cleanedDescription.includes(fromStr[word])){
-                              queryStrScore+=(1*mult);
-                              numMatches+=1;
-                            }
+                      if (ourUser.hasOwnProperty('followers') && ourUser.hasOwnProperty('engagement')){
+                        if (ourUser.followers.hasOwnProperty('twitter')){
+                          if (ourUser.engagement.hasOwnProperty('twitter')){
+                            ourPull += ourUser.followers.twitter * ourUser.engagement.twitter ;
+                          }
+                          else{
+                            ourPull += ourUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
+                          }
+                        }
+                        if (ourUser.followers.hasOwnProperty('facebook')){
+                          if (ourUser.engagement.hasOwnProperty('facebook')){
+                            ourPull += ourUser.followers.facebook * ourUser.engagement.facebook ;
+                          }
+                          else{
+                            ourPull += ourUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
+                          }
+                        }
+                        if (ourUser.followers.hasOwnProperty('instagram')){
+                          if (ourUser.engagement.hasOwnProperty('instagram')){
+                            ourPull += ourUser.followers.instagram * ourUser.engagement.instagram ;
+                          }
+                          else{
+                            ourPull += ourUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
                           }
                         }
                       }
+                      // now we have ourUsers value set, moving on to looping through all users to find a match
+                      for (var user in allUsers){
+                        var otherUser = allUsers[user];
+                        db.db('promotions').collection('promotions').findOne({'creator':otherUser.username}, (errOtherPromo, otherPromos)=>{
+                          if (errOtherPromo){
+                            console.log('There was an error find other user: '+otherUser.username+' Error: ' + errOtherPromo);
+                            cbErr('Internal Server Error');
+                          }
+                          else{
+                            if (otherPromos==null || otherPromos.length==0){
+                              console.log('THe other user: '+otherUser.username+' does not have any promos');
+                              continue;
+                            }
+                            else{
+                              if (!otherUser.hasOwnProperty('followers')){
+                                  continue;
+                                }
+                              var otherUserPull = 0;
+                              if (otherUser.followers.hasOwnProperty('twitter')){
+                                if (otherUser.engagement.hasOwnProperty('twitter')){
+                                  otherUserPull += otherUser.followers.twitter * otherUser.engagement.twitter ;
+                                }
+                                else{
+                                  otherUserPull += otherUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
+                                }
+                              }
+                              if (otherUser.followers.hasOwnProperty('facebook')){
+                                if (otherUser.engagement.hasOwnProperty('facebook')){
+                                  otherUserPull += otherUser.followers.facebook * otherUser.engagement.facebook ;
+                                }
+                                else{
+                                  otherUserPull += otherUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
+                                }
+                              }
+                              if (otherUser.followers.hasOwnProperty('instagram')){
+                                if (otherUser.engagement.hasOwnProperty('instagram')){
+                                  otherUserPull += otherUser.followers.instagram * otherUser.engagement.instagram ;
+                                }
+                                else{
+                                  otherUserPull += otherUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
+                                }
+                              }
 
-                      //such that targeting zipcodes works
-                      const DEFAULT_TOTAL_DIST = 50;
-                      var totalDist = 0;
-                      console.log('IN CROSS promo: query string score is: ' + queryStrScore);
-                      if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
-                        var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
-                        var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
-                        var totalDist = Math.sqrt(distY+distX);
+                              // now we have the other users value set.
+                              var pullDiff = Math.abs(otherUserPull-ourPull);
+
+                              console.log('Our user pull is: ' + ourPull + ' Other user pull is: ' + otherUserPull);
+
+                              //setting up query parser
+                              var genresFromStr=[];
+                              var instsFromStr=[];
+                              var gigTypesFromStr=[];
+                              var vibesFromStr=[];
+                              var promoGenreMult = 5;
+                              var categories={"genres":[genreBank,genresFromStr,promoGenreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
+                              var catsAfterParse = parseQueryString(searchText, categories);
+                              console.log('Cats after parse in cross promo is: ' + JSON.stringify(catsAfterParse));
+
+                              var queryStrScore = 0;
+                              var numMatches = 0;
+
+                              //goes through a finds mathces from the query string to matches in the promotion of the user were currently evaluting
+                              for (var oPromo in otherPromos){
+                                var otherPromotion = otherPromos[oPromo];
+                                for (var key in catsAfterParse){
+                                  if (catsAfterParse.hasOwnProperty(key)){
+                                    var contents = cats[key];
+                                    var fromStr=contents[1];
+                                    var mult=contents[2];
+                                    for (var word in fromStr){
+                                      var cleanedDescription = otherPromotion.description.replace("," , " ");
+                                      cleanedDescription = cleanedDescription.toLowerCase();
+                                      cleanedDescription = cleanedDescription.replace("." , " ");
+                                      cleanedDescription = cleanedDescription.replace("!" , " ");
+                                      cleanedDescription = cleanedDescription.replace(";" , " ");
+                                      cleanedDescription = cleanedDescription.replace("?" , " ");
+                                      if (cleanedDescription.includes(fromStr[word])){
+                                        queryStrScore+=(1*mult);
+                                        numMatches+=1;
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                              //such that targeting zipcodes works
+                              const DEFAULT_TOTAL_DIST = 50;
+                              var totalDist = 0;
+                              console.log('IN CROSS promo: query string score is: ' + queryStrScore);
+                              if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
+                                var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
+                                var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
+                                var totalDist = Math.sqrt(distY+distX);
+                              }
+                              else{
+                                totalDist = DEFAULT_TOTAL_DIST;
+                              }
+                              var totalScore = queryStrScore - totalDist - pullDiff;
+                              usersToScore.push([otherUser, totalScore]);
+                              console.log('Total dist is: ' + totalDist);
+                            }
+                          }
+                        });
                       }
-                      else{
-                        totalDist = DEFAULT_TOTAL_DIST;
-                      }
-                      var totalScore = queryStrScore - totalDist - pullDiff;
-                      usersToScore.push([otherUser, totalScore]);
-                      console.log('Total dist is: ' + totalDist);
+                      var results = {'overallMatchers':sortDict(usersToScore)};
+                      console.log('Got results they are: ' + JSON.stringify(results));
+                      cbOK(results);
                     }
-                  }
+                  });
                 }
-                var results = {'overallMatchers':sortDict(usersToScore)};
-                console.log('Got results they are: ' + JSON.stringify(results));
-                cbOK(results);
               }
-            });
-          }
+            }
+          });
         }
       });
     }

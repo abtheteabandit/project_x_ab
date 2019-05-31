@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <link rel="shortcut icon" type = "image/png" href = "/assets/Home/favicon.ico">
     <meta charset="utf-8">
     <meta http-equiv="ScreenOrientation" content="autoRotate:disabled">
     <title>Your Profile</title>
@@ -18,6 +19,17 @@
     <!-- External CSS -->
     <link rel="stylesheet" type="text/css" href="/css/control-center.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/confirmationCodeModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/cancelModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/confirmBookingModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/reportAbsentBandModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/linkApplicationModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/chooseBandForAppModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/createBandModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/createEventModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/creditCardModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/bankModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/currentBandModal.css">
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
@@ -39,7 +51,6 @@
 		</script>
   </head>
   <body onload="init();">
-    <!--done-->
     <div id="modal-wrapper-support" class="modal-support">
 
       <form class="modal-content-support animate">
@@ -55,16 +66,14 @@
       </form>
 
     </div>
-    <!--done-->
     <div id="modal-wrapper-confirmation-code">
-      <div  id="cancel-content" class="modal-content-cancel animate">
+      <div class="modal-content-cancel animate">
         <span onclick="document.getElementById('modal-wrapper-confirmation-code').style.display='none'" class="cancel-close" title="Close PopUp" id="close-cancel">&times;</span>
         <p id="confirmation-code-p" class="modal-p">Enter the confirmation code provided by the event host upon completion of this event. After both parties submit their confirmation codes, we will issue a payment to the account associated with this band profile.</p>
         <input id="confirmation-code-input"/>
         <input type="button" class="confirm-modal-btn" id="submit-confirmation-code" value="submit confirmation code"/>
       </div>
     </div>
-    <!--done-->
     <div id="modal-wrapper-cancel">
       <div  id="cancel-content" class="modal-content-cancel animate">
         <span onclick="document.getElementById('modal-wrapper-cancel').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
@@ -73,18 +82,16 @@
         <div id="loader-cancel-booked-event" class="loader"></div>
       </div>
     </div>
-    <!--done-->
     <div id="modal-wrapper-confirm-booking">
       <div  id="cancel-content" class="modal-content-cancel animate">
         <input type="hidden" name="bandID" />
         <input type="hidden" name="gigID" />
         <span onclick="document.getElementById('modal-wrapper-confirm-booking').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
-        <p id="confirm-booking-text" class="modal-p">"Are you sure you want to book This Band With a Name for this event? You will be charged 5% of the price you set for this event right now. However, you choose to cancel this event you will be issued a full refund."</p>
+        <p id="confirm-booking-text" class="modal-p">Are you sure you want to book This Band With a Name for this event? You will be charged 5% of the price you set for this event right now. However, you choose to cancel this event you will be issued a full refund.</p>
         <input type="button" class="confirm-modal-btn" id="confirm-booking" value="confirm"/>
         <div id="loader-book" class="loader"></div>
       </div>
     </div>
-    <!--done-->
     <div id="modal-wrapper-report-absent-band">
       <div  id="cancel-content" class="modal-content-cancel animate">
         <input type="hidden" name="bandID" id="report-absent-band-bandID"/>
@@ -98,13 +105,12 @@
         <input type="button" id="report-band" value="submit report" onclick="handleReportFormSubmission()"/>
       </div>
     </div>
-    <!--done-->
-    <div id="modal-wrapper-link-application" class="modal2">
-      <div class="imgcontainer">
-        <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp" id="cancel-link">&times;</span>
+    <div id="modal-wrapper-link-application">
+      <div class="link-app-imgcontainer">
+        <span class="close-link" onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" title="Close PopUp">&times;</span>
         <h1 class="share-event-title">share event</h1>
       </div>
-      <form id="link-application-form" class="modal-content2 animate" method="post" action="#" >
+      <form id="link-application-form" class="animate" method="post" action="#" >
         <div id="dropdown-container" style="text-align:center">
           <p id="searching-as-link-app" class="share-event-subtitle">Send user event application link:</p>
           <select id='selectDrop' class="modal-input"></select>
@@ -112,33 +118,31 @@
         </div>
       </form>
     </div>
-    <!--done-->
-    <div id="modal-wrapper-choose-band-for-app" class="modal3">
-      <div class="imgcontainer">
-        <span onclick="document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'" class="close" title="Close PopUp">&times;</span>
+    <div id="modal-wrapper-choose-band-for-app">
+      <div class="cbfa-imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'" class="close-cbfa" title="Close PopUp">&times;</span>
         <h1 id="confirm-app-header">confirm application</h1>
       </div>
-      <form id="link-application-form" class="modal-content3 animate" method="post" action="#" >
-        <div id="dropdown-container" style="text-align:center">
+      <form id="cbfa-form" class="animate" method="post" action="#" >
+        <div id="dropdown-container">
           <p id="band-select-p" id="select-a-band-text">select a band:</p>
           <br>
-          <select id='selectDropBand' class="modal-input"></select>
+          <select id='selectDropBand'></select>
           <br>
-          <input type="button" id="choose-band-button" value="apply" onclick="submitBand()" class="modal-input"/>
+          <input type="button" id="choose-band-button" value="apply" onclick="submitBand()"/>
           <br>
-          <input type="button" id="view-event-details-button" value="view event page" onclick="viewGigPage()" class="modal-input"/>
+          <input type="button" id="view-event-details-button" value="view event page" onclick="viewGigPage()"/>
         </div>
       </form>
     </div>
-    <!--done-->
-    <div id="modal-wrapper-new-gig" class="modal">
-      <form id="new-gig-form" class="modal-content animate" enctype="multipart/form-data">
-        <div class="imgcontainer">
-          <span onclick="document.getElementById('modal-wrapper-new-gig').style.display='none'" class="close" title="Close PopUp">&times;</span>
-          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new gig</h1>
+    <div id="modal-wrapper-new-gig">
+      <form id="new-gig-form" class="animate" enctype="multipart/form-data">
+        <div>
+          <h1 class="new-event-modal-title">new gig</h1>
+          <input minlength="3" maxlength="65" id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new event" required></input>
+          <span onclick="document.getElementById('modal-wrapper-new-gig').style.display='none'" class="close-new-gig" title="Close PopUp">&times;</span>
         </div>
         <div class="container" id="new-gig-content">
-          <input minlength="3" maxlength="65" id="new-gig-title" class="modal-input" type="text" placeholder="enter a title for your new event" required></input>
           <label for="new-gig-date">date</label>
           <input id="new-gig-date" class="modal-input" type="date" required></input>
           <label for="new-gig-start-time">from</label>
@@ -163,15 +167,14 @@
         </div>
       </form>
     </div>
-    <!--mihn-->
-    <div id="modal-wrapper-new-band" class="modal">
-      <form id="new-band-form" class="modal-content animate" enctype="multipart/form-data">
-        <div class="imgcontainer">
-          <span onclick="document.getElementById('modal-wrapper-new-band').style.display='none'" class="close" title="Close PopUp">&times;</span>
-          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">new band</h1>
+    <div id="modal-wrapper-new-band">
+      <form id="new-band-form" class="animate" enctype="multipart/form-data">
+        <div>
+          <h1 class="new-band-modal-title">new band</h1>
+          <input minlength="3" maxlength="50" id="new-band-title" class="modal-input" type="text" placeholder="enter a name for your new band/act" required ></input>
+          <span onclick="document.getElementById('modal-wrapper-new-band').style.display='none'" class="close-new-band" title="Close PopUp">&times;</span>
         </div>
         <div class="container" id="new-band-content">
-          <input minlength="3" maxlength="50" id="new-band-title" class="modal-input" type="text" placeholder="enter a name for your new band/act" required ></input>
           <label for="new-band-zip">zip code</label>
           <input id="new-band-zip" class="modal-input" type="number" pattern='{5}' placeholder="" required></input>
           <label for="new-band-dist">max travel distance (mi.)</label>
@@ -234,7 +237,6 @@
         </div>
       </form>
     </div>
-    <!--done-->
     <div id="modal-wrapper-credit" class="modal-card">
       <span onclick="document.getElementById('modal-wrapper-credit').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
       <form id="payment-form">
@@ -251,13 +253,12 @@
           <!-- Used to display form errors. -->
           <div id="card-errors" role="alert"></div>
         </div>
-        <button class="stripe-button" style="display: block" >Connect Payment Method</button>
+        <button class="stripe-button-card" >Connect Payment Method</button>
         <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
           to guarantee swift and easy compensation of the artists that you book. We ask for your credit information one time upfront for convience and then you can post as many events as you would like. Banda does not store your credit-card information in anyway.</p>
         <div id="loader-new-card" class="loader"></div>
       </form>
     </div>
-    <!--done-->
     <div id="modal-wrapper-bank">
       <div id="bank-content">
         <span onclick="document.getElementById('modal-wrapper-bank').style.display='none'" class="close-bank" title="Close PopUp">&times;</span>
@@ -299,7 +300,7 @@
             <input id="bank-form-holder" name="holder_name" required>
           </div>
         </div>
-        <button class="stripe-button" onclick='attemptBankSubmission()' id="bank-account-button">Connect Account</button>
+        <button class="stripe-button-bank" onclick='attemptBankSubmission()' id="bank-account-button">Connect Account</button>
         <!-- Used to display form errors. -->
         <div id="error-message" role="alert"></div>
         <!-- Display mandate acceptance text. -->
@@ -320,14 +321,14 @@
         <img alt="stripe"src="/assets/Control-Center/stripelogo.png" class="stripe-logo" />
       </div>
     </div>
-    <div id="modal-wrapper-current-band" class="modal">
-      <form id="current-band-form" class="modal-content animate" enctype="multipart/form-data" method="post" action="#">
-        <div class="imgcontainer">
-          <span id="close-edit-band" class="close" title="Close PopUp">&times;</span>
-          <h1 style="text-align:left; padding-left: 20px; font-size: 50pt;">your band</h1>
+    <div id="modal-wrapper-current-band">
+      <form id="current-band-form" class="animate" enctype="multipart/form-data" method="post" action="#">
+        <div>
+          <h1 class="current-band-modal-title">your band</h1>
+          <input id="current-band-title" class="modal-input" type="text"></input>
+          <span id="close-edit-band" onclick="document.getElementById('modal-wrapper-current-band').style.display='none';" title="Close PopUp">&times;</span>
         </div>
         <div class="container" id="current-band-content">
-          <input id="current-band-title" class="modal-input" type="text"></input>
           <label for="current-gig-zip">zip code</label>
           <input id="current-band-zip" class="modal-input" type="text"></input>
           <label for="current-gig-pay">max travel distance (mi.)</label>

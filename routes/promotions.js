@@ -187,24 +187,108 @@ module.exports = router =>{
     }
   });
 
-  //post a promotion to the database
-  router.post('/promotion', (req, res)=>{
-    if (!req.session.key){
-      console.log('No logged in user tried to cross promote');
-      req.status(404).end();
-    }
-    if (!req.body){
-      console.log('promotion had no body');
-      req.status(401).end();
-    }
-    //success case
-    else{
-      var {name, imgURL, caption, handles, location, mode, medias, preferences} = req.body;
-      database.connect(db=>{
-        //store the promotion in the database
-        db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'promotion':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias, 'preferences':preferences}}}, (err2, res2)=>{
-          if (err2){
-            console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
+router.post('/promotion', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to cross promote');
+    req.status(404).end();
+  }
+  if (!req.body){
+    console.log('promotion had no body');
+    req.status(401).end();
+  }
+  else{
+    var {name, imgURL, caption, handles, location, mode, medias, preferences} = req.body;
+    database.connect(db=>{
+      db.db('promotions').collection('promotions').updateOne({'creator':req.session.key}, {$push:{'promotions':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias, 'preferences':preferences}}}, (err2, res2)=>{
+        if (err2){
+          console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
+          res.status(500).end();
+          db.close();
+        }
+        else{
+          console.log('Set promotion ' +name+ ' for user: '+req.session.key);
+          res.status(200).send('Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "Add". To begin running this promo simply go to you contacts and hit the promotion button. If they accept ')
+        }
+      });
+    }, dbErr=>{
+      console.log('There was an error connecting to mongo: ' + dbErr);
+      res.status(500).end();
+    });
+  }
+});
+
+router.get('/search_promos', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to cross promote');
+    req.status(404).end();
+  }
+  if (!req.query){
+    console.log('Cross promote had no body');
+    req.status(401).end();
+  }
+  else{
+    var {lat, lng, searchText, promoSearchingAs} = req.query;
+    database.connect(db=>{
+      matching.findCrossPromoters(req.session.key, promoSearchingAs, lat, lng, searchText, db, errCB=>{
+        console.log('There was an error : ' + errCB);
+        if (errCB=="Internal Server Error"){
+          res.status(200).json({success:false, data:'Sorry, there was an error on our end. Please try searching again. If this error persits please notify us via our support tab on the Banda "b"'});
+          db.close();
+        }
+        else{
+          res.status(500).json({success:false, data:errCB});
+          db.close();
+        }
+      }, okCB=>{
+        console.log('Got in ok CB');
+        res.status(200).json({success: true, data:okCB});
+        db.close();
+      });
+    }, dbErr=>{
+      console.log('There was an error connectiong to mongo: ' + dbErr);
+      res.status(500).end();
+    });
+  }
+});
+
+router.post('/user_socials', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to cross promote');
+    req.status(404).end();
+  }
+  if (!req.body){
+    console.log('promotion had no body');
+    req.status(401).end();
+  }
+  else{
+    var {id, mode, medias, imageURL, caption, handles, location} = req.body;
+    database.connect(db=>{
+      for (var key in medias){
+        //post our thign to that media
+
+      }
+    }, errDB=>{
+      console.log('There was an error connectiong to mongo: ' + errDB);
+      res.status(500).end();
+    });
+  }
+});
+
+router.post('/add_pull', (req, res)=>{
+  //this is the route that gets called from outside our site, such that our bands can quantify their clout.
+  if (!req.body){
+    console.log('request had no body');
+    req.status(401).end();
+  }
+  else{
+    var {id, mode} = req.body;
+    database.connect(db=>{
+      switch(mode){
+        // adds 1 pull to a band, gig or user depending on what mode we recieved. That mode should be set in the route above
+        case "bands":
+        db.db('bands').collection('bands').updateOne({'_id':database.objectId(id)}, {$inc:{'pull':1}}, (err1, res1)=>{
+          if (err1){
+            console.log('There was an an error incrementing pull for band:: ' + err1);
             res.status(500).end();
             db.close();
           }

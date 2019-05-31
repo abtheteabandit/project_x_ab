@@ -1,0 +1,130 @@
+#modal-wrapper-choose-band-for-app{
+  display:none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 500px;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  text-align: center;
+  z-index: 110;
+  overflow: hidden;
+}
+.cbfa-imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+    position: relative;
+}
+
+.close-cbfa {
+    position: absolute;
+    right: 20px;
+    top: 0;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+}
+.close-cbfa:hover,.close-cbfa:focus {
+    alpha: 0.6;
+    cursor: pointer;
+}
+
+#confirm-app-header{
+  text-align:center;
+  font-size: 50pt;
+  color:white;
+}
+
+#cbfa-form{
+  background-color: transparent;
+  background-size: contain;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  text-align: center;
+  width: 100%;
+  height: 240px;
+  color: white;
+}
+
+#dropdown-container{
+  text-align:center;
+}
+
+#select-a-band-text{
+  text-align:center;
+  font-size: 30pt;
+}
+
+#selectDropBand, #choose-band-button, #view-event-details-button{
+  width: 50%;
+  height: 40px;
+  margin-bottom: 10px;
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  border: none !important;
+}
+
+#selectDropBand{
+  margin-top: 20px;
+}
+
+#choose-band-button{
+margin-top: 100px;
+}
+
+@media(max-width:550px){
+  #modal-wrapper-choose-band-for-app{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: inherit !important;
+    height: 500px;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 10px;
+    text-align: center;
+    z-index: 110;
+    overflow: hidden;
+  }
+  #confirm-app-header{
+    text-align:center;
+    font-size: 14pt;
+    color:white;
+  }
+  #selectDropBand {
+    margin-top: 5px;
+  }
+  #select-a-band-text{
+    text-align:center;
+    font-size: 12pt;
+  }
+  #modal-wrapper-choose-band-for-app{
+    width: 110%;
+  }
+}
+
+@media(max-width: 1150px){
+  #confirm-app-header{
+    font-size: 30pt;
+  }
+}
+
+@media(max-width: 850px){
+  #confirm-app-header{
+    padding-top: 40px;
+  }
+  #choose-band-button{
+    margin-top: 60px;
+  }
+}
+
+@media(max-width: 650px){
+  #select-drop-band{
+    width: 200px !important;
+  }
+}
