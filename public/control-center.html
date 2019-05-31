@@ -19,6 +19,8 @@
     <!-- External CSS -->
     <link rel="stylesheet" type="text/css" href="/css/control-center.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/linkApplicationModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/chooseBandForAppModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createBandModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createEventModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/creditCardModal.css">
@@ -105,12 +107,12 @@
       </div>
     </div>
     <!--done-->
-    <div id="modal-wrapper-link-application" class="modal2">
-      <div class="imgcontainer">
-        <span onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" class="close" title="Close PopUp" id="cancel-link">&times;</span>
+    <div id="modal-wrapper-link-application">
+      <div class="link-app-imgcontainer">
+        <span class="close-link" onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" title="Close PopUp">&times;</span>
         <h1 class="share-event-title">share event</h1>
       </div>
-      <form id="link-application-form" class="modal-content2 animate" method="post" action="#" >
+      <form id="link-application-form" class="animate" method="post" action="#" >
         <div id="dropdown-container" style="text-align:center">
           <p id="searching-as-link-app" class="share-event-subtitle">Send user event application link:</p>
           <select id='selectDrop' class="modal-input"></select>
@@ -119,24 +121,23 @@
       </form>
     </div>
     <!--done-->
-    <div id="modal-wrapper-choose-band-for-app" class="modal3">
-      <div class="imgcontainer">
-        <span onclick="document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'" class="close" title="Close PopUp">&times;</span>
+    <div id="modal-wrapper-choose-band-for-app">
+      <div class="cbfa-imgcontainer">
+        <span onclick="document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'" class="close-cbfa" title="Close PopUp">&times;</span>
         <h1 id="confirm-app-header">confirm application</h1>
       </div>
-      <form id="link-application-form" class="modal-content3 animate" method="post" action="#" >
-        <div id="dropdown-container" style="text-align:center">
+      <form id="cbfa-form" class="animate" method="post" action="#" >
+        <div id="dropdown-container">
           <p id="band-select-p" id="select-a-band-text">select a band:</p>
           <br>
-          <select id='selectDropBand' class="modal-input"></select>
+          <select id='selectDropBand'></select>
           <br>
-          <input type="button" id="choose-band-button" value="apply" onclick="submitBand()" class="modal-input"/>
+          <input type="button" id="choose-band-button" value="apply" onclick="submitBand()"/>
           <br>
-          <input type="button" id="view-event-details-button" value="view event page" onclick="viewGigPage()" class="modal-input"/>
+          <input type="button" id="view-event-details-button" value="view event page" onclick="viewGigPage()"/>
         </div>
       </form>
     </div>
-    <!--done-->
     <div id="modal-wrapper-new-gig">
       <form id="new-gig-form" class="animate" enctype="multipart/form-data">
         <div>
@@ -328,7 +329,7 @@
         <div>
           <h1 class="current-band-modal-title">your band</h1>
           <input id="current-band-title" class="modal-input" type="text"></input>
-          <span id="close-edit-band" class="close" title="Close PopUp">&times;</span>
+          <span id="close-edit-band" onclick="document.getElementById('modal-wrapper-current-band').style.display='none';" title="Close PopUp">&times;</span>
         </div>
         <div class="container" id="current-band-content">
           <label for="current-gig-zip">zip code</label>

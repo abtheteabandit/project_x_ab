@@ -1224,65 +1224,6 @@ chat boxes
   cursor: pointer;
 }
 
-.modal2 {
-display:none;
-position: fixed;
-z-index: 3;
-left: 100%;
-top: 100%;
-width: 100%;
-height: 240px;
-overflow: auto;
-background-color: rgba(0,0,0,0.4);
-text-align:center;
-}
-
-.modal-content2 {
-/*  background-image: url("../assets/Control-Center/new-gig-bg.png");
-*/  background-color: transparent;
-  background-size: contains;
-  background-clip: border-box;
-  background-repeat: no-repeat;
-  text-align: center;
-  width: 100%;
-  height: 240px;
-  color: white;
-}
-
-#modal-wrapper-link-application{
-  display:none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 240px;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.8);
-  border-radius: 10px;
-  text-align: center;
-  z-index: 110;
-  overflow: hidden;
-}
-
-#share-event-header{
-  text-align:center;
-  font-size: 50pt;
-  color:white
-}
-
-#link-application-button{
-  color: #56dff0;
-}
-
-.share-event-title{
-  text-align:center; font-size: 50pt; color:white;
-}
-
-.share-event-subtitle{
-  text-align:center; font-size: 30pt;
-}
-
 #select-gig-to-ad{
   width: 300px;
   height: 100%;
@@ -1297,60 +1238,6 @@ text-align:center;
   visibility: hidden;
 }
 
-.modal3 {
-display:none;
-position: fixed;
-z-index: 3;
-left: 100%;
-top: 100%;
-width: 100%;
-height: 240px;
-overflow: auto;
-background-color: rgba(0,0,0,0.4);
-text-align:center;
-}
-
-.modal-content3 {
-/*  background-image: url("../assets/Control-Center/new-gig-bg.png");
-*/background-color: transparent;
-  background-size: contain;
-  background-clip: border-box;
-  background-repeat: no-repeat;
-  text-align: center;
-  width: 100%;
-  height: 240px;
-  color: white;
-}
-
-#modal-wrapper-choose-band-for-app{
-  display:none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50%;
-  height: 500px;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.8);
-  border-radius: 10px;
-  text-align: center;
-  z-index: 110;
-  overflow: hidden;
-}
-
-#selectDropBand, #choose-band-button, #view-event-details-button{
-  width: 50%;
-  height: 40px;
-  margin-bottom: 10px;
-}
-
-#selectDropBand{
-  margin-top: 20px;
-}
-
-#choose-band-button{
-margin-top: 100px;
-}
 
 /*cancel modal */
 #modal-wrapper-cancel{
@@ -2026,14 +1913,8 @@ margin-top: 100px;
   /* open-gig styling <600 END */
 }
 @media(max-width: 550px){
-
-
-#mobile-menu-button{
-  background-color: transparent;
-}
-
-  #modal-wrapper-choose-band-for-app{
-    width: inherit !important;
+  #mobile-menu-button{
+    background-color: transparent;
   }
   .profile-header-text{
     font-size: 50pt;
@@ -2342,120 +2223,4 @@ margin-top: 100px;
   #close-cancel{
     width: 25%;
   }
-}
-
-#searching-as-link-app{
-  text-align:center;
-  font-size: 12pt;
-}
-
-
-
-
-/*link modal mobile scaling*/
-@media(max-width:550px){
-  #modal-wrapper-link-application{
-    display:none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    height: 500px;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.8);
-    border-radius: 10px;
-    text-align: center;
-    z-index: 110;
-    overflow: hidden;
-  }
-
-  #share-event-header{
-    text-align:center;
-    font-size: 16pt;
-    color:white
-  }
-
-  #cancel-link{
-    right: 10%;
-    top: -100%;
-  }
-}
-
-#confirm-app-header{
-  text-align:center;
-  font-size: 50pt;
-  color:white;
-}
-
-#select-a-band-text{
-  text-align:center;
-  font-size: 30pt;
-}
-
-/*mobile scaling for choose band for app */
-@media(max-width:550px){
-
-  #modal-wrapper-choose-band-for-app{
-    display:none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    height: 500px;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.8);
-    border-radius: 10px;
-    text-align: center;
-    z-index: 110;
-    overflow: hidden;
-  }
-
-  #confirm-app-header{
-    text-align:center;
-    font-size: 14pt;
-    color:white;
-  }
-
-  #selectDropBand {
-    margin-top: 5px;
-  }
-
-  #select-a-band-text{
-    text-align:center;
-    font-size: 12pt;
-  }
-
-  #modal-wrapper-choose-band-for-app{
-    width: 110%;
-  }
-}
-
-/*........................... Minh's Modal Edits................................ */
-
-@media(max-width: 1150px){
-  #confirm-app-header{
-    font-size: 30pt;
-  }
-}
-
-
-
-@media(max-width: 850px){
-  #confirm-app-header{
-    padding-top: 40px;
-  }
-  #choose-band-button{
-    margin-top: 60px;
-  }
-}
-
-
-@media(max-width: 650px){
-
-  #select-drop-band{
-    width: 200px !important;
-  }
-
 }
