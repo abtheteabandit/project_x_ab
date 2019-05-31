@@ -617,20 +617,6 @@ open gig Elements
     to {transform: scale(1)}
 }
 
-#loader-book{
-  display: none;
-  position: absolute;
-  margin-top: 150px;
-  margin-left: -255px;
-}
-
-#loader-cancel-booked-event{
-  display: none;
-  position: absolute;
-  margin-top: 150px;
-  margin-left: -255px;
-}
-
 /*
   carousel elements
 */
@@ -1239,17 +1225,7 @@ chat boxes
 }
 
 
-/*cancel modal */
-#modal-wrapper-cancel{
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 110;
-  background-color: rgba(0,0,0,0.4);
-}
+
 .modal-content-cancel {
   background-image: url("/assets/Home/modalbg.png");
   background-color: transparent;
@@ -1262,57 +1238,13 @@ chat boxes
   padding-bottom: 80px;
   color: white;
 }
-#cancel-text{
-  margin-top: 50px;
-  text-align: center;
-  font-size: 18pt;
-  width: 80%;
-  margin-left: 10%;
-}
+
 .modal-p{
   margin-top: 50px;
   text-align: center;
   font-size: 18pt;
   width: 80%;
   margin-left: 10%;
-}
-
-#modal-wrapper-report-absent-band{
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 110;
-  background-color: rgba(0,0,0,0.4);
-}
-
-#modal-wrapper-confirm-booking{
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 110;
-  background-color: rgba(0,0,0,0.4);
-}
-
-#confirm-cancel, #report-band{
-  margin-top: 40px;
-  width: 80%;
-  height: 60px;
-  margin-left: 10%;
-  border: 2px solid red;
-  border-radius: 10px;
-  text-align: center;
-  color: red;
-  background-color: rgba(0,0,0,0.8);
-}
-#confirm-cancel:hover, #report-band:hover{
-  cursor: pointer;
-  opacity: 0.6;
 }
 .cancel-close{
   position: inline;
@@ -1343,16 +1275,6 @@ chat boxes
   cursor: pointer;
 }
 
-#modal-wrapper-confirmation-code{
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 110;
-  background-color: rgba(0,0,0,0.4);
-}
 
 .confirm-modal-btn{
   margin-top: 40px;
@@ -1371,17 +1293,7 @@ chat boxes
   opacity: 0.6;
 }
 
-#confirmation-code-input{
-  width: 60%;
-  height: 60px;
-  padding: 8px;
-  text-align: center;
-  margin-left: 20%;
-  border: none;
-  background-color: rgba(0,0,0,0.8);
-  border-radius: 10px;
-  color: white;
-}
+
 
 #loader-page{
   position: absolute;
@@ -2092,28 +2004,6 @@ chat boxes
 }
 
 @media(max-width:550px){
-  #modal-wrapper-report-absent-band{
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 150%;
-    z-index: 110;
-    background-color: rgba(0,0,0,0.4);
-  }
-  #report-band-text{
-    font-size: 10pt;
-    margin-top: -50px;
-    text-align: center;
-    width: 80%;
-    margin-left: 10%;
-  }
-  #report-band{
-    margin-top: 15px;
-    width: 50%;
-    length: 150%;
-  }
   .modal-content-cancel {
     background-image: url(/assets/Home/modalbg.png);
     background-color: transparent;
@@ -2128,50 +2018,7 @@ chat boxes
   }
 }
 
-/*mobile rescaling for confirm modal*/
 @media(max-width:550px){
-  #modal-wrapper-confirm-booking {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 100%;
-    z-index: 110;
-    background-color: rgba(0,0,0,0.4);
-  }
-  #confirm-booking-text{
-    margin-top: -55px;
-    text-align: center;
-    font-size: 18pt;
-    width: 80%;
-    margin-left: 10%;
-  }
-  #confirm-booking{
-    height: 50px;
-    margin-left: 10%;
-    border: 2px solid #56dff0;
-    border-radius: 10px;
-    text-align: center;
-    color: #56dff0;
-    background-color: rgba(0,0,0,0.8);
-    margin-top: -9px;
-  }
-}
-
-@media(max-width:550px){
-  #confirmation-code-input{
-    width: 80%;
-    height: 35px;
-    padding: 4px;
-    text-align: center;
-    margin-left: 3%;
-    border: none;
-    background-color: rgba(0,0,0,0.8);
-    border-radius: 10px;
-    color: white;
-  }
-
   .confirm-modal-btn {
     margin-top: 2px;
     width: 80%;
@@ -2183,43 +2030,18 @@ chat boxes
     color: #56dff0;
     background-color: rgba(0,0,0,0.8);
   }
-
-  #modal-wrapper-confirmation-code{
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250%;
-    height: 250%;
-    z-index: 110;
-    background-color: rgba(0,0,0,0.4);
+  .modal-content-cancel {
+      background-image: url(/assets/Home/modalbg.png);
+      background-color: transparent;
+      background-size: contain;
+      background-clip: border-box;
+      background-repeat: no-repeat;
+      margin: 1%;
+      width: 40%;
+      height: 80%;
+      padding-bottom: 0px;
+      color: white;
   }
-
-  #confirmation-code-p{
-    font-size: 12pt;
-    margin-top: 0px;
-    text-align: center;
-    width: 75%;
-    margin-left: 3%;
-  }
-
-  #submit-confirmation-code{
-    height: 30px;
-  }
-
-.modal-content-cancel {
-    background-image: url(/assets/Home/modalbg.png);
-    background-color: transparent;
-    background-size: contain;
-    background-clip: border-box;
-    background-repeat: no-repeat;
-    margin: 1%;
-    width: 40%;
-    height: 80%;
-    padding-bottom: 0px;
-    color: white;
-}
-
   #close-cancel{
     width: 25%;
   }

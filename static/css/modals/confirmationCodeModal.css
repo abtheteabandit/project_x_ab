@@ -1,0 +1,59 @@
+#modal-wrapper-confirmation-code{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#confirmation-code-input{
+  width: 60%;
+  height: 60px;
+  padding: 8px;
+  text-align: center;
+  margin-left: 20%;
+  border: none;
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  color: white;
+}
+
+@media(max-width:550px){
+  #confirmation-code-input{
+    width: 80%;
+    height: 35px;
+    padding: 4px;
+    text-align: center;
+    margin-left: 3%;
+    border: none;
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 10px;
+    color: white;
+  }
+
+  #modal-wrapper-confirmation-code{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250%;
+    height: 250%;
+    z-index: 110;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  #confirmation-code-p{
+    font-size: 12pt;
+    margin-top: 0px;
+    text-align: center;
+    width: 75%;
+    margin-left: 3%;
+  }
+
+  #submit-confirmation-code{
+    height: 30px;
+  }
+}

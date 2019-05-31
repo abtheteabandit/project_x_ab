@@ -19,6 +19,9 @@
     <!-- External CSS -->
     <link rel="stylesheet" type="text/css" href="/css/control-center.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/cancelModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/confirmBookingModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/reportAbsentBandModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/linkApplicationModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/chooseBandForAppModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createBandModal.css">
@@ -47,7 +50,6 @@
 		</script>
   </head>
   <body onload="init();">
-    <!--done-->
     <div id="modal-wrapper-support" class="modal-support">
 
       <form class="modal-content-support animate">
@@ -63,16 +65,14 @@
       </form>
 
     </div>
-    <!--done-->
     <div id="modal-wrapper-confirmation-code">
-      <div  id="cancel-content" class="modal-content-cancel animate">
+      <div class="modal-content-cancel animate">
         <span onclick="document.getElementById('modal-wrapper-confirmation-code').style.display='none'" class="cancel-close" title="Close PopUp" id="close-cancel">&times;</span>
         <p id="confirmation-code-p" class="modal-p">Enter the confirmation code provided by the event host upon completion of this event. After both parties submit their confirmation codes, we will issue a payment to the account associated with this band profile.</p>
         <input id="confirmation-code-input"/>
         <input type="button" class="confirm-modal-btn" id="submit-confirmation-code" value="submit confirmation code"/>
       </div>
     </div>
-    <!--done-->
     <div id="modal-wrapper-cancel">
       <div  id="cancel-content" class="modal-content-cancel animate">
         <span onclick="document.getElementById('modal-wrapper-cancel').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
@@ -81,18 +81,16 @@
         <div id="loader-cancel-booked-event" class="loader"></div>
       </div>
     </div>
-    <!--done-->
     <div id="modal-wrapper-confirm-booking">
       <div  id="cancel-content" class="modal-content-cancel animate">
         <input type="hidden" name="bandID" />
         <input type="hidden" name="gigID" />
         <span onclick="document.getElementById('modal-wrapper-confirm-booking').style.display='none'" class="cancel-close" title="Close PopUp">&times;</span>
-        <p id="confirm-booking-text" class="modal-p">"Are you sure you want to book This Band With a Name for this event? You will be charged 5% of the price you set for this event right now. However, you choose to cancel this event you will be issued a full refund."</p>
+        <p id="confirm-booking-text" class="modal-p">Are you sure you want to book This Band With a Name for this event? You will be charged 5% of the price you set for this event right now. However, you choose to cancel this event you will be issued a full refund.</p>
         <input type="button" class="confirm-modal-btn" id="confirm-booking" value="confirm"/>
         <div id="loader-book" class="loader"></div>
       </div>
     </div>
-    <!--done-->
     <div id="modal-wrapper-report-absent-band">
       <div  id="cancel-content" class="modal-content-cancel animate">
         <input type="hidden" name="bandID" id="report-absent-band-bandID"/>
@@ -106,7 +104,6 @@
         <input type="button" id="report-band" value="submit report" onclick="handleReportFormSubmission()"/>
       </div>
     </div>
-    <!--done-->
     <div id="modal-wrapper-link-application">
       <div class="link-app-imgcontainer">
         <span class="close-link" onclick="document.getElementById('modal-wrapper-link-application').style.display='none'" title="Close PopUp">&times;</span>
@@ -120,7 +117,6 @@
         </div>
       </form>
     </div>
-    <!--done-->
     <div id="modal-wrapper-choose-band-for-app">
       <div class="cbfa-imgcontainer">
         <span onclick="document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'" class="close-cbfa" title="Close PopUp">&times;</span>
