@@ -36,7 +36,7 @@ const express = require('express'),
       redisStore = require('connect-redis')(session),
       bodyParser = require('body-parser'),
       cookieParser = require('cookie-parser');
-      //social media signin 
+      //social media signin
       passport = require('passport');
       Strategy = require('passport-facebook').Strategy;
 
@@ -77,21 +77,21 @@ app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(require('morgan')('combined'));
 
-//intialize and configure passport for 3rd party auth 
+//intialize and configure passport for 3rd party auth
 passport.use(new Strategy({
   clientID: 475851112957866,
   clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
   callbackURL: '/return'
 },
 function(accessToken, refreshToken, profile, cb) {
-  
+
   //todo: store this data in a session and the database
   console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
   console.log("refrech token: " + refreshToken)
   console.log("access token: " + accessToken)
   console.log("id: " + profile.id)
   console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-  
+
   return cb(null, profile);
 }));
 
@@ -139,6 +139,7 @@ require('./routes/newAccount.js')(router, app); //for creating stripe connected 
 require('./routes/newCustomer.js')(router, app); // for creating chareable customers  (gigs)
 require('./routes/meta-data.js')(router, app) //for exporting meta-data
 require('./routes/support.js')(router, app) //for letting customers email us with issues.
+require('./routes/promotions.js')(router, app) //for letting users find contacts, create promos and post them
 
 
 //for routing messaing and emiting the message:
