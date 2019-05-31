@@ -173,7 +173,7 @@ router.post('/promotion', (req, res)=>{
   else{
     var {name, imgURL, caption, handles, location, mode, medias, preferences} = req.body;
     database.connect(db=>{
-      db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'promotion':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias, 'preferences':preferences}}}, (err2, res2)=>{
+      db.db('promotions').collection('promotions').updateOne({'creator':req.session.key}, {$push:{'promotions':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias, 'preferences':preferences}}}, (err2, res2)=>{
         if (err2){
           console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
           res.status(500).end();
@@ -201,9 +201,9 @@ router.get('/search_promos', (req, res)=>{
     req.status(401).end();
   }
   else{
-    var {lat, lng, searchText} = req.query;
+    var {lat, lng, searchText, promoSearchingAs} = req.query;
     database.connect(db=>{
-      matching.findCrossPromoters(req.session.key, lat, lng, searchText, db, errCB=>{
+      matching.findCrossPromoters(req.session.key, promoSearchingAs, lat, lng, searchText, db, errCB=>{
         console.log('There was an error : ' + errCB);
         if (errCB=="Internal Server Error"){
           res.status(200).json({success:false, data:'Sorry, there was an error on our end. Please try searching again. If this error persits please notify us via our support tab on the Banda "b"'});
