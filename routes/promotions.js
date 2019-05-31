@@ -2,7 +2,7 @@ module.exports = router =>{
 
   const database = require ('../database'),
         matching = require('../algs/matching.js');
-  
+
   //request to make a cross promotion
   router.post('/cross_promote', (req, res)=>{
     //if the user does not have a session
@@ -121,7 +121,7 @@ module.exports = router =>{
                   res.status(200).send('Sorry, it seems that you and ' +senderName+ ' already have eachother in your contacts');
                   db.close();
                 }
-                //add to acceptor's contacts if need by
+                //add to acceptor's contacts if need be
                 else if (senderHasAcceptor && (!acceptorHasSender)){
                   db.db('users').collection('users').updateOne({'username':acceptorName}, {$push:{'contacts':{'name':senderName, 'id':sender['_id']}}}, (err4, res4)=>{
                     if (err4){
@@ -437,9 +437,9 @@ router.post('/add_pull', (req, res)=>{
 
   //route to get request for getting a facebook token, redirects to predefined passport callback in server.js
   router.get('/login/facebook', passport.authenticate('facebook', { scope: [
-    'user_friends', 
-    'manage_pages', 
-    'user_location', 
+    'user_friends',
+    'manage_pages',
+    'user_location',
     'user_likes',
     'user_posts',
     'user_age_range',
@@ -460,15 +460,15 @@ router.post('/add_pull', (req, res)=>{
     'ads_management',
     'manage_pages',
     'business_management']}));
-  
+
   //route redirect from passport callback
-  router.get('/return', 
+  router.get('/return',
     passport.authenticate('facebook', { failureRedirect: '/facebookLoginFailed' }),
     function(req, res) {
       //redirect to success route
       res.redirect('/facebookLoginSuccess');
     });
-  
+
   //route for successful login
   router.get('/facebookLoginSuccess', (req, res)=>{
     res.send("success")
@@ -485,13 +485,13 @@ router.post('/add_pull', (req, res)=>{
       database.connect(db=>{
         //store the promotion in the database
         db.db('promotions').collection('discounts').insertOne({
-          'name':name, 
-          'details':details, 
-          'venue':venue, 
-          'date':date, 
-          'location':location, 
-          'medias':medias, 
-          'code':code, 
+          'name':name,
+          'details':details,
+          'venue':venue,
+          'date':date,
+          'location':location,
+          'medias':medias,
+          'code':code,
           'promoNumber':promoNumber}, (err2, res2)=>{
           if (err2){
             console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
@@ -538,7 +538,7 @@ router.post('/add_pull', (req, res)=>{
           console.log(result);
           const customerCode = makeid(7)
           const code = result[0].code
-          
+
           //store the customers code in the db with the promotion code to look up the promo later
           db.db('promotions').collection('customer_discounts').insertOne({
             'customerCode': customerCode,
