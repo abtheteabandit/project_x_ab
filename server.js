@@ -36,6 +36,9 @@ const express = require('express'),
       redisStore = require('connect-redis')(session),
       bodyParser = require('body-parser'),
       cookieParser = require('cookie-parser');
+      //social media signin 
+      passport = require('passport');
+      Strategy = require('passport-facebook').Strategy;
 
 var client = redis.createClient();
 var app = express();
@@ -66,12 +69,46 @@ app.use(session({
 
 console.info("figure out why cookies aren't working");
 
-// not sure what these do
+//add dependencies to express app
 app.use(cookieParser("lol my secret $c5%ookie parser 0nu@mber thingy 12038!@"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true }));
+app.use(require('morgan')('combined'));
+
+//intialize and configure passport for 3rd party auth 
+passport.use(new Strategy({
+  clientID: 475851112957866,
+  clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
+  callbackURL: '/return'
+},
+function(accessToken, refreshToken, profile, cb) {
+  
+  //todo: store this data in a session and the database
+  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+  console.log("refrech token: " + refreshToken)
+  console.log("access token: " + accessToken)
+  console.log("id: " + profile.id)
+  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+  
+  return cb(null, profile);
+}));
+
+//serlize a user when a session starts
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+  });
+
+//deserlialize a user when a session ends
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+  });
+
+// Initialize Passport and restore authentication state, if any, from the session.
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 /** ROUTES **/
 
