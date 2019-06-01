@@ -41,7 +41,7 @@ module.exports = router =>{
           console.log('Default source is: ' + customer.default_source);
           database.connect(db=>{
             //update the stripe and user collections with the new customer
-            db.db('users').collection('stripe_customers').updateOne({'username':username},{$set:{'username':username, 'stripe_id':cus_id, 'charges':[], 'src_id':card_token}}, {$upsert:true}, (err20, res4)=>{
+            db.db('users').collection('stripe_customers').updateOne({'username':username},{$set:{'username':username, 'stripe_id':cus_id, 'charges':[], 'src_id':card_token}}, {upsert:true}, (err20, res4)=>{
               if (err20){
                 console.log('There was an error inserting/ updating the customer account for user: ' + req.session.key + ' Error: ' + err20);
                 res.status(500).end();
