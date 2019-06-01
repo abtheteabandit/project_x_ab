@@ -63,9 +63,9 @@ module.exports = router =>{
        from: 'banda.confirmation@gmail.com', // our address
        to: user_on.email, // who we sending to
        subject: our_subject, // Subject line
-       text: "Hello, "+user_on.username+". Hope you're having a wonderful day, enjoying the music of life. Here are some updates from your team at Banda about your community and platform: \n"+email_body+"\n Let's keep creating the future of music. \n--Sincerely, your team at Banda.", // plain text body
+       text: "Hello, "+user_on.username+". Hope you're having a wonderful day. Here are some updates from your team at Banda about your community and platform: \n"+email_body+"\n Let's keep creating the future of music. \n--Sincerely, your team at Banda.", // plain text body
        html: '' // html body
-     };
+    };
 
    transporter.sendMail(mailOptions, (error, info) => {
        if (error) {
