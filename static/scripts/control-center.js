@@ -4259,15 +4259,9 @@ function prepareCardElement(){
   //https://dashboard.stripe.com/test/dashboard -> dashboard
   //https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect
   //https://stripe.com/docs/connect -> doc for connection
-<<<<<<< HEAD
-  //pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz
-  //pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b
-  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
-=======
 
   var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
   // var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
->>>>>>> 5847071d32384aa05d258842fa7c9be151b3bc35
 
   // Create an instance of Elements.
   var elements = stripe.elements();
