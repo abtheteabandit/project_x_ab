@@ -71,6 +71,11 @@ const database = require('../database.js')
                 db.close();
               }
               else{
+                if (band.upcomingGigs.length!=0){
+                  console.log('Band with id: ' + id + 'has upcoming gigs so no delete');
+                  res.status(200).send('Sorry, you cannot delete a band that has been booked for events. You can cancel on these events first and then click delete.')
+                  db.close();
+                }
                 db.db('bands').collection('bands').deleteOne({'_id':database.objectId(id)}, (err, res2)=>{
                   if (err){
                     console.log('There was an error deleteing band with id: ' + id);
@@ -78,9 +83,19 @@ const database = require('../database.js')
                     db.close();
                   }
                   else{
-                    console.log('deleted band: ' + id);
-                    res.status(200).send('We have deleted this band from Banda!');
-                    db.close();
+                    db.db('gigs').collection('gigs').update({'bandFor':id}, {$set:{'isFilled':false, 'bandFor':null}}, (err10, res10)=>{
+                      if (err10){
+                        console.log('There was an error removing band with id: ' + id +' from gigs: Error: ' + err10);
+                        res.status(500).end();
+                        db.close()
+                      }
+                      else{
+                        console.log('deleted band: ' + id);
+                        res.status(200).send('We have deleted this band from Banda!');
+                        db.close();
+                      }
+                    });
+
                   }
                 });
               }
@@ -102,6 +117,11 @@ const database = require('../database.js')
                 db.close();
               }
               else{
+                if (theGig.isFilled){
+                  console.log('Cannot delete a filled gig.');
+                  res.status(200).send('Sorry, you cannot delete an event which has booked an artist. You can cancel on the artist first, then click delete again. Thank you.');
+                  db.close();
+                }
                 db.db('gigs').collection('gigs').deleteOne({'_id':database.objectId(id)}, (err2, res3)=>{
                   if (err2){
                     console.log('There was an error deleteing gig with id: ' + id);
@@ -109,6 +129,41 @@ const database = require('../database.js')
                     db.close();
                   }
                   else{
+                    var apps = []
+                    for (var an_app in theGig.applications){
+                      apps.push(theGig.applications[an_app]);
+                    }
+                    apps.forEach(function(applicant_id)=>{
+                      db.db('bands').collection('bands').findOne({'_id':database.objectId(applicant_id))}, (err11, res11)=>{
+                        if (err11){
+                          console.log('There was an error fidning band with id:' + applicant_id + ' Error was: ' + err11 );
+                          res.status(500).end();
+                          db.close();
+                        }
+                        else{
+                          var stillAppliedTo = [];
+                          for (var applied_gig in res11.appliedGigs){
+                            if (res11.appliedGigs[applied_gig][0]==id){
+                                res11.appliedGigs[applied_gig][1]=true;
+                                stillAppliedTo.push(res11.appliedGigs[applied_gig]);
+                            }
+                            else{
+                              stillAppliedTo.push(res11.appliedGigs[applied_gig]);
+                            }
+                          }
+                          db.db('bands').collection('bands').updateOne({'_id':database.objectId(applicant_id)}, {$set:{'appliedGigs':stillAppliedTo}}, (err12, res12)=>{
+                            if (err12){
+                              console.log('There was an error updating band with id: ' + applicant_id + ' Error: ' + err12);
+                              res.status(500).end();
+                              db.close();
+                            }
+                            else{
+                              console.log('Updated band with id: ' + applicant_id + ' becuase their applied gig: ' + id + ' was deleted.');
+                            }
+                          });
+                        }
+                      });
+                    });
                     console.log('deleted gig: ' + id);
                     res.status(200).send('We have deleted this event from Banda!');
                     db.close();
