@@ -1138,7 +1138,7 @@ chat boxes
   cursor: pointer;
 }
 
-.delete-band-button{
+.delete-btn{
   background-color: rgba(0,0,0,0.8);
   border-radius: 10px;
   height: 40px;

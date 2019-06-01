@@ -42,7 +42,15 @@ class OpenGig{
     this.titleDiv = document.createElement("div");
     this.titleReal = document.createElement("h3");
     this.titleReal.innerHTML = gig.name;
+    this.deleteBtn = document.createElement("input");
+    this.deleteBtn.type = "button";
+    this.deleteBtn.className = "delete-btn";
+    this.deleteBtn.value = "delete this event";
+    this.deleteBtn.addEventListener("click",function(){
+      presentDeleteModal("gig",gig.name,gig._id);
+    });
     this.titleDiv.append(this.titleReal);
+    this.titleDiv.append(this.deleteBtn);
     this.container = document.createElement("div");
     this.container.className = "open-gig";
     this.info = document.createElement("div");
@@ -776,7 +784,7 @@ class BandSection{
       this.deleteButton = document.createElement("input");
       this.deleteButton.type = 'button';
       this.deleteButton.value = "delete band";
-      this.deleteButton.className = "delete-band-button";
+      this.deleteButton.className = "delete-btn";
       this.deleteButton.addEventListener("click",function(){
         console.log(band.name);
         presentDeleteModal("band",band.name,band._id);
