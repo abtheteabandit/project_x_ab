@@ -3116,7 +3116,7 @@ function createBand(){
 
 }
 
-function sendBandToDB(lat, lng, myBand){
+function andToDB(lat, lng, myBand){
   var name = myBand['name'];
   var zipcode = myBand['zipcode'];
   var maxDist = myBand['maxDist'];
