@@ -83,7 +83,36 @@ const database = require('../database.js')
                     db.close();
                   }
                   else{
-                    var all_gigs=[];
+                    band.appliedGigs.forEach(function(a_gig){
+                      db.db('gigs').collection('gigs').findOne({'_id':database.objectId(a_gig[0])}, (err15, another_gig)=>{
+                        if (err15){
+                          console.log('There was an error finding gig: '+ a_gig[0] + 'Error: ' + err15);
+                          res.status(500).end();
+                          db.close();
+                        }
+                        else{
+                          var all_apps = [];
+                          for (var x in another_gig.applicaations){
+                            if (another_gig.applicaations[x]==id){
+
+                            }
+                            else{
+                              all_apps.push(another_gig.applicaations[x]);
+                            }
+                          }
+                          db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(a_gig[0])}, {$set:{'applications':all_apps}}, (err16, res16)=>{
+                            if (err16){
+                              console.log('There was an error updating gig: '+ a_gig[0] + 'Error: ' + err16);
+                              res.status(500).end();
+                              db.close();
+                            }
+                            else{
+
+                            }
+                          });
+                        }
+                      });
+                    });
                     db.db('gigs').collection('gigs').update({'bandFor':id}, {$set:{'isFilled':false, 'bandFor':null}}, (err10, res10)=>{
                       if (err10){
                         console.log('There was an error removing band with id: ' + id +' from gigs: Error: ' + err10);
@@ -135,11 +164,7 @@ const database = require('../database.js')
                       apps.push(theGig.applications[an_app]);
                     }
                     apps.forEach(function(applicant_id){
-<<<<<<< HEAD
                       db.db('bands').collection('bands').findOne({'_id':database.objectId(applicant_id))}, (err11, res11)=>{
-=======
-                      db.db('bands').collection('bands').findOne({'_id':database.objectId(applicant_id)}, (err11, res11)=>{
->>>>>>> 999a65e18333e803ee944fa1efe12f47a0b8a639
                         if (err11){
                           console.log('There was an error fidning band with id:' + applicant_id + ' Error was: ' + err11 );
                           res.status(500).end();
