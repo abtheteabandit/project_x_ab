@@ -587,7 +587,48 @@ router.post('/add_pull', (req, res)=>{
 
   //todo: write a route to verify a customers code with a code base in the promotionis db
 
+  router.get('/user_has_socials', (req, res)=>{
+    if (!req.session.key){
+      console.log('No logged in user tried to see if it has socials');
+      req.status(404).end();
+    }
+    if (!req.query){
+      console.log('user_has_socials had no query');
+      req.status(401).end();
+    }
+    else{
+      database.connect(db=>{
+        db.db('users').collection('users').findOne({'username':req.session.key}, (err1, ourUser)=>{
+          if (err1){
+            console.log('there was an error finding user: ' + req.session.key+' Error: ' + err1);
+            res.status(500).json({'success':false, 'data':null});
+            db.close();
+          }
+          else{
+            var socials = {'twitter':false, 'facebook':false, 'instagram':false, 'snapchat':false};
+            if (ourUser.hasOwnProperty('twitter')){
+              socials['twitter']=true;
+            }
+            if (ourUser.hasOwnProperty('facebook')){
+              socials['facebook']=true;
+            }
+            if (ourUser.hasOwnProperty('instagram')){
+              socials['instagram']=true;
+            }
+            if (ourUser.hasOwnProperty('snapchat')){
+              socials['snapchat']=true;
+            }
+            res.status(200).json('success':true, 'data':socials);
+            db.close();
+          }
+        });
+      }, dbErr=>{
+        console.warn("Couldn't connect to database: " + err)
+        res.status(500).json({'success':false, 'data':null});
+      });
+    }
 
+  });
 
 
 

@@ -81,6 +81,7 @@ module.exports = router =>{
           }
         }, err=>{
           console.log('There was an error connectiong to mongo: ' + err);
+          res.status(500).end();
         })
       }
     }
