@@ -87,7 +87,7 @@ function parseURL(url){
    var textForSearchInput = queries[0];
    textForSearchInput = decodeURI(textForSearchInput);
    textForSearchInput = textForSearchInput.replace("query=","");
-   textForSearchInput = textForSearchInput.substring(1,textForSearchInput.length);
+   // textForSearchInput = textForSearchInput.substring(1,textForSearchInput.length);
    document.getElementById("search_input").value = textForSearchInput;
    for( i = 0; i < queries.length; i++ ) {
        split = queries[i].split('=');
