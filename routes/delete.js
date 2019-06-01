@@ -133,8 +133,8 @@ const database = require('../database.js')
                     for (var an_app in theGig.applications){
                       apps.push(theGig.applications[an_app]);
                     }
-                    apps.forEach(function(applicant_id)=>{
-                      db.db('bands').collection('bands').findOne({'_id':database.objectId(applicant_id))}, (err11, res11)=>{
+                    apps.forEach(function(applicant_id){
+                      db.db('bands').collection('bands').findOne({'_id':database.objectId(applicant_id)}, (err11, res11)=>{
                         if (err11){
                           console.log('There was an error fidning band with id:' + applicant_id + ' Error was: ' + err11 );
                           res.status(500).end();
