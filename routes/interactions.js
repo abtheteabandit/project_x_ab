@@ -30,6 +30,7 @@ module.exports = router => {
           db.close();
         }
         else{
+          console.log("CONNECETD ACCT RES: " + JSON.stringify(connect_acct_res));
           if (connect_acct_res==null || connect_acct_res.length==0){
             res.status(200).send('You must add bank account information before your band can apply to gigs. This allows Banda to transfer money directly to your account. We will never store this information in anyway. We do this to simplify the proccess for venues and to make sure you always get what you deserve.');
             db.close();
