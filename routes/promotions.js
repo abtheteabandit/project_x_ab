@@ -618,7 +618,7 @@ router.post('/add_pull', (req, res)=>{
             if (ourUser.hasOwnProperty('snapchat')){
               socials['snapchat']=true;
             }
-            res.status(200).json('success':true, 'data':socials);
+            res.status(200).json({'success':true, 'data':socials});
             db.close();
           }
         });
