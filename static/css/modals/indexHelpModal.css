@@ -1,5 +1,5 @@
 #modal-wrapper-index-help{
-  z-index: 5;
+  z-index: 115;
   display: none;
   position: fixed;
   left: 0;
@@ -68,9 +68,9 @@
 
 @media(max-width: 1100px){
   .modal-content-help {
-    margin-top: 100px;
+    margin-top: 30px;
     width: 80%;
-    height: 70%;
+    height: 470px;
   }
   .index-help-h1{
     font-size: 30pt;
@@ -83,9 +83,21 @@
   }
 }
 
+@media(max-width: 650px){
+  .index-help-h1{
+    font-size: 27pt;
+  }
+  .index-help-h2{
+    font-size: 19pt;
+  }
+  .index-help-p{
+    font-size: 13pt;
+  }
+}
+
 @media(max-width: 600px){
   .modal-content-help {
-    height: 70%;
+    height: 550px;
   }
   .index-help-h1{
     font-size: 26pt;
@@ -104,8 +116,8 @@
   }
 }
 
-@media(max-width: 350px){
+@media(max-width: 375px){
   .modal-content-help{
-    height: 80%;
+    height: 600px;
   }
 }
