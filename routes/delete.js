@@ -4,7 +4,13 @@ const database = require('../database.js')
 
 //post request to delete objects for the database
   router.post('/admin_delete' ,(req, res)=>{
-    var {mode} = req.body;
+    var {mode, username, password} = req.body;
+    if (username != 'BANDA_IS_GOAT'){
+      res.status(404).end();
+    }
+    if (password != 'BIG_TING_BADADDADA'){
+      res.status(404).end();
+    }
     database.connect(db=>{
       //delete a gig
       if (mode=='gigs'){
@@ -65,6 +71,7 @@ const database = require('../database.js')
               db.close();
             }
             else{
+              console.log('Found band wit id: ' + id + ' BAnd: ' + JSON.stringify(band));
               if (band.creator != req.session.key){
                 console.log('*****************SOMEONE IS TRYING TO HACK BANDA!******************** USERNAME: ' + req.session.key);
                 res.status(200).send('You can only delete bands you have created, nice try ;).');
@@ -76,6 +83,7 @@ const database = require('../database.js')
                   res.status(200).send('Sorry, you cannot delete a band that has been booked for events. You can cancel on these events first and then click delete.')
                   db.close();
                 }
+                console.log('BAND DOES NOT HAVE UPCOMING GIgs');
                 db.db('bands').collection('bands').deleteOne({'_id':database.objectId(id)}, (err, res2)=>{
                   if (err){
                     console.log('There was an error deleteing band with id: ' + id);
@@ -84,6 +92,7 @@ const database = require('../database.js')
                   }
                   else{
                     band.appliedGigs.forEach(function(a_gig){
+                      console.log('APPLIED GIG: ' + JSON.stringify(a_gig));
                       db.db('gigs').collection('gigs').findOne({'_id':database.objectId(a_gig[0])}, (err15, another_gig)=>{
                         if (err15){
                           console.log('There was an error finding gig: '+ a_gig[0] + 'Error: ' + err15);
@@ -92,12 +101,12 @@ const database = require('../database.js')
                         }
                         else{
                           var all_apps = [];
-                          for (var x in another_gig.applicaations){
-                            if (another_gig.applicaations[x]==id){
+                          for (var x in another_gig.applications){
+                            if (another_gig.applications[x]==id){
 
                             }
                             else{
-                              all_apps.push(another_gig.applicaations[x]);
+                              all_apps.push(another_gig.applications[x]);
                             }
                           }
                           db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(a_gig[0])}, {$set:{'applications':all_apps}}, (err16, res16)=>{
@@ -125,7 +134,6 @@ const database = require('../database.js')
                         db.close();
                       }
                     });
-
                   }
                 });
               }
