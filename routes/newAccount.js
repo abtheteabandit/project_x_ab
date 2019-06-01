@@ -69,7 +69,7 @@ module.exports = router =>{
             //connect and store in the db
             database.connect(db=>{
               //update users and stripe accounts
-                db.db('users').collection('stripe_users').insertOne({'username':req.session.key, 'stripe_connected_account_id':stripe_id, 'payouts':[]}, {$upsert:true}, (err20, res4)=>{
+                db.db('users').collection('stripe_users').updateOne({'username':req.session.key},{$set:{'username':req.session.key, 'stripe_connected_account_id':stripe_id, 'payouts':[]}}, {$upsert:true}, (err20, res4)=>{
                     if (err20){
                       console.log('There was an error upserting a connected bank account for user: ' + req.session.key + ' Error: ' + err20);
                       res.status(500).end();
