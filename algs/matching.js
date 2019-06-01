@@ -183,7 +183,7 @@ module.exports = {
                //check the distance is within range
                 var distScore = scoreOnDist(myBand.maxDist, theGig.lat, theGig.lng, myBand.lat, myBand.lng);
                 console.log("dist score is : " + distScore);
-                var minDiff = scoreOnDates(myBand.openDates, theGig.date, theGig.startTime, theGig.endTime);
+                var minDiff = scoreOnDates(myBand.openDates, theGig.date, theGig.startTime, theGig.endTime, theGig.day);
                 var timeDiff = minDiff / timeEqualizer;
                 var timeScore= -timeDiff*timeMult;
                 console.log("time score is : " + timeScore);
@@ -273,7 +273,7 @@ module.exports = {
               var priceScore = (-(priceDiff/priceEQ) * priceMult);
 
               //find the difference in time
-              var minDiff = scoreOnDates(theBand.openDates, myGig.date, myGig.startTime, myGig.endTime);
+              var minDiff = scoreOnDates(theBand.openDates, myGig.date, myGig.startTime, myGig.endTime, myGig.day);
               var timeDiff = (minDiff) / timeEqualizer;
 
               //find the difference in score
@@ -423,7 +423,7 @@ module.exports = {
             }
           }
         }
-        //add all matches 
+        //add all matches
         queryGigsToScore.push([theGig,numMatches]);
       }
       //sort all of the matches
@@ -501,7 +501,7 @@ module.exports = {
     for (var key in bandOpenDates){
       var bandDay = bandOpenDates[key][0];
       //id the days dont match continue
-      if (!(bandDay == gayDay)){
+      if (!(bandDay == gigDay)){
         continue;
       }
       //intialize new dates
@@ -557,7 +557,7 @@ module.exports = {
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c;
 
-    //return the negated difference 
+    //return the negated difference
     d /= 1.60934;
     if (myBandMaxDist<d){
       return -d*100;
