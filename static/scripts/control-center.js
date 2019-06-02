@@ -2514,6 +2514,7 @@ var callbackStepper = 0;
 
 function updateBand(id, query){
   $.post('/updateBand', {'id':id, 'query':query}, result =>{
+    console.log('RESULT FROM UPDATE BAND: ' + result);
     alert('Changes Saved');
     document.location.reload();
   });
@@ -4537,7 +4538,7 @@ function uploadVideo(band){
     return;
   }
   var formdata_video = new FormData();
-  formdata.append('videoSample', videoSample);
+  formdata_video.append('videoSample', videoSample);
   $.ajax({
     url: '/uploadVideoSample',
     data: formdata_video,
@@ -4545,6 +4546,7 @@ function uploadVideo(band){
     processData: false,
     type: 'POST',
     'success': function(data){
+      alert(data);
       if(data=='Wrong mimeType'){
         alert('Sorry, you must submit a valid .mp4 file to upload a video.');
         return;
