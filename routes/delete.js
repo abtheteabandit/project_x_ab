@@ -173,6 +173,7 @@ const database = require('../database.js')
                       for (var an_app in theGig.applications){
                         apps.push(theGig.applications[an_app]);
                       }
+                      var i = 0;
                       apps.forEach(function(applicant_id){
                         db.db('bands').collection('bands').findOne({'_id':database.objectId(applicant_id)}, (err11, res11)=>{
                           if (err11){
@@ -192,7 +193,8 @@ const database = require('../database.js')
                                 stillAppliedTo.push(res11.appliedGigs[applied_gig]);
                               }
                             }
-                            db.db('bands').collection('bands').update({'_id':database.objectId(applicant_id)}, {$set:{'appliedGigs':stillAppliedTo}}, (err12, res12)=>{
+                            i=i+1;
+                            db.db('bands').collection('bands').updateOne({'_id':database.objectId(applicant_id)}, {$set:{'appliedGigs':stillAppliedTo}}, (err12, res12)=>{
                               if (err12){
                                 console.log('There was an error updating band with id: ' + applicant_id + ' Error: ' + err12);
                                 res.status(500).end();
@@ -200,14 +202,16 @@ const database = require('../database.js')
                               }
                               else{
                                 console.log('Updated band with id: ' + applicant_id + ' becuase their applied gig: ' + id + ' was deleted.');
+                                if (i==apps.length-1){
+                                  console.log('deleted gig: ' + id);
+                                  res.status(200).send('We have deleted this event from Banda!');
+                                  db.close();
+                                }
                               }
                             });
                           }
                         });
                       });
-                      console.log('deleted gig: ' + id);
-                      res.status(200).send('We have deleted this event from Banda!');
-                      db.close();
                     }
                   });
                 }
