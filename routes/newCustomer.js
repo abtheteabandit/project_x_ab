@@ -59,8 +59,7 @@ module.exports = router =>{
                   db.close();
                 }
               });
-
-            })
+            });
           }, err3=>{
             console.log('There was an error conencting to mongo: ' + err3);
             res.status(500).end();
