@@ -161,53 +161,55 @@ const database = require('../database.js')
                   res.status(200).send('Sorry, you cannot delete an event which has booked an artist. You can cancel on the artist first, then click delete again. Thank you.');
                   db.close();
                 }
-                db.db('gigs').collection('gigs').deleteOne({'_id':database.objectId(id)}, (err2, res3)=>{
-                  if (err2){
-                    console.log('There was an error deleteing gig with id: ' + id);
-                    res.status(500).end();
-                    db.close();
-                  }
-                  else{
-                    var apps = []
-                    for (var an_app in theGig.applications){
-                      apps.push(theGig.applications[an_app]);
+                else{
+                  db.db('gigs').collection('gigs').deleteOne({'_id':database.objectId(id)}, (err2, res3)=>{
+                    if (err2){
+                      console.log('There was an error deleteing gig with id: ' + id);
+                      res.status(500).end();
+                      db.close();
                     }
-                    apps.forEach(function(applicant_id){
-                      db.db('bands').collection('bands').findOne({'_id':database.objectId(applicant_id)}, (err11, res11)=>{
-                        if (err11){
-                          console.log('There was an error fidning band with id:' + applicant_id + ' Error was: ' + err11 );
-                          res.status(500).end();
-                          db.close();
-                        }
-                        else{
-                          var stillAppliedTo = [];
-                          for (var applied_gig in res11.appliedGigs){
-                            if (res11.appliedGigs[applied_gig][0]==id){
-                                res11.appliedGigs[applied_gig][1]=true;
-                                stillAppliedTo.push(res11.appliedGigs[applied_gig]);
-                            }
-                            else{
-                              stillAppliedTo.push(res11.appliedGigs[applied_gig]);
-                            }
+                    else{
+                      var apps = []
+                      for (var an_app in theGig.applications){
+                        apps.push(theGig.applications[an_app]);
+                      }
+                      apps.forEach(function(applicant_id){
+                        db.db('bands').collection('bands').findOne({'_id':database.objectId(applicant_id)}, (err11, res11)=>{
+                          if (err11){
+                            console.log('There was an error fidning band with id:' + applicant_id + ' Error was: ' + err11 );
+                            res.status(500).end();
+                            db.close();
                           }
-                          db.db('bands').collection('bands').updateOne({'_id':database.objectId(applicant_id)}, {$set:{'appliedGigs':stillAppliedTo}}, (err12, res12)=>{
-                            if (err12){
-                              console.log('There was an error updating band with id: ' + applicant_id + ' Error: ' + err12);
-                              res.status(500).end();
-                              db.close();
+                          else{
+                            console.log('Got a band that was applied to our deleted gig: ' + JSON.stringify(res11));
+                            var stillAppliedTo = [];
+                            for (var applied_gig in res11.appliedGigs){
+                              if (res11.appliedGigs[applied_gig][0]==id){
+                                  console.log('Skipping our deleted gig: '+id+', going to remove it from band with id:'+applicant_id);
+                              }
+                              else{
+                                stillAppliedTo.push(res11.appliedGigs[applied_gig]);
+                              }
                             }
-                            else{
-                              console.log('Updated band with id: ' + applicant_id + ' becuase their applied gig: ' + id + ' was deleted.');
-                            }
-                          });
-                        }
+                            db.db('bands').collection('bands').updateOne({'_id':database.objectId(applicant_id)}, {$set:{'appliedGigs':stillAppliedTo}}, (err12, res12)=>{
+                              if (err12){
+                                console.log('There was an error updating band with id: ' + applicant_id + ' Error: ' + err12);
+                                res.status(500).end();
+                                db.close();
+                              }
+                              else{
+                                console.log('Updated band with id: ' + applicant_id + ' becuase their applied gig: ' + id + ' was deleted.');
+                              }
+                            });
+                          }
+                        });
                       });
-                    });
-                    console.log('deleted gig: ' + id);
-                    res.status(200).send('We have deleted this event from Banda!');
-                    db.close();
-                  }
-                });
+                      console.log('deleted gig: ' + id);
+                      res.status(200).send('We have deleted this event from Banda!');
+                      db.close();
+                    }
+                  });
+                }
               }
             }
           });
