@@ -184,6 +184,7 @@ const database = require('../database.js')
                             console.log('Got a band that was applied to our deleted gig: ' + JSON.stringify(res11));
                             var stillAppliedTo = [];
                             for (var applied_gig in res11.appliedGigs){
+                               console.log('gig id is: ' + res11.appliedGigs[applied_gig][0] + ' and our del gig is: ' + id);
                               if (res11.appliedGigs[applied_gig][0]==id){
                                   console.log('Skipping our deleted gig: '+id+', going to remove it from band with id:'+applicant_id);
                               }
