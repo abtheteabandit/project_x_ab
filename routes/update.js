@@ -200,9 +200,68 @@ module.exports = router => {
         });
       }, err=>{
         console.log('There was an error connecting to mongo here is error: ' + err);
+        res.status(500).end();
       });
 
     }
   });
 
-}
+  router.get('/has_video', (req, res)=>{
+    if (!req.query){
+      console.log('No body sent!');
+      res.status(400).end();
+    }
+    if (!req.session.key){
+      console.log('None logged in user tried to update a user');
+      res.status(403).end();
+    }
+    else{
+      var {mode, id} = req.query;
+      database.connect(db=>{
+        switch(mode){
+          case 'bands':
+          db.db('bands').collection('bands').findOne({'_id':database.ObjectId(id)}, (bandErr, band)=>{
+            if (bandErr){
+              console.log('THere was an error finding band with id: ' + id+ ' Error: ' + bandErr);
+              res.status(500).end();
+              db.close();
+            }
+            else{
+              if (band.videoSample == null){
+                console.log('Band: '+id+' does not have a video sample (null).')
+                res.status(200).json({'success':true, 'data':false});
+                db.close();
+              }
+              else{
+                if (band.videoSample.length==0){
+                  console.log('Band: '+id+' does not have a video sample (length was 0).');
+                  res.status(200).json({'success':true, 'data':false});
+                  db.close();
+                }
+                else{
+                  console.log('Band: '+id+' has video sample.')
+                  res.status(200).json({'success':true, 'data':true});
+                  db.close();
+                }
+              }
+            }
+          });
+          break;
+          case 'gigs':
+          console.log('Mode was: '+mode+' Which we do not support videos for yet');
+          res.status(200).json('success':false, 'data':'We do not support event videos yet');
+          db.close();
+          break;
+          default:
+          console.log('Unrecogonzied mode: ' + mode);
+          res.status(403).end();
+          db.close();
+          break;
+        }
+      }, dbErr=>{
+        console.log('There was an error connecting to mongo here is error: ' + dbErr);
+        res.status(500).end();
+      })
+    }
+  });
+} // end of module exports
