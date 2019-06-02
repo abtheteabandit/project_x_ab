@@ -7,7 +7,7 @@ module.exports = router => {
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
     }
-    
+
     //query the database
     database.connect(db=>{
       var {id, query} = req.body;
@@ -47,15 +47,15 @@ module.exports = router => {
       //update the band in the db
       db.db('bands').collection("bands").updateOne({'_id':ObjectId(id)}, newvalues, result=>{
         console.log("updated band " + id);
-        res.status(200).end();
+        res.status(200).send('We have updated this "band".');
         db.close();
       }, error=>{
         console.log("There was an error: " + err);
-        res.status(500).send("Internal server error").end();
+        res.status(500).send("Internal server error");
         db.close();
       });
     }, err=>{
-      console.log("Couldn't connec to mongo with error: "+err);
+      console.log("Couldn't connect to mongo with error: "+err);
       res.status(500).end();
     });
   });

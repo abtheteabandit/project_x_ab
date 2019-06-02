@@ -4487,3 +4487,29 @@ function delete_object(id, mode){
     }
   });
 }
+// VIDEO UPLOAD:
+
+function uploadVideo(band){
+  var videoSample = $("#new-video")[0].files[0];
+  if (videoSample == null){
+    alert('Sorry, you must submit a valid .mp4 file to upload a video.');
+    return;
+  }
+  var formdata_video = new FormData();
+  formdata.append('videoSample', videoSample);
+  $.ajax({
+    url: '/uploadVideoSample',
+    data: formdata_video,
+    contentType: false,
+    processData: false,
+    type: 'POST',
+    'success': function(data){
+      if(data=='Wrong mimeType'){
+        alert('Sorry, you must submit a valid .mp4 file to upload a video.');
+        return;
+      }
+      console.log('band id is: ' + band._id);
+      updateBand(band._id, {$set:{'videoSample':[data]}});
+    }
+  });
+}

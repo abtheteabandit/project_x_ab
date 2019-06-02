@@ -190,7 +190,7 @@ const database = require('../database.js'),
       }
     });
   });
-  router.post('/uploadVideoSample', uploadingPromoPic.single('promoPic'), (req,res)=>{
+  router.post('/uploadVideoSample', uploadingVideoSample.single('videoSample'), (req,res)=>{
     if (!req.session.key){
       console.log('User tried to upload gig pic while not logged in');
       res.status(401).end();
