@@ -192,7 +192,7 @@ const database = require('../database.js')
                                 stillAppliedTo.push(res11.appliedGigs[applied_gig]);
                               }
                             }
-                            db.db('bands').collection('bands').updateOne({'_id':database.objectId(applicant_id)}, {$set:{'appliedGigs':stillAppliedTo}}, (err12, res12)=>{
+                            db.db('bands').collection('bands').update({'_id':database.objectId(applicant_id)}, {$set:{'appliedGigs':stillAppliedTo}}, (err12, res12)=>{
                               if (err12){
                                 console.log('There was an error updating band with id: ' + applicant_id + ' Error: ' + err12);
                                 res.status(500).end();
