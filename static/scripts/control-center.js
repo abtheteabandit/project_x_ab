@@ -4532,7 +4532,6 @@ function presentUploadVideoModal(mode, objName, objID){
 // VIDEO UPLOAD:
 function checkForVideoSample(id, mode, cbErr, cbOk){
   $.get('/has_video', {'mode':mode, 'id':id}, res=>{
-    alert(res);
     if (res.success){
       console.log('BAND WITH ID: ' + id + ' has video sample: ' + res.data);
       cbOk(res.data);
@@ -4548,8 +4547,8 @@ function attemptVideoUpload(){
   uploadVideo(bandID);
 }
 
-function uploadVideo(band){
-  var videoSample = $("#new-video")[0].files[0];
+function uploadVideo(bandID){
+  var videoSample = $("#video-upload-input")[0].files[0];
   if (videoSample == null){
     alert('Sorry, you must submit a valid .mp4 file to upload a video.');
     return;
@@ -4568,8 +4567,8 @@ function uploadVideo(band){
         alert('Sorry, you must submit a valid .mp4 file to upload a video.');
         return;
       }
-      console.log('band id is: ' + band._id);
-      updateBand(band._id, {$set:{'videoSample':[data]}});
+      console.log('band id is: ' + bandID);
+      updateBand(bandID, {$set:{'videoSample':[data]}});
     }
   });
 }
