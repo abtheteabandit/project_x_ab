@@ -781,11 +781,6 @@ class BandSection{
       this.editButton.value = "edit band";
       this.editButton.className = "edit-band-button";
 
-      this.uploadVideoButton = document.createElement("input");
-      this.uploadVideoButton.type = 'button';
-      this.uploadVideoButton.value = "upload video";
-      this.uploadVideoButton.className = "upload-video-button";
-
       this.deleteButton = document.createElement("input");
       this.deleteButton.type = 'button';
       this.deleteButton.value = "delete band";
@@ -794,10 +789,6 @@ class BandSection{
         console.log(band.name);
         presentDeleteModal("band",band.name,band._id);
       });
-
-      this.uploadVideoButton.addEventListener("click",function(){
-        presentUploadVideoModal("band",band.name,band._id);
-      })
 
       //edit begins
       this.editButton.addEventListener('click',function(){
@@ -1228,22 +1219,7 @@ class BandSection{
         modalWrapCurrent.style.display='block';
       });
       this.container.append(this.editButton);
-
-      checkForVideoSample(band._id, "bands", cbErr=>{
-        console.log('THere was an error checking for video sample: ' + cbErr);
-        // alert('SOME TYPE OF ERROR MESSAGE');
-        return;
-      }, cbOk=>{
-        console.log(cbOk);
-        if (cbOk){
-          this.container.append(this.deleteButton);
-        }
-        else{
-          this.container.append(this.uploadVideoButton);
-          this.container.append(this.deleteButton);
-        }
-      });
-
+      this.container.append(this.deleteButton);
       bandSectionCallback(this);
       break;
 
@@ -4519,14 +4495,22 @@ function delete_object(id, mode){
     }
   });
 }
-function presentUploadVideoModal(mode, objName, objID){
-  switch(mode){
-    case "band":
-    var idInput = document.getElementById("video-upload-objID");
-    idInput.value = objID;
-    document.getElementById("modal-wrapper-video-upload").style.display="block";
-    break;
-  }
+function openVideoModal(id, mode){
+  checkForVideoSample(id, mode, cbErr=>{
+    console.log('THere was an error checking for video sample: ' + cbErr);
+    // alert('SOME TYPE OF ERROR MESSAGE');
+    return;
+  }, cbOk=>{
+    console.log(cbOk);
+    if (cbOk){
+      //they have a video smample
+
+    }
+    else{
+      //they do not have a video smample
+
+    }
+  });
 }
 
 // VIDEO UPLOAD:
