@@ -1,0 +1,240 @@
+body{
+    background: url('/assets/Home/backgroundnew.png');
+    background-size: cover;
+    color: white;
+}
+
+#get-start{
+    text-align: center;
+    margin-top: 60px;
+}
+#get-start h1{
+    font-size: 4em;
+}
+.social-buttons{
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    background: #f1f1f1;
+    margin: 10px;
+    border-radius: 40%;
+    box-shadow: 0 5px 20px -1px;
+    overflow: hidden;
+    position: relative;
+}
+.social-buttons i {
+    line-height: 80px;
+    font-size: 30px;
+    transition: 0.5s linear;
+}
+.social-buttons:hover i {
+    transform: scale(1.3);
+}
+
+.social-buttons-wrapper{
+    text-align: center;
+    padding-bottom: 60px;
+    border-bottom: 2px solid rgba(86,223,240,0.5);
+    width: 800px;
+    margin: auto;
+}
+#create-your-promotion-wrapper{
+    text-align: center;
+    margin-top: 40px;
+}
+#create-your-promotion-body{
+    margin-top: 60px;
+    padding-top: 50px;
+    background-color: rgb(5, 5, 5, 0.4);
+}
+
+#create-your-promotion-button{
+    color: white;
+    background: black;
+    border-radius: 10px;
+    font-size: 30px;
+    width: 400px;
+    border: 1px solid rgba(86,223,240,1.0);
+    height: 60px;
+}
+#create-promotion-form label{
+    font-size: 2em;
+}
+#promo-name-input{
+    padding-left: 15px;
+    width: 70%;
+    height: 50px;
+    border-radius: 20px;
+    background-color: rgb(179, 170, 170);
+}
+#chosefile{
+    margin-top: 15px;
+}
+#upload-image{
+    width: 200px;
+    height: 200px;
+
+}
+.caption-wrapper{
+    margin-top: 50px;
+}
+.caption-wrapper textarea{
+    border-radius: 20px;
+    background-color: black;
+    color: white;
+    font-size: 40px;;
+    width: 70%;
+    height: 300px;
+}
+
+#promo-handle-input{
+    padding-left: 15px;
+    border-radius: 20px;
+    background-color: rgb(155, 151, 151);
+    margin-left: 10px;
+}
+#promo-location-input{
+    padding-left: 15px;
+    border-radius: 20px;
+    background-color: rgb(155, 151, 151);
+    margin-left: 10px;
+}
+
+.promo-social-wrapper{
+    display: inline;
+}
+.promo-icon-wrapper i{
+
+    font-size: 30px;
+}
+#promo-social-wrapper > div{
+    width: 30px;
+    height: 30px;
+    margin: 10px;
+
+
+}
+
+.promo-icon-wrapper{
+    background: rgba(86,223,240,0.5);;
+}
+
+#promo-submit-button{
+    margin-top: 30px;
+    font-size: 30px;
+    width: 250px;
+    margin-bottom: 50px;
+}
+.promo-checkbox-input{
+    font-size: 25px;
+}
+
+input[type=checkbox]
+{
+  /* Double-sized Checkboxes */
+  -ms-transform: scale(2); /* IE */
+  -moz-transform: scale(2); /* FF */
+  -webkit-transform: scale(2); /* Safari and Chrome */
+  -o-transform: scale(2); /* Opera */
+  transform: scale(2);
+  padding: 10px;
+}
+
+#find-cross-promoters{
+    margin-top: 50px;
+    text-align: center;
+    border-top: 2px solid rgba(86,223,240,0.5);
+    padding-top: 30px;
+    padding-bottom: 100px;
+}
+#find-cross-promoters h1{
+    font-size: 3em;
+}
+
+#search-bar-input{
+    padding-left: 20px;
+    width: 60%;
+    height: 50px;
+    border-radius: 40px;
+    background: black;
+    color: white;
+    font-size: 20px;
+}
+
+#search-icon{
+    position: relative;
+    left: -50px;
+}
+#find-promoter-zip-input{
+    padding-left: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    font-size: 20px;
+}
+#find-promoter-radio-button-div{
+    margin-left: 30px;
+    font-size: 25px;
+}
+#find-promoter-radio-button-div input{
+    font-size: 40px;
+}
+
+#search-promoter-button{
+    margin-top: 30px;
+    border-radius: 10px;
+    font-size: 20px;
+    background-color: rgb(137, 136, 153)
+}
+
+#create-special-promo-wrapper{
+    text-align: center;
+    margin-top: 40px;
+}
+
+#create-special-promo-body{
+    margin-top: 60px;
+    padding-top: 50px;
+    background-color: rgb(5, 5, 5, 0.4);
+}
+
+#what-does-customer-get-paragraph{
+    font-size: 2em;
+}
+#special-promo-textarea{
+    border-radius: 20px;
+    background-color: black;
+    color: white;
+    font-size: 40px;
+    width: 70%;
+    height: 300px;
+}
+#select-gig-div{
+    margin-top: 50px;
+}
+#select-gig-div select{
+    width: 200px;
+    height: 50px;
+    font-size: 25px;
+    background: #007bff;
+    border-radius: 6px;
+    box-shadow: 2px 4px
+}
+#save-special-promo-button{
+    margin-top: 20px;
+    font-size: 30px;
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    width: 250px;
+    border-radius: 0.25em;
+    margin-bottom: 30px;
+}
+#create-special-promo-button{
+    color: white;
+    background: black;
+    border-radius: 10px;
+    font-size: 30px;
+    width: 400px;
+    border: 1px solid rgba(86,223,240,1.0);
+    height: 60px;
+}
