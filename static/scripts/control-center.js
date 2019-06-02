@@ -781,6 +781,11 @@ class BandSection{
       this.editButton.value = "edit band";
       this.editButton.className = "edit-band-button";
 
+      this.uploadVideoButton = document.createElement("input");
+      this.uploadVideoButton.type = 'button';
+      this.uploadVideoButton.value = "upload video";
+      this.uploadVideoButton.className = "upload-video-button";
+
       this.deleteButton = document.createElement("input");
       this.deleteButton.type = 'button';
       this.deleteButton.value = "delete band";
@@ -789,6 +794,10 @@ class BandSection{
         console.log(band.name);
         presentDeleteModal("band",band.name,band._id);
       });
+
+      this.uploadVideoButton.addEventListener("click",function(){
+        presentUploadVideoModal("band",band.name,band._id);
+      })
 
       //edit begins
       this.editButton.addEventListener('click',function(){
@@ -1219,7 +1228,22 @@ class BandSection{
         modalWrapCurrent.style.display='block';
       });
       this.container.append(this.editButton);
-      this.container.append(this.deleteButton);
+
+      checkForVideoSample(band._id, "bands", cbErr=>{
+        console.log('THere was an error checking for video sample: ' + cbErr);
+        // alert('SOME TYPE OF ERROR MESSAGE');
+        return;
+      }, cbOk=>{
+        console.log(cbOk);
+        if (cbOk){
+          this.container.append(this.deleteButton);
+        }
+        else{
+          this.container.append(this.uploadVideoButton);
+          this.container.append(this.deleteButton);
+        }
+      });
+
       bandSectionCallback(this);
       break;
 
@@ -2514,6 +2538,7 @@ var callbackStepper = 0;
 
 function updateBand(id, query){
   $.post('/updateBand', {'id':id, 'query':query}, result =>{
+    console.log('RESULT FROM UPDATE BAND: ' + result);
     alert('Changes Saved');
     document.location.reload();
   });
@@ -4494,28 +4519,19 @@ function delete_object(id, mode){
     }
   });
 }
-function openVideoModal(id, mode){
-  checkForVideoSample(id, mode, cbErr=>{
-    console.log('THere was an error checking for video sample: ' + cbErr);
-    // alert('SOME TYPE OF ERROR MESSAGE');
-    return;
-  }, cbOk=>{
-    console.log(cbOk);
-    if (cbOk){
-      //they have a video smample
-
-    }
-    else{
-      //they do not have a video smample
-
-    }
-  });
+function presentUploadVideoModal(mode, objName, objID){
+  switch(mode){
+    case "band":
+    var idInput = document.getElementById("video-upload-objID");
+    idInput.value = objID;
+    document.getElementById("modal-wrapper-video-upload").style.display="block";
+    break;
+  }
 }
 
 // VIDEO UPLOAD:
 function checkForVideoSample(id, mode, cbErr, cbOk){
   $.get('/has_video', {'mode':mode, 'id':id}, res=>{
-    alert(res);
     if (res.success){
       console.log('BAND WITH ID: ' + id + ' has video sample: ' + res.data);
       cbOk(res.data);
@@ -4527,17 +4543,18 @@ function checkForVideoSample(id, mode, cbErr, cbOk){
   });
 }
 function attemptVideoUpload(){
-  //
+  var bandID = document.getElementById("video-upload-objID").value;
+  uploadVideo(bandID);
 }
 
-function uploadVideo(band){
-  var videoSample = $("#new-video")[0].files[0];
+function uploadVideo(bandID){
+  var videoSample = $("#video-upload-input")[0].files[0];
   if (videoSample == null){
     alert('Sorry, you must submit a valid .mp4 file to upload a video.');
     return;
   }
   var formdata_video = new FormData();
-  formdata.append('videoSample', videoSample);
+  formdata_video.append('videoSample', videoSample);
   $.ajax({
     url: '/uploadVideoSample',
     data: formdata_video,
@@ -4545,12 +4562,13 @@ function uploadVideo(band){
     processData: false,
     type: 'POST',
     'success': function(data){
+      alert(data);
       if(data=='Wrong mimeType'){
         alert('Sorry, you must submit a valid .mp4 file to upload a video.');
         return;
       }
-      console.log('band id is: ' + band._id);
-      updateBand(band._id, {$set:{'videoSample':[data]}});
+      console.log('band id is: ' + bandID);
+      updateBand(bandID, {$set:{'videoSample':[data]}});
     }
   });
 }
