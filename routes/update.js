@@ -220,7 +220,7 @@ module.exports = router => {
       database.connect(db=>{
         switch(mode){
           case 'bands':
-          db.db('bands').collection('bands').findOne({'_id':database.ObjectId(id)}, (bandErr, band)=>{
+          db.db('bands').collection('bands').findOne({'_id':ObjectId(id)}, (bandErr, band)=>{
             if (bandErr){
               console.log('THere was an error finding band with id: ' + id+ ' Error: ' + bandErr);
               res.status(500).end();
