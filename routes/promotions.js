@@ -521,7 +521,7 @@ router.post('/add_pull', (req, res)=>{
           }
           else{
             console.log('Set promotion ' +name+ ' for user: '+req.session.key);
-            //todo: insert code to post promotions to various social media here
+            //todo: insert code to post promotions to various social media here once apis work
 
 
 
@@ -534,6 +534,7 @@ router.post('/add_pull', (req, res)=>{
       });
   })
 
+  //returns a random sequence of 7 characters
   function makeid(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -547,7 +548,7 @@ router.post('/add_pull', (req, res)=>{
 
   //route for generating a discount code for a user from an existing promo code
   router.post('createDiscountCode', (req, res) => {
-    var code = req.body;
+    var code = req.body.code;
     database.connect(db => {
       db.db('promotions').collection('discounts').find({'code': code}).toArray(function(err2, result) {
         if (err2){
@@ -556,6 +557,7 @@ router.post('/add_pull', (req, res)=>{
           db.close();
         }
         else{
+          //print and set values
           console.log(result);
           const customerCode = makeid(7)
           const code = result[0].code
@@ -585,7 +587,43 @@ router.post('/add_pull', (req, res)=>{
     });
   })
 
-  //todo: write a route to verify a customers code with a code base in the promotionis db
+  //route to verify a customer's code with a code base in the promotionis db
+  router.post('verifyAndReturnDiscount', (req, res) => {
+    var code = req.body;
+    database.connect(db => {
+      //find the exact discount code using the customer code
+      db.db('promotions').collection('customer_discounts').find({'customerCode': customerCode}).toArray(function(err2, result) {
+        if (err2){
+          console.warn("Couldnt get gigs: " + err2);
+          res.status(500).end();
+          db.close();
+        }
+        else{
+          //print and set values
+          console.log(result);
+          const customerCode = result[0].customerCode
+          const code = result[0].code
+
+          //find and return the discount from the discount's code 
+          db.db('promotions').collection('discounts').find({'code': code}).toArray(function(err2, result) {
+            if (err2){
+              console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
+              res.status(500).end();
+              db.close();
+            }
+            else{
+              //send the full discount object to the user
+              res.status(200).send(result[0]);
+              db.close();
+            }
+          });
+        }
+      });
+    }, err => {
+      console.warn("Couldn't connect to database: " + err)
+      res.status(500).end()
+    });
+  })
 
   router.get('/user_has_socials', (req, res)=>{
     if (!req.session.key){
