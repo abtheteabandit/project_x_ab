@@ -4494,6 +4494,23 @@ function delete_object(id, mode){
     }
   });
 }
+function openVideoModal(id, mode){
+  checkForVideoSample(id, mode, cbErr=>{
+    console.log('THere was an error checking for video sample: ' + cbErr);
+    // alert('SOME TYPE OF ERROR MESSAGE');
+    return;
+  }, cbOk=>{
+    console.log(cbOk);
+    if (cbOk){
+      //they have a video smample
+
+    }
+    else{
+      //they do not have a video smample
+
+    }
+  });
+}
 
 // VIDEO UPLOAD:
 function checkForVideoSample(id, mode, cbErr, cbOk){
