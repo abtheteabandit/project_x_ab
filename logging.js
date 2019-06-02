@@ -1,5 +1,6 @@
 const LOG_TO_CONSOLE = true;
 const { createLogger, format, transports } = require('winston');
+
 require('winston-daily-rotate-file');
 
 var logger = createLogger({

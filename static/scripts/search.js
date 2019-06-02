@@ -745,10 +745,3 @@ function requestSupport(){
     modal.style.display = "none";
   });
 }
-
-document.getElementById('search_input').addEventListener('keyup', function(e){
-	if (e.keyCode===13){
-		alert('Sorry, you must click "Find Bands" or "Find Events" to perform a search.');
-		return;
-	}
-});

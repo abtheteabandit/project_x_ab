@@ -321,6 +321,21 @@ function init(){
   console.log('Search obj is: ' + JSON.stringify(searchObject));
   getUserInfo(searchObject);
 
+  document.getElementById('request-support-btn').addEventListener('click', function(){
+    var text = document.getElementById('support_text').value;
+    console.log("User has requested support, text is: ");
+    console.log(text);
+    if (text == "" || text == " " || text == null){
+      alert('Please enter some text to send to us if you would like to receive help. Thank You!');
+      return;
+    }
+    $.post('/contact_support', {message: text}, res=>{
+      alert(res);
+      var modal = document.getElementById("modal-wrapper-support");
+      modal.style.display = "none";
+    });
+  });
+
 
 }
 
@@ -367,7 +382,8 @@ function hitApply(state){
     case "desktop":
     if ($('#selectDrop option:selected')){
       var dataFromDrop = $('#selectDrop option:selected').data();
-      var myBand = dataFromDrop['objid']
+      var myBand = dataFromDrop['objid'];
+      console.log("MY BAND IS "+myBand);
       var kind = $('#selectDrop option:selected').val();
       if(kind != 'band'){
         alert('You can only "Apply" to events as a band. Please select one from the drop down menu and hit apply again. If you have no bands, you can create one on your home page.');
@@ -384,7 +400,8 @@ function hitApply(state){
     }
     else{
       $.post('/apply', {'gigID':otherGig['_id'], 'bandID':myBand}, result=>{
-        alert('Congratulations! You have applied to the gig ' +otherGig['name'] + ' as ' +myBand['name'] + '! Hit "home" on the Banda "b" to go to your home page. Check/refresh your home page regularly to see if the event has moved to your upcoming gigs section. If they accept, be sure to check your email associated with this account before the start of the event for the confirmation code. You should give this code to the event manager at the time of the event. You should also recieve a code from him/her at the event, which you should then enter in your upcoming gigs confirmation code field. Make sure you follow our instructions with confirmation codes so that you can get paid. Do NOT share this code with ANYONE before you arrive at the event.');
+        alert('Congratulations! You have applied to the gig ' +otherGig['name'] + '! Hit "home" on the Banda "b" to go to your home page. Check/refresh your home page regularly to see if the event has moved to your upcoming gigs section. If they accept, be sure to check your email associated with this account before the start of the event for the confirmation code. You should give this code to the event manager at the time of the event. You should also recieve a code from him/her at the event, which you should then enter in your upcoming gigs confirmation code field. Make sure you follow our instructions with confirmation codes so that you can get paid. Do NOT share this code with ANYONE before you arrive at the event.');
+        // alert(result);
       });
     }
     break;
@@ -1595,20 +1612,7 @@ function loginToReg(){
 
 // support
 
-document.getElementById('send_report_button').addEventListener('click', function(){
-  var text = document.getElementById('support_text').value;
-  console.log("User has requested support, text is: ");
-  console.log(text);
-  if (text == "" || text == " " || text == null){
-    alert('Please enter some text to send to us if you would like to receive help. Thank You!');
-    return;
-  }
-  $.post('/contact_support', {message: text}, res=>{
-    alert(res);
-    var modal = document.getElementById("modal-wrapper-support");
-    modal.style.display = "none";
-  });
-});
+
 
 function selectProfileOnMobile(selectA){
   var oldSelected = document.getElementsByClassName("mobile-profiles-list-a-active");
