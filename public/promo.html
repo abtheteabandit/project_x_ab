@@ -1,0 +1,142 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Promotion Page</title>
+
+    <!-- Bootstrap --> <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- CSS link --> <link rel="stylesheet" href="/static/promo.css">
+    <!-- Font Awesome --> <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <!-- Ajax -->  <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+
+    <script src="/scripts/promotions_page.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div id="get-start">
+            <h1>Let's Get Started</h1>
+
+            <h4>Log in to your socials</h4>
+
+            <div class="social-buttons-wrapper">
+                <a href="" class = "social-buttons"><i class="fab fa-facebook-f"></i></a>
+
+                <a href=""class = "social-buttons"><i class="fab fa-snapchat-ghost"></i></a>
+
+                <a href=""class = "social-buttons"><i class="fab fa-twitter"></i></a>
+
+                <a href=""class = "social-buttons"><i class="fab fa-instagram"></i></a>
+
+
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+
+                <div class="col-6">
+                        <div id="create-your-promotion-wrapper">
+
+                                <button id = "create-your-promotion-button" onclick="showCreatePromo()">Create Your Promotion</button>
+                                <div id="create-your-promotion-body">
+
+                                    <form action="" id ="create-promotion-form">
+                                        <label for="promo-name">Name</label> <input type="text" name = "promo-name" id="promo-name-input">
+
+                                        <div id="chosefile">
+                                            <input type="file" onchange="displayUploadImage(this);">
+
+                                            <img id = "upload-image" src="" alt=""/>
+                                        </div>
+
+                                        <div class="caption-wrapper">
+                                            <textarea name="description" id="promo-description" cols="80" rows="10" placeholder="Description"></textarea>
+                                        </div>
+                                        <div id="promo-handle-div">
+                                            <label for="handle">Your Handle</label>
+                                            <input id = "promo-handle-input" type="text" name = "handle">
+                                        </div>
+                                        <div id="promo-location-div">
+                                            <label for="promo-location">Location</label>
+                                            <input id="promo-location-input" type="text" name = "promo-location">
+                                        </div>
+
+                                        <div class = "row" id="promo-social-wrapper">
+                                            <div class="col">
+                                                <p class= "promo-icon-wrapper"><i class="fab fa-facebook-square"></i></p>
+
+                                                <input class = "promo-checkbox-input"  type="checkbox">
+                                            </div>
+
+                                            <div class="col">
+                                                    <p class= "promo-icon-wrapper"><i class="fab fa-snapchat-square"></i></p>
+
+                                                    <input class = "promo-checkbox-input"  type="checkbox">
+                                            </div>
+                                            <div class="col">
+                                                    <p class= "promo-icon-wrapper"><i class="fab fa-twitter-square"></i></p>
+
+                                                    <input class = "promo-checkbox-input"  type="checkbox">
+                                            </div>
+                                            <div class="col">
+                                                    <p class= "promo-icon-wrapper"><i class="fab fa-instagram"></i></p>
+
+                                                    <input class = "promo-checkbox-input" type="checkbox">
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-secondary" id = "promo-submit-button">Save</button>
+
+                                    </form>
+                                </div>
+                            </div>  <!-- Create your promotion wrapper ends -->
+                </div>
+                <div class="col-6">
+                    <div id="create-special-promo-wrapper">
+                        <button id = "create-special-promo-button" onclick="showCreateSpecialPromo()">Create your speacial promo</button>
+                        <div id="create-special-promo-body">
+                            <p id="what-does-customer-get-paragraph">What does this let customer get?</p>
+                            <textarea id = "special-promo-textarea" placeholder="Ex.. get 1 free drink" name="special-promo-textarea" id="" cols="30" rows="10"></textarea>
+                            <div id="select-gig-div">
+                                <select name= "your-gig" id="your-gig-promotion">
+                                        <option value="">gig1</option>
+                                        <option value="">gig2</option>
+                                </select>
+                            </div>
+                            <button id = "save-special-promo-button">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="find-cross-promoters">
+            <h1>Find Cross Promoters</h1>
+
+            <div id="search-bar-div">
+                <input id = "search-bar-input"type="text" placeholder="Find your promoter">
+                <i id = "search-icon" class="fas fa-search"></i>
+            </div>
+
+            <div id="find-cross-promoters-zip">
+
+                <input id = "find-promoter-zip-input" type="text" name = "find-promoter-zip-input" placeholder="Zipcode">
+
+                <span id="find-promoter-radio-button-div">
+                    <input type="radio" name="followers-or-engagement"  > Follower
+                    <input type="radio" name="followers-or-engagement" > Engagement
+                </span>
+
+                <div id = "search-promoter-button-div">
+                    <button id="search-promoter-button" type="submit">Search Promoter</button>
+                </div>
+
+            </div>
+        </div> <!-- Find-cross-promoter-div-ends -->
+
+    </div>
+
+</body>
+</html>

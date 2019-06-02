@@ -1,4 +1,37 @@
 
+//Minh CODE:
+function displayUploadImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#upload-image')
+                .attr('src', e.target.result)
+                .width(200)
+                .height(200);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function showCreatePromo(){
+    var promo =  document.getElementById("create-your-promotion-body");
+    if (promo.style.display === "none") {
+        promo.style.display = "block";
+      } else {
+        promo.style.display = "none";
+      }
+}
+
+function showCreateSpecialPromo(){
+    var promo =  document.getElementById("create-special-promo-body");
+    if (promo.style.display === "none") {
+        promo.style.display = "block";
+      } else {
+        promo.style.display = "none";
+      }
+}
 
 function parseURL(url){
   var parser = document.createElement('a'),
