@@ -31,6 +31,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/creditCardModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/bankModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/currentBandModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/videoUploadModal.css">
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
@@ -368,6 +369,20 @@
           <button type='button' class="popUpButtons" id="current-band-edit">confirm</button>
         </div>
       </form>
+    </div>
+    <div id="modal-wrapper-video-upload">
+      <div id="video-form" class="animate">
+        <div id="video-header-grid">
+          <h1 id="video-upload-h1">video upload</h2>
+          <span onclick="document.getElementById('modal-wrapper-video-upload').style.display='none'" id="video-close" title="Close PopUp">&times;</span>
+        </div>
+        <video id="video-upload-preview" controls></video>
+        <div id="video-upload-inputs-grid">
+          <input id="video-upload-input" type='file'><span id='video-upload-val'></span>
+          <span id='video-upload-button'>Select File</span>
+        </div>
+        <input type="button" id="submit-video-upload-btn" value="upload video" onclick="attemptVideoUpload()" />
+      </div>
     </div>
     <div id="body-container">
 

@@ -2729,6 +2729,13 @@ function createWebPage(user){
 function init(){
   //loadBands(user);
   getUsername();
+  $('#video-upload-button').click(function () {
+    $("#video-upload-input").trigger('click');
+  })
+
+  $("#video-upload-input").change(function () {
+    $('#video-upload-val').text(this.value.replace(/C:\\fakepath\\/i, ''))
+  })
 }
 
 function loadBands(user){
@@ -4488,6 +4495,10 @@ function delete_object(id, mode){
   });
 }
 // VIDEO UPLOAD:
+
+function attemptVideoUpload(){
+  //
+}
 
 function uploadVideo(band){
   var videoSample = $("#new-video")[0].files[0];
