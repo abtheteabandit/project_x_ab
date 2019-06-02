@@ -202,7 +202,7 @@ const database = require('../database.js')
                               }
                               else{
                                 console.log('Updated band with id: ' + applicant_id + ' becuase their applied gig: ' + id + ' was deleted.');
-                                if (i==apps.length){
+                                if (i==apps.length-2){
                                   console.log('deleted gig: ' + id);
                                   res.status(200).send('We have deleted this event from Banda!');
                                   db.close();
