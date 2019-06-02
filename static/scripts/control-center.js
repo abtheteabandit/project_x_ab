@@ -4494,15 +4494,18 @@ function delete_object(id, mode){
     }
   });
 }
+
 // VIDEO UPLOAD:
-function checkForVideoSample(id, mode){
+function checkForVideoSample(id, mode, cbErr, cbOk){
   $.get('/has_video', {'mode':mode, 'id':id}, res=>{
     alert(res);
     if (res.success){
       console.log('BAND WITH ID: ' + id + ' has video sample: ' + res.data);
+      cbOk(res.data);
     }
     else{
-      console.log('There was an error checkign for uplaods: ' + res.data);
+      console.log('There was an error checkign for uploads: ' + res.data);
+      cbErr(res.data);
     }
   });
 }

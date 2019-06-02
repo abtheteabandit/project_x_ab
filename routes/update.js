@@ -249,7 +249,7 @@ module.exports = router => {
           break;
           case 'gigs':
           console.log('Mode was: '+mode+' Which we do not support videos for yet');
-          res.status(200).json('success':false, 'data':'We do not support event videos yet');
+          res.status(200).json({'success':false, 'data':'We do not support event videos yet'});
           db.close();
           break;
           default:
