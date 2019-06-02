@@ -212,6 +212,9 @@ const database = require('../database.js')
                           }
                         });
                       });
+                      console.log('deleted gig: ' + id);
+                      res.status(200).send('We have deleted this event from Banda!');
+                      db.close();
                     }
                   });
                 }
