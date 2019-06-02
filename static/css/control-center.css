@@ -1138,6 +1138,20 @@ chat boxes
   cursor: pointer;
 }
 
+.upload-video-button{
+  background-color: rgba(0,0,0,0.8);
+  border-radius: 10px;
+  height: 40px;
+  color: #56dff0;
+  border-color: #56dff0;
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+.upload-video-button:hover{
+  cursor: pointer;
+}
+
 .delete-btn{
   background-color: rgba(0,0,0,0.8);
   border-radius: 10px;
