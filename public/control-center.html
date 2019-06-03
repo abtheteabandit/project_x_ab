@@ -32,6 +32,8 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/bankModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/currentBandModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/videoUploadModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/accountSettingsModal.css">
+
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
@@ -386,6 +388,13 @@
         <input type="button" id="submit-video-upload-btn" value="upload video" onclick="attemptVideoUpload()" />
       </div>
     </div>
+    <div id="modal-wrapper-account-settings">
+      <div id="account-settings-content" class="animate">
+        <span onclick="document.getElementById('modal-wrapper-account-settings').style.display='none'" id="settings-close" title="Close PopUp">&times;</span>
+        <input class="change-payment-btn" type="button" value="change bank details" onclick="alterBankingDetails()"/>
+        <input class="change-payment-btn" type="button" value="change credit card" onclick="alterCreditDetails()"/>
+      </div>
+    </div>
     <div id="body-container">
 
       <div class="mobile-menu">
@@ -394,6 +403,7 @@
              <li><a href='about'><p class="radialText">About</p></a></li>
              <li><a href='index'><p class="radialText">Landing</p></a></li>
              <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+             <li><a href='#' onclick="document.getElementById('modal-wrapper-account-settings').style.display='block'"><p class="radialText">Settings</p></a></li>
            </ul>
        </div>
 
@@ -417,8 +427,9 @@
 
       <div class="profiles-list">
         <ul id='profiles-list'>
-          <li><a href="#" onclick="prepareBankElement()">+ Create a Band</a></li>
-          <li><a href="#" onclick="prepareCardElement()">+ Post an Event</a></li>
+          <li><a href="#" onclick="document.getElementById('modal-wrapper-account-settings').style.display = 'block';">Account Settings</a>
+          <li><a href="#" onclick="prepareBankElement()">Create a Band</a></li>
+          <li><a href="#" onclick="prepareCardElement()">Post an Event</a></li>
         </ul>
       </div>
 

@@ -4571,3 +4571,15 @@ function uploadVideo(bandID){
     }
   });
 }
+
+// account Settings
+
+function alterBankingDetails(){
+  document.getElementById("modal-wrapper-account-settings").style.display = 'none';
+  document.getElementById("modal-wrapper-bank").style.display = 'block';
+}
+
+function alterCreditDetails(){
+  document.getElementById("modal-wrapper-account-settings").style.display = 'none';
+  document.getElementById("modal-wrapper-credit").style.display = 'block';
+}
