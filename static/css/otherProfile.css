@@ -961,6 +961,18 @@ margin-top: 100px;
   display: none;
 }
 
+.video-div{
+  width: 100%;
+  margin-left: 40px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.video-div > video{
+  width: 100%;
+  height: auto;
+}
+
 @media(max-width: 1375px){
   .profile-price-text-new, .profile-price-new{
     font-size: 24pt;
@@ -1017,6 +1029,9 @@ margin-top: 100px;
   }
   .img-price-grid{
     margin-left: -20%;
+  }
+  .video-div{
+    margin-left: 0px;
   }
 }
 @media(max-width: 900px){
@@ -1088,6 +1103,9 @@ margin-top: 100px;
   }
   .gig-info-section{
     margin-left: -35%;
+  }
+  .video-div{
+    margin-left: -160px;
   }
 }
 @media(max-width: 650px){

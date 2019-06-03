@@ -552,12 +552,31 @@ function createPageAsBand(){
   // add band clips section
   if(otherBand.hasOwnProperty("audioSamples")){
     if(otherBand.audioSamples != null){
+      var sampleH2 = document.createElement("h2");
+      sampleH2.innerHTML = "audio clip";
       var bandSamplesWrapper = document.createElement("div");
       bandSamplesWrapper.className = "wrapper";
       new SampleCarousel(res=>{
         bandSamplesWrapper.append(res.carWrap);
+        mainContent.append(sampleH2);
         mainContent.append(bandSamplesWrapper);
       });
+    }
+  }
+
+  if(otherBand.hasOwnProperty("videoSample")){
+    if(otherBand.videoSample != null){
+      var theVideo = otherBand.videoSample[0];
+      var videoH2 = document.createElement("h2");
+      videoH2.innerHTML = "video clip";
+      var videoDiv = document.createElement("div");
+      videoDiv.className = "video-div";
+      var videoElement = document.createElement("video");
+      videoElement.src = theVideo;
+      videoElement.controls = true;
+      mainContent.append(videoH2);
+      videoDiv.append(videoElement);
+      mainContent.append(videoDiv);
     }
   }
 
@@ -1621,4 +1640,17 @@ function selectProfileOnMobile(selectA){
   }
   selectA.className = "mobile-profiles-list-a-active";
   selectedMobileProfile = selectA;
+}
+
+function checkForVideoSample(id, mode, cbErr, cbOk){
+  $.get('/has_video', {'mode':mode, 'id':id}, res=>{
+    if (res.success){
+      console.log('BAND WITH ID: ' + id + ' has video sample: ' + res.data);
+      cbOk(res.data);
+    }
+    else{
+      console.log('There was an error checkign for uploads: ' + res.data);
+      cbErr(res.data);
+    }
+  });
 }
