@@ -109,6 +109,12 @@ h1, h2, h3, h4, h6, p, button, input, textarea{
 .deg0 { transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
+
+.deg0Support{
+  transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+
 .deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
@@ -126,6 +132,9 @@ h1, h2, h3, h4, h6, p, button, input, textarea{
 .fa-heart:hover {color:red;}
 
 .open.deg0 { transform: rotate(8deg) translate(11em) rotate(-8deg); }
+
+.open.deg0Support { transform: rotate(8deg) translate(10em) rotate(-8deg); }
+
 .open.deg30 { transform: rotate(28deg) translate(12em) rotate(-28deg); }
 .open.deg60 { transform: rotate(48deg) translate(13em) rotate(-48deg); }
 .open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);

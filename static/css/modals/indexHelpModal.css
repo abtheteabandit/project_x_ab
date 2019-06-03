@@ -60,6 +60,12 @@
   cursor: pointer;
 }
 
+@media(max-width: 1366px){
+  .modal-content-help{
+    height: 630px;
+  }
+}
+
 @media(max-width: 1300px){
   .index-help-email{
     font-size: 18pt;
