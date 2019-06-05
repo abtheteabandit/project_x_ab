@@ -4326,12 +4326,11 @@ function updateUser(id, query){
   });
 }
 
+function openGigModal(){
+  document.getElementById("modal-wrapper-new-gig").style.display = 'block';
+}
 
 function prepareCardElement(){
-  if ((globalGigs.length>0) || isCustomer){
-    document.getElementById("modal-wrapper-new-gig").style.display = 'block';
-    return;
-  }
   document.getElementById('modal-wrapper-credit').style.display='block';
   //STRIPE SECTION:
   //https://dashboard.stripe.com/test/dashboard -> dashboard
@@ -4479,16 +4478,13 @@ function attemptCreditSubmission(token_id){
 }
 
 function prepareBankElement(){
-  if (hasAccount){
-    document.getElementById('modal-wrapper-bank').style.display='none';
-    document.getElementById('modal-wrapper-new-band').style.display='block';
-    document.getElementById('loader-new-bank').style.display = 'none';
-  }
-  else{
     document.getElementById('modal-wrapper-bank').style.display='block';
-  }
 }
-
+function openBandModal(){
+  document.getElementById('modal-wrapper-bank').style.display='none';
+  document.getElementById('modal-wrapper-new-band').style.display='block';
+  document.getElementById('loader-new-bank').style.display = 'none';
+}
 function requestSupport(){
   var supportText = document.getElementById("request-support-textarea").value;
   console.log("User has requested support, text is: ");
@@ -4577,9 +4573,11 @@ function uploadVideo(bandID){
 function alterBankingDetails(){
   document.getElementById("modal-wrapper-account-settings").style.display = 'none';
   document.getElementById("modal-wrapper-bank").style.display = 'block';
+  console.log('opened banking modal');
 }
 
 function alterCreditDetails(){
   document.getElementById("modal-wrapper-account-settings").style.display = 'none';
-  document.getElementById("modal-wrapper-credit").style.display = 'block';
+  prepareCardElement();
+  console.log('opened credit modal');
 }
