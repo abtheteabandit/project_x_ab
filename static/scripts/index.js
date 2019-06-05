@@ -580,6 +580,7 @@ function diff_minutes(dt2, dt1) {
 				alert('You have logged in, '+content.username);
         var menuIndexZero = document.getElementById("home_button");
         menuIndexZero.href = "control-center";
+        menuIndexZero.className = "open deg0";
         var menuTextZero = document.getElementById("menuTextZero");
         menuTextZero.innerHTML = "Home";
 
@@ -634,6 +635,7 @@ function diff_minutes(dt2, dt1) {
         var menuTextZero = document.getElementById("menuTextZero");
         menuTextZero.innerHTML = "Support";
         var menuIndexZero = document.getElementById("home_button");
+        menuIndexZero.className = "deg0Support";
         menuIndexZero.href = "#";
         menuIndexZero.addEventListener("click",function(){
           document.getElementById("modal-wrapper-support").style.display = "block";
@@ -714,10 +716,3 @@ function diff_minutes(dt2, dt1) {
 		 console.log('Random Code: ' + code);
 		 return code;
 	 }
-document.getElementById('search_input').addEventListener('keyup', function(e){
-	if (e.keyCode===13){
-		e.preventDefault();
-		alert('Sorry, you must click "bands" or "events" to perform a search.');
-		return;
-	}
-});
