@@ -1589,7 +1589,7 @@ function loginToReg(){
 
 // support
 
-document.getElementById('send_report_button').addEventListener('click', function(){
+document.getElementById("request-support-btn").addEventListener('click', function(){
   var text = document.getElementById('support_text').value;
   console.log("User has requested support, text is: ");
   console.log(text);
