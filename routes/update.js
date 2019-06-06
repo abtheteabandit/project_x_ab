@@ -264,4 +264,90 @@ module.exports = router => {
       })
     }
   });
+
+  router.post('/user_settings', (req, res)=>{
+    if (!req.body){
+      console.log('No body sent!');
+      res.status(400).end();
+    }
+    if (!req.session.key){
+      console.log('None logged in user tried to update a user');
+      res.status(403).end();
+    }
+    else{
+      database.connect(db=>{
+        db.db('users').collection('users').findOne({'username':req.session.key}, (err, ourUser)=>{
+          if (err){
+            console.log('There was an error finding user with username: ' + req.session.key + "error: " + err);
+            res.status(500).send('Sorry there was an error on our end. Please try again. If this problem persists contact our support team ("support" in the Banda "b")');
+            db.close();
+          }
+          else{
+            var {username, password, email, lat, lng} = req.body;
+            var newUser = {};
+            usernameOpen = false;
+            if (ourUser.hasOwnProperty(lng)){
+              if (ourUser.lng==lng){
+
+              }
+              else{
+                if (lng){
+                  newUser['lng']=lng
+                }
+              }
+            }
+            else{
+              if (lng){
+                newUser['lng']=lng
+              }
+            }
+            if (ourUser.hasOwnProperty(lat)){
+              if (ourUser.lat==lat){
+
+              }
+              else{
+                if (lat){
+                  newUser['lat']=lat
+                }
+              }
+            }
+            if (username){
+              db.db('users').collection('users').findOne({'username':username}, (err2, res2)=>{
+                if (err2){
+                  console.log('There was an error finding user with username: ' + username+ 'err2: ' + err2);
+                  res.status(500).send('Sorry, we had an error on our end. Please try again. If this problem persists contact our support team ("support" in the Banda "b")');
+                  db.close();
+                  else{
+                    if (res2==null){
+                      newUser['username']=username;
+                      usernameOpen = true;
+                    }
+                    else{
+                      if (res2.length==0){
+                        newUser['username']=username;
+                        usernameOpen = true;
+                      }
+                      else{
+                        console.log('New username was taken: ' + username);
+                        res.status(200).send('Sorry, it seems the username: ' + username + ' is already taken.');
+                        db.close();
+                      }
+                    }
+                  }
+                }
+              });
+            }
+            else{
+
+            }
+
+
+          }
+        });
+      }, dbErr=>{
+        console.log('There was an error connecting to mongo here is error: ' + dbErr);
+        res.status(500).end();
+      });
+    }
+  });
 } // end of module exports
