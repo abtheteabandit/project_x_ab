@@ -6,6 +6,7 @@ var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 var request = require('request')
 var GoogleStrategy = require('passport-google-oauth20')
+var TwitterStrategy = require('passport-twitter').Strategy;
 
 //instialize passport js for user login with facebook
 passport.use(new FacebookStrategy({
@@ -85,7 +86,70 @@ function(accessToken, refreshToken, profile, cb) {
 	return cb(null, profile);
 }));
 
-//google callback: http://localhost:1600/google/callback
+passport.use(new TwitterStrategy({
+	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
+	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
+	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
+	callbackURL: "/auth/twitter/callback"
+},
+function(token, tokenSecret, profile, done) {
+	console.log(profile)
+	let username = profile.username
+	let email = profile.emails[0].value
+
+	//check for null values
+	if (!username) {
+		return res.status(400).send('Name not found')
+	} else if (!email) {
+		return res.status(400).send('Email not found')
+	}
+
+	database.connect(db => {
+		//set database path
+		var users = db.db('users').collection('users');
+		//check to see if the user laready exists
+		users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
+			//catch error
+			if (err) {
+				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+				//res.status(500).send()
+				db.close();
+			} 
+			//if the user already exists
+			else if (obj) {
+				//sign the user in
+				req.session.key = username;
+				console.log('Req session key after inserting user for register is: ' + req.session.key);
+				//res.status(200).send('Success');
+			} else {
+				//if not, create a new user 
+				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
+					//catch error
+					if (err) {
+						console.error(`Register request from ${req.ip} (for ${username}, ${email}) returned error: ${err}`);
+						//res.status(500).send();
+						db.close();
+					}
+					//if the user is created, sign the user in
+					 else {
+						req.session.key = username;
+						console.log('Req session key after inserting user for register is: ' + req.session.key);
+						//res.status(200).send('Success');
+						db.close();
+					}
+				});
+			}
+		})
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+		res.status(500).send()
+	});
+
+	done(null, null);
+
+}
+));
+
 
 passport.serializeUser(function(user, cb) {
 cb(null, user);
@@ -250,7 +314,23 @@ router.get('/facebook/successAuth', (req, res) => {
 	return res.status(200).send('Success');
 })
 
+// Redirect the user to Twitter for authentication.  When complete, Twitter
+// will redirect the user back to the application at
+//   /auth/twitter/callback
+router.get('/auth/twitter', (req, res) => {
+	console.log("GOT INTO Register");
+	if (req.session.key) {
+		console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
+		req.session.key=req.session.key
+	  res.status(200).send('Already logged in');
+		return;
+	}
+	passport.authenticate('twitter')
+});
 
+//callback route for twitter autehnication
+router.get('/auth/twitter/callback', passport.authenticate('twitter', { successRedirect: '/facebook/successAuth',
+                                     failureRedirect: '/facebook/failedAuth' }));
 
 
 
