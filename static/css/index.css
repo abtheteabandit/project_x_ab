@@ -335,8 +335,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
 
 #modal-wrapper-login,
 #modal-wrapper-gig,
-#modal-wrapper-register,
-#modal-wrapper-tos{
+#modal-wrapper-register{
   z-index: 5;
   display: none;
 }
@@ -367,161 +366,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   height: 100%;
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
-}
-
-.modal-test-tos{
-  display: block;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-}
-
-@media(max-width: 550px){
-.modal-test-tos{
-  display: block;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 145%;
-  height: 145%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
-  }
-}
-
-.tos-textarea{
-  margin-top: 3px;
-  background-color: transparent;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  text-align: left;
-  padding: 20px;
-  user-select: text;
-  height: 1100px;
-  width: 99%;
-  margin-left: .5%;
-  font-size: 10pt;
-  overflow: scroll;
-  resize: none;
-}
-
-.tos-textarea::-webkit-scrollbar {
-  width: 10px;
-}
-
-/* Track */
-.tos-textarea::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.tos-textarea::-webkit-scrollbar-corner {
-  background: rgba(0,0,0,0);
-}
-
-/* Handle */
-.tos-textarea::-webkit-scrollbar-thumb {
-  background: rgba(86,223,240,1.0);
-  border-radius: 5px;
-}
-
-/* Handle on hover */
-.tos-textarea::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-.tos-p{
-  line-height: 18px;
-}
-
-.tos-li{
-  margin-left: 60px;
-}
-
-.tos-header-0{
-  font-size: 22pt;
-  color: rgba(86,223,240,1.0);
-  text-align: center;
-  margin-bottom: 60px;
-}
-
-.tos-header-1{
-  font-size: 14pt;
-  color: rgba(86,223,240,1.0);
-  text-align: left;
-  border-left: 2px solid rgba(86,223,240,1.0);
-  border-top: 2px solid rgba(86,223,240,1.0);
-  padding-left: 10px;
-  border-radius: 10px 0px 0px 0px;
-  /* text-shadow:1px 1px 1px rgba(255,255,255,0.2),
-               3px 3px 5px #7717E8; */
-}
-
-.tos-header-2{
-  font-size: 12pt;
-  font-style: italic;
-  text-align: center;
-  padding: 10px 0px;
-  color: rgba(86,223,240,1.0);
-}
-
-.tos-controls{
-  display: grid;
-  grid-template-columns: 10px auto 10px auto;
-  width: 95%;
-  height: px;
-  margin-left: 2.5%;
-  margin-top: 20px;
-}
-
-.tos-btn-icon{
-  margin-top: 11px;
-  margin-left: 178px;
-  font-size: 10pt;
-  color: rgba(86,223,240,1.0);
-}
-
-.accept-tos:hover,
-.decline-tos:hover{
-  cursor: pointer;
-}
-
-.accept-tos{
-  background-color: rgba(0,0,0,0.8);
-  color: rgba(86,223,240,1.0);
-  border: 1px solid rgba(86,223,240,1.0);
-  border-radius: 10px;
-  width: 70%;
-  margin: 0 auto;
-  height: 32px;
-  opacity: 0.5;
-}
-
-#tos-check{
-  opacity: 0.5;
-}
-
-.decline-tos{
-  background-color: rgba(0,0,0,0.8);
-  color: rgba(86,223,240,1.0);
-  border: 1px solid rgba(86,223,240,1.0);
-  border-radius: 10px;
-  width: 70%;
-  margin: 0 auto;
-  height: 32px;
-}
-
-.policy-div{
-  margin-top: 60px;
-  height: 60px;
-  width: 100%;
-  border-top: 1px dashed rgba(86,223,240,1.0);
 }
 
 #register-modal-header{
@@ -844,22 +688,16 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
 }
 @media(max-width: 900px){
-  .tos-controls i{
-    visibility: hidden;
-  }
   #menuBacking{
-
     height: 238px;
     width: 238px;
   }
 
   .circle-container a {
-
     width: 64px; height: 32px;
-
   }
-  #mainbtn img{
 
+  #mainbtn img{
     width: 37px;
     height: 97px;
   }
@@ -1054,76 +892,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
   #contacts-button{
     width: 170px;
-  }
-}
-
-/*resizing the tos modal*/
-@media(max-width: 550px){
-  #terms-of-service{
-    max-height: 450px;
-    max-width: 99%;
-  }
-
-  #tos-content{
-    margin-top: 100px;
-    margin-left: 10px;
-  }
-  .tos-header-0{
-    font-size: 12pt;
-    margin-bottom: 10px;
-  }
-  .tos-p{
-    font-size: 8pt;
-  }
-  .tos-header-1 {
-    font-size: 10pt;
-    color: rgba(86,223,240,1.0);
-    text-align: left;
-    padding-left: 30px;
-    border-radius: 15px 0px 0px 0px;
-    /* text-shadow: 1px 1px 1px rgba(255,255,255,0.2), 3px 3px 5px #7717E8; */
-  }
-  .register_icons{
-    margin: -1000px;
-  }
-  .tos-textarea {
-    margin-top: 3px;
-    background-color: transparent;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    text-align: left;
-    padding: 20px;
-    user-select: text;
-    height: 800px;
-    width: 99%;
-    margin-left: .5%;
-    font-size: 10pt;
-    overflow: scroll;
-    overflow-x: hidden;
-    resize: none;
-  }
-  .modal-content {
-    background-image: url(/assets/Home/modalbg.png);
-    background-color: transparent;
-    background-size: cover;
-    background-clip: border-box;
-    background-repeat: no-repeat;
-    margin: 4% auto 15% auto;
-    width: 60%;
-    height: 360px;
-    padding-bottom: 10px;
-    color: white;
-}
-.fa-check{
-  display: hidden;
-}
-.tos-btn-icon{
-  margin-top: 11px;
-  margin-left: 170px;
-  font-size: 10pt;
-  color: rgba(86,223,240,1.0);
-  display: hidden;
   }
 }
 

@@ -103,7 +103,12 @@ jQuery(function($) {
 					var check = document.getElementById("tos-check");
 					check.style.opacity = 0.5;
 				}
-    })
+    });
+    $('#scroll-to-bottom-btn').on('click',function(){
+      var tos = $('#terms-of-service');
+      $(tos).scrollTop(999999);
+      console.log("terms of service scroll click");
+    });
 });
 
 function regToLogin(){

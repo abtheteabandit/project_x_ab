@@ -59,6 +59,7 @@
 			<link rel="stylesheet" type="text/css" href="/css/responseModel.css">
 			<link rel="stylesheet" type="text/css" href="/css/modals/indexHelpModal.css">
 			<link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+			<link rel="stylesheet" type="text/css" href="/css/modals/tosModal.css">
 			<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 		</head>
@@ -140,10 +141,10 @@
 						</div>
 					</div>
 
-					<div id="modal-wrapper-tos" class="modal modal-test-tos">
-						<div class="modal-content animate" id="tos-content">
+					<div id="modal-wrapper-tos">
+						<div class="animate" id="tos-content">
 							<div class="tos-textarea" id="terms-of-service" readonly>
-								<p class="tos-header-0">Terms and Conditions (Scroll To Bottom To Accept)</p>
+								<p class="tos-header-0">Terms and Conditions</p>
 								<p class="tos-header-1">Agreement between User and www.banda-inc.com</p>
 								<p class="tos-p">Welcome to Banda-inc.com. The website (the "Site") is comprised of various web pages operated by Banda, Inc.. www.banda-inc.com is offered to you conditioned on your acceptance without modification of the terms, conditions, and notices contained herein (the "Terms"). Your use of www.banda-inc.com constitutes your agreement to all such Terms. Please read these terms carefully, and keep a copy of them for your reference.</p>
 
@@ -563,6 +564,7 @@
 								<i id="tos-check" class="fas fa-check tos-btn-icon"></i>
 								<input type="button" class="accept-tos" id="accept-tos" onclick="document.getElementById('modal-wrapper-tos').style.display='none'; document.getElementById('modal-wrapper-register').style.display='block';" value="accept" disabled>
 							</div>
+							<input type="button" id="scroll-to-bottom-btn" value="scroll to bottom"/>
 						</div>
 					</div>
 
