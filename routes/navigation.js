@@ -33,5 +33,8 @@ module.exports = router => {
   });
   router.get('/about', (req,res)=>{
     res.render('about.html');
+  });
+  router.get('/promo',(req,res)=>{
+    res.render('promo.html');
   })
 }

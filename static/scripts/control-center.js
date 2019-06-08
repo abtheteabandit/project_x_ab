@@ -2756,11 +2756,11 @@ function init(){
   getUsername();
   $('#video-upload-button').click(function () {
     $("#video-upload-input").trigger('click');
-  })
+  });
 
   $("#video-upload-input").change(function () {
     $('#video-upload-val').text(this.value.replace(/C:\\fakepath\\/i, ''))
-  })
+  });
 }
 
 function loadBands(user){

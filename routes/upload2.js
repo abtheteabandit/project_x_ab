@@ -162,6 +162,7 @@ const database = require('../database.js'),
   });
 
   router.post('/uploadPromoPic', uploadingPromoPic.single('promoPic'), (req,res)=>{
+    console.log('************************************** PROMO ***************')
     if (!req.session.key){
       console.log('User tried to upload gig pic while not logged in');
       res.status(401).end();
