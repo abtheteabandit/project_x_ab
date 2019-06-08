@@ -1053,10 +1053,10 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
 
   #search_input {
-    left: 45%;
-    width: 300px;
+    left: 88%;
+    width: 250px;
     height: 42px;
-    padding-top: 5px;
+    padding-top: 0px;
     font-size: 20px;
   }
 }
