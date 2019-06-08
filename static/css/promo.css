@@ -1,240 +1,899 @@
+@font-face { font-family: Industry; src: url('/assets/Industry.otf'); }
+
+html{
+  background-color: black;
+}
+
 body{
-    background: url('/assets/Home/backgroundnew.png');
-    background-size: cover;
-    color: white;
+  font-family: Industry;
+  color: white;
+  scroll-behavior: smooth;
+}
+
+/* Radial Menu */
+
+.radialText{
+  color: white;
+}
+
+.radialText:hover{
+  color: rgba(86,223,240,1.0);
+}
+
+#menuBacking{
+  z-index: 4;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  height: 288px;
+  width: 288px;
+}
+
+#menu_circle_svg{
+  z-index: 1;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  color: rgba(0,0,0,0.0);
+}
+
+#mainbtn {
+  position:absolute;
+  top:30px;
+  left:60px;
+  z-index:5;
+}
+
+#mainbtn img{
+  position: absolute;
+  top:0px;
+  left:0px;
+  width: 57px;
+  height: 147px;
+}
+
+.circle-container {
+  position: absolute;
+  top:-50px;
+  left:-47px;
+  width: 100px;
+  height: 100px;
+  z-index:5;
+}
+.circle-container a {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  width: 64px; height: 32px;
+  margin:50px;
+  z-index: 5;
+}
+
+.circle-container i { display: block; width: 100px; }
+.deg0 { transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg60 { transform: rotate(-25deg) translate(13em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg90 { transform: rotate(-25deg) translate(13em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+
+.open.deg0 { transform: rotate(8deg) translate(11.5em) rotate(-8deg); }
+.open.deg30 { transform: rotate(27deg) translate(12.5em) rotate(-27deg); }
+.open.deg60 { transform: rotate(50deg) translate(12.5em) rotate(-50deg); }
+.open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);}
+
+/* Minh Stuff */
+.mobile-menu{
+  color: red;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+  display: none;
+
+}
+.mobile-menu img{
+  height: 100%;
+}
+.mobile-menu button{
+  position: relative;
+  width: 100px;
+  height: 60px;
+  font-size: 20px;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  background: black;
+}
+
+#mobile-menu-button{
+  background-color: transparent;
+}
+
+.mobile-menu ul{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: #ccc;
+  transform-origin: top;
+  transition: 0.5s;
+  transform: perspective(1000px) rotateX(-90deg);
+}
+.mobile-menu ul.mobile-active{
+  transform: perspective(1000px) rotateX(0deg);
+
+}
+.mobile-menu ul li{
+  list-style: none;
+  padding: 0px;
+}
+.mobile-menu ul li a{
+  color: white;
+  display:  block;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  background: #262626;
+  border-bottom: 1px solid rgb(0, 0, 0, 0.2);
+}
+.mobile-menu ul li a:hover{
+  background: red;
+}
+
+/* Page Content */
+
+.body-bg{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background: url('/assets/Home/backgroundnew.png');
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+
+.body-content{
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  position: fixed;
+  overflow: scroll;
+  margin: 0;
+  text-align: center;
+}
+
+#promotion-title{
+  font-size: 48pt;
+  font-weight: bold;
+}
+
+#promotion-subtitle{
+  padding-top: 60px;
+  padding-bottom: 60px;
+  line-height: 40px;
+  width: 700px;
+  margin: 0 auto;
+}
+
+.subtitle-i{
+  color: #56dff0;
+}
+
+#get-started-btn{
+  font-size: 28pt;
+  color: #56dff0;
+  font-weight: bold;
+}
+
+#get-started-btn:hover{
+  color: white;
+  text-decoration: none;
 }
 
 #get-start{
     text-align: center;
-    margin-top: 60px;
+    padding-top: 60px;
+    margin-bottom: 100px;
 }
 #get-start h1{
     font-size: 4em;
 }
+
+.step-div{
+  border-top: 2px solid rgba(86,223,240,0.5);
+  height: 200px;
+}
+
+.deactivated-step{
+  border-top: 2px solid rgba(194,194,194,0.5);
+}
+
+.step-h1{
+  font-size: 48pt;
+  font-weight: bold;
+  margin-top: 26px;
+}
+
+.deactivated{
+  color: #c2c2c2 !important;
+  opacity: 0.4;
+  cursor: text;
+  pointer-events: none;
+}
+
+.selected{
+  color: #56dff0;
+}
+
+.step-h2{
+  display: inline;
+}
+
+.left-step{
+  cursor: pointer;
+  float: left;
+  padding-left: 20%;
+}
+
+.right-step{
+  cursor: pointer;
+  float: right;
+  padding-right: 20%;
+}
+
+#step-1-content{
+  display: none;
+}
+
 .social-buttons{
-    display: inline-block;
-    width: 80px;
-    height: 80px;
-    background: #f1f1f1;
-    margin: 10px;
-    border-radius: 40%;
-    box-shadow: 0 5px 20px -1px;
-    overflow: hidden;
-    position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  background-color: #000000;
+  margin: 10px;
+  border-radius: 40%;
+  box-shadow: 0 5px 20px -1px #56dff0;
+  overflow: hidden;
+  position: relative;
 }
 .social-buttons i {
-    line-height: 80px;
-    font-size: 30px;
-    transition: 0.5s linear;
+  line-height: 80px;
+  font-size: 30px;
+  transition: 0.5s linear;
+  color: #56dff0;
 }
 .social-buttons:hover i {
-    transform: scale(1.3);
+  transform: scale(1.3);
 }
 
 .social-buttons-wrapper{
-    text-align: center;
-    padding-bottom: 60px;
-    border-bottom: 2px solid rgba(86,223,240,0.5);
-    width: 800px;
-    margin: auto;
-}
-#create-your-promotion-wrapper{
-    text-align: center;
-    margin-top: 40px;
-}
-#create-your-promotion-body{
-    margin-top: 60px;
-    padding-top: 50px;
-    background-color: rgb(5, 5, 5, 0.4);
+  text-align: center;
+  padding-bottom: 60px;
+  width: 800px;
+  margin: auto;
 }
 
-#create-your-promotion-button{
-    color: white;
-    background: black;
-    border-radius: 10px;
-    font-size: 30px;
-    width: 400px;
-    border: 1px solid rgba(86,223,240,1.0);
-    height: 60px;
-}
-#create-promotion-form label{
-    font-size: 2em;
-}
-#promo-name-input{
-    padding-left: 15px;
-    width: 70%;
-    height: 50px;
-    border-radius: 20px;
-    background-color: rgb(179, 170, 170);
-}
-#chosefile{
-    margin-top: 15px;
-}
-#upload-image{
-    width: 200px;
-    height: 200px;
-
-}
-.caption-wrapper{
-    margin-top: 50px;
-}
-.caption-wrapper textarea{
-    border-radius: 20px;
-    background-color: black;
-    color: white;
-    font-size: 40px;;
-    width: 70%;
-    height: 300px;
+.finish-btn{
+  color: #56dff0;
+  background-color: transparent;
+  border: none;
+  font-size: 40pt;
+  cursor: pointer;
 }
 
-#promo-handle-input{
-    padding-left: 15px;
-    border-radius: 20px;
-    background-color: rgb(155, 151, 151);
-    margin-left: 10px;
-}
-#promo-location-input{
-    padding-left: 15px;
-    border-radius: 20px;
-    background-color: rgb(155, 151, 151);
-    margin-left: 10px;
+#step-2-content{
+  display: none;
 }
 
-.promo-social-wrapper{
-    display: inline;
-}
-.promo-icon-wrapper i{
-
-    font-size: 30px;
-}
-#promo-social-wrapper > div{
-    width: 30px;
-    height: 30px;
-    margin: 10px;
-
-
+#promo-div, #coupon-div{
+  display: none;
+  width: 800px;
+  height: 576px;
+  margin: auto;
+  background-image: url("/assets/Promo/box.png");
+  background-size: cover;
+  text-align: left;
+  padding: 20px 40px 20px 40px;
 }
 
-.promo-icon-wrapper{
-    background: rgba(86,223,240,0.5);;
+.promo-label{
+  font-size: 32pt;
+  font-weight: bold;
+  display: block;
 }
 
-#promo-submit-button{
-    margin-top: 30px;
-    font-size: 30px;
-    width: 250px;
-    margin-bottom: 50px;
-}
-.promo-checkbox-input{
-    font-size: 25px;
+.promo-input{
+  background-color: #333d44;
+  color: white;
+  border-radius: 4px;
+  border: none;
+  height: 60px;
+  padding-left: 20px;
 }
 
-input[type=checkbox]
-{
-  /* Double-sized Checkboxes */
-  -ms-transform: scale(2); /* IE */
-  -moz-transform: scale(2); /* FF */
-  -webkit-transform: scale(2); /* Safari and Chrome */
-  -o-transform: scale(2); /* Opera */
-  transform: scale(2);
+#promo-name-label{
+  display: inline;
+}
+
+#promo-name{
+  display: inline;
+  width: 600px;
+  margin-left: 8px
+}
+
+#promo-file{
+  width: 0px;
+  opacity: 0;
+}
+
+#promo-grid-1{
+  display: grid;
+  width: 100%;
+  grid-template-columns: 480px auto;
+}
+
+#promo-grid-1-p{
+  margin-top: -20px;
+  line-height: 80px;
+ }
+
+#promo-file-preview{
+  margin-top: -14px;
+  height: 140px;
+  width: 140px;
+  background-color: #333d44;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+#promo-description{
+  margin-top: -10px;
+  width: 100%;
+}
+
+#promo-url-label{
+  display: inline;
+}
+
+#promo-url{
+  width: 468px;
+}
+
+#promo-loc-label{
+  display: inline;
+}
+
+#promo-loc{
+  width: 566px;
+}
+
+#promo-grid-2{
+  margin-top: 20px;
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto auto auto auto;
+  text-align: center;
+}
+
+#save-promo{
+  font-size: 32pt;
+  color: #56dff0;
+  background-color: transparent;
+  border: none;
+}
+
+.promo-social-icon{
+  margin: auto;
+  width: 60px;
+  height: 60px;
+}
+
+#coupon-div{
+  text-align: center;
+}
+
+#coupon-title{
+  font-size: 32pt;
+  text-align: center;
+  font-weight: bold;
+}
+
+#coupon-text{
+  height: 300px;
+  width: 100%;
+  margin: 0;
+  background-color: #333d44;
+  border-radius: 4px;
   padding: 10px;
+  color: white;
+  border: none;
 }
 
-#find-cross-promoters{
-    margin-top: 50px;
-    text-align: center;
-    border-top: 2px solid rgba(86,223,240,0.5);
-    padding-top: 30px;
-    padding-bottom: 100px;
+#coupon-select{
+  margin: 0;
+  width: 300px;
+  height: 60px;
+  background-color: #333d44;
+  border-radius: 4px;
+  border: none;
+  margin-top: 20px;
+  color: white;
 }
-#find-cross-promoters h1{
-    font-size: 3em;
+
+#save-coupon{
+  font-size: 32pt;
+  color: #56dff0;
+  background-color: transparent;
+  border: none;
+  margin: 0;
+  text-align: center;
+  cursor: pointer;
+}
+
+#controls-div{
+  height: 100px;
+  margin-top: 20px;
+}
+
+#step-2-back, #step-2-finish{
+  color: #56dff0;
+}
+
+#step-2-back:hover, #step-2-finish:hover{
+  color: white;
+}
+
+#step-3-content{
+  display: none;
+  text-align: center;
 }
 
 #search-bar-input{
-    padding-left: 20px;
-    width: 60%;
-    height: 50px;
-    border-radius: 40px;
-    background: black;
-    color: white;
-    font-size: 20px;
+  background-image: url("/assets/Promo/search.png");
+  width: 800px;
+  height: 120px;
+  color: white;
+  font-size: 32pt;
+  padding-left: 20px;
+  padding-right: 100px;
+  border: none;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
 }
 
-#search-icon{
-    position: relative;
-    left: -50px;
-}
-#find-promoter-zip-input{
-    padding-left: 20px;
-    margin-top: 20px;
-    border-radius: 10px;
-    font-size: 20px;
-}
-#find-promoter-radio-button-div{
-    margin-left: 30px;
-    font-size: 25px;
-}
-#find-promoter-radio-button-div input{
-    font-size: 40px;
+#step-3-container{
+  width: 800px;
+  margin: auto;
 }
 
-#search-promoter-button{
-    margin-top: 30px;
-    border-radius: 10px;
-    font-size: 20px;
-    background-color: rgb(137, 136, 153)
+#step-3-grid{
+  display: grid;
+  grid-template-columns: auto auto auto;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  font-size: 18pt;
 }
 
-#create-special-promo-wrapper{
-    text-align: center;
-    margin-top: 40px;
+#step-3-zip{
+  width: 200px;
+  background-color: #333d44;
+  border: none;
+  padding-left: 10px;
+  border-radius: 4px;
+  color: white;
 }
 
-#create-special-promo-body{
-    margin-top: 60px;
-    padding-top: 50px;
-    background-color: rgb(5, 5, 5, 0.4);
+#step-3-controls{
+  height: 100px;
+  margin-top: 20px;
 }
 
-#what-does-customer-get-paragraph{
-    font-size: 2em;
+#step-3-back, #step-3-finish{
+  color: #56dff0;
+  cursor: pointer;
 }
-#special-promo-textarea{
-    border-radius: 20px;
-    background-color: black;
-    color: white;
-    font-size: 40px;
+
+#step-3-finish{
+  padding-left: 50px;
+}
+
+#step-3-back:hover, #step-3-finish:hover{
+  color: white;
+}
+
+/* search results grid stuff*/
+
+.grid-container {
+  width: 60%;
+  height: 85%;
+  margin: 120px auto;
+  display: none;
+  /* display: grid; */
+  grid-template-columns: auto auto auto auto;
+  grid-gap: 10px;
+  background-color: transparent;
+  padding: 10px;
+  overflow:visible;
+  margin-bottom: 200px;
+}
+
+.grid-container > div {
+  position: relative;
+  /* background-color: rgba(255, 255, 255, 0.8); */
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+  height: 200px;
+  width: 200px;
+  background-size: cover;
+  border-radius: 10px;
+}
+
+.result-overlay{
+  z-index: -10;
+  opacity: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  background-color: rgba(0,0,0,0.5);
+  position: absolute;
+  margin-top: -20px;
+  padding: 0;
+}
+
+.result-overlay:hover{
+  cursor: pointer;
+}
+
+.result-overlay p{
+  width: 75%;
+  word-wrap: break-word;
+  margin: 0 auto;
+  margin-top: 34%;
+}
+
+.result-frame{
+  z-index: 4;
+  width: 200px;
+  height: 200px;
+  border-radius: none;
+  position: relative;
+  margin-top: -20px;
+  padding: 0;
+}
+
+.result-name-div {
+  z-index: 3;
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.result-name-div > p{
+  color: white;
+  font-size: 12pt;
+}
+
+.result-name-p{
+  color: white;
+}
+
+@media(max-width: 1400px){
+  .grid-container {
+    grid-template-columns: auto auto auto;
+    height: 65%;
+  }
+}
+
+@media(max-width: 1000px){
+  .grid-container {
+    grid-template-columns:  auto auto;
+    margin: 80px 200px;
     width: 70%;
-    height: 300px;
+  }
+  .grid-image-div{
+    width: 50%;
+    margin: 0 auto;
+  }
+  #menuBacking{
+    height: 198px;
+    width: 198px;
+  }
+  #mainbtn img{
+    width: 37px;
+    height: 90px;
+  }
+  .circle-container a{
+    margin: 20px;
+    font-size: 13px;
+  }
 }
-#select-gig-div{
-    margin-top: 50px;
+
+
+@media(max-width: 900px){
+  .left-step{
+    padding-left: 10%;
+  }
+  .right-step{
+    padding-right: 10%;
+  }
 }
-#select-gig-div select{
-    width: 200px;
-    height: 50px;
-    font-size: 25px;
-    background: #007bff;
-    border-radius: 6px;
-    box-shadow: 2px 4px
-}
-#save-special-promo-button{
-    margin-top: 20px;
-    font-size: 30px;
-    color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d;
-    width: 250px;
-    border-radius: 0.25em;
-    margin-bottom: 30px;
-}
-#create-special-promo-button{
-    color: white;
-    background: black;
-    border-radius: 10px;
-    font-size: 30px;
+
+@media(max-width: 800px){
+  .social-buttons-wrapper{
+    width: 300px;
+  }
+  /* step 2 stuff */
+  /* promos */
+  #promo-div{
     width: 400px;
-    border: 1px solid rgba(86,223,240,1.0);
+    height: 288px;
+    padding: 10px 20px 10px 20px;
+  }
+  .promo-label{
+    font-size: 16pt;
+  }
+  .promo-input{
+    height: 30px;
+  }
+  #promo-name{
+    width: 290px;
+  }
+  #promo-grid-1{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 240px auto;
+  }
+  #promo-grid-1-p{
+    margin-top: -20px;
+    line-height: 40px;
+  }
+
+  #promo-file-preview{
+    width: 70px;
+    height: 70px;
+  }
+
+  #promo-url{
+    width: 232px;
+  }
+  #promo-loc{
+    width: 280px;
+  }
+  #promo-grid-2{
+    margin-top: 10px;
+  }
+  .promo-social-icon{
+    width: 30px;
+    height: 30px;
+  }
+  #save-promo{
+    font-size: 16pt;
+  }
+  /* coupons */
+  #coupon-div{
+    width: 400px;
+    height: 288px;
+    padding: 10px 20px 10px 20px;
+  }
+  #coupon-title{
+    font-size: 16pt;
+  }
+  #coupon-text{
+    height: 150px;
+  }
+  #coupon-select{
+    width: 150px;
+    height: 30px;
+    margin-top: 10px;
+  }
+  #save-coupon{
+    font-size: 16pt;
+  }
+  /*find promoters*/
+  #search-bar-input{
+    width: 400px;
     height: 60px;
+    padding-right: 50px;
+    padding-left: 10px;
+    font-size: 16pt;
+  }
+
+  #step-3-container{
+    width: 400px;
+  }
+  #step-3-grid{
+    font-size: 12pt;
+  }
+  #step-3-zip{
+    width: 100px;
+    padding-left: 5px;
+  }
+}
+
+
+@media(max-width: 750px){
+  #promotion-subtitle{
+    width: 400px;
+    font-size: 16pt;
+    line-height: 30px;
+  }
+  .step-h2{
+    display: block;
+  }
+  .left-step, .right-step{
+    float: none;
+    padding: 0;
+  }
+  #step-3-finish{
+    padding: 0;
+  }
+}
+
+@media(max-width: 700px){
+  .grid-container{
+    margin-left: 130px;
+  }
+  #menuBacking{
+    height: 188px;
+    width: 188px;
+  }
+  #mainbtn img{
+    position: fixed;
+    left: 25px;
+    top: 25px;
+    width: 27px;
+    height: 60px;
+    z-index: 15;
+  }
+}
+
+@media(max-width: 650px){
+  .step-h1{
+    font-size: 32pt;
+    font-weight: bold;
+    margin-top: 48px;
+  }
+  .step-h2{
+    font-size: 20pt;
+  }
+}
+
+@media(max-width: 600px){
+  .grid-container {
+    grid-template-columns:  auto;
+    margin: 80px auto;
+    margin-top: 180px;
+    margin-left: 100px;
+  }
+  .grid-container >div {
+    width: 200px;
+    height: 200px;
+  }
+  #container, .circle-container{
+    display: none;
+  }
+  .mobile-menu{
+    display: block;
+  }
+}
+
+@media(max-width: 450px){
+  .grid-container > div{
+    margin-right: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: -50px;
+  }
+  #promotion-subtitle{
+    width: 300px;
+    font-size: 14pt;
+    line-height: 26px;
+  }
+  #promotion-title{
+    font-size: 30pt !important;
+  }
+}
+
+@media(max-width: 400px){
+  /* step 2 stuff */
+  /* promos */
+  #promo-div{
+    width: 300px;
+    height: 216px;
+    padding: 8px 15px 8px 15px;
+  }
+  .promo-label{
+    font-size: 12pt;
+  }
+  .promo-input{
+    height: 23px;
+  }
+  #promo-name{
+    width: 218px;
+  }
+  #promo-grid-1{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 180px auto;
+  }
+  #promo-grid-1-p{
+    margin-top: -20px;
+    line-height: 30px;
+  }
+  #promo-file-preview{
+    width: 53px;
+    height: 53px;
+  }
+  #promo-url{
+    width: 173px;
+  }
+  #promo-loc{
+    width: 209px;
+  }
+  #promo-grid-2{
+    margin-top: 10px;
+  }
+  .promo-social-icon{
+    width: 23px;
+    height: 23px;
+  }
+  #save-promo{
+    font-size: 12pt;
+  }
+  /* coupons */
+  #coupon-div{
+    width: 300px;
+    height: 216px;
+    padding: 8px 15px 8px 15px;
+  }
+  #coupon-title{
+    font-size: 12pt;
+  }
+  #coupon-text{
+    height: 113px;
+  }
+  #coupon-select{
+    width: 113px;
+    height: 23px;
+    margin-top: 8px;
+  }
+  #save-coupon{
+    font-size: 12pt;
+  }
+  /*find promoters*/
+  #search-bar-input{
+    width: 300px;
+    height: 45px;
+    padding-right: 38px;
+    padding-left: 8px;
+    font-size: 12pt;
+  }
+
+  #step-3-container{
+    width: 300px;
+  }
+  #step-3-grid{
+    font-size: 10pt;
+  }
+  #step-3-zip{
+    width: 80px;
+  }
 }

@@ -476,7 +476,6 @@ body elements
 }
 @media (max-width: 1400px)
 {
-
   .grid-container {
     grid-template-columns: auto auto auto;
     height: 65%;

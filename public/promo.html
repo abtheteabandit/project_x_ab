@@ -6,137 +6,154 @@
     <title>Promotion Page</title>
 
     <!-- Bootstrap --> <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- CSS link --> <link rel="stylesheet" href="/static/promo.css">
+    <!-- CSS link --> <link rel="stylesheet" type="text/css" href="/css/promo.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
     <!-- Font Awesome --> <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <!-- Ajax -->  <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
 
-    <script src="/scripts/promotions_page.js"></script>
+    <script src="/scripts/promo.js"></script>
+    <!-- Radial Menu -->
+    <script type="text/javascript">
+			(function($) {
+				$(function() {
+					$('#mainbtn').mouseover(function(){
+						$('.deg0, .deg30, .deg60, .deg90').toggleClass('open')
+					});
+				});
+			})(jQuery);
+		</script>
 </head>
-<body>
-    <div class="container">
-        <div id="get-start">
-            <h1>Let's Get Started</h1>
-
-            <h4>Log in to your socials</h4>
-
-            <div class="social-buttons-wrapper">
-                <a href="" class = "social-buttons"><i class="fab fa-facebook-f"></i></a>
-
-                <a href=""class = "social-buttons"><i class="fab fa-snapchat-ghost"></i></a>
-
-                <a href=""class = "social-buttons"><i class="fab fa-twitter"></i></a>
-
-                <a href=""class = "social-buttons"><i class="fab fa-instagram"></i></a>
-
-
-            </div>
-        </div>
-
-        <div class="container-fluid">
-            <div class="row">
-
-                <div class="col-6">
-                        <div id="create-your-promotion-wrapper">
-
-                                <button id = "create-your-promotion-button" onclick="showCreatePromo()">Create Your Promotion</button>
-                                <div id="create-your-promotion-body">
-
-                                    <form action="" id ="create-promotion-form">
-                                        <label for="promo-name">Name</label> <input type="text" name = "promo-name" id="promo-name-input">
-
-                                        <div id="chosefile">
-                                            <input type="file" onchange="displayUploadImage(this);">
-
-                                            <img id = "upload-image" src="" alt=""/>
-                                        </div>
-
-                                        <div class="caption-wrapper">
-                                            <textarea name="description" id="promo-description" cols="80" rows="10" placeholder="Description"></textarea>
-                                        </div>
-                                        <div id="promo-handle-div">
-                                            <label for="handle">Your Handle</label>
-                                            <input id = "promo-handle-input" type="text" name = "handle">
-                                        </div>
-                                        <div id="promo-location-div">
-                                            <label for="promo-location">Location</label>
-                                            <input id="promo-location-input" type="text" name = "promo-location">
-                                        </div>
-
-                                        <div class = "row" id="promo-social-wrapper">
-                                            <div class="col">
-                                                <p class= "promo-icon-wrapper"><i class="fab fa-facebook-square"></i></p>
-
-                                                <input class = "promo-checkbox-input"  type="checkbox">
-                                            </div>
-
-                                            <div class="col">
-                                                    <p class= "promo-icon-wrapper"><i class="fab fa-snapchat-square"></i></p>
-
-                                                    <input class = "promo-checkbox-input"  type="checkbox">
-                                            </div>
-                                            <div class="col">
-                                                    <p class= "promo-icon-wrapper"><i class="fab fa-twitter-square"></i></p>
-
-                                                    <input class = "promo-checkbox-input"  type="checkbox">
-                                            </div>
-                                            <div class="col">
-                                                    <p class= "promo-icon-wrapper"><i class="fab fa-instagram"></i></p>
-
-                                                    <input class = "promo-checkbox-input" type="checkbox">
-                                            </div>
-                                        </div>
-
-                                        <button type="button" class="btn btn-secondary" id = "promo-submit-button">Save</button>
-
-                                    </form>
-                                </div>
-                            </div>  <!-- Create your promotion wrapper ends -->
-                </div>
-                <div class="col-6">
-                    <div id="create-special-promo-wrapper">
-                        <button id = "create-special-promo-button" onclick="showCreateSpecialPromo()">Create your speacial promo</button>
-                        <div id="create-special-promo-body">
-                            <p id="what-does-customer-get-paragraph">What does this let customer get?</p>
-                            <textarea id = "special-promo-textarea" placeholder="Ex.. get 1 free drink" name="special-promo-textarea" id="" cols="30" rows="10"></textarea>
-                            <div id="select-gig-div">
-                                <select name= "your-gig" id="your-gig-promotion">
-                                        <option value="">gig1</option>
-                                        <option value="">gig2</option>
-                                </select>
-                            </div>
-                            <button id = "save-special-promo-button">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="find-cross-promoters">
-            <h1>Find Cross Promoters</h1>
-
-            <div id="search-bar-div">
-                <input id = "search-bar-input"type="text" placeholder="Find your promoter">
-                <i id = "search-icon" class="fas fa-search"></i>
-            </div>
-
-            <div id="find-cross-promoters-zip">
-
-                <input id = "find-promoter-zip-input" type="text" name = "find-promoter-zip-input" placeholder="Zipcode">
-
-                <span id="find-promoter-radio-button-div">
-                    <input type="radio" name="followers-or-engagement"  > Follower
-                    <input type="radio" name="followers-or-engagement" > Engagement
-                </span>
-
-                <div id = "search-promoter-button-div">
-                    <button id="search-promoter-button" type="submit">Search Promoter</button>
-                </div>
-
-            </div>
-        </div> <!-- Find-cross-promoter-div-ends -->
-
+<body onload="init();">
+  <div class="body-bg">
+  </div>
+  <div class="mobile-menu">
+     <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+     <ul id = "mobile-menu-ul" class="mobile-active">
+       <li><a href='control-center'><p class="radialText">Home</p></a></li>
+       <li><a href='about'><p class="radialText">About</p></a></li>
+       <li><a href='index'><p class="radialText">Landing</p></a></li>
+       <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+     </ul>
+ </div>
+ <div id="container">
+   <img id="menuBacking" src="/assets/Home/menu.png" />
+   <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
+   </div>
+ </div>
+ <div class='circle-container'>
+   <a href='control-center' class='deg0' id="home_button"><p class="radialText">Home</p></a>
+   <a href='about' class='deg30'><p class="radialText">About</p></a>
+   <a href='index' class='deg60'><p class="radialText">Landing</p></a>
+   <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
+ </div>
+ <div id="modal-wrapper-support" class="modal-support">
+   <form class="modal-content-support animate">
+     <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
+     <div class="container">
+       <h1 id="account-support-header">account support</h1>
+       <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
+       <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
+       <button id="request-support-btn" type="submit" onclick="requestSupport()">Make Request</button>
+       <p class="support-text-small">Alternatively, reach out to the team directly:</p>
+       <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
+     </div>
+   </form>
+ </div>
+  <div class="body-content">
+    <div id="get-start">
+        <h1 id="promotion-title">promotions</h1>
+        <h4 id="promotion-subtitle">We encourage everyone in our community to support each other's work! On this page, you can create a <i class="subtitle-i">"promotion"</i> that drives traffic to your events and social media accounts. You can also create an event-specific <i class="subtitle-i">"coupon"</i> and share the promotion/coupon with other <i class="subtitle-i">"promoters"</i> on our platform.</h4>
+        <a href="#" id="get-started-btn" onclick="userClickStart()">get started</a>
     </div>
 
+    <div id="step-1" class="step-div deactivated-step">
+      <h1 id="step-1-h1" class="step-h1 deactivated">step 1</h1>
+      <h2 id="step-1-h2" class="step-h2 deactivated">link your social media</h2>
+    </div>
+    <div id="step-1-content">
+      <div class="social-buttons-wrapper">
+        <a onclick="linkFacebook()" href="#" class = "social-buttons"><i class="fab fa-facebook-f"></i></a>
+        <a onclick="linkSnapchat()" href="#" class = "social-buttons"><i class="fab fa-snapchat-ghost"></i></a>
+        <a onclick="linkTwitter()" href="#" class = "social-buttons"><i class="fab fa-twitter"></i></a>
+        <a onclick="linkInstagram()" href="#" class = "social-buttons"><i class="fab fa-instagram"></i></a>
+      </div>
+      <input onclick="finishStepOne()" type="button" id="finish-step-1" value="finish" class="finish-btn"/>
+    </div>
+    <div id="step-2" class="step-div deactivated-step">
+      <h1 id="step-2-h1" class="step-h1 deactivated">step 2</h1>
+      <h2 id="left-step" class="step-h2 left-step deactivated">create promotion</h2>
+      <h2 id="right-step" class="step-h2 right-step deactivated">create coupon</h2>
+    </div>
+    <div id="step-2-content">
+      <div id="promo-div">
+        <p id="promo-name-label" class="promo-label">name</p>
+        <input id="promo-name" class="promo-input" type="text" />
+        <br>
+        <input id="promo-file" type="file" />
+        <div id="promo-grid-1">
+          <p id="promo-grid-1-p" class="promo-label">upload image or video... description</p>
+          <img id="promo-file-preview" alt="#" src="/assets/Home/banda_b.png"/>
+        </div>
+        <textarea id="promo-description" class="promo-input"></textarea>
+        <p id="promo-url-label" class="promo-label">your main url</p>
+        <input id="promo-url" class="promo-input" type="text" />
+        <p id="promo-loc-label" class="promo-label">location</p>
+        <input id="promo-loc" class="promo-input" type="text" />
+        <div id="promo-grid-2">
+          <img class="promo-social-icon" alt="icon" src="/assets/Home/banda_b.png" />
+          <img class="promo-social-icon" alt="icon" src="/assets/Home/banda_b.png" />
+          <input id="save-promo" type="button" value="save"/>
+          <img class="promo-social-icon" alt="icon" src="/assets/Home/banda_b.png" />
+          <img class="promo-social-icon" alt="icon" src="/assets/Home/banda_b.png" />
+        </div>
+      </div>
+      <div id="coupon-div">
+        <p id="coupon-title">coupon details</p>
+        <textarea id="coupon-text"></textarea>
+        <select id="coupon-select">
+          <option>a</option>
+          <option>a</option>
+          <option>a</option>
+        </select>
+        <br>
+        <input id="save-coupon" value="save" />
+      </div>
+      <div id="controls-div">
+        <h2 id="step-2-back" class="step-h2 left-step" onclick="goBackToStepOne()">back</h2>
+        <h2 id="step-2-finish" class="step-h2 right-step" onclick="finishStepTwo()">finish</h2>
+      </div>
+    </div>
+    <div id="step-3" class="step-div deactivated-step">
+      <h1 id="step-3-h1" class="step-h1 deactivated">step 3</h1>
+      <h2 id="step-3-h2" class="step-h2 deactivated">find your promoter</h2>
+    </div>
+    <div id="step-3-content">
+      <input id = "search-bar-input"type="text" placeholder="Find your promoter">
+      <div id="step-3-container">
+        <div id="step-3-grid">
+          <input id = "step-3-zip" type="text" name = "find-promoter-zip-input" placeholder="Zipcode">
+          <div>
+            <input type="radio" name="followers-or-engagement"> Follower
+          </div>
+          <div>
+            <input type="radio" name="followers-or-engagement"> Engagement
+          </div>
+        </div>
+      </div>
+      <div class="grid-container" id="grid-container"></div>
+      <div id="step-3-controls">
+        <h2 id="step-3-back" class="step-h2" onclick="goBackToStepTwo()">back</h2>
+        <h2 id="step-3-finish" class="step-h2" onclick="finishStepThree()">finish</h2>
+      </div>
+    </div>
+  </div>
 </body>
+<script>
+ $(document).ready(function(){
+   $('#mobile-menu-button').click(function(){
+     $('#mobile-menu-ul').toggleClass('mobile-active')
+   })
+ })
+</script>
 </html>
