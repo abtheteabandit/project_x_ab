@@ -735,22 +735,24 @@ flip box containe;;;; got rid of it cuz im using flipp */
 
 @media(max-width: 775px){
   #barImg{
-    width: 370px;
-    height: 67px;
+    width: 500px;
+    height: 91px;
   }
   #search_input{
-    width: 280px;
-    height: 60px;
-    font-size: 24px;
+    left: 45%;
+    width: 410px;
+    height: 69px;
+    padding-top: 5px;
+    font-size: 35px;
   }
   .search{
-    margin-left: -200px;
+    margin-left: -240px;
   }
   .options{
-    width: 300px;
+    width: 138px;
     margin: 0;
-    top: 75%;
-    left: -10%;
+    top: 94%;
+    left: -48%;
   }
 }
 
@@ -1032,5 +1034,29 @@ flip box containe;;;; got rid of it cuz im using flipp */
 @media(max-width: 500px){
   #frontText, #backText{
     font-size: 8pt;
+  }
+
+  .search{
+    width: 300px;
+    margin-left: -144px;
+  }
+  .options {
+    width: 138px;
+    margin: 0;
+    top: 71%;
+    left: -28%;
+  }
+
+  #barImg {
+    width: 300px;
+    height: 55px;
+  }
+
+  #search_input {
+    left: 45%;
+    width: 300px;
+    height: 42px;
+    padding-top: 5px;
+    font-size: 20px;
   }
 }
