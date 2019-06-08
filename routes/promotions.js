@@ -197,9 +197,9 @@ router.post('/promotion', (req, res)=>{
     req.status(401).end();
   }
   else{
-    var {name, imgURL, caption, handles, location, mode, medias, preferences} = req.body;
+    var {name, imgURL, caption, handles, location, mode, medias} = req.body;
     database.connect(db=>{
-      db.db('promotions').collection('promotions').updateOne({'creator':req.session.key}, {$push:{'promotions':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias, 'preferences':preferences}}}, (err2, res2)=>{
+      db.db('promotions').collection('promotions').updateOne({'creator':req.session.key}, {$push:{'promotions':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias}}}, (err2, res2)=>{
         if (err2){
           console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
           res.status(500).end();
@@ -604,7 +604,7 @@ router.post('/add_pull', (req, res)=>{
           const customerCode = result[0].customerCode
           const code = result[0].code
 
-          //find and return the discount from the discount's code 
+          //find and return the discount from the discount's code
           db.db('promotions').collection('discounts').find({'code': code}).toArray(function(err2, result) {
             if (err2){
               console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);

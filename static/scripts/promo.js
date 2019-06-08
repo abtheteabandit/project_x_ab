@@ -1,8 +1,13 @@
 // Globals
 var createCouponState = false;
-
+var hasSnap = false;
+var hasInsta = false;
+var hasFB = false;
+var hasYT = false;
+var hasTwitter = false;
 function init(){
   setUpStepTwo();
+  checkUserSocials();
 }
 
 function setUpStepTwo(){
@@ -151,20 +156,6 @@ function finishStepThree(){
 
 
 //Minh CODE:
-function displayUploadImage(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function (e) {
-            $('#upload-image')
-                .attr('src', e.target.result)
-                .width(200)
-                .height(200);
-        };
-
-        reader.readAsDataURL(input.files[0]);
-    }
-}
 
 function showCreatePromo(){
     var promo =  document.getElementById("create-your-promotion-body");
@@ -208,17 +199,77 @@ function parseURL(url){
    };
 }
 
-function submit_promotion(){
+//BOOTH CODE SECTION
+function displayUploadImage(input) {
+  console.log('GOT IN DISPLAY')
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
 
+        reader.onload = function (e) {
+            $('#promo-file-preview')
+                .attr('src', e.target.result)
+                .width(200)
+                .height(200);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function submit_promotion(){
+  console.log('SAVE PROMO HIT')
+  var name = document.getElementById('promo-name').value;
+  console.log('PROMO NAME: ' + name)
+  if (name == " " || name == null){
+    alert('Sorry, you must give your promotion a name to save it.');
+    return;
+  }
+  var loc = document.getElementById('promo-loc').value;
+  if (name == " " || name == null){
+    alert('Sorry, you must give your promotion a location to save it.');
+    return;
+  }
+  var url = document.getElementById('promo-url').value;
+  if (url == " " || url == null){
+    alert('Sorry, you must give your promotion a name to save it. This url is what user traffic will be driven to.');
+    return;
+  }
+  var desc = document.getElementById('promo-description').value;
+  if (desc == " " || desc == null){
+    alert('Sorry, you must give your promotion a caption to save it.');
+    return;
+  }
+  if(!($("#promo-file")[0].files && $("#promo-file")[0].files[0])){
+    alert('Sorry, you must give your promotion a image or video to save it.');
+    return;
+  }
+  else{
+    console.log('FILE IS: '+ JSON.stringify($("#promo-file")[0].files[0]));
+    if (!($("#promo-file")[0].files[0].type=='image/jpeg' || $("#promo-file")[0].files[0].type=='image/png' || $("#promo-file")[0].files[0].type=='video/mp4')){
+      alert('Sorry, the file you select must be a valid image ending with .jpeg or .png or a valid video ending with .mp4');
+      return;
+    }
+  }
 }
 function submit_coupon(){
-
+  console.log('clicked submit coupon');
 }
 function checkUserSocials(){
   $.get('/user_has_socials', {'name':'anything'}, res=>{
     console.log(res);
     if(res.success){
-
+      if(res.data.twitter){
+        hasTwitter=true;
+      }
+      if(res.data.facebook){
+        hasFB=true;
+      }
+      if(res.data.instagram){
+        hasInsta=true;
+      }
+      if(res.data.snapchat){
+        hasSnap=true;
+      }
       console.log('SOCIALS FRO USER IS (true means we already have their info for that social): ' + JSON.stringify(res.data));
     }
     else{

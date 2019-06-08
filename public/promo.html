@@ -11,6 +11,8 @@
     <!-- Font Awesome --> <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <!-- Ajax -->  <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script src="/scripts/promo.js"></script>
     <!-- Radial Menu -->
@@ -90,20 +92,20 @@
         <p id="promo-name-label" class="promo-label">name</p>
         <input id="promo-name" class="promo-input" type="text" />
         <br>
-        <input id="promo-file" type="file" />
+        <input id="promo-file" type="file" onchange="displayUploadImage(this)"/>
         <div id="promo-grid-1">
-          <p id="promo-grid-1-p" class="promo-label">upload image or video... description</p>
+          <p id="promo-grid-1-p" class="promo-label">upload image or video... caption</p>
           <img id="promo-file-preview" alt="#" src="/assets/Home/banda_b.png"/>
         </div>
         <textarea id="promo-description" class="promo-input"></textarea>
-        <p id="promo-url-label" class="promo-label">your main url</p>
+        <p id="promo-url-label" class="promo-label">your url</p>
         <input id="promo-url" class="promo-input" type="text" />
         <p id="promo-loc-label" class="promo-label">location</p>
         <input id="promo-loc" class="promo-input" type="text" />
         <div id="promo-grid-2">
           <img class="promo-social-icon" alt="icon" src="/assets/Home/banda_b.png" />
           <img class="promo-social-icon" alt="icon" src="/assets/Home/banda_b.png" />
-          <input id="save-promo" type="button" value="save"/>
+          <input id="save-promo" type="button" onclick='submit_promotion()'value="save"/>
           <img class="promo-social-icon" alt="icon" src="/assets/Home/banda_b.png" />
           <img class="promo-social-icon" alt="icon" src="/assets/Home/banda_b.png" />
         </div>
