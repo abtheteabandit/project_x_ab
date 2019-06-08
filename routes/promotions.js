@@ -198,6 +198,7 @@ router.post('/promotion', (req, res)=>{
   }
   else{
     var {name, imgURL, caption, handles, location, mode, medias} = req.body;
+    console.log('IN POST PROMO NAME IS: ' + name);
     database.connect(db=>{
       db.db('promotions').collection('promotions').updateOne({'creator':req.session.key}, {$push:{'promotions':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias}}}, (err2, res2)=>{
         if (err2){
@@ -207,7 +208,7 @@ router.post('/promotion', (req, res)=>{
         }
         else{
           console.log('Set promotion ' +name+ ' for user: '+req.session.key);
-          res.status(200).send('Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "Add". To begin running this promo simply go to you contacts and hit the promotion button. If they accept ')
+          res.status(200).send('Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "save". To begin running this promo simply go to you contacts and hit the promotion button next to a names. If they accept it will be autmatically posted to their social medias.')
         }
       });
     }, dbErr=>{

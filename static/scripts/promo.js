@@ -1,10 +1,20 @@
 // Globals
 var createCouponState = false;
+//user has logged in to these socials
 var hasSnap = false;
 var hasInsta = false;
 var hasFB = false;
 var hasYT = false;
 var hasTwitter = false;
+
+// user has created a promo targeting these socials
+var promotionOnSocial1 = false;
+var promotionOnSocial2 = false;
+var promotionOnSocial3 = false;
+var promotionOnSocial4 = false;
+
+// for seeing if we have enoguh info to do a coupon
+var promoCreated = false;
 function init(){
   setUpStepTwo();
   checkUserSocials();
@@ -229,8 +239,8 @@ function submit_promotion(){
     alert('Sorry, you must give your promotion a location to save it.');
     return;
   }
-  var url = document.getElementById('promo-url').value;
-  if (url == " " || url == null){
+  var url_text = document.getElementById('promo-url').value;
+  if (url_text == " " || url_text == null){
     alert('Sorry, you must give your promotion a name to save it. This url is what user traffic will be driven to.');
     return;
   }
@@ -250,7 +260,71 @@ function submit_promotion(){
       return;
     }
   }
+  if (!promotionOnSocial1 && !promotionOnSocial2 && !promotionOnSocial3 && !promotionOnSocial4){
+    alert('Sorry, you must select at least one social media to target with this pomotion. You can click on your targted medias at the bottom of the form.');
+    return;
+  }
+  var medias = []
+  if (promotionOnSocial1){
+    medias.push('facebook');
+  }
+  if (promotionOnSocial2){
+    medias.push('snapchat');
+  }
+  if (promotionOnSocial3){
+    medias.push('twitter');
+  }
+  if (promotionOnSocial4){
+    medias.push('instagram');
+  }
+  var formdata = new FormData;
+  var promoPic = $("#promo-file")[0].files[0];
+  formdata.append('promoPic', promoPic);
+  $.ajax({
+      url: '/uploadPromoPic',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      'success':function(data){
+        if (data){
+          if (data == "Wrong mimeType"){
+            alert('Sorry, currently we only support .png or .jpeg files for promotions.');
+            return;
+          }
+          else{
+            var imageURL = 'www.banda-inc.com/'+data;
+            console.log('GOT RES FROM UPLOAD: ' + imageURL);
+            $.post('/promotion', {'name':name, 'caption':desc, 'location':loc, 'medias':medias, 'imageURL':imageURL, 'handles':url_text}, res=>{
+              alert(res);
+              promoCreated = true;
+            });
+          }
+        }
+        else{
+          alert('Hmmm...it seems something went wrong with uploading your file. Please refresh the page and try again. If this problem persists please email us using "support" from the Banda "b". Thank you.')
+          return;
+        }
+      }
+    });
+  //
+
+
 }
+//CLICKS for selecting socials for promo
+function clickedSocial1(){
+  promotionOnSocial1 = true;
+}
+function clickedSocial2(){
+  promotionOnSocial2 = true;
+}
+function clickedSocial3(){
+  promotionOnSocial3 = true;
+}
+function clickedSocial4(){
+  promotionOnSocial4 = true;
+}
+
 function submit_coupon(){
   console.log('clicked submit coupon');
 }
