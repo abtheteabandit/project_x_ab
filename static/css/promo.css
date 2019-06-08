@@ -349,12 +349,13 @@ body{
  }
 
 #promo-file-preview{
+  position: relative;
   margin-top: -14px;
-  height: 140px;
-  width: 140px;
+  max-height: 140px;
+  max-width: 140px;
   background-color: #333d44;
   border-radius: 4px;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 #promo-description{
