@@ -520,8 +520,10 @@ body{
 
 .grid-container {
   width: 60%;
-  height: 85%;
+  height: auto;
   margin: 120px auto;
+  margin-top: 50px
+
   display: none;
   /* display: grid; */
   grid-template-columns: auto auto auto auto;
@@ -529,7 +531,7 @@ body{
   background-color: transparent;
   padding: 10px;
   overflow:visible;
-  margin-bottom: 200px;
+  margin-bottom: 50px;
 }
 
 .grid-container > div {
@@ -599,15 +601,17 @@ body{
 @media(max-width: 1400px){
   .grid-container {
     grid-template-columns: auto auto auto;
-    height: 65%;
   }
 }
 
 @media(max-width: 1000px){
   .grid-container {
-    grid-template-columns:  auto auto;
-    margin: 80px 200px;
+    grid-template-columns: auto auto;
+    margin: 0 auto;
     width: 70%;
+  }
+  .grid-container > div{
+    margin: 0 auto;
   }
   .grid-image-div{
     width: 50%;
@@ -668,8 +672,8 @@ body{
   }
 
   #promo-file-preview{
-    width: 70px;
-    height: 70px;
+    max-width: 70px;
+    max-height: 70px;
   }
 
   #promo-url{
@@ -749,9 +753,6 @@ body{
 }
 
 @media(max-width: 700px){
-  .grid-container{
-    margin-left: 130px;
-  }
   #menuBacking{
     height: 188px;
     width: 188px;
@@ -780,11 +781,11 @@ body{
 @media(max-width: 600px){
   .grid-container {
     grid-template-columns:  auto;
-    margin: 80px auto;
-    margin-top: 180px;
-    margin-left: 100px;
+    margin: 0 auto;
+    margin-top: 30px;
   }
   .grid-container >div {
+    margin: 0 auto;
     width: 200px;
     height: 200px;
   }
@@ -797,12 +798,6 @@ body{
 }
 
 @media(max-width: 450px){
-  .grid-container > div{
-    margin-right: 20px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: -50px;
-  }
   #promotion-subtitle{
     width: 300px;
     font-size: 14pt;
@@ -840,8 +835,8 @@ body{
     line-height: 30px;
   }
   #promo-file-preview{
-    width: 53px;
-    height: 53px;
+    max-width: 53px;
+    max-height: 53px;
   }
   #promo-url{
     width: 173px;

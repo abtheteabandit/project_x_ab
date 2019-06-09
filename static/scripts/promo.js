@@ -19,6 +19,56 @@ var promoCreated = true;
 var promoID = "";
 //if the user has made gigS
 var hasGigs = false;
+
+class SearchResult {
+
+  constructor(obj){
+    this.id = obj._id;
+    this.newDiv = document.createElement("div");
+    this.newDiv.style.backgroundImage = "url('/assets/Home/Art/12.jpeg')";
+    // overlay
+    this.newOverlay = document.createElement("div");
+    this.newOverlay.className = "result-overlay";
+    this.overlayID = "result-overlay-"+this.id;
+    this.newOverlay.addEventListener('click', function(){
+      // nothing yet
+    });
+    this.newOverlay.setAttribute("id",this.overlayID);
+    // frame
+    this.newFrame = document.createElement("img");
+    this.newFrame.className = "result-frame";
+    this.newFrame.src = "/assets/Control-Center/redbox.png";
+    this.newFrame.alt = "frame";
+    // name
+    this.nameDiv = document.createElement("div");
+    this.nameDiv.className = "result-name-div";
+    this.nameP = document.createElement("p");
+    this.nameP.innerHTML = obj.username;
+    // appends
+    this.newDiv.appendChild(this.newOverlay);
+    this.newDiv.appendChild(this.newFrame);
+    this.nameDiv.appendChild(this.nameP);
+    this.newDiv.appendChild(this.nameDiv);
+    theGrid.appendChild(this.newDiv);
+    this.AddEventListeners(this);
+  }
+
+  AddEventListeners(obj){
+    this.newDiv.addEventListener("mouseover",function(){
+      obj.newOverlay.style.zIndex = "8";
+      obj.newOverlay.style.opacity = "1.0";
+    },false);
+    this.newDiv.addEventListener("mouseout",function(){
+      obj.newOverlay.style.zIndex = "-8";
+      obj.newOverlay.style.opacity = "0";
+    },false);
+    this.newDiv.addEventListener("click",function(){
+      console.log(obj.id);
+    },false);
+  }
+}
+
+
 function init(){
   setUpStepTwo();
   checkUserSocials();
@@ -472,7 +522,15 @@ document.getElementById("search-bar-input").addEventListener('keyup', function(e
   }
 });
 
+var theGrid = null;
+
 function promoSearch(){
+  theGrid = document.getElementById("grid-container");
+  theGrid.style.display = "grid";
+  while(theGrid.hasChildNodes()){
+    console.log("removing children");
+    theGrid.removeChild(theGrid.lastChild);
+  }
   console.log('PErform serach');
   var searchText = $("#search-bar-input").val();
   console.log('SEARCH: ' + searchText);
@@ -514,9 +572,20 @@ function convertZip(mySearch){
       var lng = data.coord.lon;
       $.get('/search_promos', {'lat':lat, 'lng':lng, 'searchText':mySearch.text}, res3=>{
         alert(JSON.stringify(res3));
+        fillResultsTable(res3['data']['overallMatchers']);
+        // console.log(JSON.stringify(res3['data']['overallMatchers']));
       });
   });
 }
+
+function fillResultsTable(resArr){
+  var results = [];
+  for(user in resArr){
+    results[user] = new SearchResult(resArr[user][0]);
+  }
+
+}
+
 function requestSupport(){
   var supportText = document.getElementById("request-support-textarea").value;
   console.log("User has requested support, text is: ");
