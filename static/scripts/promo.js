@@ -14,12 +14,59 @@ var promotionOnSocial3 = false;
 var promotionOnSocial4 = false;
 
 // for seeing if we have enoguh info to do a coupon
-var promoCreated = false;
+//CHANGE TO FLASE
+var promoCreated = true;
+var promoID = "";
+//if the user has made gigS
+var hasGigs = false;
 function init(){
   setUpStepTwo();
   checkUserSocials();
+  getGigs();
+}
+function getGigs(){
+  $.get('/user', {'query':'nada'}, res=>{
+    if (res==""){
+      console.log('There was an error finding user info for our user.');
+      return;
+    }
+    else{
+      var ourUser = res;
+      var username = res.username;
+      $.get('/getGigs', {'creator':ourUser.username}, res=>{
+        if (res==""){
+          console.log('There was an error getting our gigs.');
+          return;
+        }
+        else{
+          var ourGigs = res;
+          populateDropDown(ourGigs);
+        }
+      });
+    }
+  });
 }
 
+function populateDropDown(ourGigs){
+  var selector = document.getElementById('coupon-select');
+  if (ourGigs==null){
+    hasGigs = false;
+    return;
+  }
+  else{
+    hasGigs = true;
+    for (var g in ourGigs){
+      var currGig = ourGigs[g];
+      var gigDropTitle=document.createElement('option');
+      gigDropTitle.innerHTML=currGig.name;
+      gigDropTitle.setAttribute('value',currGig._id);
+      gigDropTitle.setAttribute('id', currGig._id);
+      selector.appendChild(gigDropTitle);
+    }
+  }
+
+
+}
 function setUpStepTwo(){
   document.getElementById("left-step").addEventListener("click",function(){
     if(!createCouponState){
@@ -295,8 +342,12 @@ function submit_promotion(){
           else{
             var imageURL = 'www.banda-inc.com/'+data;
             console.log('GOT RES FROM UPLOAD: ' + imageURL);
-            $.post('/promotion', {'name':name, 'caption':desc, 'location':loc, 'medias':medias, 'imageURL':imageURL, 'handles':url_text}, res=>{
-              alert(res);
+            $.post('/promotion', {'name':name, 'caption':desc, 'location':loc, 'medias':medias, 'imgURL':imageURL, 'handles':url_text}, res=>{
+              alert(res.message);
+              console.log('PROMO RES: ' + JSON.stringify(res));
+
+              promoID = res.data._id;
+              console.log('PROMO ID IS: ' + promoID);
               promoCreated = true;
             });
           }
@@ -327,6 +378,66 @@ function clickedSocial4(){
 
 function submit_coupon(){
   console.log('clicked submit coupon');
+  if (!hasGigs){
+    console.log('User has no gigs');
+    alert('Sorry, you must create an event to create a coupon. Coupons are tied to a specific event you have created so that we can autofill information and optimize your promotions reach. Go to "home" on the Banda "b" and click "post event" to create an event.');
+    return;
+  }
+    console.log('User has not created a promo on this page yet.');
+    $.get('/aUserPromo', {query:'nada'}, res=>{
+      if (!res.success){
+        console.log('User promo failed');
+        alert('Sorry, you must create and save a promotion first in order to create a coupon. We need the information from the promotion form to optimize your coupons reach.');
+        return;
+      }
+      else{
+        if (res.data==null){
+          alert('Sorry, you must create and save a promotion first in order to create a coupon. We need the information from the promotion form to optimize your coupons reach.');
+          return;
+        }
+        else{
+          if (res.data.length==0){
+            alert('Sorry, you must create and save a promotion first in order to create a coupon. We need the information from the promotion form to optimize your coupons reach.');
+            return;
+          }
+          else{
+            var thePromo = res.data;
+            var promoID = thePromo._id;
+            var coupBody = document.getElementById("coupon-text").value;
+            if (coupBody == "" || coupBody == " "){
+              alert('Sorry, you must write a non-blank description for your coupon to save it. The description is where you write the details of what the coupon grants a customer, (ex. "5% off your first drink of the night").')
+              return;
+            }
+            else{
+              var selectedGig = $('#coupon-select option:selected').data();
+              console.log('options: ' + JSON.stringify($('#coupon-select option:selected')));
+              console.log('GIG: ' + JSON.stringify(selectedGig));
+              selectedGig=selectedGig['id'];
+              console.log('Seleced gig: ' + selectedGig);
+              var gigID = $('#coupon-select option:selected').val();
+              console.log('gigID for promo: ' + gigID);
+              $.post('/createDiscountPromo', {'gigID':gigID, 'promoID':promoID, 'details':coupBody}, res2=>{
+                console.log('got in res for create coupon')
+                if (res2==null){
+                  alert('Hmmm....something went wrong on our end. Please refreash the page an try again. If this problem persits contact our live support tean by clicking on the Banda "b" and then clicking "support".');
+                  return;
+                }
+                else if (res2=="" || res2==" "){
+                  alert('Hmmm....something went wrong on our end. Please refreash the page an try again. If this problem persits contact our live support tean by clicking on the Banda "b" and then clicking "support".');
+                  return;
+                }
+                else{
+                  alert(res2);
+                  return;
+                }
+              });
+            }
+
+          }
+        }
+
+      }
+    });
 }
 function checkUserSocials(){
   $.get('/user_has_socials', {'name':'anything'}, res=>{
@@ -352,7 +463,60 @@ function checkUserSocials(){
     }
   });
 }
+document.getElementById("search-bar-input").addEventListener('keyup', function(e){
+  console.log('KEY UP code: ' + e.keyCode);
+  var keyCode = e.keyCode || e.which;
+  if (keyCode === 13) {
+    e.preventDefault();
+    promoSearch();
+  }
+});
 
+function promoSearch(){
+  console.log('PErform serach');
+  var searchText = $("#search-bar-input").val();
+  console.log('SEARCH: ' + searchText);
+  if (searchText==" " || searchText==''){
+    alert('Sorry, you must eneter search text to perform a search.');
+    return;
+  }
+  var zipcode = $('#step-3-zip').val();
+  if (zipcode=="" || zipcode==" " ){
+    alert('Sorry, you must enter a zipcode to perform a promoter search. We do this to let you target specific areas.');
+    return;
+  }
+  var mySearch = {'zipcode':zipcode, 'text':searchText};
+  convertZip(mySearch);
+  console.log('searchText: ' + searchText);
+
+}
+
+function convertZip(mySearch){
+  var zipcode = mySearch.zipcode;
+  if (!(zipcode.length==5)){
+    alert('Please enter a valid zipcode.');
+    return;
+  }
+  var success = false;
+  setTimeout(function() {
+    if (!success)
+    {
+        // Handle error accordingly
+        console.log("Got error with zipcode");
+        alert("Please enter a valid zipcode.");
+        return;
+    }
+  }, 5000);
+    $.getJSON('https://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&APPID=f89469b4b424d53ac982adacb8db19f6').done(function(data){
+      console.log(JSON.stringify(data));
+      success=true;
+      var lat = data.coord.lat;
+      var lng = data.coord.lon;
+      $.get('/search_promos', {'lat':lat, 'lng':lng, 'searchText':mySearch.text}, res3=>{
+        alert(JSON.stringify(res3));
+      });
+  });
+}
 function requestSupport(){
   var supportText = document.getElementById("request-support-textarea").value;
   console.log("User has requested support, text is: ");

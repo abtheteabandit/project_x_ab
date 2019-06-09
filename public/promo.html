@@ -14,7 +14,7 @@
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <script src="/scripts/promo.js"></script>
+
     <!-- Radial Menu -->
     <script type="text/javascript">
 			(function($) {
@@ -114,12 +114,9 @@
         <p id="coupon-title">coupon details</p>
         <textarea id="coupon-text"></textarea>
         <select id="coupon-select">
-          <option>a</option>
-          <option>a</option>
-          <option>a</option>
         </select>
         <br>
-        <input id="save-coupon" value="save" />
+        <input id="save-coupon" onclick="submit_coupon()" value="save" />
       </div>
       <div id="controls-div">
         <h2 id="step-2-back" class="step-h2 left-step" onclick="goBackToStepOne()">back</h2>
@@ -158,4 +155,5 @@
    })
  })
 </script>
+<script src="/scripts/promo.js"></script>
 </html>

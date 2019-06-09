@@ -198,9 +198,9 @@ router.post('/promotion', (req, res)=>{
   }
   else{
     var {name, imgURL, caption, handles, location, mode, medias} = req.body;
-    console.log('IN POST PROMO NAME IS: ' + name);
+    console.log('IN POST PROMO NAME IS: ' + name + ' and imgURL is: ' + imgURL);
     database.connect(db=>{
-      db.db('promotions').collection('promotions').updateOne({'creator':req.session.key}, {$push:{'promotions':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias}}}, (err2, res2)=>{
+      db.db('promotions').collection('promotions').updateOne({'creator':req.session.key}, {$push:{'promotions':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias}}}, {upsert:true}, (err2, res2)=>{
         if (err2){
           console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
           res.status(500).end();
@@ -208,7 +208,7 @@ router.post('/promotion', (req, res)=>{
         }
         else{
           console.log('Set promotion ' +name+ ' for user: '+req.session.key);
-          res.status(200).send('Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "save". To begin running this promo simply go to you contacts and hit the promotion button next to a names. If they accept it will be autmatically posted to their social medias.')
+          res.status(200).json({data:res2,message:'Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "save". To begin running this promo simply go to you contacts and hit the promotion button next to a names. If they accept it will be autmatically posted to their social medias.'});
         }
       });
     }, dbErr=>{
@@ -228,22 +228,46 @@ router.get('/search_promos', (req, res)=>{
     req.status(401).end();
   }
   else{
-    var {lat, lng, searchText, promoSearchingAs} = req.query;
+    var {lat, lng, searchText} = req.query;
     database.connect(db=>{
-      matching.findCrossPromoters(req.session.key, promoSearchingAs, lat, lng, searchText, db, errCB=>{
-        console.log('There was an error : ' + errCB);
-        if (errCB=="Internal Server Error"){
+      db.db('promotions').collection('promotions').findOne({'creator':req.session.key}, (err10, res10)=>{
+        if (err10){
+          console.log('There was an error finding promos for creator: '+creator +' error: ' + err10);
           res.status(200).json({success:false, data:'Sorry, there was an error on our end. Please try searching again. If this error persits please notify us via our support tab on the Banda "b"'});
           db.close();
         }
         else{
-          res.status(500).json({success:false, data:errCB});
-          db.close();
+          if (res10==null){
+            console.log('There was no promotions for creator: ' + req.session.key);
+            res.status(200).json({success:false, data:'Sorry, you must create a promotion first to be able to search for promoters.'});
+            db.close();
+          }
+          else{
+            if(res10.promotions.length==0){
+              console.log('There was no promotions for creator: ' + req.session.key);
+              res.status(200).json({success:false, data:'Sorry, you must create a promotion first to be able to search for promoters.'});
+              db.close();
+            }
+            else{
+              var promoSearchingAs = res10.promotions[res10.promotions.length-1];
+              matching.findCrossPromoters(req.session.key, promoSearchingAs, lat, lng, searchText, db, errCB=>{
+                console.log('There was an error : ' + errCB);
+                if (errCB=="Internal Server Error"){
+                  res.status(200).json({success:false, data:'Sorry, there was an error on our end. Please try searching again. If this error persits please notify us via our support tab on the Banda "b"'});
+                  db.close();
+                }
+                else{
+                  res.status(500).json({success:false, data:errCB});
+                  db.close();
+                }
+              }, okCB=>{
+                console.log('Got in ok CB');
+                res.status(200).json({success: true, data:okCB});
+                db.close();
+              });
+            }
+          }
         }
-      }, okCB=>{
-        console.log('Got in ok CB');
-        res.status(200).json({success: true, data:okCB});
-        db.close();
       });
     }, dbErr=>{
       console.log('There was an error connectiong to mongo: ' + dbErr);
@@ -503,30 +527,24 @@ router.post('/add_pull', (req, res)=>{
 
   //route for a promoter to add a promotion that users can apply for through our website with a given code
   router.post('/createDiscountPromo', (req, res)=>{
-    var {name, details, venue, date, location, medias, code, promoNumber} = req.body;
+    var {name, details, gigID, location, medias, promoID} = req.body;
+    var code = createPromoCode();
       database.connect(db=>{
         //store the promotion in the database
         db.db('promotions').collection('discounts').insertOne({
-          'name':name,
           'details':details,
-          'venue':venue,
-          'date':date,
-          'location':location,
-          'medias':medias,
+          'gigID':gigID,
           'code':code,
-          'promoNumber':promoNumber}, (err2, res2)=>{
+          'promoID':promoID}, (err2, res2)=>{
           if (err2){
-            console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
+            console.log('There was an error setting coupon: '+promoID+' for user: ' +req.session.key+' Error: ' + err2);
             res.status(500).end();
             db.close();
           }
           else{
-            console.log('Set promotion ' +name+ ' for user: '+req.session.key);
+            console.log('Set coupon with code ' +code+ ' for user: '+req.session.key);
             //todo: insert code to post promotions to various social media here once apis work
-
-
-
-            res.status(200).send('Congratulations, you have created a promotion for your users! ')
+            res.status(200).send('Congratulations, you have created a coupon for your promotion! ')
           }
         });
       }, dbErr=>{
@@ -669,8 +687,59 @@ router.post('/add_pull', (req, res)=>{
 
   });
 
+router.get('/aUserPromo', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to see if it has socials');
+    req.status(404).end();
+  }
+  if (!req.query){
+    console.log('user_has_socials had no query');
+    req.status(401).end();
+  }
+  else{
+    var {creator} = req.query;
+    if (!creator){
+      creator = req.session.key;
+    }
+    database.connect(db=>{
+      db.db('promotions').collection('promotions').findOne({'creator':creator}, (err2, res2)=>{
+        if (err2){
+          console.log('There was err2 getting a promo for creator: '+creator + err2);
+          res.status(200).json({success:false, data:null});
+          db.close();
+        }
+        else{
+          if (res2==null){
+            res.status(200).json({success:false, data:null});
+            db.close();
+            return
+          }
+          if (res2.promotions.length==0){
+            res.status(200).json({success:false, data:null});
+            db.close();
+            return;
+          }
+          else{
+            res.status(200).json({success:true, data:res2.promotions[0]});
+            db.close();
+          }
+        }
+      })
+    }, dbErr=>{
+      console.warn("Couldn't connect to database: " + err)
+      res.status(200).json({'success':false, 'data':null});
+    })
+  }
+});
 
-
-
+function createPromoCode(){
+  var x = Math.random();
+  var y = Math.random();
+  var code = Math.random(x).toString(36).replace('0.', '');
+  code += "Zk!ks31l"
+  code += Math.random(y).toString(36).replace('0.', '');
+  console.log('Random Code: ' + code);
+  return code;
+}
 
 } //end of exports
