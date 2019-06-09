@@ -51,14 +51,12 @@
 
 @media(max-width: 550px){
   /*log out modal*/
+  #logout-modal-header{
+    padding-top: 40px;
+  }
   #modal-wrapper-logout{
     z-index: 5;
     display: none;
-  }
-  #logout-text{
-    margin-top: 15px;
-    margin-bottom: 20px;
-    font-size: 12pt;
   }
   #logout-controls{
     display: grid;
@@ -67,19 +65,7 @@
     grid-template-columns: auto auto;
   }
   .logout-btn{
-    background-color: rgba(0,0,0,0.8);
-    color: rgba(86,223,240,1.0);
-    border: 1px solid rgba(86,223,240,1.0);
-    border-radius: 10px;
     width: 90%;
-    margin: 0 auto;
-    height: 32px;
-    opacity: 0.5;
-  }
-  #logout-modal-header{
-    text-align:left;
-    padding-left: 20px;
-    font-size: 18pt;
   }
   .logout-btn:hover{
     cursor: pointer;
