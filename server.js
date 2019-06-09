@@ -140,6 +140,8 @@ require('./routes/newCustomer.js')(router, app); // for creating chareable custo
 require('./routes/meta-data.js')(router, app) //for exporting meta-data
 require('./routes/support.js')(router, app) //for letting customers email us with issues.
 require('./routes/promotions.js')(router, app) //for letting users find contacts, create promos and post them
+require('./routes/media.js')(router, app) //for getting media based on username
+
 
 
 //for routing messaing and emiting the message:
