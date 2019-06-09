@@ -60,6 +60,8 @@
 			<link rel="stylesheet" type="text/css" href="/css/modals/indexHelpModal.css">
 			<link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
 			<link rel="stylesheet" type="text/css" href="/css/modals/tosModal.css">
+			<link rel="stylesheet" type="text/css" href="/css/modals/loginModal.css">
+			<link rel="stylesheet" type="text/css" href="/css/modals/logoutModal.css">
 			<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 		</head>
@@ -568,12 +570,12 @@
 						</div>
 					</div>
 
-					<div id="modal-wrapper-login" class="modal">
+					<div id="modal-wrapper-login">
 
-					  <form class="modal-content animate" id="modal-login-id">
+					  <form id="login-form" class="animate">
 
 					    <div class="imgcontainer">
-					      <span onclick="document.getElementById('modal-wrapper-login').style.display='none'" class="close" title="Close PopUp">&times;</span>
+					      <span onclick="document.getElementById('modal-wrapper-login').style.display='none'" class="close-login" title="Close PopUp">&times;</span>
 					      <h1 id="login-modal-header">account login</h1>
 					    </div>
 
@@ -589,7 +591,7 @@
 
 					<div id="modal-wrapper-logout" class="modal">
 
-						<form class="modal-content animate">
+						<form class="animate" id="logout-form">
 
 							<div class="imgcontainer">
 								<span onclick="document.getElementById('modal-wrapper-logout').style.display='none'" class="close" title="Close PopUp">&times;</span>
@@ -603,6 +605,7 @@
 									<input class="logout-btn" type="button" value="no" id="logout-no" onclick="document.getElementById('modal-wrapper-logout').style.display='none'" />
 								</div>
 							</div>
+							
 						</form>
 
 					</div>

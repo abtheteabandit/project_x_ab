@@ -280,11 +280,7 @@ Search Bar elements
 Login Popup Elements
 */
 
-#login-modal-header{
-  text-align:left;
-  padding-left: 20px;
-  font-size: 50pt;
-}
+
 
 /*style for the pop up goes here*/
 /* Full-width input fields */
@@ -333,7 +329,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     border-radius: 50%;
 }
 
-#modal-wrapper-login,
 #modal-wrapper-gig,
 #modal-wrapper-register{
   z-index: 5;
@@ -545,39 +540,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   background-color: transparent;
 }
 
-/*log out modal*/
-#modal-wrapper-logout{
-  z-index: 5;
-  display: none;
-}
-#logout-modal-header{
-  text-align:left;
-  padding-left: 20px;
-  font-size: 50pt;
-}
-#logout-text{
-  margin-top: 40px;
-  margin-bottom: 80px;
-}
-#logout-controls{
-  display: grid;
-  width: 80%;
-  margin-left: 10%;
-  grid-template-columns: auto auto;
-}
-.logout-btn{
-  background-color: rgba(0,0,0,0.8);
-  color: rgba(86,223,240,1.0);
-  border: 1px solid rgba(86,223,240,1.0);
-  border-radius: 10px;
-  width: 70%;
-  margin: 0 auto;
-  height: 32px;
-  opacity: 0.5;
-}
-.logout-btn:hover{
-  cursor: pointer;
-}
 
 /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#5969ff+0,ff0061+100 */
 /* background: #5969ff; /* Old browsers */
@@ -953,33 +915,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
 }
 
-/*resizing login modal for mobile*/
-@media(max-width: 550px){
-  #login-modal-header{
-    text-align:center;
-    padding-top: 30px;
-    font-size: 20pt;
-  }
-  #forgot-password-text{
-    text-decoration:none;
-    float:left;
-    margin-left:25px;
-    margin-top:0px;
-  }
-
-  #modal-login-id{
-    height: 80%;
-    background-size: cover
-  }
-
-  #login-register-text{
-    text-decoration:none;
-    float:right;
-    margin-right:0px;
-    margin-top:10px;
-  }
-}
-
 @media(max-width: 400px){
   .profile-header-text{
     font-size: 22pt;
@@ -990,44 +925,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
   #contacts-button{
     width: 120px;
-  }
-}
-
-/*logout modal mobile*/
-@media(max-width: 550px){
-  /*log out modal*/
-  #modal-wrapper-logout{
-    z-index: 5;
-    display: none;
-  }
-  #logout-text{
-    margin-top: 15px;
-    margin-bottom: 20px;
-    font-size: 12pt;
-  }
-  #logout-controls{
-    display: grid;
-    width: 80%;
-    margin-left: 10%;
-    grid-template-columns: auto auto;
-  }
-  .logout-btn{
-    background-color: rgba(0,0,0,0.8);
-    color: rgba(86,223,240,1.0);
-    border: 1px solid rgba(86,223,240,1.0);
-    border-radius: 10px;
-    width: 90%;
-    margin: 0 auto;
-    height: 32px;
-    opacity: 0.5;
-  }
-  #logout-modal-header{
-    text-align:left;
-    padding-left: 20px;
-    font-size: 18pt;
-  }
-  .logout-btn:hover{
-    cursor: pointer;
   }
 }
 
