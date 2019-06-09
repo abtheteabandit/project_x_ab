@@ -1682,8 +1682,8 @@ chat boxes
     background: #262626;
     width: 160px;
     z-index: 100;
-    bottom: 80px;
-    height: 80px;
+    bottom: 140px;
+    height: 140px;
   }
   .dropup-create-content a{
     display: block;

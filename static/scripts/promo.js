@@ -44,13 +44,23 @@ class SearchResult {
     this.nameDiv.className = "result-name-div";
     this.nameP = document.createElement("p");
     this.nameP.innerHTML = obj.username;
-    // appends
-    this.newDiv.appendChild(this.newOverlay);
-    this.newDiv.appendChild(this.newFrame);
-    this.nameDiv.appendChild(this.nameP);
-    this.newDiv.appendChild(this.nameDiv);
-    theGrid.appendChild(this.newDiv);
-    this.AddEventListeners(this);
+
+    $.get('/picForUser',{'username':obj.username},res=>{
+      if(res == 'None'){
+        //skip
+      }
+      else{
+        this.newDiv.style.backgroundImage = "url('"+res+"')";
+      }
+      // appends
+      this.newDiv.appendChild(this.newOverlay);
+      this.newDiv.appendChild(this.newFrame);
+      this.nameDiv.appendChild(this.nameP);
+      this.newDiv.appendChild(this.nameDiv);
+      theGrid.appendChild(this.newDiv);
+      this.AddEventListeners(this);
+    })
+
   }
 
   AddEventListeners(obj){
