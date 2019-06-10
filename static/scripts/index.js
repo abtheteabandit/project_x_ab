@@ -93,15 +93,10 @@ jQuery(function($) {
 					var acceptBtn = document.getElementById("accept-tos");
 					acceptBtn.style.opacity = 1.0;
 					acceptBtn.disabled = false;
-					var check = document.getElementById("tos-check");
-					check.style.opacity = 1.0;
-
         }else{
 					var acceptBtn = document.getElementById("accept-tos");
 					acceptBtn.style.opacity = 0.5;
 					acceptBtn.disabled = true;
-					var check = document.getElementById("tos-check");
-					check.style.opacity = 0.5;
 				}
     });
     $('#scroll-to-bottom-btn').on('click',function(){
