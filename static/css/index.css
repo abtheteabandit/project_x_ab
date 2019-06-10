@@ -276,10 +276,6 @@ Search Bar elements
   color: white;
 }
 
-/*
-Login Popup Elements
-*/
-
 
 
 /*style for the pop up goes here*/
@@ -309,12 +305,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     opacity: 0.8;
 }
 
-#register-login-text{
-  text-decoration:none;
-  float:right;
-  margin-right:34px;
-  margin-top:70px;
-}
 
 
 /* Center the image and position the close button */
@@ -329,8 +319,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     border-radius: 50%;
 }
 
-#modal-wrapper-gig,
-#modal-wrapper-register{
+#modal-wrapper-gig{
   z-index: 5;
   display: none;
 }
@@ -361,12 +350,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   height: 100%;
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
-}
-
-#register-modal-header{
-  text-align:left;
-  padding-left: 20px;
-  font-size: 50pt;
 }
 /* Modal Content Box */
 .modal-content {
@@ -856,62 +839,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
   #contacts-button{
     width: 170px;
-  }
-}
-
-
-#forgot-password-text{
-  text-decoration:none;
-  float:left;
-  margin-left:25px;
-  margin-top:102px;
-}
-
-#login-register-text{
-  text-decoration:none;
-  float:right;
-  margin-right:34px;
-  margin-top:102px;
-}
-
-/*register model mobile scaling */
-@media(max-width: 550px){
-  #register-modal-header{
-    font-size: 20pt;
-    margin-bottom:10px;
-  }
-  #reg_username{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_email{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_email{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_password{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_confirm{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_submit{
-    height: 10px;
-    width: 100px;
-    text-align: left;
-    margin-right: 65px;
-  }
-  #register-login-text{
-    text-decoration:none;
-    font-size: 10pt;
-    float:right;
-    margin-right:25px;
-    margin-top:20px;
   }
 }
 
