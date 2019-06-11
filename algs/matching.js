@@ -435,7 +435,7 @@ module.exports = {
   },
   //this is a function to find matches for users looking to cross promote on social medias
 
-  findCrossPromoters: function findCrossPromoters(ourUsername, promoSearchingAs, lat, lng, searchText, db, errCB, okCB){
+  findCrossPromoters: function findCrossPromoters(ourUsername, promoSearchingAs, lat, lng, searchText, db, errCB, cbOK){
     const DEFAULT_ENGAGE_SCORE = 0.3;
     //the default enagaement score serves as a backup if there is no known eng score for a user on a Platform
     // validate fields
@@ -465,30 +465,23 @@ module.exports = {
               errCB('Internal Server Error');
             }
             else{
-              if (promos == null || promos.length==0){
-                cbErr('Sorry, you must create and save your own promotion before you can begin searching for people to post your promotion.');
+              if (promos == null || promos.promotions.length==0){
+                errCB('Sorry, you must create and save your own promotion before you can begin searching for people to post your promotion.');
               }
               else{
                 //check if searching user has a promo to run/ pull data from
-                var ourPromo = null
-                for (var aPromo in promos){
-                  if (promos[aPromo].name==promoSearchingAs){
-                    ourPromo=promos[aPromo];
-                  }
-                }
-                if (!ourPromo){
-                  console.log('Could not find promo with searching name: ' + promoSearchingAs+ ' in our user: '+ourUsername+' array of promos. ')
-                  cbErr('Sorry, it seems you do not have a promotion named: ' + promoSearchingAs+ ' saved to Banda yet. Feel free to create a new promo with this name and search again, or try searching as a different promotion.');
-                }
-                else{
+                  //deleted because checks in router
+
                   //find all other users to cross promote with
                   var usersToScore = [];
-                  db.db('users').collection('users').find({}, (err2, allUsers)=>{
+                  db.db('users').collection('users').find().toArray((err2, allUsers)=>{
                     if (err2){
                       console.log('There was an error finding all users: ' + err2);
                       errCB('Internal Server Error');
                     }
                     else{
+                      console.log('ALLL USERSSSS:  ' + JSON.stringify(allUsers));
+
                       //pull is defined as the sum of followers for each platform * the engagement score on each platform
                       var ourPull = 0;
 
@@ -518,17 +511,30 @@ module.exports = {
                           }
                         }
                       }
+                      console.log('Our pull is: ' + ourPull);
                       // now we have ourUsers value set, moving on to looping through all users to find a match
-                      for (var user in allUsers){
-                        var otherUser = allUsers[user];
+                      allUsers.forEach(function(otherUser, i){
                         db.db('promotions').collection('promotions').findOne({'creator':otherUser.username}, (errOtherPromo, otherPromos)=>{
                           if (errOtherPromo){
                             console.log('There was an error find other user: '+otherUser.username+' Error: ' + errOtherPromo);
-                            cbErr('Internal Server Error');
+                            errCB('Internal Server Error');
                           }
                           else{
+                            console.log('OTHER PROMOS IN MAIN LOOP for user wit username: ' + otherUser.username);
                             if (otherPromos==null || otherPromos.length==0){
                               console.log('THe other user: '+otherUser.username+' does not have any promos');
+                              if (otherUser.username==searchText){
+                                totalScore = 100000
+                              }
+                              else{
+                                if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
+                                  var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
+                                  var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
+                                  var totalDist = Math.sqrt(distY+distX);
+                                  totalScore = -totalDist;
+                                }
+                              }
+                              usersToScore.push([otherUser, totalScore]);
                             }
                             else{
                               if (otherUser.hasOwnProperty('followers')){
@@ -612,19 +618,43 @@ module.exports = {
                                   totalDist = DEFAULT_TOTAL_DIST;
                                 }
                                 var totalScore = queryStrScore - totalDist - pullDiff;
+                                if (searchText==otherUser.username){
+                                  totalScore=100000;
+                                }
                                 usersToScore.push([otherUser, totalScore]);
                                 console.log('Total dist is: ' + totalDist);
                               }
+                              else{
+                                //this defines the case for adding a user who has no socials, we still want user connection, noPromoScore should be calibrated
+
+                                if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
+                                  var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
+                                  var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
+                                  var totalDist = Math.sqrt(distY+distX);
+                                  totalScore = -totalDist;
+                                }
+
+                                if (searchText==otherUser.username){
+                                  totalScore=100000;
+                                }
+                                console.log('About to push user: ' + otherUser.username + ' into the dictionary with score: ' + totalScore);
+                                usersToScore.push([otherUser, totalScore]);
+                              }
+
                             }
                           }
+                          console.log(' IIIIIIIIII isssss: ' + i)
+                            console.log('users to score: ' + JSON.stringify(usersToScore));
+                          if (i>=allUsers.length-1){
+                            var results = {'overallMatchers':sortDict(usersToScore)};
+                            console.log('Got results they are: ' + JSON.stringify(results));
+                            cbOK(results);
+                          }
                         });
-                      }
-                      var results = {'overallMatchers':sortDict(usersToScore)};
-                      console.log('Got results they are: ' + JSON.stringify(results));
-                      cbOK(results);
+                      });
+
                     }
                   });
-                }
               }
             }
           });
@@ -681,6 +711,7 @@ module.exports = {
 
    //sort function for dictionaries by match scores
   function sortDict(dict){
+    console.log('DICT in sort dict: ' + JSON.stringify(dict));
      dict.sort(function(first, second) {
        return second[1]-first[1];
      });
