@@ -457,50 +457,6 @@ router.post('/add_pull', (req, res)=>{
     }
   });
 
-  //route to get request for getting a facebook token, redirects to predefined passport callback in server.js
-  router.get('/login/facebook', passport.authenticate('facebook', { scope: [
-    'user_friends',
-    'manage_pages',
-    'user_location',
-    'user_likes',
-    'user_posts',
-    'user_age_range',
-    'manage_pages',
-    'pages_show_list',
-    'publish_pages',
-    'publish_to_groups',
-    'public_profile',
-    ]}
-  ));
-
-  //route to get request for getting the facebook token with ONLY instagram permissions
-  router.get('/login/instagram', passport.authenticate('facebook', { scope: [
-    'instagram_basic',
-     //'instagram_content_publish', uncomment this when/if this feature leaves closed beta
-    'instagram_manage_comments',
-    'instagram_manage_insights',
-    'ads_management',
-    'manage_pages',
-    'business_management']}));
-
-  //route redirect from passport callback
-  router.get('/return',
-    passport.authenticate('facebook', { failureRedirect: '/facebookLoginFailed' }),
-    function(req, res) {
-      //redirect to success route
-      res.redirect('/facebookLoginSuccess');
-    });
-
-  //route for successful login
-  router.get('/facebookLoginSuccess', (req, res)=>{
-    res.send("success")
-  })
-
-  //route for failed login
-  router.get('/facebookLoginFailed', (req, res)=>{
-    res.send("failure")
-  })
-
   //route for a promoter to add a promotion that users can apply for through our website with a given code
   router.post('/createDiscountPromo', (req, res)=>{
     var {name, details, venue, date, location, medias, code, promoNumber} = req.body;
