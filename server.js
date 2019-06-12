@@ -35,14 +35,18 @@ const express = require('express'),
       session = require('express-session'),
       redisStore = require('connect-redis')(session),
       bodyParser = require('body-parser'),
-      cookieParser = require('cookie-parser');
-      //social media signin
-      passport = require('passport');
-      Strategy = require('passport-facebook').Strategy;
+			cookieParser = require('cookie-parser');
+			
+//social media signin
+var   passport = require('passport');
+var   FacebookStrategy = require('passport-facebook').Strategy
+var   TwitterStrategy = require('passport-twitter').Strategy;
+var   request = require('request')
+
 
 var client = redis.createClient();
 var app = express();
-
+			
 //for real time capabilities:
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -76,34 +80,6 @@ app.use(bodyParser.json());
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(require('morgan')('combined'));
-
-//intialize and configure passport for 3rd party auth
-passport.use(new Strategy({
-  clientID: 475851112957866,
-  clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-  callbackURL: '/return'
-},
-function(accessToken, refreshToken, profile, cb) {
-
-  //todo: store this data in a session and the database
-  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-  console.log("refrech token: " + refreshToken)
-  console.log("access token: " + accessToken)
-  console.log("id: " + profile.id)
-  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-  return cb(null, profile);
-}));
-
-//serlize a user when a session starts
-passport.serializeUser(function(user, cb) {
-  cb(null, user);
-  });
-
-//deserlialize a user when a session ends
-passport.deserializeUser(function(obj, cb) {
-  cb(null, obj);
-  });
 
 // Initialize Passport and restore authentication state, if any, from the session.
 app.use(passport.initialize());
@@ -145,7 +121,6 @@ require('./routes/media.js')(router, app) //for getting media based on username
 
 
 //for routing messaing and emiting the message:
-
 router.post('/messages', (req, res)=>{
   if (!req.body) {
      console.log("No body recived for messaging");
@@ -180,6 +155,203 @@ router.post('/messages', (req, res)=>{
 //uses our router:
 app.use('/', router);
 //app.listen(EXPRESS_APP_PORT, () => console.info('Express started on port ' + EXPRESS_APP_PORT));
+
+//instialize passport js for user login with facebook
+passport.use(new FacebookStrategy({
+	clientID: 475851112957866,
+	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
+	callbackURL: '/facebook/return',
+  passReqToCallback: true
+},
+function(req, accessToken, refreshToken, profile, cb) {
+	console.log("callback entered")
+	console.log(profile)
+	//store values from the intial request
+	let id = profile.id
+	let token = accessToken
+	let refresh = refreshToken
+
+	//create the url to request profile data
+	let url = "https://graph.facebook.com/v3.3/me?" + "fields=id,name,email,first_name,last_name&access_token=" + token;
+
+		//make the request
+		request({
+				url: url,
+				json: true
+		}, function (err, response, body) {
+				//store the needed values from the facebook api  call
+				console.log(body)
+				let email = body.email;  
+				let username = body.name.replace(/\s+/g, '_')
+				console.log(body); 
+
+				//check for null values
+				if (!username) {
+					return res.status(400).send('Name not found')
+				} else if (!email) {
+					return res.status(400).send('Email not found')
+				}
+
+				database.connect(db => {
+					//set database path
+					var users = db.db('users').collection('users');
+					//check to see if the user laready exists
+					users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
+						//catch error
+						if (err) {
+							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+							//res.status(500).send()
+							db.close();
+						} 
+						//if the user already exists
+						else if (obj) {
+							//sign the user in
+							req.session.key = username;
+							req.session.cookie.expires = false
+							req.session.save()
+						} else {
+							//if not, create a new user 
+							users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
+								//catch error
+								if (err) {
+									console.error(`Register request from ${req.ip} (for ${username}, ${email}) returned error: ${err}`);
+									//res.status(500).send();
+									db.close();
+								}
+								//if the user is created, sign the user in
+								 else {
+									req.session.key = username;
+									req.session.cookie.expires = false
+									req.session.save()
+									db.close();
+								}
+							});
+						}
+					})
+				}, err => {
+					console.warn("Couldn't connect to database: " + err)
+					res.status(500).send()
+				});
+
+			});
+	return cb(null, profile);
+}));
+
+//setup twitter auth for passport
+passport.use(new TwitterStrategy({
+	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
+	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
+	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
+	callbackURL: "http://localhost:1600/auth/twitter/callback",
+  passReqToCallback: true
+},
+function(req, token, tokenSecret, profile, done) {
+	let username = profile.username
+	let email = profile.emails[0].value
+
+	//check for null values
+	if (!username) {
+		return res.status(400).send('Name not found')
+	} else if (!email) {
+		return res.status(400).send('Email not found')
+	}
+
+	console.log("the username is " + username)
+	console.log("the email is " + email)
+
+	database.connect(db => {
+		//set database path
+		var users = db.db('users').collection('users');
+		//check to see if the user laready exists
+		users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
+			//catch error
+			if (err) {
+				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+				db.close();
+			} 
+			//if the user already exists
+			else if (obj) {
+				//sign the user in
+				req.session.key = username;
+				req.session.cookie.expires = false
+				req.session.save()
+				console.log(req.session)
+				console.log('Req session key after inserting user for register is: ' + req.session.key);
+				db.close();
+				//return res.redirect('/twitter/successAuth' + username);
+			} else {
+				//if not, create a new user 
+				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
+					//catch error
+					if (err) {
+						console.error(`Register request from ${req.ip} (for ${username}, ${email}) returned error: ${err}`);
+						db.close();
+					}
+					//if the user is created, sign the user in
+					 else {
+						req.session.key = username;
+						req.session.cookie.expires = false
+						req.session.save()
+						console.log(req.session)
+						console.log('Req session key after inserting user for register is: ' + req.session.key);
+						db.close();
+						//return res.redirect('/twitter/successAuth' + username);
+					}
+				});
+			}
+		})
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+	});
+	done(null, null);
+}
+));
+
+//passport serialie the user
+passport.serializeUser(function(user, cb){
+	cb(null, user);
+});
+
+//passport deserialize the user
+passport.deserializeUser(function(obj, cb){
+	cb(null, obj);
+});
+
+//route to login with facebook
+router.get('/loginWithFacebook', passport.authenticate('facebook', { scope: ['email','public_profile']}))
+
+//route for facebook oauth callback
+router.get('/facebook/return', 
+  passport.authenticate('facebook', { failureRedirect: '/facebook/successAuth' }),
+  function(req, res) {
+    res.redirect('/facebook/failedAuth');
+	});
+	
+//route for failed oauth callback for facebook
+router.get('/facebook/failedAuth', (req, res) => {
+	return res.redirect('http://localhost:1600/index');
+})
+
+//route for succesful oauth callback for facebook
+router.get('/facebook/successAuth', (req, res) => {
+	return res.redirect('http://localhost:1600/index');
+})
+
+//route for failed oauth callback for twitter
+router.get('/twitter/failedAuth', (req, res) => {
+	return res.redirect('http://localhost:1600/index');
+})
+
+//route for succesful oauth callback for twitter
+router.get('/twitter/successAuth', (req, res) => {
+	return res.redirect('http://localhost:1600/index');
+})
+
+//authenticate twitter redirect url
+router.get('/auth/twitter', passport.authenticate('twitter'))
+
+//callback route for twitter authenication
+router.get('/auth/twitter/callback', passport.authenticate('twitter', {successRedirect: '/twitter/failedAuth', failureRedirect: '/twitter/successAuth'}))
 
 //print when a user connects:
 io.on('connection', () =>{
