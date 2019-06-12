@@ -33,6 +33,10 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/currentBandModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/videoUploadModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/accountSettingsModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/promoRequestModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/promoSendBackModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/newContactModal.css">
+
 
     <!-- jquery -->
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
@@ -69,6 +73,95 @@
         </div>
       </form>
 
+    </div>
+    <div id="modal-wrapper-promo-request">
+      <div id="promo-req-content" class="animate">
+        <h1 id="promo-req-header">madeline shade</h1>
+        <input type="button" value="" id="close-promo-req" onclick="document.getElementById('modal-wrapper-promo-request').style.display = 'none';"/>
+        <h2 id="promo-req-subheader">wants you to spread the word</h2>
+        <div id="promo-req-grid">
+          <div id="promo-req-pic-div">
+            <img id="promo-req-pic" src="/assets/Home/Art/8.jpeg"/>
+            <img id="promo-req-frame" src="/assets/Home/pinkbox.png"/>
+          </div>
+          <textarea id="promo-req-caption" readonly>yo we bout to light it up on fire here BOYSSSSS</textarea>
+        </div>
+        <p id="promo-req-social-text">post to</p>
+        <div id="promo-req-social-grid">
+          <input class="promo-req-social" type="button" value="" id="promo-req-fb" onclick="toggleActiveSocial(this);"/>
+          <input class="promo-req-social" type="button" value="" id="promo-req-insta" onclick="toggleActiveSocial(this);"/>
+          <input class="promo-req-social" type="button" value="" id="promo-req-twitter" onclick="toggleActiveSocial(this);"/>
+        </div>
+        <input type="button" value="accept" id="promo-req-accept" />
+      </div>
+    </div>
+    <div id="modal-wrapper-new-contact">
+      <div id="new-contact-content">
+        <h1 id="new-contact-header">madeline shade</h1>
+        <input id="close-new-contact" type="button" value="" onclick="document.getElementById('modal-wrapper-new-contact').style.display = 'none';"/>
+        <h2 id="new-contact-subheader">would like to be a connection</h2>
+        <div>
+          <img id="new-contact-pic" alt="contact-pic" src="/assets/Home/Art/6.jpeg"/>
+          <img id="new-contact-frame" alt="contact-frame" src="/assets/Home/purplebox.png"/>
+        </div>
+        <p id="new-contact-p">add to contacts?</p>
+        <div id="new-contact-grid">
+          <input type="button" id="new-contact-decline" value="decline" />
+          <input type="button" id="new-contact-accept" value="accept" />
+        </div>
+      </div>
+    </div>
+    <div id="modal-wrapper-promo-sb">
+      <div id="promo-sb-content" class="animate">
+        <h1 id="promo-sb-header">send a promotion back?</h1>
+        <input type="button" value="" id="close-promo-sb" onclick="document.getElementById('modal-wrapper-promo-sb').style.display = 'none';"/>
+        <h2 id="promo-sb-subheader">from existing</h2>
+        <div id="promo-sb-carousel">
+          <div id="promo-sb-jcarousel-wrapper">
+            <div id="promo-sb-jcarousel">
+              <ul id="promo-sb-ul">
+                <li class="promo-sb-carousel-li">
+                  <img class="promo-sb-carousel-img" alt="contact-pic" src="/assets/Home/Art/6.jpeg"/>
+                  <img class="promo-sb-carousel-frame" alt="contact-frame" src="/assets/Home/purplebox.png"/>
+                </li>
+                <li class="promo-sb-carousel-li">
+                  <img class="promo-sb-carousel-img" alt="contact-pic" src="/assets/Home/Art/6.jpeg"/>
+                  <img class="promo-sb-carousel-frame" alt="contact-frame" src="/assets/Home/purplebox.png"/>
+                </li>
+                <li class="promo-sb-carousel-li">
+                  <img class="promo-sb-carousel-img" alt="contact-pic" src="/assets/Home/Art/6.jpeg"/>
+                  <img class="promo-sb-carousel-frame" alt="contact-frame" src="/assets/Home/purplebox.png"/>
+                </li>
+                <li class="promo-sb-carousel-li">
+                  <img class="promo-sb-carousel-img" alt="contact-pic" src="/assets/Home/Art/6.jpeg"/>
+                  <img class="promo-sb-carousel-frame" alt="contact-frame" src="/assets/Home/purplebox.png"/>
+                </li>
+                <li class="promo-sb-carousel-li">
+                  <img class="promo-sb-carousel-img" alt="contact-pic" src="/assets/Home/Art/6.jpeg"/>
+                  <img class="promo-sb-carousel-frame" alt="contact-frame" src="/assets/Home/purplebox.png"/>
+                </li>
+                <li class="promo-sb-carousel-li">
+                  <img class="promo-sb-carousel-img" alt="contact-pic" src="/assets/Home/Art/6.jpeg"/>
+                  <img class="promo-sb-carousel-frame" alt="contact-frame" src="/assets/Home/purplebox.png"/>
+                </li>
+                <li class="promo-sb-carousel-li">
+                  <img class="promo-sb-carousel-img" alt="contact-pic" src="/assets/Home/Art/6.jpeg"/>
+                  <img class="promo-sb-carousel-frame" alt="contact-frame" src="/assets/Home/purplebox.png"/>
+                </li>
+              </ul>
+            </div>
+            <a href="#" id="promo-sb-jcarousel-control-prev"></a>
+            <a href="#" id="promo-sb-jcarousel-control-next"></a>
+          </div>
+        </div>
+        <p id="promo-sb-social-text">post to</p>
+        <div id="promo-sb-social-grid">
+          <input class="promo-sb-social" type="button" value="" id="promo-sb-fb" onclick="toggleActiveSocial(this);" />
+          <input class="promo-sb-social" type="button" value="" id="promo-sb-insta" onclick="toggleActiveSocial(this);"/>
+          <input class="promo-sb-social" type="button" value="" id="promo-sb-twitter" onclick="toggleActiveSocial(this);"/>
+        </div>
+        <input type="button" value="accept" id="promo-sb-accept" />
+      </div>
     </div>
     <div id="modal-wrapper-confirmation-code">
       <div class="modal-content-cancel animate">

@@ -2753,6 +2753,8 @@ function createWebPage(user){
 
 function init(){
   //loadBands(user);
+
+  setupCarWithID('promo-sb-jcarousel');
   getUsername();
   $('#video-upload-button').click(function () {
     $("#video-upload-input").trigger('click');
@@ -2991,6 +2993,38 @@ function buildCarouselUpcoming(data){
   //$("#contacts-sidebar").after($wrapper);
   $("#main-content-wrapper").append($wrapper);
   setupAction();
+}
+
+function setupCarWithID(id){
+  var jcarousel = $('#'+id);
+  if(id=="promo-sb-jcarousel"){
+    var numItems = $('.promo-sb-carousel-li').length;
+
+    console.log("num items: "+numItems);
+    jcarousel
+        .on('jcarousel:reload jcarousel:create', function () {
+            var carousel = $(this),
+                width = carousel.innerWidth();
+                if(numItems > 4){
+                  width = 120;
+                }
+            carousel.jcarousel('items').css('width', Math.ceil(width) + 'px');
+        })
+        .jcarousel({
+            wrap: 'circular'
+        });
+
+    $('#promo-sb-jcarousel-control-prev')
+        .jcarouselControl({
+            target: '-=1'
+        });
+
+
+    $('#promo-sb-jcarousel-control-next')
+        .jcarouselControl({
+            target: '+=1'
+        });
+  }
 }
 
 function setupAction(){
@@ -4580,4 +4614,8 @@ function alterCreditDetails(){
   document.getElementById("modal-wrapper-account-settings").style.display = 'none';
   prepareCardElement();
   console.log('opened credit modal');
+}
+
+function toggleActiveSocial(elem){
+  elem.classList.toggle('active-social');
 }
