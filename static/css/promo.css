@@ -598,6 +598,15 @@ body{
   color: white;
 }
 
+.add-contact-btn{
+  color: #56dff0;
+  background-color: rgba(0,0,0,0.7);
+  border-radius: 10px;
+  font-size: 20pt;
+  margin-top: 35%;
+  border: 1px solid #56dff0;
+}
+
 @media(max-width: 1400px){
   .grid-container {
     grid-template-columns: auto auto auto;

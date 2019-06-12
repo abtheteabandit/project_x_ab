@@ -24,6 +24,7 @@ class SearchResult {
 
   constructor(obj){
     this.id = obj._id;
+    this.name = obj.username;
     this.newDiv = document.createElement("div");
     this.newDiv.style.backgroundImage = "url('/assets/Home/Art/12.jpeg')";
     // overlay
@@ -34,6 +35,11 @@ class SearchResult {
       // nothing yet
     });
     this.newOverlay.setAttribute("id",this.overlayID);
+    // button
+    this.addContactBtn = document.createElement("input");
+    this.addContactBtn.type = "button";
+    this.addContactBtn.value = "add contact";
+    this.addContactBtn.className = "add-contact-btn";
     // frame
     this.newFrame = document.createElement("img");
     this.newFrame.className = "result-frame";
@@ -43,28 +49,35 @@ class SearchResult {
     this.nameDiv = document.createElement("div");
     this.nameDiv.className = "result-name-div";
     this.nameP = document.createElement("p");
-    this.nameP.innerHTML = obj.username;
+    this.nameP.innerHTML = this.name;
     // appends
+    this.newOverlay.appendChild(this.addContactBtn);
     this.newDiv.appendChild(this.newOverlay);
     this.newDiv.appendChild(this.newFrame);
     this.nameDiv.appendChild(this.nameP);
     this.newDiv.appendChild(this.nameDiv);
     theGrid.appendChild(this.newDiv);
+    // event listeners data preprocessing
     this.AddEventListeners(this);
   }
 
   AddEventListeners(obj){
-    this.newDiv.addEventListener("mouseover",function(){
+    obj.newDiv.addEventListener("mouseover",function(){
       obj.newOverlay.style.zIndex = "8";
       obj.newOverlay.style.opacity = "1.0";
     },false);
-    this.newDiv.addEventListener("mouseout",function(){
+    obj.newDiv.addEventListener("mouseout",function(){
       obj.newOverlay.style.zIndex = "-8";
       obj.newOverlay.style.opacity = "0";
     },false);
-    this.newDiv.addEventListener("click",function(){
+    obj.newDiv.addEventListener("click",function(){
       console.log(obj.id);
     },false);
+    if(obj.hasOwnProperty('addContactBtn')){
+      obj.addContactBtn.addEventListener("click",function(){
+        sendContactRequest(obj.id, obj.name);
+      });
+    }
   }
 }
 
