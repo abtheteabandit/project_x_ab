@@ -1,0 +1,113 @@
+#modal-wrapper-new-contact{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#new-contact-content{
+  background-image: url("/assets/Control-Center/new-contact-bg.png");
+  background-color: transparent;
+  background-size: cover;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 20px auto 0px auto;
+  width: 600px;
+  height: 600px;
+  color: white;
+}
+
+#new-contact-header{
+  display: inline;
+  margin-left: 20px;
+  margin-top: 20px;
+  color: #56dff0;
+  font-size: 50pt;
+}
+
+#new-contact-subheader{
+  font-size: 28pt;
+  margin-left: 40px;
+}
+
+#close-new-contact{
+  cursor: pointer;
+  display: inline;
+  background-image: url('/assets/Control-Center/pretty-close.png');
+  background-size: contain;
+  background-color: transparent;
+  border: none;
+  height: 44px;
+  width: 44px;
+  float: right;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+
+#new-contact-pic{
+  width: 260px;
+  height: 260px;
+  position: absolute;
+  margin-left: 195px;
+  border-radius: 14px;
+}
+
+#new-contact-frame{
+  width: 260px;
+  height: 260px;
+  position: absolute;
+  margin-left: 175px;
+}
+
+#new-contact-p{
+  margin-top: 300px;
+  margin-left: 20px;
+  font-size: 28pt;
+}
+
+#new-contact-grid{
+  margin: 0 auto;
+  display: grid;
+  width: 500px;
+  text-align: center;
+  grid-template-columns: auto auto;
+}
+
+#new-contact-decline, #new-contact-accept{
+  cursor: pointer;
+  color: #56dff0;
+  border: none;
+  background-color: transparent;
+  font-size: 32pt;
+}
+
+@media(max-width: 600px){
+  #new-contact-content{
+    width: 300px;
+    height: 600px;
+  }
+  #new-contact-header{
+    font-size: 20pt;
+  }
+  #new-contact-subheader{
+    font-size: 14pt;
+  }
+  #new-contact-pic, #new-contact-frame{
+    height: 200px;
+    width: 200px;
+    margin-left: 50px;
+  }
+  #new-contact-p{
+    margin-top: 240px;
+    font-size: 20pt;
+  }
+  #new-contact-grid{
+    display: grid;
+    grid-template-columns: auto;
+    width: 300px;
+  }
+}
