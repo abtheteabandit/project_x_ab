@@ -19,7 +19,7 @@ var promoCreated = true;
 var promoID = "";
 //if the user has made gigS
 var hasGigs = false;
-
+var ourUser = {};
 class SearchResult {
 
   constructor(obj){
@@ -44,23 +44,13 @@ class SearchResult {
     this.nameDiv.className = "result-name-div";
     this.nameP = document.createElement("p");
     this.nameP.innerHTML = obj.username;
-
-    $.get('/picForUser',{'username':obj.username},res=>{
-      if(res == 'None'){
-        //skip
-      }
-      else{
-        this.newDiv.style.backgroundImage = "url('"+res+"')";
-      }
-      // appends
-      this.newDiv.appendChild(this.newOverlay);
-      this.newDiv.appendChild(this.newFrame);
-      this.nameDiv.appendChild(this.nameP);
-      this.newDiv.appendChild(this.nameDiv);
-      theGrid.appendChild(this.newDiv);
-      this.AddEventListeners(this);
-    })
-
+    // appends
+    this.newDiv.appendChild(this.newOverlay);
+    this.newDiv.appendChild(this.newFrame);
+    this.nameDiv.appendChild(this.nameP);
+    this.newDiv.appendChild(this.nameDiv);
+    theGrid.appendChild(this.newDiv);
+    this.AddEventListeners(this);
   }
 
   AddEventListeners(obj){
@@ -91,7 +81,7 @@ function getGigs(){
       return;
     }
     else{
-      var ourUser = res;
+      ourUser = res;
       var username = res.username;
       $.get('/getGigs', {'creator':ourUser.username}, res=>{
         if (res==""){
@@ -595,7 +585,12 @@ function fillResultsTable(resArr){
   }
 
 }
-
+function sendContactRequest(recieverID, name){
+  var now = new Date().toString();
+  $.post('/messages', {'senderID':ourUser._id, 'recieverID':recieverID, 'body':'<button id="'+recieverID+'">'+name+'"wants to connect with you."</button>', 'timeStamp':now}, res=>{
+    alert('We have sent your contact request to ' + name + ' check your contacts tab often to see if they have accepted, and been added to your contacts.');
+  });
+}
 function requestSupport(){
   var supportText = document.getElementById("request-support-textarea").value;
   console.log("User has requested support, text is: ");
