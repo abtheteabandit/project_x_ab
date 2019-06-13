@@ -28,7 +28,7 @@ var userMessages={};
 var user_email = null;
 var hasAccount = false;
 var isCustomer = false;
-
+var contactToAccept = null;
 globalGigs = [];
 //CHNAGE GIGS SECTION:?////////
 
@@ -2628,13 +2628,28 @@ function getUsername(){
                    cleaned_name = cleaned_name.replace(/\"/,"");
 
                   console.log('CLEANED NAME: ' + cleaned_name);
-                  alert(cleaned_name + ' wants to connect with you!');
+                  document.getElementById("new-contact-header").innerHTML = cleaned_name;
+                  document.getElementById('modal-wrapper-new-contact').style.display='block';
+                  contactToAccept=cleaned_name;
+                  $.get('/picForUser', {'username':cleaned_name}, res11=>{
+                    if (res11=='None'){
+
+                      //default user image
+
+                    }
+                    else{
+                      document.getElementById('new-contact-pic').src=res11;
+                    }
+                  });
+
 
 
                   //AB NEED YOU TO DO SOMETHING HERE DISPLAY THAT MODAL
+                  /*
                   var but = document.createElement("button");
                   but = conMess[n].body;
                   document.body.append(but);
+                  */
                   /////////////////////////////////////////////////////////////??////////////?********************************************  AB LOOK HERE
 
                 }
@@ -2660,6 +2675,16 @@ function hasContact(id){
   console.log('sender ID : ' + id);
   console.log('isCon ID : ' + isCon);
   return isCon
+}
+function acceptNewCon(){
+  console.log('ACCCCEPTED NEW CONTACT NAMES: ' + username + 'sender: ' + contactToAccept );
+  $.post('/add_mutual_contact', {'acceptorName':username,'senderName':contactToAccept}, res=>{
+    alert(res);
+  });
+}
+function declineNewCon(){
+  //add a decline route;
+  document.getElementById('modal-wrapper-new-contact').style.display='none';
 }
 function getUserInfo(user){
   console.log('in get info and username is ' + user['username']);

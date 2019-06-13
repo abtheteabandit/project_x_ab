@@ -96,7 +96,7 @@ module.exports = router =>{
           }
           else{
             //get the senders profile
-            db.db('users').collection('users').findOne({'username':senderName}, (err2, acceptor)=>{
+            db.db('users').collection('users').findOne({'username':senderName}, (err2, sender)=>{
               if (err2){
                 console.log("There was an error getting user: " + senderName + ' error: ' + err2);
                 res.status(500).end();
