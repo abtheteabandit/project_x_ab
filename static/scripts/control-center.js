@@ -2611,7 +2611,7 @@ function getUsername(){
             console.log('**** mess ****: ' + JSON.stringify(mess));
             if (conMess[n].hasOwnProperty('body')){
               if (conMess[n].body.includes('wants to connect with you') && conMess[n].body.includes('button')){
-                if(!hasContact(mess.senderID) && (!userMessages[mess.senderID].hasOwnProperty('hasDisplayed'))){
+                if(!hasContact(mess.senderID) && (!userMessages[mess.senderID]['hasDisplayed']) && !(mess.senderID==user._id)){
                   conMess[n]['hasDisplayed']=true;
                   userMessages[mess.senderID]['hasDisplayed']=true;
                   var mess_pieces = conMess[n].body.split('>');
@@ -2636,7 +2636,7 @@ function getUsername(){
                   but = conMess[n].body;
                   document.body.append(but);
                   /////////////////////////////////////////////////////////////??////////////?********************************************  AB LOOK HERE
-                  
+
                 }
               }
             }
