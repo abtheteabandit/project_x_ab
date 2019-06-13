@@ -1,7 +1,9 @@
 module.exports = router =>{
 
   const database = require ('../database'),
-        matching = require('../algs/matching.js');
+        matching = require('../algs/matching.js'),
+        qrcodes = require('qrcode');
+
 
   //request to make a cross promotion
   router.post('/cross_promote', (req, res)=>{
@@ -698,4 +700,54 @@ function createPromoCode(){
   return code;
 }
 
+function makeQRCode(mode, data, cbOk, cbErr){
+
+}
+
+router.get('/getContactRequests', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to see if it has socials');
+    req.status(404).end();
+  }
+  if (!req.query){
+    console.log('user_has_socials had no query');
+    req.status(401).end();
+  }
+  else{
+    database.connect(db=>{
+      db.db('users').collection('users').findOne({'username':req.session.key}, (err1, ourUser)=>{
+        if (err1){
+          console.log('There was an error getting user: ' + req.session.key + ' out of db: ' + err1);
+          res.status(200).json({'success':false, 'data':null});
+          db.close();
+        }
+        else{
+          db.db('messages').collection('messages').find({'recieverID':ourUser._id}).toArray((err2, messages)=>{
+            if (err2){
+              console.log('there was an error getting our user: ' + req.session.key + " 's messgaes : " + err2);
+              res.status(200).json({'success':false, 'data':null});
+              db.close();
+            }
+            else{
+              var requests = []
+              for (var m in messages){
+                var message = messages[m];
+                console.log()
+                console.log('******************************************************* message on: ' + JSON.stringify(message))
+                if (message.body.includes('wants to connect with you')){
+                  requests.push(message);
+                }
+              }
+              res.status(200).json({'success':true, 'data':requests});
+              db.close();
+            }
+          });
+        }
+      });
+    }, errDB=>{
+      console.warn("Couldn't connect to database: " + err)
+      res.status(200).json({'success':false, 'data':null});
+    });
+  }
+});
 } //end of exports

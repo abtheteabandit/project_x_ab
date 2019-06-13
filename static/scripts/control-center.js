@@ -2603,11 +2603,64 @@ function getUsername(){
     });
     $.get('messages', {'recieverID':id}, result=>{
       userMessages=result;
+      console.log('USER MESSAGESSSS:        ' + JSON.stringify(userMessages));
+      for (var m in userMessages){
+        var conMess = userMessages[m];
+          for (var n in conMess){
+            var mess = conMess[n]
+            console.log('**** mess ****: ' + JSON.stringify(mess));
+            if (conMess[n].hasOwnProperty('body')){
+              if (conMess[n].body.includes('wants to connect with you') && conMess[n].body.includes('button')){
+                if(!hasContact(mess.senderID) && (!userMessages[mess.senderID].hasOwnProperty('hasDisplayed'))){
+                  conMess[n]['hasDisplayed']=true;
+                  userMessages[mess.senderID]['hasDisplayed']=true;
+                  var mess_pieces = conMess[n].body.split('>');
+                  console.log('MESSSSSSS PEICES:  ' + JSON.stringify(mess_pieces));
+                  var name_piece = mess_pieces[1];
+                  var cleaned_name = name_piece.replace('/',"");
+                   cleaned_name = cleaned_name.replace('"',"");
+                   cleaned_name = cleaned_name.replace('/',"");
+                   cleaned_name = cleaned_name.replace(".","");
+                   cleaned_name = cleaned_name.replace("wants to connect with you","");
+                   cleaned_name = cleaned_name.replace("<","");
+                   cleaned_name = cleaned_name.replace("button","");
+                   cleaned_name = cleaned_name.replace(/\//g,"");
+                   cleaned_name = cleaned_name.replace(/\"/,"");
+
+                  console.log('CLEANED NAME: ' + cleaned_name);
+                  alert(cleaned_name + ' wants to connect with you!');
+
+
+                  //AB NEED YOU TO DO SOMETHING HERE DISPLAY THAT MODAL
+                  var but = document.createElement("button");
+                  but = conMess[n].body;
+                  document.body.append(but);
+                  /////////////////////////////////////////////////////////////??////////////?********************************************  AB LOOK HERE
+                  
+                }
+              }
+            }
+
+          }
+      //  console.log('**** mess ****: ' + JSON.stringify(mess));
+
+      }
       getUserInfo(user);
     });
   });
 }
-
+function hasContact(id){
+  var isCon = false;
+  for (var con in userContacts){
+    if (id == userContacts[con].id){
+      console.log('User contact name is: ' + userContacts[con].id + " " + userContacts[con].name);
+      isCon=true;
+    }
+  }
+  console.log('sender ID : ' + id);
+  console.log('isCon ID : ' + isCon);
+  return isCon
+}
 function getUserInfo(user){
   console.log('in get info and username is ' + user['username']);
   var username = user['username'];

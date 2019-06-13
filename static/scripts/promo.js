@@ -95,6 +95,7 @@ function getGigs(){
     }
     else{
       ourUser = res;
+      console.log('Our user is: ' + JSON.stringify(ourUser));
       var username = res.username;
       $.get('/getGigs', {'creator':ourUser.username}, res=>{
         if (res==""){
@@ -600,7 +601,9 @@ function fillResultsTable(resArr){
 }
 function sendContactRequest(recieverID, name){
   var now = new Date().toString();
-  $.post('/messages', {'senderID':ourUser._id, 'recieverID':recieverID, 'body':'<button id="'+recieverID+'">'+name+'"wants to connect with you."</button>', 'timeStamp':now}, res=>{
+  console.log('about to send contact request: sender id: ' + ourUser._id)
+  console.log('reciever id is: ' + recieverID);
+  $.post('/messages', {'senderID':ourUser._id, 'recieverID':recieverID, 'body':'<button id="'+recieverID+'">'+ourUser.username+'"wants to connect with you."</button>', 'timeStamp':now}, res=>{
     alert('We have sent your contact request to ' + name + ' check your contacts tab often to see if they have accepted, and been added to your contacts.');
   });
 }
