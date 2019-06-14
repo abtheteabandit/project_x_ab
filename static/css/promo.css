@@ -398,6 +398,28 @@ body{
   margin: auto;
   width: 60px;
   height: 60px;
+  border: none;
+  background-color: transparent;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.deactivated{
+  filter: grayscale(100%);
+}
+
+#promo-fb{
+  background-image: url("/assets/Promo/fb.png");
+}
+#promo-insta{
+  background-image: url("/assets/Promo/insta.png");
+}
+#promo-snap{
+  background-image: url("/assets/Promo/snap.png");
+}
+#promo-twitter{
+  margin-top: 8px;
+  background-image: url("/assets/Promo/twitter.png");
 }
 
 #coupon-div{

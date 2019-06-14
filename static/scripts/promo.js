@@ -428,16 +428,20 @@ function submit_promotion(){
 }
 //CLICKS for selecting socials for promo
 function clickedSocial1(){
-  promotionOnSocial1 = true;
+  document.getElementById("promo-fb").classList.toggle('deactivated');
+  promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial2(){
-  promotionOnSocial2 = true;
+  document.getElementById("promo-insta").classList.toggle('deactivated');
+  promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial3(){
-  promotionOnSocial3 = true;
+  document.getElementById("promo-snap").classList.toggle('deactivated');
+  promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial4(){
-  promotionOnSocial4 = true;
+  document.getElementById("promo-twitter").classList.toggle('deactivated');
+  promotionOnSocial1 = !promotionOnSocial1;
 }
 
 function submit_coupon(){
