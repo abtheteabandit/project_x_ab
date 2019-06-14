@@ -146,7 +146,7 @@ router.post('/messages', (req, res)=>{
     let messages = db.db('messages').collection('messages');
     messages.insertOne({'senderID':senderID, 'recieverID':recieverID, 'body':body, 'timeStamp': timeStamp}, (err2, result)=>{
       if (err2){
-        consoel.log("There was an error adding the message from " + senderID + "Error was: " + err2);
+        consoel.log("There was an error adding the message from " + sender + "Error was: " + err2);
         res.status(500).end();
         db.close();
       }

@@ -19,7 +19,7 @@ module.exports = router =>{
     }
     else{
       //get content of body
-      var {promoterName, posterName} =req.body;
+      var {promoterName, posterName, medias, promoName} =req.body;
       database.connect(db=>{
         //get the promoter from the db
         db.db('users').collection('users').findOne({'username':promoterName}, (err, promoter)=>{
@@ -49,6 +49,7 @@ module.exports = router =>{
 
                 //make post to social
                 if(posterKnowsPromoter){
+                  res.status(200).send('Congratulations! We have posted this promotion to your selected socials. You should ask ' +promoterName+ ' to post one of your promotions. Just click the cross-promotion button next to ' +promoterName+ ' in your contact list. You must first create a promotion by clicking "promotions" if you have not already.')
                   //get promotion from poster
 
                   //ed code, post this promotion to posters selected socials
@@ -747,6 +748,138 @@ router.get('/getContactRequests', (req, res)=>{
     }, errDB=>{
       console.warn("Couldn't connect to database: " + err)
       res.status(200).json({'success':false, 'data':null});
+    });
+  }
+});
+router.post('/askToPromote', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to see if it has socials');
+    req.status(404).end();
+  }
+  if (!req.body){
+    console.log('user_has_socials had no query');
+    req.status(401).end();
+  }
+  else{
+    var {asker, promoter} = req.body;
+    database.connect(db=>{
+      db.db('promotions').collection('promotions').findOne({'creator':asker}, (err1, res1)=>{
+        if (err1){
+          console.log('There was an err getting promos for user: ' + asker + ' error: ' + err1);
+          res.status(200).json({'success':false, 'data':null});
+          db.close();
+        }
+        else{
+          if (res1.hasOwnProperty('promotions')){
+            if (res1.promotions==null){
+              console.log('User: ' + asker + ' did nto have nay promos');
+              res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
+              db.close();
+            }
+            else{
+              if (res1.promotions.length==0){
+                console.log('User: ' + asker + ' did nto have nay promos');
+                res.status(200).json({'success':false, 'data':'Sorry, you must create a promotion to be able to cross promote. Just click "promotions" on your home page to get started.'});
+                db.close();
+              }
+              else{
+                var ourPromo = res1.promotions[res1.promotions.length-1];
+                console.log('Our promo is: ' + ourPromo);
+                db.db('users').collection('users').findOne({'username':promoter}, (err2, res2)=>{
+                  if (err2){
+                    console.log('There was an error finding our other user: ' +promoter+ ' error: ' + err2);
+                    res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
+                    db.close();
+                  }
+                  else{
+                    var conExists=false;
+                    for (var con in res2.contacts){
+                      if (asker==res2.contacts[con].name){
+                        conExists=true
+                      }
+                    }
+                    if (conExists){
+                      console.log('All checks out procceeding with promo');
+                      res.status(200).json({'success':true, 'data':ourPromo});
+                      db.close();
+                    }
+                    else{
+                      console.log('contact doesnt exist');
+                      res.status(200).json({'success':false, 'data':'Sorry, it seems '+promoter+' does not have you in their contacts. You can ask them to connect by searching for them by username at the bottom of our promotions page. Just click "promotions" to get started.'});
+                      db.close();
+                    }
+                  }
+                });
+              }
+            }
+          }
+          else{
+            console.log('User: ' + asker + ' did nto have nay promos');
+            res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
+            db.close();
+          }
+        }
+      });
+    }, dbErr=>{
+      console.warn("Couldn't connect to database: " + dbErr);
+      res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
+    })
+  }
+});
+
+router.get('/aPromo', (req, res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to see if it has socials');
+    req.status(404).end();
+  }
+  if (!req.query){
+    console.log('user_has_socials had no query');
+    req.status(401).end();
+  }
+  else{
+    var {promoName, username} = req.query;
+    database.connect(db=>{
+      db.db('promotions').collection('promotions').findOne({'creator':username}, (err1, res1)=>{
+        if (err1){
+          console.log('THere was an error finding promos for user: ' + username + " error: " + err1);
+          res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
+          db.close();
+        }
+        else{
+          if (res1.hasOwnProperty('promotions')){
+            if (res1.promotions==null){
+              console.log('User: ' + username+ ' didnt have nay promos.');
+              res.status(200).json({'success':false, 'data':'Sorry, you must create a promotion to be able to cross promote. Just click "promotions" on your home page to get started.'});
+              db.close();
+            }
+            else{
+              if (res1.promotions.length==0){
+                console.log('User: ' + username+ ' didnt have nay promos.');
+                res.status(200).json({'success':false, 'data':'Sorry, you must create a promotion to be able to cross promote. Just click "promotions" on your home page to get started.'});
+                db.close();
+              }
+              else{
+                var ourPromo = res1.promotions[res1.promotions.length-1];
+                for (var p in res1.promotions){
+                  if (res1.promotions[p].name==promoName){
+                    ourPromo = res1.promotions[p];
+                  }
+                }
+                res.status(200).json({'success':true, 'data': ourPromo});
+                db.close();
+              }
+            }
+          }
+          else{
+            console.log('User: ' + username+ ' didnt have nay promos.');
+            res.status(200).json({'success':false, 'data':'Sorry, you must create a promotion to be able to cross promote. Just click "promotions" on your home page to get started.'});
+            db.close();
+          }
+        }
+      });
+    }, dbErr=>{
+      console.warn("Couldn't connect to database: " + dbErr);
+      res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
     });
   }
 });

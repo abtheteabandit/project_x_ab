@@ -29,6 +29,10 @@ var user_email = null;
 var hasAccount = false;
 var isCustomer = false;
 var contactToAccept = null;
+var our_user_id=null;
+var postToTwitter = false;
+var postToFB = false;
+var postToInsta = false;
 globalGigs = [];
 //CHNAGE GIGS SECTION:?////////
 
@@ -2558,6 +2562,7 @@ function getUsername(){
     var user = res;
     username = user['username'];
     id = user['_id'];
+    our_user_id = user['_id'];
     user_email = user['email'];
     if(user.hasOwnProperty('hasAccount')){
       hasAccount=user.hasAccount;
@@ -2576,8 +2581,11 @@ function getUsername(){
           senderName=userContacts[c]['name'];
         }
       }
-      if (msg.body.includes('button')){
+      if (msg.body.includes('button') && msg.body.includes('apply')){
         alert( 'Congratulations! '+senderName + ' has asked you to apply to one of his/her events. Open your contacts list and select '+senderName+' to see the link. Click it, then select one of your acts to automatically apply.');
+      }
+      if (msg.body.includes('button') && msg.body.includes('view')){
+        alert(senderName + " has asked you to post his/her promotion (click contacts then "+senderName+" to view it). Remember that kindness goes a long way!");
       }
       else{
         alert('You recieved a message from: ' + senderName + ' Message: ' +msg.body);
@@ -3570,7 +3578,21 @@ class ContactLink {
     this.crossPromo.value = "";
     this.crossPromo.className = "cross-promo-btn";
     this.crossPromo.addEventListener('click',function(){
-      alert(name);
+      console.log('Name to cross promo with is: ' + name);
+      console.log('id to cross promo with is: ' + id);
+      $.post('/askToPromote', {'asker':username, 'promoter':name}, res2=>{
+        if (res2.success){
+          var now = new Date().toString();
+          console.log('our promo is: ' + JSON.stringify(res2.data));
+          $.post('/messages', {'senderID':our_user_id, 'recieverID':id, 'body':'<button value='+username+'*;!'+res2.data.name+' onclick="openPromotionModal(this)">view promotion</button>','timeStamp':now}, res3=>{
+            alert('We have asked '+name+' to post your most recently created promotion! Feel free to message them as well to follow up.');
+          });
+        }
+        else{
+          alert(res2.data);
+          return;
+        }
+      });
     });
     this.contactLink = document.createElement("a");
     this.contactLink.href = "#";
@@ -3586,6 +3608,59 @@ class ContactLink {
   }
 }
 
+//promo modal SECTION
+
+function openPromotionModal(button){
+  //var buttonData = button.data.promo;
+  var data = button.value;
+  var pieces = data.split('*;!');
+  var askerName = pieces[0];
+  var promoName = pieces[1];
+  console.log(' CLICKED OPEN PROMO: ' + promoName +' '+ askerName);
+  $.get('/aPromo', {'username':askerName, 'promoName':promoName}, res=>{
+    if (res.success){
+      var ourPromo = res.data;
+      var our_cap = ourPromo.caption + '\n\n\nposted from www.banda-inc.com (where the music industry bands together)'
+      document.getElementById('promo-req-caption').innerHTML = our_cap;
+      var cleanSRC = ourPromo.imgURL.replace('www.banda-inc.com//', '');
+      document.getElementById('promo-req-pic').src = cleanSRC;
+      document.getElementById('promo-req-header').innerHTML = askerName;
+      document.getElementById('promo-req-accept').value=askerName+'*;!'+promoName;
+
+    }
+    else{
+      alert('Sorry, it seems we could not find the attached promotion in our database. Please ask '+askerName+' to send it again. Sorry, for this inconvience.');
+      return;
+    }
+  })
+  document.getElementById('modal-wrapper-promo-request').style.display='block';
+
+}
+
+function postPromo(button){
+  console.log('got in post promo: ')
+  var val = button.value;
+  var pieces = val.split('*;!');
+  var promoter = pieces[0];
+  var promoName = pieces[1];
+  var medias = [];
+  console.log('PIECES IS: '+ JSON.stringify(pieces));
+  if (postToInsta){
+    medias.push('instagram');
+  }
+  if (postToFB){
+    medias.push('facebook');
+
+  }
+  if (postToTwitter){
+    medias.push('twitter');
+  }
+  console.log('PROMOTER: ' + promoter+' poster: '+username + ' promoName: ' + promoName);
+  $.post('cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoName':promoName}, res=>{
+    alert(res);
+    return;
+  });
+}
 
 (function($) {
     $.widget("ui.chatbox", {
@@ -4707,4 +4782,32 @@ function alterCreditDetails(){
 
 function toggleActiveSocial(elem){
   elem.classList.toggle('active-social');
+  switch(elem.value){
+    case 'twitter':
+    if(postToTwitter){
+      postToTwitter=false;
+    }
+    else{
+      postToTwitter=true;
+    }
+    break;
+    case 'fb':
+    if(postToFB){
+      postToFB=false;
+    }
+    else{
+      postToFB=true;
+    }
+    break;
+    case 'insta':
+    if(postToInsta){
+      postToInsta=false;
+    }
+    else{
+      postToInsta=true;
+    }
+    break;
+    default:
+    break;
+  }
 }

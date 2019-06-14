@@ -76,7 +76,7 @@
     </div>
     <div id="modal-wrapper-promo-request">
       <div id="promo-req-content" class="animate">
-        <h1 id="promo-req-header">madeline shade</h1>
+        <h1 id="promo-req-header"></h1>
         <input type="button" value="" id="close-promo-req" onclick="document.getElementById('modal-wrapper-promo-request').style.display = 'none';"/>
         <h2 id="promo-req-subheader">wants you to spread the word</h2>
         <div id="promo-req-grid">
@@ -88,11 +88,11 @@
         </div>
         <p id="promo-req-social-text">post to</p>
         <div id="promo-req-social-grid">
-          <input class="promo-req-social" type="button" value="" id="promo-req-fb" onclick="toggleActiveSocial(this);"/>
-          <input class="promo-req-social" type="button" value="" id="promo-req-insta" onclick="toggleActiveSocial(this);"/>
-          <input class="promo-req-social" type="button" value="" id="promo-req-twitter" onclick="toggleActiveSocial(this);"/>
+          <input class="promo-req-social" type="button" value="fb" id="promo-req-fb" onclick="toggleActiveSocial(this);"/>
+          <input class="promo-req-social" type="button" value="insta" id="promo-req-insta" onclick="toggleActiveSocial(this);"/>
+          <input class="promo-req-social" type="button" value="twitter" id="promo-req-twitter" onclick="toggleActiveSocial(this);"/>
         </div>
-        <input type="button" value="accept" id="promo-req-accept" />
+        <button value="accept" id="promo-req-accept" onclick='postPromo(this)'>accept</button>
       </div>
     </div>
     <div id="modal-wrapper-new-contact">
