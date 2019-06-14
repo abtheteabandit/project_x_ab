@@ -2604,61 +2604,62 @@ function getUsername(){
     $.get('messages', {'recieverID':id}, result=>{
       userMessages=result;
       console.log('USER MESSAGESSSS:        ' + JSON.stringify(userMessages));
+      console.log('Testing this particular user    '+ JSON.stringify(userMessages['5ce31549fe16a01320ba8fcb']));
       for (var m in userMessages){
         var conMess = userMessages[m];
           for (var n in conMess){
-            var mess = conMess[n]
+            var mess = conMess[n];
             console.log('**** mess ****: ' + JSON.stringify(mess));
             if (conMess[n].hasOwnProperty('body')){
               if (conMess[n].body.includes('wants to connect with you') && conMess[n].body.includes('button')){
-                if(!hasContact(mess.senderID) && (!userMessages[mess.senderID]['hasDisplayed']) && !(mess.senderID==user._id)){
-                  conMess[n]['hasDisplayed']=true;
-                  userMessages[mess.senderID]['hasDisplayed']=true;
-                  var mess_pieces = conMess[n].body.split('>');
-                  console.log('MESSSSSSS PEICES:  ' + JSON.stringify(mess_pieces));
-                  var name_piece = mess_pieces[1];
-                  var cleaned_name = name_piece.replace('/',"");
-                   cleaned_name = cleaned_name.replace('"',"");
-                   cleaned_name = cleaned_name.replace('/',"");
-                   cleaned_name = cleaned_name.replace(".","");
-                   cleaned_name = cleaned_name.replace("wants to connect with you","");
-                   cleaned_name = cleaned_name.replace("<","");
-                   cleaned_name = cleaned_name.replace("button","");
-                   cleaned_name = cleaned_name.replace(/\//g,"");
-                   cleaned_name = cleaned_name.replace(/\"/,"");
+                if(userMessages.hasOwnProperty(mess.senderID)){
+                  if(!hasContact(mess.senderID) && (!userMessages[mess.senderID]['hasDisplayed']) && !(mess.senderID==user._id)){
+                    conMess[n]['hasDisplayed']=true;
+                    userMessages[mess.senderID]['hasDisplayed']=true;
+                    var mess_pieces = conMess[n].body.split('>');
+                    console.log('MESSSSSSS PEICES:  ' + JSON.stringify(mess_pieces));
+                    var name_piece = mess_pieces[1];
+                    var cleaned_name = name_piece.replace('/',"");
+                     cleaned_name = cleaned_name.replace('"',"");
+                     cleaned_name = cleaned_name.replace('/',"");
+                     cleaned_name = cleaned_name.replace(".","");
+                     cleaned_name = cleaned_name.replace("wants to connect with you","");
+                     cleaned_name = cleaned_name.replace("<","");
+                     cleaned_name = cleaned_name.replace("button","");
+                     cleaned_name = cleaned_name.replace(/\//g,"");
+                     cleaned_name = cleaned_name.replace(/\"/,"");
 
-                  console.log('CLEANED NAME: ' + cleaned_name);
-                  document.getElementById("new-contact-header").innerHTML = cleaned_name;
-                  document.getElementById('modal-wrapper-new-contact').style.display='block';
-                  contactToAccept=cleaned_name;
-                  $.get('/picForUser', {'username':cleaned_name}, res11=>{
-                    if (res11=='None'){
+                    console.log('CLEANED NAME: ' + cleaned_name);
+                    document.getElementById("new-contact-header").innerHTML = cleaned_name;
+                    document.getElementById('modal-wrapper-new-contact').style.display='block';
+                    contactToAccept=cleaned_name;
+                    $.get('/picForUser', {'username':cleaned_name}, res11=>{
+                      if (res11=='None'){
 
-                      //default user image
+                        //default user image
 
-                    }
-                    else{
-                      document.getElementById('new-contact-pic').src=res11;
-                    }
-                  });
+                      }
+                      else{
+                        document.getElementById('new-contact-pic').src=res11;
+                      }
+                    });
 
 
 
-                  //AB NEED YOU TO DO SOMETHING HERE DISPLAY THAT MODAL
-                  /*
-                  var but = document.createElement("button");
-                  but = conMess[n].body;
-                  document.body.append(but);
-                  */
-                  /////////////////////////////////////////////////////////////??////////////?********************************************  AB LOOK HERE
+                    //AB NEED YOU TO DO SOMETHING HERE DISPLAY THAT MODAL
+                    /*
+                    var but = document.createElement("button");
+                    but = conMess[n].body;
+                    document.body.append(but);
+                    */
+                    /////////////////////////////////////////////////////////////??////////////?********************************************  AB LOOK HERE
 
+                  }
                 }
               }
             }
-
           }
       //  console.log('**** mess ****: ' + JSON.stringify(mess));
-
       }
       getUserInfo(user);
     });
@@ -3563,6 +3564,14 @@ class ContactLink {
   constructor(name,id, contactLinkCallBack){
     var list = document.getElementById("contacts-content");
     console.log("in constructor");
+    this.contactDiv = document.createElement("div");
+    this.crossPromo = document.createElement("input");
+    this.crossPromo.type = "button";
+    this.crossPromo.value = "";
+    this.crossPromo.className = "cross-promo-btn";
+    this.crossPromo.addEventListener('click',function(){
+      alert(name);
+    });
     this.contactLink = document.createElement("a");
     this.contactLink.href = "#";
     this.contactLink.id = "contact-link-"+id;
@@ -3570,7 +3579,9 @@ class ContactLink {
     this.contactLink.innerHTML = name;
     this.name = name;
     this.id = id;
-    list.append(this.contactLink);
+    this.contactDiv.append(this.crossPromo);
+    this.contactDiv.append(this.contactLink);
+    list.append(this.contactDiv);
     contactLinkCallBack(this);
   }
 }
