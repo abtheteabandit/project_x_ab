@@ -1097,12 +1097,25 @@ chat boxes
   vertical-align: middle;
   margin-bottom: 10px;
 }
+.contacts-div{
+
+}
+.cross-promo-btn{
+  cursor: pointer;
+  border: none;
+  display: inline;
+  width: 40px;
+  height: 20px;
+  background-image: url('/assets/Control-Center/crosspromo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
 .contacts-link{
   color: white;
   font-family: Industry, sans-serif;
   font-size: 18pt;
-  display: block;
-  margin-left: 20px;
+  display: inline;
 }
 .contacts-link:hover{
   color: #56dff0;

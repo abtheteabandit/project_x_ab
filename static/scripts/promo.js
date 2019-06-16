@@ -19,11 +19,13 @@ var promoCreated = true;
 var promoID = "";
 //if the user has made gigS
 var hasGigs = false;
+var ourUser = {};
 
 class SearchResult {
 
   constructor(obj){
     this.id = obj._id;
+    this.name = obj.username;
     this.newDiv = document.createElement("div");
     this.newDiv.style.backgroundImage = "url('/assets/Home/Art/12.jpeg')";
     // overlay
@@ -34,6 +36,11 @@ class SearchResult {
       // nothing yet
     });
     this.newOverlay.setAttribute("id",this.overlayID);
+    // button
+    this.addContactBtn = document.createElement("input");
+    this.addContactBtn.type = "button";
+    this.addContactBtn.value = "add contact";
+    this.addContactBtn.className = "add-contact-btn";
     // frame
     this.newFrame = document.createElement("img");
     this.newFrame.className = "result-frame";
@@ -43,38 +50,35 @@ class SearchResult {
     this.nameDiv = document.createElement("div");
     this.nameDiv.className = "result-name-div";
     this.nameP = document.createElement("p");
-    this.nameP.innerHTML = obj.username;
-
-    $.get('/picForUser',{'username':obj.username},res=>{
-      if(res == 'None'){
-        //skip
-      }
-      else{
-        this.newDiv.style.backgroundImage = "url('"+res+"')";
-      }
-      // appends
-      this.newDiv.appendChild(this.newOverlay);
-      this.newDiv.appendChild(this.newFrame);
-      this.nameDiv.appendChild(this.nameP);
-      this.newDiv.appendChild(this.nameDiv);
-      theGrid.appendChild(this.newDiv);
-      this.AddEventListeners(this);
-    })
-
+    this.nameP.innerHTML = this.name;
+    // appends
+    this.newOverlay.appendChild(this.addContactBtn);
+    this.newDiv.appendChild(this.newOverlay);
+    this.newDiv.appendChild(this.newFrame);
+    this.nameDiv.appendChild(this.nameP);
+    this.newDiv.appendChild(this.nameDiv);
+    theGrid.appendChild(this.newDiv);
+    // event listeners data preprocessing
+    this.AddEventListeners(this);
   }
 
   AddEventListeners(obj){
-    this.newDiv.addEventListener("mouseover",function(){
+    obj.newDiv.addEventListener("mouseover",function(){
       obj.newOverlay.style.zIndex = "8";
       obj.newOverlay.style.opacity = "1.0";
     },false);
-    this.newDiv.addEventListener("mouseout",function(){
+    obj.newDiv.addEventListener("mouseout",function(){
       obj.newOverlay.style.zIndex = "-8";
       obj.newOverlay.style.opacity = "0";
     },false);
-    this.newDiv.addEventListener("click",function(){
+    obj.newDiv.addEventListener("click",function(){
       console.log(obj.id);
     },false);
+    if(obj.hasOwnProperty('addContactBtn')){
+      obj.addContactBtn.addEventListener("click",function(){
+        sendContactRequest(obj.id, obj.name);
+      });
+    }
   }
 }
 
@@ -91,7 +95,8 @@ function getGigs(){
       return;
     }
     else{
-      var ourUser = res;
+      ourUser = res;
+      console.log('Our user is: ' + JSON.stringify(ourUser));
       var username = res.username;
       $.get('/getGigs', {'creator':ourUser.username}, res=>{
         if (res==""){
@@ -424,16 +429,20 @@ function submit_promotion(){
 }
 //CLICKS for selecting socials for promo
 function clickedSocial1(){
-  promotionOnSocial1 = true;
+  document.getElementById("promo-fb").classList.toggle('deactivated');
+  promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial2(){
-  promotionOnSocial2 = true;
+  document.getElementById("promo-insta").classList.toggle('deactivated');
+  promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial3(){
-  promotionOnSocial3 = true;
+  document.getElementById("promo-snap").classList.toggle('deactivated');
+  promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial4(){
-  promotionOnSocial4 = true;
+  document.getElementById("promo-twitter").classList.toggle('deactivated');
+  promotionOnSocial1 = !promotionOnSocial1;
 }
 
 function submit_coupon(){
@@ -595,7 +604,14 @@ function fillResultsTable(resArr){
   }
 
 }
-
+function sendContactRequest(recieverID, name){
+  var now = new Date().toString();
+  console.log('about to send contact request: sender id: ' + ourUser._id)
+  console.log('reciever id is: ' + recieverID);
+  $.post('/messages', {'senderID':ourUser._id, 'recieverID':recieverID, 'body':'<button id="'+recieverID+'">'+ourUser.username+'"wants to connect with you."</button>', 'timeStamp':now}, res=>{
+    alert('We have sent your contact request to ' + name + ' check your contacts tab often to see if they have accepted, and been added to your contacts.');
+  });
+}
 function requestSupport(){
   var supportText = document.getElementById("request-support-textarea").value;
   console.log("User has requested support, text is: ");

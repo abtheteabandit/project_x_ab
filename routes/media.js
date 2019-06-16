@@ -12,6 +12,7 @@ module.exports = router =>{
     }
     else{
       var {username} = req.query;
+      
       database.connect(db=>{
         db.db('bands').collection('bands').find({'creator':username}).toArray(function(err1, bands){
           if (err1){

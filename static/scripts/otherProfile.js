@@ -262,9 +262,9 @@ let selectedGig = null
  for (gig in myGigs){
    var gigTitle=document.createElement("option");
    gigTitle.innerHTML=myGigs[gig].name;
-   gigTitle.setAttribute("value","gig");
+   gigTitle.setAttribute("value", "gig");
    gigTitle.dataID = myGigs[gig]._id;
-   console.log("gigTitle.dataID is: "+myGigs[gig]._id);
+   console.log("gigTitle.dataID is: " + myGigs[gig]._id);
    gigTitle.setAttribute("id", "gig"+gig+"DropTitle");
    selectMenu.appendChild(gigTitle);
  }
@@ -302,16 +302,21 @@ function viewGigPage(){
 
 function submitGig(){
   var theSelector = document.getElementById("selectDropEvent");
+  var contactSelector = document.getElementById('selectDrop');
+  console.log('the Selector: ' + JSON.stringify(theSelector));
   var id = theSelector.options[ theSelector.selectedIndex ].dataID;
   var name = theSelector.options[theSelector.selectedIndex].innerHTML;
+  console.log('name: ' + name);
   console.log("IN SUBMIT GIG ID IS: "+id);
+  console.log("id for rec: " + contactSelector.idForRec );
   var buttonObj = {
     "idForGig":id,
     "nameOfGig":name,
-    "idForRec":theSelector.idForRec
+    "idForRec":contactSelector.idForRec
   };
   $("#chat-div").chatbox("option", "boxManager").addMsg(username, buttonObj);
-  document.getElementById('modal-wrapper-link-application').style.display='none'
+  document.getElementById('modal-wrapper-link-application').style.display='none';
+//  $.post('/askToApply', {'senderID':user._id, 'gigID':id, ''})
 }
 
 document.addEventListener('ready', init);
@@ -1037,6 +1042,7 @@ function loadStars(rating, stars){
 var socket = io();
 function sendMessage(body, recID){
   //set body to text from box and rec id to the inteded reciver's user ID
+  console.log("recID is: " + recID);
   var today = new Date();
   var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -1122,6 +1128,7 @@ function createContacts(contacts, yourUsername){
     }
 
     new ContactLink(name,id,contactLinkCallBack => {
+      console.log('Creating contact and id is: ' + id);
       contactLinkCallBack.contactLink.addEventListener("click",function(event, ui){
 
         // if(document.getElementById("select-gig-to-ad").style.visibility == "visible"){
@@ -1143,6 +1150,8 @@ function createContacts(contacts, yourUsername){
         else {
             document.getElementById("select-gig-to-ad").style.visibility = "visible";
             document.getElementById("selectDrop").idForRec = contactLinkCallBack.id;
+            console.log('Adding id to selectDrop pre in: ' + contactLinkCallBack.id);
+            console.log('Adding id to selectDRop: ' + document.getElementById("selectDrop").idForRec);
             var recipient = contactLinkCallBack.id;
             console.log('recipient id is '+recipient);
             box = $("#chat-div").chatbox({recID: contactLinkCallBack.id,
@@ -1194,6 +1203,7 @@ function createContacts(contacts, yourUsername){
               }
             }
         }
+        console.log('CONACT LINK CALL BACK ***************' );
         console.log(contactLinkCallBack.contactLink.id);
       });
     });
