@@ -804,7 +804,9 @@ function(req, accessToken, refreshToken, profile, cb) {
 
 
 	return cb(null, profile);
-	};
+	}
+	}
+));
 
 //route to get facebook access token
 router.get('/getInstData', passport.authenticate('inst_data', { scope: [
@@ -889,25 +891,6 @@ router.get('/storeInstData', (req,res)=>{
 
 
 
-
-
-
-
-//print when a user connects:
-io.on('connection', () =>{
-  console.log("A user is connected! GO BANDA, GO!");
-});
-
-// startup the server
-var server = http.listen(EXPRESS_APP_PORT, ()=>{
-  console.log('http+express server running on port: ' + server.address().port);
-});
-
-var email_port = 3000;
-app.listen(email_port, function(req, res){
-  console.log('Email is running on port: ',email_port);
-});
-
 router.post('/messages', (req, res)=>{
   if (!req.body) {
      console.log("No body recived for messaging");
@@ -938,4 +921,21 @@ router.post('/messages', (req, res)=>{
   });
 })
 
-}))
+
+
+//print when a user connects:
+io.on('connection', () =>{
+  console.log("A user is connected! GO BANDA, GO!");
+});
+
+// startup the server
+var server = http.listen(EXPRESS_APP_PORT, ()=>{
+  console.log('http+express server running on port: ' + server.address().port);
+});
+
+var email_port = 3000;
+app.listen(email_port, function(req, res){
+  console.log('Email is running on port: ',email_port);
+});
+
+
