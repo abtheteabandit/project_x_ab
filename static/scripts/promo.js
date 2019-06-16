@@ -20,6 +20,7 @@ var promoID = "";
 //if the user has made gigS
 var hasGigs = false;
 var ourUser = {};
+
 class SearchResult {
 
   constructor(obj){

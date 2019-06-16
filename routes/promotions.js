@@ -2,7 +2,8 @@ module.exports = router =>{
 
   const database = require ('../database'),
         matching = require('../algs/matching.js'),
-        qrcodes = require('qrcode');
+        QRCODE = require('qrcode'),
+        OUR_ADDRESS = "banda.confirmation@gmail.com";
 
 
   //request to make a cross promotion
@@ -51,7 +52,20 @@ module.exports = router =>{
                 if(posterKnowsPromoter){
                   res.status(200).send('Congratulations! We have posted this promotion to your selected socials. You should ask ' +promoterName+ ' to post one of your promotions. Just click the cross-promotion button next to ' +promoterName+ ' in your contact list. You must first create a promotion by clicking "promotions" if you have not already.')
                   //get promotion from poster
+                  /*
+                  for (var m in medias){
+                    var mediaOn = medias[m];
+                    if (mediaOn=='twitter'){
 
+                    }
+                    if (mediaOn=='facebook'){
+
+                    }
+                    if (mediaOn=='instagram'){
+
+                    }
+                  }
+                  */
                   //ed code, post this promotion to posters selected socials
                 }
                 //if the promoter is not in the list, do not make the post
@@ -484,6 +498,7 @@ router.post('/add_pull', (req, res)=>{
     }
   });
 
+  var fs  = require('fs');
   //route for a promoter to add a promotion that users can apply for through our website with a given code
   router.post('/createDiscountPromo', (req, res)=>{
     var {name, details, gigID, location, medias, promoID} = req.body;
@@ -502,8 +517,70 @@ router.post('/add_pull', (req, res)=>{
           }
           else{
             console.log('Set coupon with code ' +code+ ' for user: '+req.session.key);
-            //todo: insert code to post promotions to various social media here once apis work
-            res.status(200).send('Congratulations, you have created a coupon for your promotion! ')
+            db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err4, theGig)=>{
+              if (err4){
+                console.log('There was an error fidning gig with id: ' + gigID + ' into db. Error: ' + err4);
+                res.status(200).send('Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits let us know by emailing banda.help.cusotmers@gmail.com');
+                db.close();
+              }
+              else{
+                db.db('users').collection('users').findOne({'username':req.session.key},(err5, ourUser)=>{
+                  if (err5){
+                    console.log('There was an error fidning users: ' + req.session.key + ' in db. Error: ' + err5);
+                    res.status(200).send('Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits let us know by emailing banda.help.cusotmers@gmail.com');
+                    db.close();
+                  }
+                  else{
+                    var data = "www.banda-inc.com";
+                    //var data = 'https://banda-inc.com/customerQRCode?gigID='+gigID+'&code='+code
+                    QRCODE.toDataURL(data, (err6, img)=>{
+                      if (err6){
+                        console.log('there was an error creating qr code for promo with ID: ' + promoID);
+                        res.status(200).send('Hmmm...there was an error on our end. Please refresh your page and try again. If this problem persits let us know by emailing banda.help.cusotmers@gmail.com');
+                        db.close();
+                      }
+                      else{
+                        console.log('IMG ******************;::::::::::::::::::::::::::: is ;::::' + img);
+                        var now = new Date().toString();
+                        var cleanNow = now.replace(" ", "_");
+                        fs.writeFileSync('./public/uploads/CouponQrs/'+code, img);
+                      //  var imgURL = 'https://banda-inc.com/static/uploads/CouponQRs/'+code;
+                        var imgURL = 'http://localhost:1600/public/uploads/CouponQrs/'+code;
+                        let transporter = nodeMailer.createTransport({
+                            host: 'smtp.gmail.com', // go daddy email host port
+                            port: 465, // could be 993
+                            secure: true,
+                            auth: {
+                                user: 'banda.confirmation@gmail.com',
+                                pass: 'N5gdakxq9!'
+                            }
+                        });
+                        mailOptions = {
+                           from: OUR_ADDRESS, // our address
+                           to: ourUser.email, // who we sending to
+                           subject: "QR Coupon Code From Banda For "+theGig.name+"", // Subject line
+                           text: "", // plain text body
+                           html: "<div><h1>Hello, "+req.session.key+".</h1> Here is your QR code for the coupon you created for the event "+theGig.name+". You can print this page or set it up at your bar to let customers redeem their coupon. If a customer can display a page that says, '"+theGig.name+"\n Coupon Verified' it is from this coupon, as they can only display that page via entering the password they created through this promotion after scanning this QR Code. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.</div> <h1>QR CODE BELOW</h1></br></br><img src='"+imgURL+"'>"// html body
+                        };
+
+                        transporter.sendMail(mailOptions, (error, info) => {
+                           if (error) {
+                              console.log('There was an error sending the email: ' + error);
+                              res.status(200).send('Hmmm...it seems there was an issue emailing the coupon QR Code to you. Please try again.');
+                              db.close();
+                           }
+
+                           console.log('Message sent: ' + JSON.stringify(info));
+                           console.log('mail options: ' + mailOptions.html)
+                           res.status(200).send('Congratulations, you have created a coupon for your promotion! Check your email for the QRCODE you will need so coupon-cusomters can validate themselves at the time of the event. Now you can find promoters to post this coupon with our search feature below.');
+                           db.close();
+                         });
+                      }
+                    });
+                  }
+                });
+              }
+            });
           }
         });
       }, dbErr=>{
@@ -883,4 +960,21 @@ router.get('/aPromo', (req, res)=>{
     });
   }
 });
+router.get('/couponFromSocial',(req,res)=>{
+  //redirect to email page
+  //res.redirect()
+});
+router.post('/sendQrCode', (req, res)=>{
+  if (!req.body){
+    res.status(403).end();
+  }
+  else{
+    var {username} = req.body;
+
+  }
+});
+router.get('/customerQRCode', (req, res)=>{
+  console.log('REQ: ' + JSON.stringify(req));
+  res.redirect('/index');
+})
 } //end of exports
