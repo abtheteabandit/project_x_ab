@@ -267,15 +267,7 @@ Search Bar elements
   color: white;
 }
 
-/*
-Login Popup Elements
-*/
 
-#login-modal-header{
-  text-align:left;
-  padding-left: 20px;
-  font-size: 50pt;
-}
 
 /*style for the pop up goes here*/
 /* Full-width input fields */
@@ -304,13 +296,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     opacity: 0.8;
 }
 
-#register-login-text{
-  text-decoration:none;
-  float:right;
-  margin-right:34px;
-  margin-top:70px;
-}
-
 
 /* Center the image and position the close button */
 .imgcontainer {
@@ -324,9 +309,8 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     border-radius: 50%;
 }
 
-#modal-wrapper-login,
+
 #modal-wrapper-gig,
-#modal-wrapper-register,
 #modal-wrapper-tos{
   z-index: 5;
   display: none;
@@ -515,11 +499,7 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   border-top: 1px dashed rgba(86,223,240,1.0);
 }
 
-#register-modal-header{
-  text-align:left;
-  padding-left: 20px;
-  font-size: 50pt;
-}
+
 /* Modal Content Box */
 .modal-content {
   background-image: url("/assets/Home/modalbg.png");
@@ -1117,89 +1097,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   font-size: 10pt;
   color: rgba(86,223,240,1.0);
   display: hidden;
-  }
-}
-
-
-#forgot-password-text{
-  text-decoration:none;
-  float:left;
-  margin-left:25px;
-  margin-top:102px;
-}
-
-#login-register-text{
-  text-decoration:none;
-  float:right;
-  margin-right:34px;
-  margin-top:102px;
-}
-
-/*register model mobile scaling */
-@media(max-width: 550px){
-  #register-modal-header{
-    font-size: 20pt;
-    margin-bottom:10px;
-  }
-  #reg_username{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_email{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_email{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_password{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_confirm{
-    height: 10px;
-    width: 120px;
-  }
-  #reg_submit{
-    height: 10px;
-    width: 100px;
-    text-align: left;
-    margin-right: 65px;
-  }
-  #register-login-text{
-    text-decoration:none;
-    font-size: 10pt;
-    float:right;
-    margin-right:25px;
-    margin-top:20px;
-  }
-}
-
-/*resizing login modal for mobile*/
-@media(max-width: 550px){
-  #login-modal-header{
-    text-align:center;
-    padding-top: 30px;
-    font-size: 20pt;
-  }
-  #forgot-password-text{
-    text-decoration:none;
-    float:left;
-    margin-left:25px;
-    margin-top:0px;
-  }
-
-  #modal-login-id{
-    height: 80%;
-    background-size: cover
-  }
-
-  #login-register-text{
-    text-decoration:none;
-    float:right;
-    margin-right:0px;
-    margin-top:10px;
   }
 }
 

@@ -57,6 +57,9 @@
 		<link rel="stylesheet" type="text/css" href="/css/responseModel.css">
 		<link rel="stylesheet" type="text/css" href="/css/modals/indexHelpModal.css">
 		<link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+		<link rel="stylesheet" type="text/css" href="/css/modals/loginModal.css">
+		<link rel="stylesheet" type="text/css" href="/css/modals/registerModal.css">
+
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 		</head>
@@ -564,9 +567,9 @@
 						</div>
 					</div>
 
-					<div id="modal-wrapper-login" class="modal">
+					<div id="modal-wrapper-login">
 
-					  <form class="modal-content animate" id="modal-login-id">
+					  <form class="animate" id="modal-login-id">
 
 					    <div class="imgcontainer">
 					      <span onclick="document.getElementById('modal-wrapper-login').style.display='none'" class="close" title="Close PopUp">&times;</span>
@@ -577,10 +580,12 @@
 					      <input class="modal-input" type="text" placeholder="Enter Username" name="uname" id="loginUsername">
 					      <input class="modal-input" type="password" placeholder="Enter Password" name="psw" id=loginPassword>
 								<button class="popUpButtons" type="submit" onclick="login()">Login</button>
-								<a href='http://localhost:1600/auth/twitter' class="modal-button">Log In with Twitter</a>
-								<a href='http://localhost:1600/loginWithFacebook' class="modal-button">Log In with Facebook</a>
 								<!-- <a href="#" class="modal-button" id="forgot-password-text">forgot password?</a> -->
-								<a href="#" class="modal-button" id="login-register-text" onclick="loginToReg()" style="">don't have an account? sign up!</a>
+								<div id="other-login-grid">
+									<a id="login-with-twitter-btn" href='http://localhost:1600/auth/twitter' class="modal-button"><i class="fab fa-twitter"></i> Log In with Twitter</a>
+									<a id="login-with-fb-btn" href='http://localhost:1600/loginWithFacebook' class="modal-button"><i class="fab fa-facebook-f"></i> Log In with Facebook</a>
+									<a id="login-register-text" href="#" class="modal-button"  onclick="loginToReg()" style="">don't have an account? sign up!</a>
+								</div>
 							</div>
 					  </form>
 					</div>

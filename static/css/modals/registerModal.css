@@ -56,3 +56,44 @@
     width: 300px;
   }
 }
+
+/*register model mobile scaling */
+@media(max-width: 550px){
+  #register-modal-header{
+    font-size: 20pt;
+    margin-bottom:10px;
+  }
+  #reg_username{
+    height: 10px;
+    width: 120px;
+  }
+  #reg_email{
+    height: 10px;
+    width: 120px;
+  }
+  #reg_email{
+    height: 10px;
+    width: 120px;
+  }
+  #reg_password{
+    height: 10px;
+    width: 120px;
+  }
+  #reg_confirm{
+    height: 10px;
+    width: 120px;
+  }
+  #reg_submit{
+    height: 10px;
+    width: 100px;
+    text-align: left;
+    margin-right: 65px;
+  }
+  #register-login-text{
+    text-decoration:none;
+    font-size: 10pt;
+    float:right;
+    margin-right:25px;
+    margin-top:20px;
+  }
+}
