@@ -625,7 +625,11 @@
 								<input class="modal-input" id="reg_password" type="password" placeholder="password">
 								<input class="modal-input" id="reg_confirm" type="password" placeholder="confirm password">
 								<button class="popUpButtons" id="reg_submit" onclick="register()">Register</button>
-								<a href="#" class="modal-button" onclick="regToLogin()" id="register-login-text">already have an account? log in</a>
+								<div id="other-register-grid">
+									<a id="signup-with-twitter-btn" href='http://localhost:1600/auth/twitter' class="modal-button"><i class="fab fa-twitter"></i> Sign Up with Twitter</a>
+									<a id="signup-with-fb-btn" href='http://localhost:1600/loginWithFacebook' class="modal-button"><i class="fab fa-facebook-f"></i> Sign Up with Facebook</a>
+									<a href="#" class="modal-button" onclick="regToLogin()" id="register-login-text">already have an account? log in</a>
+								</div>
 							</div>
 
 						</div>

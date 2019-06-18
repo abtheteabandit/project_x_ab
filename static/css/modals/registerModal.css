@@ -19,7 +19,7 @@
   background-repeat: no-repeat;
   margin: 4% auto 15% auto;
   width: 500px;
-  height: 600px;
+  height: 650px;
   padding-bottom: 80px;
   color: white;
 }
@@ -28,13 +28,6 @@
   text-align:left;
   padding-left: 20px;
   font-size: 50pt;
-}
-
-#register-login-text{
-  text-decoration:none;
-  float:right;
-  margin-right:34px;
-  margin-top:70px;
 }
 
 /* The Close Button (x) */
@@ -49,6 +42,37 @@
 .close-register:hover,.close-register:focus {
     alpha: 0.6;
     cursor: pointer;
+}
+
+#register-login-text{
+  background-color: #5317EB;
+}
+
+#signup-with-twitter-btn{
+  background-color: #1da1f2;
+}
+
+#signup-with-fb-btn{
+  background-color: #1877f2;
+}
+
+#signup-with-fb-btn, #signup-with-twitter-btn,#register-login-text{
+  padding: 10px 8px;
+  border-radius: 4px;
+  font-size: 12pt;
+  font-weight: 800;
+  margin-top: 5px;
+}
+
+#signup-with-fb-btn:hover, #signup-with-twitter-btn:hover, #register-login-text:hover{
+  text-decoration: none;
+  color: rgba(255,255,255,0.5);
+}
+
+#other-register-grid{
+  display: grid;
+  grid-template-columns: auto;
+  text-align: center;
 }
 
 @media(max-width: 550px){
@@ -68,12 +92,5 @@
     width: 100px;
     text-align: left;
     margin-right: 65px;
-  }
-  #register-login-text{
-    text-decoration:none;
-    font-size: 10pt;
-    float:right;
-    margin-right:25px;
-    margin-top:20px;
   }
 }
