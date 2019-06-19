@@ -309,7 +309,7 @@ body{
 }
 
 .promo-label{
-  font-size: 32pt;
+  font-size: 26pt;
   font-weight: bold;
   display: block;
 }
@@ -319,7 +319,7 @@ body{
   color: white;
   border-radius: 4px;
   border: none;
-  height: 60px;
+  height: 40px;
   padding-left: 20px;
 }
 
@@ -329,7 +329,7 @@ body{
 
 #promo-name{
   display: inline;
-  width: 600px;
+  width: 620px;
   margin-left: 8px
 }
 
@@ -361,23 +361,26 @@ body{
 
 #promo-description{
   margin-top: -10px;
+  height: 100px;
   width: 100%;
 }
 
 #promo-url-label{
   display: inline;
+  margin-right: 10px;
 }
 
 #promo-url{
-  width: 468px;
+  width: 589px;
 }
 
 #promo-loc-label{
   display: inline;
+  margin-right: 10px;
 }
 
 #promo-loc{
-  width: 566px;
+  width: 584px;
 }
 
 #promo-grid-2{
@@ -690,7 +693,7 @@ body{
     font-size: 16pt;
   }
   .promo-input{
-    height: 30px;
+    height: 20px;
   }
   #promo-name{
     width: 290px;
@@ -701,20 +704,24 @@ body{
     grid-template-columns: 240px auto;
   }
   #promo-grid-1-p{
-    margin-top: -20px;
+    margin-top: -30px;
     line-height: 40px;
   }
 
   #promo-file-preview{
+    margin-top: -24px;
     max-width: 70px;
     max-height: 70px;
   }
+  #promo-description{
+    height: 40px;
+  }
 
   #promo-url{
-    width: 232px;
+    width: 274px;
   }
   #promo-loc{
-    width: 280px;
+    width: 270px;
   }
   #promo-grid-2{
     margin-top: 10px;
@@ -846,18 +853,20 @@ body{
   /* step 2 stuff */
   /* promos */
   #promo-div{
+    background-image: url("/assets/Promo/boxVert.png");
     width: 300px;
-    height: 216px;
+    height: 417px;
     padding: 8px 15px 8px 15px;
   }
   .promo-label{
     font-size: 12pt;
   }
   .promo-input{
-    height: 23px;
+    height: 30px;
+    margin-top: 10px;
   }
   #promo-name{
-    width: 218px;
+    width: 270px;
   }
   #promo-grid-1{
     display: grid;
@@ -865,18 +874,22 @@ body{
     grid-template-columns: 180px auto;
   }
   #promo-grid-1-p{
-    margin-top: -20px;
+    margin-top: -24px;
     line-height: 30px;
   }
   #promo-file-preview{
+    margin-top: -18px;
     max-width: 53px;
     max-height: 53px;
   }
+  #promo-description{
+    height: 85px;
+  }
   #promo-url{
-    width: 173px;
+    width: 270px;
   }
   #promo-loc{
-    width: 209px;
+    width: 270px;
   }
   #promo-grid-2{
     margin-top: 10px;
