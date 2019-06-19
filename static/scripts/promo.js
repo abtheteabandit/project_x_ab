@@ -443,7 +443,6 @@ function clickedSocial3(){
 function clickedSocial4(){
   document.getElementById("promo-twitter").classList.toggle('deactivated-social');
   promotionOnSocial4 = !promotionOnSocial4;
-  console.log("promoting twitter: "+promotionOnSocial4);
 }
 
 function submit_coupon(){
