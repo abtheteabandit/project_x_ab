@@ -35,6 +35,33 @@ var isLoggedIn=false;
 // AB document stuff//
 function init(){
 
+  var testJSON = {
+    "data": [
+      {
+        "access_token": "EAAGwyLiNx6oBAI2JahyvvfyvW63yZB89bJJRe96F4nOAAGZBFRnCyeppQlojZBi5gBSvZCEJmMl3pUFjDH6D067kBJszNr7FoAD2d1bYGokVswTM4mjFW1WRNGbvdZCZBm1XeQDfi2Ywv1ZCi4cffMwhfzEEnrwOk214LhlJkrt2ei54KZAwdXaL",
+        "category": "Just For Fun",
+        "category_list": "[Array]",
+        "name": "Test page 2",
+        "id": "650866345358241",
+        "tasks": "[Array]"
+      },
+      {
+        "access_token": "EAAGwyLiNx6oBAPSERWydK6C2gBcSKUn7BowzXwuvwCYBZAPh3mbigwC1A4DJbrpEiZBmvthCC9aZBs6ZAojNPBoWbZBBmBcjimQOlbWnfZCOrgUqZBvqAwyZANrtbmUtLJ3P226HNqXHPZAbrOYZCuQ8tOxn6SNND6L4gZAgLA1lUMBGqP3RUTJMGck",
+        "category": "Just For Fun",
+        "category_list": "[Array]",
+        "name": "Test=Page3",
+        "id": "2353932011517655",
+        "tasks": "[Array]"
+      }
+    ]
+  };
+
+  console.log("testJSON page one is ");
+  console.log(testJSON.data[0]);
+
+  populateSelectSocialPageModal(testJSON.data);
+
+
   document.getElementById('search_input').addEventListener('keyup', function(e){
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13) {
@@ -714,3 +741,22 @@ function diff_minutes(dt2, dt1) {
 		 console.log('Random Code: ' + code);
 		 return code;
 	 }
+
+   function populateSelectSocialPageModal(data){
+     var selector = document.getElementById("ssp-select");
+     jQuery(function($) {
+       $('#ssp-select').change(function () {
+         var optionSelected = $(this).find("option:selected");
+         var valueSelected  = optionSelected.val();
+         var textSelected   = optionSelected.text();
+         console.log("VALUE SELECTED IS: "+valueSelected);
+         console.log("TEXT SELECTED IS: "+textSelected);
+       });
+     });
+     for(var index in data){
+       var page = document.createElement('option');
+       page.value = data[index].id;
+       page.innerHTML = data[index].name;
+       selector.append(page);
+     }
+   }

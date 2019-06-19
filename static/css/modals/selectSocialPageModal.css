@@ -1,0 +1,45 @@
+#modal-wrapper-select-social-page{
+  z-index: 111;
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#ssp-content{
+  background-image: url("/assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: cover;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 15% auto 15% auto;
+  width: 600px;
+  height: 300px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+}
+
+#ssp-select{
+  width: 400px;
+  margin: 0 auto;
+  margin-top: 20px;
+  color: white;
+  background-color: rgba(0,0,0,0.7);
+  border-radius: 10px;
+  height: 50px;
+  font-size: 20pt;
+  border: none;
+  font-family: Industry;
+}
+
+#ssp-submit{
+  margin-top: 40px;
+  height: 50px;
+  color: #56dff0;
+  font-size: 20pt;
+}
