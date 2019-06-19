@@ -429,19 +429,19 @@ function submit_promotion(){
 }
 //CLICKS for selecting socials for promo
 function clickedSocial1(){
-  document.getElementById("promo-fb").classList.toggle('deactivated');
+  document.getElementById("promo-fb").classList.toggle('deactivated-social');
   promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial2(){
-  document.getElementById("promo-insta").classList.toggle('deactivated');
+  document.getElementById("promo-insta").classList.toggle('deactivated-social');
   promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial3(){
-  document.getElementById("promo-snap").classList.toggle('deactivated');
+  document.getElementById("promo-snap").classList.toggle('deactivated-social');
   promotionOnSocial1 = !promotionOnSocial1;
 }
 function clickedSocial4(){
-  document.getElementById("promo-twitter").classList.toggle('deactivated');
+  document.getElementById("promo-twitter").classList.toggle('deactivated-social');
   promotionOnSocial1 = !promotionOnSocial1;
 }
 

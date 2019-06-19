@@ -225,6 +225,7 @@ body{
   margin-top: 26px;
 }
 
+
 .deactivated{
   color: #c2c2c2 !important;
   opacity: 0.4;
@@ -402,9 +403,11 @@ body{
   background-color: transparent;
   background-size: cover;
   background-repeat: no-repeat;
+  opacity: 1.0;
 }
 
-.deactivated{
+.deactivated-social{
+  opacity: 0.4;
   filter: grayscale(100%);
 }
 
