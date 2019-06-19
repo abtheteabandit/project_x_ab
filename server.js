@@ -182,7 +182,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 	let refresh = refreshToken
 
 	//create the url to request profile data
-	let url = "https://graph.facebook.com/v3.3/me?" + "fields=id,name,email,first_name,last_name&access_token=" + token;
+	let url = "https://graph.facebook.com/v3.3/me?" + "fields=name,email&access_token=" + token;
 
 		//make the request
 		request({
@@ -193,7 +193,6 @@ function(req, accessToken, refreshToken, profile, cb) {
 				console.log(body)
 				let email = body.email;  
 				let username = body.name.replace(/\s+/g, '_')
-				console.log(body); 
 
 				//check for null values
 				if (!username) {
@@ -210,26 +209,28 @@ function(req, accessToken, refreshToken, profile, cb) {
 						//catch error
 						if (err) {
 							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
-							//res.status(500).send()
 							db.close();
 						} 
+
 						//if the user already exists
 						else if (obj) {
 							//sign the user in
+							console.log("the user already exists")
 							req.session.key = username;
 							req.session.cookie.expires = false
 							req.session.save()
+							db.close();
 						} else {
 							//if not, create a new user 
 							users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
 								//catch error
 								if (err) {
 									console.error(`Register request from ${req.ip} (for ${username}, ${email}) returned error: ${err}`);
-									//res.status(500).send();
 									db.close();
 								}
 								//if the user is created, sign the user in
 								 else {
+									console.log("the user does NOT already exist")
 									req.session.key = username;
 									req.session.cookie.expires = false
 									req.session.save()
@@ -305,7 +306,6 @@ function(req, token, tokenSecret, profile, done) {
 						console.log(req.session)
 						console.log('Req session key after inserting user for register is: ' + req.session.key);
 						db.close();
-						//return res.redirect('/twitter/successAuth' + username);
 					}
 				});
 			}
@@ -328,7 +328,7 @@ passport.deserializeUser(function(obj, cb){
 });
 
 //route to login with facebook
-router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope: ['email','public_profile']}))
+router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope: ['email']}))
 
 //route for facebook oauth callback
 router.get('/facebook/return', 
