@@ -42,7 +42,12 @@ var   passport = require('passport');
 var   FacebookStrategy = require('passport-facebook').Strategy
 var   TwitterStrategy = require('passport-twitter').Strategy;
 var   request = require('request')
+var   axios = require('axios')
 
+//social media access token 
+var TokenPassport = require('passport');
+var TwitterTokenStrategy = require('passport-twitter').Strategy;
+var Twit = require('twit')
 
 var client = redis.createClient();
 var app = express();
@@ -85,6 +90,10 @@ app.use(require('morgan')('combined'));
 app.use(passport.initialize());
 app.use(passport.session());
 
+//intialize passport and start sessions for the token auth
+app.use(TokenPassport.initialize());
+app.use(TokenPassport.session());
+
 
 /** ROUTES **/
 
@@ -100,6 +109,7 @@ router.get('/', (_, res) => res.redirect('/index'));
 router.get('/index', (_, res) => { res.render('index.html'); });
 router.get('/about',(_,res)=> {res.render('about.html');});
 
+//import routes from routes folder
 require('./routes/auth.js')(router, app); // login, register, logout
 require('./routes/upload2.js')(router, app); // uploads and downlaods data
 require('./routes/search.js')(router, app); //searches and posting
@@ -157,7 +167,7 @@ app.use('/', router);
 //app.listen(EXPRESS_APP_PORT, () => console.info('Express started on port ' + EXPRESS_APP_PORT));
 
 //instialize passport js for user login with facebook
-passport.use(new FacebookStrategy({
+passport.use('auth_facebook',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
 	callbackURL: '/facebook/return',
@@ -232,13 +242,12 @@ function(req, accessToken, refreshToken, profile, cb) {
 					console.warn("Couldn't connect to database: " + err)
 					res.status(500).send()
 				});
-
 			});
 	return cb(null, profile);
 }));
 
-//setup twitter auth for passport
-passport.use(new TwitterStrategy({
+//intialize twitter auth for passport
+passport.use('auth_twitter', new TwitterStrategy({
 	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
 	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
 	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
@@ -246,6 +255,7 @@ passport.use(new TwitterStrategy({
   passReqToCallback: true
 },
 function(req, token, tokenSecret, profile, done) {
+	console.log(profile)
 	let username = profile.username
 	let email = profile.emails[0].value
 
@@ -318,11 +328,11 @@ passport.deserializeUser(function(obj, cb){
 });
 
 //route to login with facebook
-router.get('/loginWithFacebook', passport.authenticate('facebook', { scope: ['email','public_profile']}))
+router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope: ['email','public_profile']}))
 
 //route for facebook oauth callback
 router.get('/facebook/return', 
-  passport.authenticate('facebook', { failureRedirect: '/facebook/successAuth' }),
+  passport.authenticate('auth_facebook', { failureRedirect: '/facebook/successAuth' }),
   function(req, res) {
     res.redirect('/facebook/failedAuth');
 	});
@@ -348,25 +358,538 @@ router.get('/twitter/successAuth', (req, res) => {
 })
 
 //authenticate twitter redirect url
-router.get('/auth/twitter', passport.authenticate('twitter'))
+router.get('/auth/twitter', passport.authenticate('auth_twitter'))
 
 //callback route for twitter authenication
-router.get('/auth/twitter/callback', passport.authenticate('twitter', {successRedirect: '/twitter/failedAuth', failureRedirect: '/twitter/successAuth'}))
+router.get('/auth/twitter/callback', passport.authenticate('auth_twitter', {successRedirect: '/twitter/failedAuth', failureRedirect: '/twitter/successAuth'}))
 
-//print when a user connects:
-io.on('connection', () =>{
-  console.log("A user is connected! GO BANDA, GO!");
-});
 
-// startup the server
-var server = http.listen(EXPRESS_APP_PORT, ()=>{
-  console.log('http+express server running on port: ' + server.address().port);
-});
 
-var email_port = 3000;
-app.listen(email_port, function(req, res){
-  console.log('Email is running on port: ',email_port);
-});
+
+
+
+//setup passport for getting a twitter access token
+passport.use("token_twitter", new TwitterTokenStrategy({
+	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
+	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
+	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
+	callbackURL: "http://localhost:1600/token/twitter/callback",
+  passReqToCallback: true
+},
+function(req, token, tokenSecret, profile, done) {
+	let username = profile.username
+	let email = profile.emails[0].value
+	let followers_count = profile.followers_count
+	let status_count = profile.status_count
+	let screen_name = profile.screen_name
+
+	//check for null values
+	if (!username) {
+		return res.status(400).send('Name not found')
+	} else if (!email) {
+		return res.status(400).send('Email not found')
+	}
+
+	console.log("the username is " + username)
+	console.log("the email is " + email)
+
+	//create an instance of the twitter api
+	T = new Twit({
+		consumer_key:         'vTzIdwGET3J1GVoytgt1maOqC',
+		consumer_secret:      'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
+		access_token:         twitterToken,
+		access_token_secret:  twitterTokenSecret,
+		timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+		//strictSSL:            true,     // optional - requires SSL certificates to be valid. todo: uncomment for production
+	})
+
+	//query for the most recent tweets
+	var optionsT = { screen_name: screen_name, count: 200 };
+  let retweets = 0
+	let favorites = 0
+	T.get('statuses/user_timeline', optionsT , function(err, data) {
+		for (var i = 0; i < data.length ; i++) {
+			retweets += data[i].retweet_count
+			favorites += data[i].favorite_count
+		}
+	})
+		
+	retweets /= data.length
+	favorites /= data.length
+
+	retweets = retweets*status_count
+	favorites = favorites*status_count
+
+
+	database.connect(db => {
+		//store the access tokens
+		db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'twitter':{'access_token':token,
+																																																	'token_secret':tokenSecret,
+																																																	'retweets':retweets,
+																																																	'favorites':favorites,
+																																																	'follower_count':followers_count,
+																																																	'status_count':status_count,
+																																																	'screen_name':screen_name}}}
+			 , (err4, res4)=>{
+					if (err4){
+						res.status(500).end();
+						db.close();
+					}
+					else{
+						console.log("the token was retrieved")
+						db.close();
+					}
+		});
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+	});
+	done(null, null);
+}
+));
+
+//route for failed oauth callback for twitter
+router.get('/twitter/token/failedAuth', (req, res) => {
+	//todo: change to promotions route
+	return res.redirect('http://localhost:1600/index');
+})
+
+//route for succesful oauth callback for twitter
+router.get('/twitter/token/successAuth', (req, res) => {
+	//todo: change to promotions route
+	return res.redirect('http://localhost:1600/index');
+})
+
+//authenticate twitter redirect url
+router.get('/token/twitter', passport.authenticate('token_twitter'))
+
+//callback route for twitter authenication
+router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: '/twitter/token/failedAuth', failureRedirect: '/twitter/token/successAuth'}))
+
+//post request to post a tweet to twitter
+router.post('/postTweet', (req, res) =>{
+	//connect to the db
+	database.connect(db => {
+		//find the user in the db
+		db.db('users').collection('users').findOne({ 'username': req.session.key}, (err, obj) => {
+			//create an instance of the twitter api
+			T = new Twit({
+				consumer_key:         'vTzIdwGET3J1GVoytgt1maOqC',
+				consumer_secret:      'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
+				access_token:         obj.twitter.access_token,
+				access_token_secret:  obj.twitter.token_secret,
+				timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+				//strictSSL:            true,     // optional - requires SSL certificates to be valid. todo: uncomment for production
+			})
+
+			//get and post the message data
+			let content = req.body.message
+			T.post('statuses/update', { status: content }, function(err, data, response) {
+				console.log(data)
+				return res.status(200).send('Tweet posted!')
+			})
+		})
+	}, err => {
+		//catch errors
+		console.warn("Couldn't connect to database: " + err)
+		res.status(500).end()
+	});
+	
+})
+
+
+
+
+
+//setup passport for getting a facebook token 
+//instialize passport js for user login with facebook
+passport.use('token_facebook',new FacebookStrategy({
+	clientID: 475851112957866,
+	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
+	callbackURL: '/facebook/token/return',
+  passReqToCallback: true
+},
+function(req, accessToken, refreshToken, profile, cb) {
+	//store values from the intial request
+	let profile_id = profile.id
+	let token = accessToken
+	let refresh = refreshToken
+
+	//request a long term access token
+	var options = {
+		url: 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token,
+		method: 'GET'
+	};
+
+	//callback for result request
+	function callback(error, response, body) {
+		if (!error && response.statusCode == 200) {
+				console.log(body);
+		}
+
+		//store the long token and the date
+		const longToken = body.access_token
+		const date = Math.floor(new Date() / 1000)
+
+		//store values in database 
+		database.connect(db => {
+			//store the access tokens and profile information
+			db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'access_token':longToken,
+																																																		'token_secret':profile_id,
+																																																		'refresh_token':refresh,
+																																																		'profile':profile,
+																																																		'date': date}}}
+				 , (err4, res4)=>{
+						if (err4){
+							res.status(500).end();
+							db.close();
+						}
+						else{
+							console.log("the token was retrieved")
+							db.close();
+						}
+			});
+		}, err => {
+			console.warn("Couldn't connect to database: " + err)
+		});
+
+		//get and return all of the pages the user controls to render in a modal on /promo
+		axios.get('https://graph.facebook.com//v3.3/me/accounts' + '?access_token=' + longToken)
+    .then(function (response) {
+			console.log(response.data);
+			res.redirect(url.format({
+				pathname:"/promo",
+				query:res.data,
+			}))
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+
+	}
+	console.log(options.url)
+	request(options, callback);
+
+	return cb(null, profile);
+}));
+
+//route to get facebook access token
+router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope: [
+	'manage_pages', 
+		'user_posts',
+			'read_insights',
+				'pages_show_list',
+					'publish_pages',
+						'publish_to_groups',
+							'public_profile']}))
+
+//route for facebook oauth callback
+router.get('/facebook/token/return', 
+  passport.authenticate('auth_facebook', { failureRedirect: '/facebook/token/successAuth' }),
+  function(req, res) {
+    res.redirect('/facebook/token/failedAuth');
+	});
+
+//route for failed token callback for facebook
+router.get('/facebook/token/failedAuth', (req, res) => {
+	return res.redirect('http://localhost:1600/index');
+})
+
+//route for succesful token  callback for facebook
+router.get('/facebook/token/successAuth', (req, res) => {
+	return res.redirect('http://localhost:1600/index');
+})
+
+//get the page access token for facebook based on selected page in modal
+router.post('/getFacebookPageTokens', (req, res) =>{
+	let pageId = req.body.pageId
+	let pageName = req.body.pageName
+	
+	//get short term page token
+	axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
+    .then(function (response) {
+      console.log(response.data);
+      let pageToken = response.data.access_token
+			
+			//get long term page token
+			axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
+				.then(function (response) {
+					console.log(response.data);
+					let pageToken = response.data.access_token
+					
+					//get the number of followers on a page
+					axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
+					.then(function (response) {
+						console.log(response.data);
+						let followerCount = response.data.fan_count
+
+						//get page consumption for the last 28 days
+						axios.get('https://graph.facebook.com/' + pageId + '/insights/page_consumptions' + '?access_token=' + pageToken)
+						.then(function (response) {
+							let values = response.data.data[2].values
+							let totalConsumption = 0
+							for (v in values){
+								totalConsumption += v.value
+							}
+
+							//store all values from the facebook api in the database
+							//store values in database 
+							database.connect(db => {
+								//store the access tokens and profile information
+								db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'page_token':pageToken,
+																																																							'follower_count':followerCount,
+																																																							'total_consumption':totalConsumption
+																																																							}}}
+									, (err4, res4)=>{
+											if (err4){
+												res.status(500).end();
+												db.close();
+											}
+											else{
+												//success case
+												db.close();
+												res.status(200).send('Success');
+
+											}
+								});
+							}, err => {
+								console.warn("Couldn't connect to database: " + err)
+							});
+
+						})
+						.catch(function (error) {
+							console.log(error);
+						})
+					})
+					.catch(function (error) {
+						console.log(error);
+					})
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+})
+
+//make post on facebook using message parameter
+router.post("/makePostOnPage", function(req, res){
+
+//connect to the db to check date of tokens
+database.connect(db => {
+	console.log("Got in database connect");
+	//find the user in the db
+	db.db('users').collection('users').findOne({ 'username': username}, (err, obj) => {
+		if (err) {
+			console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+			res.status(500).end()
+		}  
+
+		const dateSent = obj.facebook.date
+		const currDate = Math.floor(new Date() / 1000)
+
+		//if token is older than 60 days
+		if(currDate - dateSent >= 5184000){
+			//make the user refresh the token to: make more fluid
+			res.status(500).send("Token is expired, please reconnect facebook in promotions")
+		}
+
+		db.close();
+		})
+	}, err => {
+			console.warn("Couldn't connect to database: " + err)
+			res.status(500).end()
+	});
+
+	//get the massage
+	const message = req.body.message
+
+	//set the parameters
+	var options = {
+		url: 'https://graph.facebook.com/452827048617657/feed?message=' + message + '&access_token=' + pageToken,
+		method: 'POST'
+	};
+
+	function callback(error, response, body) {
+		if (!error && response.statusCode == 200) {
+				console.log(body);
+		}
+		//success case
+		console.log(body);
+		res.status(200).send('Success');
+	}
+
+	//make the post request
+	request(options, callback);
+
+	})
+
+
+
+
+
+
+
+
+
+	//setup passport for getting a facebook token 
+//instialize passport js for user login with facebook
+passport.use('inst_data',new FacebookStrategy({
+	clientID: 475851112957866,
+	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
+	callbackURL: '/facebook/token/return',
+  passReqToCallback: true
+},
+function(req, accessToken, refreshToken, profile, cb) {
+	//store values from the intial request
+	let profile_id = profile.id
+	let token = accessToken
+	let refresh = refreshToken
+
+	//request a long term access token
+	var options = {
+		url: 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token,
+		method: 'GET'
+	};
+
+	//callback for result request
+	function callback(error, response, body) {
+		if (!error && response.statusCode == 200) {
+				console.log(body);
+		}
+
+		//store the long token and the date
+		const longToken = body.access_token
+		const date = Math.floor(new Date() / 1000)
+
+
+
+		//store tokens and permissions for insta
+		database.connect(db => {
+			//store the access tokens and profile information
+			db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'access_token':longToken,
+																																																		'token_secret':profile_id,
+																																																		'refresh_token':refresh,
+																																																		'profile':profile,
+																																																		'date': date,
+																																																		'hasInsta': true}}}
+				 , (err4, res4)=>{
+						if (err4){
+							res.status(500).end();
+							db.close();
+						}
+						else{
+							console.log("the token was retrieved")
+							db.close();
+						}
+			});
+		}, err => {
+			console.warn("Couldn't connect to database: " + err)
+		});
+
+
+		let instaId = ""
+		//the id is a page id
+		axios.get("https://graph.facebook.com/v3.3/" + profile_id + "?fields=instagram_business_account&access_token=" + pageToken)
+		.then(function (response) {
+			console.log(response.data.instagram_business_account.id);
+			instaId = response.data.instagram_business_account.id
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+
+		console.log("the insta id is set")
+
+
+	return cb(null, profile);
+	}
+	}
+));
+
+//route to get facebook access token
+router.get('/getInstData', passport.authenticate('inst_data', { scope: [
+		'instagram_basic',
+		'instagram_manage_comments',
+		'instagram_manage_insights',
+		'business_management',
+		'read_insights',
+		'pages_show_list'
+	]}))
+
+//route for facebook oauth callback
+router.get('/inst/token/return', 
+  passport.authenticate('inst_data', { failureRedirect: '/inst/token/successAuth' }),
+  function(req, res) {
+    res.redirect('/inst/token/failedAuth');
+	});
+
+//route for failed token callback for facebook
+router.get('/inst/token/failedAuth', (req, res) => {
+	return res.redirect('http://localhost:1600/index');
+})
+
+//route for succesful token  callback for facebook
+router.get('/inst/token/successAuth', (req, res) => {
+	return res.redirect('http://localhost:1600/index');
+})
+
+//route to store users insta data
+router.get('/storeInstData', (req,res)=>{
+	let followerCount = 0
+	let postCount = 0
+
+	let instaId = ""
+	let token = ""
+	
+	//todo: quert for insta id and page token
+
+	//get follower count and media count
+	axios.get("https://graph.facebook.com/v3.3/" + instaId + "?fields=business_discovery.username(banda.inc){followers_count,media_count}&access_token=" + token)
+    .then(function (response) {
+			console.log(response.data);
+			followerCount = response.data.business_discovery.followers_count
+			postCount = response.data.business_discovery.media_count
+			
+    })
+    .catch(function (error) {
+      console.log(error);
+		})
+
+	//get page views
+	axios.get("https://graph.facebook.com/v3.3/" + instaId + "/insights?metric=engagement,impressions,reach&access_token=" + pageToken)
+    .then(function (response) {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+		})
+		
+	//get mentions by others
+	//GET /{ig-user-id}/mentions 
+	axios.post("https://graph.facebook.com/v3.3/" + instaId + "/mentions&access_token=" + pageToken)
+    .then(function (response) {
+      console.log(response.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+		})
+
+	//get engagement, todo: fix paramters
+	//GET graph.facebook.com/17841405822304914/insights?metric=impressions,reach,profile_views&period=year
+	axios.get("https://graph.facebook.com/v3.3/" + instaId + "/insights?metric=engagement,impressions,reach&access_token=" + pageToken)
+		.then(function (response) {
+			console.log(response.data);
+		})
+		.catch(function (error) {
+			console.log(error);
+		})
+
+})
+
+
+
 
 router.post('/messages', (req, res)=>{
   if (!req.body) {
@@ -396,5 +919,23 @@ router.post('/messages', (req, res)=>{
     console.log("Couldn't connect to mongo with error: "+err);
     res.status(500).end();
   });
+})
 
+
+
+//print when a user connects:
+io.on('connection', () =>{
+  console.log("A user is connected! GO BANDA, GO!");
 });
+
+// startup the server
+var server = http.listen(EXPRESS_APP_PORT, ()=>{
+  console.log('http+express server running on port: ' + server.address().port);
+});
+
+var email_port = 3000;
+app.listen(email_port, function(req, res){
+  console.log('Email is running on port: ',email_port);
+});
+
+

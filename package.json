@@ -4,6 +4,7 @@
   "description": "Banda",
   "main": "config.js",
   "dependencies": {
+    "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "connect-redis": "^3.4.0",
     "cookie-parser": "^1.4.4",
@@ -30,7 +31,8 @@
     "request": "^2.88.0",
     "socket.io": "^2.2.0",
     "stripe": "^6.28.0",
-    "twilio": "^3.31.1"
+    "twilio": "^3.31.1",
+    "twit": "^2.2.11"
   },
   "devDependencies": {
     "nodemon": "^1.18.11"
