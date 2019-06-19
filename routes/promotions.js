@@ -531,8 +531,8 @@ router.post('/add_pull', (req, res)=>{
                     db.close();
                   }
                   else{
-                    var data = "www.banda-inc.com";
-                    //var data = 'https://banda-inc.com/customerQRCode?gigID='+gigID+'&code='+code
+                   var data = "http://localhost:1600/customerQRCode";  // for testing
+                  //  var data = 'https://banda-inc.com/customerQRCode?gigID='+gigID+'&code='+code
                     QRCODE.toDataURL(data, (err6, img)=>{
                       if (err6){
                         console.log('there was an error creating qr code for promo with ID: ' + promoID);
@@ -543,8 +543,6 @@ router.post('/add_pull', (req, res)=>{
                         console.log('IMG ******************;::::::::::::::::::::::::::: is ;::::' + img);
                         var now = new Date().toString();
                         var cleanNow = now.replace(" ", "_");
-                        fs.writeFileSync('./public/uploads/CouponQrs/'+code, img);
-                      //  var imgURL = 'https://banda-inc.com/static/uploads/CouponQRs/'+code;
                         var imgURL = 'http://localhost:1600/public/uploads/CouponQrs/'+code;
                         let transporter = nodeMailer.createTransport({
                             host: 'smtp.gmail.com', // go daddy email host port
@@ -556,11 +554,12 @@ router.post('/add_pull', (req, res)=>{
                             }
                         });
                         mailOptions = {
+                           attachments : [{'path':img}],
                            from: OUR_ADDRESS, // our address
                            to: ourUser.email, // who we sending to
                            subject: "QR Coupon Code From Banda For "+theGig.name+"", // Subject line
                            text: "", // plain text body
-                           html: "<div><h1>Hello, "+req.session.key+".</h1> Here is your QR code for the coupon you created for the event "+theGig.name+". You can print this page or set it up at your bar to let customers redeem their coupon. If a customer can display a page that says, '"+theGig.name+"\n Coupon Verified' it is from this coupon, as they can only display that page via entering the password they created through this promotion after scanning this QR Code. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.</div> <h1>QR CODE BELOW</h1></br></br><img src='"+imgURL+"'>"// html body
+                           html: "<div><h1>Hello, "+req.session.key+".</h1> Here is your QR code for the coupon you created for the event "+theGig.name+". You can print this page or set it up at your bar to let customers redeem their coupon. If a customer can display a page that says, '"+theGig.name+"\n Coupon Verified' it is from this coupon, as they can only display that page via entering the password they created through this promotion after scanning this QR Code. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.</div> <h1>QR Code Attached</h1>>"// html body
                         };
 
                         transporter.sendMail(mailOptions, (error, info) => {
@@ -974,7 +973,7 @@ router.post('/sendQrCode', (req, res)=>{
   }
 });
 router.get('/customerQRCode', (req, res)=>{
-  console.log('REQ: ' + JSON.stringify(req));
-  res.redirect('/index');
+  console.log('Got a customer using a qr code');
+  res.render('customerQRCode.html');
 })
 } //end of exports

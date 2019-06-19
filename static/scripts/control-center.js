@@ -33,6 +33,7 @@ var our_user_id=null;
 var postToTwitter = false;
 var postToFB = false;
 var postToInsta = false;
+var messageOn = null;
 globalGigs = [];
 //CHNAGE GIGS SECTION:?////////
 
@@ -2621,7 +2622,9 @@ function getUsername(){
             if (conMess[n].hasOwnProperty('body')){
               if (conMess[n].body.includes('wants to connect with you') && conMess[n].body.includes('button')){
                 if(userMessages.hasOwnProperty(mess.senderID)){
-                  if(!hasContact(mess.senderID) && (!userMessages[mess.senderID]['hasDisplayed']) && !(mess.senderID==user._id)){
+                  console.log('\n');
+                  console.log('About to check if has Displayed for mess: ' + JSON.stringify(mess));
+                  if(!hasContact(mess.senderID) && (!mess['hasDisplayed']) && !(mess.senderID==user._id)){
                     conMess[n]['hasDisplayed']=true;
                     userMessages[mess.senderID]['hasDisplayed']=true;
                     var mess_pieces = conMess[n].body.split('>');
@@ -2639,16 +2642,20 @@ function getUsername(){
 
                     console.log('CLEANED NAME: ' + cleaned_name);
                     document.getElementById("new-contact-header").innerHTML = cleaned_name;
-                    document.getElementById('modal-wrapper-new-contact').style.display='block';
+                    console.log('*************************@@@@@@')
+                    console.log('ABOUT TO DIPSLAY MODAL FOR MESS: ' + JSON.stringify(mess));
+                    messageOn = mess;
                     contactToAccept=cleaned_name;
                     $.get('/picForUser', {'username':cleaned_name}, res11=>{
                       if (res11=='None'){
 
                         //default user image
+                        document.getElementById('modal-wrapper-new-contact').style.display='block';
 
                       }
                       else{
                         document.getElementById('new-contact-pic').src=res11;
+                        document.getElementById('modal-wrapper-new-contact').style.display='block';
                       }
                     });
 
@@ -2692,8 +2699,11 @@ function acceptNewCon(){
   });
 }
 function declineNewCon(){
-  //add a decline route;
-  document.getElementById('modal-wrapper-new-contact').style.display='none';
+
+  $.post('/seenMessage', {'id':messageOn._id, 'forUser':our_user_id}, res2=>{
+    alert(res2);
+    document.getElementById('modal-wrapper-new-contact').style.display='none';
+  });
 }
 function getUserInfo(user){
   console.log('in get info and username is ' + user['username']);

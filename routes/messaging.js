@@ -58,4 +58,33 @@ module.exports = router => {
         res.status(500).end();
       });
   });
+  router.post('/seenMessage', (req,res)=>{
+    if (!req.session.key){
+      console.log('No logged in user tried to say theyve seeb a message');
+      res.status(404).end();
+    }
+    if (!req.body){
+      console.log('No body sent in seen message');
+      res.status(403).end();
+    }
+    else{
+      var {id, forUser} = req.body;
+      database.connect(db=>{
+        db.db('messages').collection('messages').updateOne({'_id':database.objectId(id)}, {$set:{'hasDisplayed':true}}, (err1, res1)=>{
+          if (err1){
+            console.log('There was an error editing message with id: ' + id + ' for user: ' + forUser + ' Error: ' + err1);
+            res.status(200).send('Hmmm... there was an error on our end. You may have to see this message again. Just hot the "x" to get rid of it for now. Sorry about that. Please try again later, or contact support using the support option after clicking the banda "b" (top left).')
+            db.close();
+          }
+          else{
+            res.status(200).send('You have declined this connect request.');
+            db.close();
+          }
+        })
+      }, dbErr=>{
+        onsole.log("Couldn't connec to mongo with error: "+dbErr);
+        res.status(500).end();
+      })
+    }
+  });
 }
