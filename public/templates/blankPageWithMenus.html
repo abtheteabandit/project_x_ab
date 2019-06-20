@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banda, Inc.</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CHANGE -->
+    <!-- THIS -->
+    <!-- LINK -->
+    <link rel="stylesheet" type="text/css" href="/css/templates/blankPageWithMenus.css">
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+    <!-- CSS link -->
+
+    <!-- Ajax -->
+    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <!-- JQUERY -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+			(function($) {
+				$(function() {
+					$('#mainbtn').click(function(){
+						$('.deg0, .deg30, .deg60, .deg90').toggleClass('open')
+					});
+				});
+			})(jQuery);
+		</script>
+  </head>
+  <body>
+    <div class="body-bg">
+    </div>
+    <div class="mobile-menu">
+       <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+       <ul id = "mobile-menu-ul" class="mobile-active">
+         <li><a href='index'><p class="radialText">Landing</p></a></li>
+         <li><a href='about'><p class="radialText">About</p></a></li>
+         <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+       </ul>
+   </div>
+    <div id="container">
+      <img id="menuBacking" src="/assets/Home/menu.png" />
+      <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
+      </div>
+    </div>
+    <div class='circle-container'>
+      <a href='#' class='deg30' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
+      <a href='about' class='deg60'><p class="radialText">About</p></a>
+      <a href='index' class='deg90'><p class="radialText">Landing</p></a>
+    </div>
+  </body>
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
+</html>

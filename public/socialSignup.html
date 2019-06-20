@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banda, Inc.</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- CSS link -->
+    <link rel="stylesheet" type="text/css" href="/css/socialSignUp.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/socialSignUpModal.css">
+    <!-- Ajax -->
+    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <!-- JQUERY -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+			(function($) {
+				$(function() {
+					$('#mainbtn').click(function(){
+						$('.deg0, .deg30, .deg60, .deg90').toggleClass('open')
+					});
+				});
+			})(jQuery);
+		</script>
+  </head>
+  <body>
+    <div class="body-bg">
+    </div>
+    <div class="mobile-menu">
+       <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+       <ul id = "mobile-menu-ul" class="mobile-active">
+         <li><a href='index'><p class="radialText">Landing</p></a></li>
+         <li><a href='about'><p class="radialText">About</p></a></li>
+       </ul>
+   </div>
+    <div id="container">
+      <img id="menuBacking" src="/assets/Home/menu.png" />
+      <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
+      </div>
+    </div>
+    <div class='circle-container'>
+      <a href='about' class='deg60'><p class="radialText">About</p></a>
+      <a href='index' class='deg90'><p class="radialText">Landing</p></a>
+    </div>
+
+    <div id="modal-wrapper-register" class="modal">
+      <div id="reg_form" class="modal-content animate">
+        <div class="imgcontainer">
+         <h1 id="register-modal-header">sign up to get your coupon</h1>
+        </div>
+        <div id="reg_1" class="container">
+          <input minlength="3" maxlength="15" class="modal-input" id="reg_username" type="text" placeholder="username">
+          <input class="modal-input" id="reg_email" type="text" placeholder="email address">
+          <input class="modal-input" id="reg_password" type="password" placeholder="password">
+          <input class="modal-input" id="reg_confirm" type="password" placeholder="confirm password">
+          <button class="popUpButtons" id="reg_submit" onclick="register()">Register</button>
+          <div id="other-register-grid">
+            <a id="signup-with-twitter-btn" href='http://localhost:1600/auth/twitter' class="modal-button"><i class="fab fa-twitter"></i> Sign Up with Twitter</a>
+            <a id="signup-with-fb-btn" href='http://localhost:1600/loginWithFacebook' class="modal-button"><i class="fab fa-facebook-f"></i> Sign Up with Facebook</a>
+            <a href="#" class="modal-button" onclick="regToLogin()" id="register-login-text">already have an account? log in</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
+</html>

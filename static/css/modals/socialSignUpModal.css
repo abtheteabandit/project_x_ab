@@ -1,0 +1,100 @@
+
+a{
+  font-family: Industry;
+}
+
+#modal-wrapper-register{
+  z-index: 111;
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#reg_form{
+  background-image: url("/assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: cover;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 500px;
+  height: 650px;
+  padding-bottom: 80px;
+  color: white;
+  text-align: center;
+}
+
+.modal-input{
+  color: white;
+  background-color: #333d44;
+  border-radius: 8px;
+  width: 100%;
+  height: 60px;
+  margin: 10px 0px;
+  border: none !important;
+}
+
+#reg_submit{
+  display: block;
+  background-color: transparent;
+  border: none;
+  color: #56dff0;
+  font-size: 40pt;
+  margin: 0 auto;
+}
+
+#register-modal-header{
+  text-align:left;
+  padding-left: 20px;
+  font-size: 30pt;
+}
+
+#register-login-text{
+  background-color: #5317EB;
+}
+
+#signup-with-twitter-btn{
+  background-color: #1da1f2;
+}
+
+#signup-with-fb-btn{
+  background-color: #1877f2;
+}
+
+#signup-with-fb-btn, #signup-with-twitter-btn,#register-login-text{
+  padding: 10px 8px;
+  border-radius: 4px;
+  font-size: 12pt;
+  font-weight: 800;
+  margin-top: 5px;
+}
+
+#signup-with-fb-btn:hover, #signup-with-twitter-btn:hover, #register-login-text:hover{
+  text-decoration: none;
+  color: rgba(255,255,255,0.5);
+}
+
+#other-register-grid{
+  display: grid;
+  grid-template-columns: auto;
+  text-align: center;
+}
+
+@media(max-width: 550px){
+  #reg_form{
+    width: 300px;
+  }
+}
+
+/*register model mobile scaling */
+@media(max-width: 550px){
+  #register-modal-header{
+    font-size: 20pt;
+    margin-bottom:10px;
+  }
+}

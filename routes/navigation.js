@@ -36,5 +36,8 @@ module.exports = router => {
   });
   router.get('/promo',(req,res)=>{
     res.render('promo.html');
-  })
+  });
+  router.get('/socialSignUp',(req,res)=>{
+    res.render('socialSignUp.html');
+  });
 }
