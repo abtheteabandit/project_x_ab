@@ -1,5 +1,5 @@
 #modal-wrapper-promo-request{
-  display: none;
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -64,6 +64,7 @@ width: 240px;
   width: 220px;
   height: 220px;
   position: absolute;
+  object-fit: cover;
   z-index: 119;
   border-radius: 12px;
 }
@@ -99,6 +100,7 @@ width: 240px;
 }
 
 .promo-req-social{
+  color: transparent;
   width: 60px;
   height: 60px;
   background-color: transparent;
