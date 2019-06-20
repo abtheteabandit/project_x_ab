@@ -1,5 +1,5 @@
 #modal-wrapper-accepted-coupon{
-  display: none;
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -36,6 +36,19 @@
   margin-top: 20px;
 }
 
+#accepted-coupon-p{
+  text-align: center;
+  padding-top: 140px;
+  font-size: 72pt;
+}
+
+#accepted-coupon-btn{
+  text-align: center;
+  color: #56dff0;
+  font-size: 48pt;
+  width: 100%;
+}
+
 @media(max-width: 800px){
   #accepted-coupon-content{
     width: 500px;
@@ -54,5 +67,12 @@
   #close-accepted-coupon {
     margin-right: 10px;
     margin-top: 10px;
+  }
+  #accepted-coupon-p{
+    padding-top: 200px;
+    font-size: 40pt;
+  }
+  #accepted-coupon-btn{
+    font-size: 28pt;
   }
 }
