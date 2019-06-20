@@ -1,0 +1,229 @@
+@font-face { font-family: Industry; src: url('/assets/Industry.otf'); }
+
+h1, h2, h3, h4, h6, p, button, input, textarea{
+  font-family: Industry, sans-serif;
+}
+
+article, aside, figure, footer, header, hgroup,
+menu, nav, section { display: block; }
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+html{
+  background-color: black;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration:none;
+  color:white;
+}
+
+/* Radial Menu */
+
+.radialText{
+  color: white;
+}
+
+.radialText:hover{
+  color: rgba(86,223,240,1.0);
+}
+
+#menuBacking{
+  z-index: 4;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  height: 288px;
+  width: 288px;
+}
+
+#menu_circle_svg{
+  z-index: 1;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  color: rgba(0,0,0,0.0);
+}
+
+#mainbtn {
+  position:absolute;
+  top:30px;
+  left:60px;
+  z-index:5;
+}
+
+#mainbtn img{
+  position: absolute;
+  top:0px;
+  left:0px;
+  width: 57px;
+  height: 147px;
+}
+
+.circle-container {
+  position: absolute;
+  top:-50px;
+  left:-47px;
+  width: 100px;
+  height: 100px;
+  z-index:5;
+}
+.circle-container a {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  width: 64px; height: 36px;
+  margin:50px;
+  z-index: 5;
+}
+
+.circle-container i { display: block; width: 100px; }
+.deg0 { transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg60 { transform: rotate(-25deg) translate(13em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg90 { transform: rotate(-25deg) translate(13em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+
+.open.deg0 { transform: rotate(8deg) translate(11.5em) rotate(-8deg); }
+.open.deg30 { transform: rotate(27deg) translate(12.5em) rotate(-27deg); }
+.open.deg60 { transform: rotate(50deg) translate(12.5em) rotate(-50deg); }
+.open.deg90 { transform: rotate(80deg) translate(12em) rotate(-80deg);}
+
+/* Minh Stuff */
+.mobile-menu{
+  color: red;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+  display: none;
+}
+.mobile-menu img{
+  height: 100%;
+}
+.mobile-menu button{
+  position: relative;
+  width: 100px;
+  height: 60px;
+  font-size: 20px;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  background: black;
+}
+
+#mobile-menu-button{
+  background-color: transparent;
+}
+
+.mobile-menu ul{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: #ccc;
+  transform-origin: top;
+  transition: 0.5s;
+  transform: perspective(1000px) rotateX(-90deg);
+}
+.mobile-menu ul.mobile-active{
+  transform: perspective(1000px) rotateX(0deg);
+}
+.mobile-menu ul li{
+  list-style: none;
+  padding: 0px;
+}
+.mobile-menu ul li a{
+  color: white;
+  display:  block;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  background: #262626;
+  border-bottom: 1px solid rgb(0, 0, 0, 0.2);
+}
+.mobile-menu ul li a:hover{
+  background: red;
+}
+
+
+
+/*Page Content*/
+.body-bg{
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background: url('/assets/Home/backgroundnew.png');
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* Add Zoom Animation */
+.animate {
+    animation: zoom 0.6s
+}
+
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
+/*responsive page menu*/
+@media(max-width: 1000px){
+  #menuBacking{
+    height: 198px;
+    width: 198px;
+  }
+  #mainbtn img{
+    width: 37px;
+    height: 90px;
+  }
+  .circle-container a{
+    margin: 20px;
+    font-size: 13px;
+  }
+}
+
+@media(max-width: 700px){
+  #menuBacking{
+    height: 188px;
+    width: 188px;
+  }
+  #mainbtn img{
+    position: fixed;
+    left: 25px;
+    top: 25px;
+    width: 27px;
+    height: 60px;
+    z-index: 15;
+  }
+}
+
+@media(max-width: 600px){
+  #container, .circle-container{
+    display: none;
+  }
+  .mobile-menu{
+    display: block;
+  }
+}
