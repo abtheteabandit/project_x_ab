@@ -1,5 +1,5 @@
 #modal-wrapper-new-contact{
-  display: none;
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -52,8 +52,9 @@
   width: 260px;
   height: 260px;
   position: absolute;
-  margin-left: 195px;
+  margin-left: 175px;
   border-radius: 14px;
+  object-fit: cover;
 }
 
 #new-contact-frame{
