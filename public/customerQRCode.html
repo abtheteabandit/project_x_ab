@@ -35,6 +35,7 @@
        <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
        <ul id = "mobile-menu-ul" class="mobile-active">
          <li><a href='index'><p class="radialText">Landing</p></a></li>
+         <li><a href='about'><p class="radialText">About</p></a></li>
        </ul>
    </div>
     <div id="container">
@@ -43,12 +44,20 @@
       </div>
     </div>
     <div class='circle-container'>
+      <a href='about' class='deg60'><p class="radialText">About</p></a>
       <a href='index' class='deg90'><p class="radialText">Landing</p></a>
     </div>
 
     <div id="modal-wrapper-apply-coupon">
       <div id="apply-coupon-content" class="animate">
         <input type="button" value="" id="close-apply-coupon" onclick="document.getElementById('modal-wrapper-apply-coupon').style.display = 'none';"/>
+        <div id="apply-coupon-grid">
+          <p id="apply-coupon-username-label">username</p>
+          <input id="apply-coupon-username" type="text" value="username" />
+          <p id="apply-coupon-password-label">password</p>
+          <input id="apply-coupon-password" type="password" value="password" />
+          <button id="apply-coupon-btn">apply</button>
+        </div>
       </div>
     </div>
 
