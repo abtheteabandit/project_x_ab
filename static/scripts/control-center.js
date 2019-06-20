@@ -3594,7 +3594,7 @@ class ContactLink {
         if (res2.success){
           var now = new Date().toString();
           console.log('our promo is: ' + JSON.stringify(res2.data));
-          $.post('/messages', {'senderID':our_user_id, 'recieverID':id, 'body':'<button value='+username+'*;!'+res2.data.name+' onclick="openPromotionModal(this)">view promotion</button>','timeStamp':now}, res3=>{
+          $.post('/messages', {'senderID':our_user_id, 'recieverID':id, 'body':'<button class="open-promo-btn" value='+username+'*;!'+res2.data.name+' onclick="openPromotionModal(this)">view promotion</button>','timeStamp':now}, res3=>{
             alert('We have asked '+name+' to post your most recently created promotion! Feel free to message them as well to follow up.');
           });
         }
