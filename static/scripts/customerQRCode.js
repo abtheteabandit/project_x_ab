@@ -2,6 +2,8 @@ console.log('GOT IT')
 var urlJSON = parseURL(document.location);
 var promoID = urlJSON.searchObject.promoID;
 var gigID = urlJSON.searchObject.gigID;
+var theGig = null;
+var username = null;
 console.log('promoID: ' + promoID);
 
 $.get('/aGig', {'gigID':gigID}, res=>{
@@ -10,6 +12,7 @@ $.get('/aGig', {'gigID':gigID}, res=>{
     return;
   }
   else{
+    theGig=res;
     document.getElementById('gig-title-label').innerHTML='Coupon For '+res.name;
     document.getElementById('modal-wrapper-apply-coupon').style.display='block';
   }
@@ -17,7 +20,7 @@ $.get('/aGig', {'gigID':gigID}, res=>{
 });
 
 function apply(){
-  var username = document.getElementById('apply-coupon-username').value;
+      username = document.getElementById('apply-coupon-username').value;
   var password = document.getElementById('apply-coupon-password').value;
   if (username == null || username == "" || username == " "){
     alert('Sorry, you must proivde a non-blank username to apply this coupon.');
@@ -37,6 +40,7 @@ function apply(){
         if (res.success){
           if (res.data=='valid'){
             document.getElementById('modal-wrapper-apply-coupon').style.display='none';
+            document.getElementById('gig-title-label-accepted').innerHTML=username+"'s Coupon For "+theGig.name;
             document.getElementById('modal-wrapper-accepted-coupon').style.display='block';
           }
           else{
@@ -54,7 +58,19 @@ function apply(){
   }
 }
 
-
+function use(){
+  console.log('USED');
+  $.post('/useCoupon', {'username':username, 'promoID':promoID}, res=>{
+    if (res=='invalid'){
+      alert('Do not try to hack us. \n---Enjoy the music');
+    }
+    else{
+      document.getElementById('modal-wrapper-accepted-coupon').style.display='none';
+      document.getElementById('modal-wrapper-used-coupon').style.display='block';
+      alert(res);
+    }
+  });
+}
 //window parser
 function parseURL(url){
   console.log('URL: ' + url)
