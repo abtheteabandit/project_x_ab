@@ -36,6 +36,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/promoRequestModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/promoSendBackModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/newContactModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/selectPromoModal.css">
 
 
     <!-- jquery -->
@@ -59,6 +60,15 @@
 		</script>
   </head>
   <body onload="init();">
+
+    <div id="modal-wrapper-select-promo">
+      <div id="sp-content">
+        <h1 id="sp-h1">select your promo from the dropdown below</h1>
+        <select id="sp-select"></select>
+        <a id="sp-submit">continue with selected promo</a>
+      </div>
+    </div>
+
     <div id="modal-wrapper-support" class="modal-support">
 
       <form class="modal-content-support animate">
