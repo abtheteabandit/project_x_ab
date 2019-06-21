@@ -410,7 +410,6 @@ function submit_promotion(){
             $.post('/promotion', {'name':name, 'caption':desc, 'location':loc, 'medias':medias, 'imgURL':imageURL, 'handles':url_text}, res=>{
               alert(res.message);
               console.log('PROMO RES: ' + JSON.stringify(res));
-
               promoCreated = true;
             });
           }
