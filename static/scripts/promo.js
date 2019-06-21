@@ -381,13 +381,13 @@ function submit_promotion(){
     medias.push('facebook');
   }
   if (promotionOnSocial2){
-    medias.push('snapchat');
+    medias.push('instagram');
   }
   if (promotionOnSocial3){
-    medias.push('twitter');
+    medias.push('snapchat');
   }
   if (promotionOnSocial4){
-    medias.push('instagram');
+    medias.push('twitter');
   }
   var formdata = new FormData;
   var promoPic = $("#promo-file")[0].files[0];
@@ -410,6 +410,10 @@ function submit_promotion(){
             $.post('/promotion', {'name':name, 'caption':desc, 'location':loc, 'medias':medias, 'imgURL':imageURL, 'handles':url_text}, res=>{
               alert(res.message);
               console.log('PROMO RES: ' + JSON.stringify(res));
+<<<<<<< HEAD
+=======
+
+>>>>>>> 492bd3f26257fcdb15d67c6b56f12aa58fd0c985
               promoCreated = true;
             });
           }
