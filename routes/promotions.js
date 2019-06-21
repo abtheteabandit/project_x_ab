@@ -1190,9 +1190,16 @@ router.post('/applyCoupon', (req, res)=>{
                     }
                     if(ourUser){
                       if(passwordHash.verify(password, user.password)){
-                        console.log('Valid user: ' + username + ' for coupon with promo: ' + promoID);
-                        res.status(200).json({'success':true, 'data':'valid'});
-                        db.close();
+                        if (ourUser.used){
+                          console.log('User: ' + username + ' already used the coupon for promo: ' + promoID);
+                          res.status(200).json({'success':true, 'data':'Sorry, it seems you have already used this coupon. Check www.banda-inc.com regularly to find coupons, exclusive events, amazing bands and much, much more. We constanly release awesome updates. If you are a artist, venue owner, promoter or in the music industry in anyway Banda is your home! \n---Enjoy the music'});
+                          db.close();
+                        }
+                        else{
+                          console.log('Valid user: ' + username + ' for coupon with promo: ' + promoID);
+                          res.status(200).json({'success':true, 'data':'valid'});
+                          db.close();
+                        }
                       }
                       else{
                         console.log('User: ' + username + ' did sign up for coupon. But password: ' + password + ' was incorrect.');
@@ -1223,4 +1230,87 @@ router.post('/applyCoupon', (req, res)=>{
     }
   }
 })
+
+router.post('/useCoupon', (req, res)=>{
+  if (!req.body){
+    console.log('no body use coupon');
+    res.status(401).end();
+  }
+  else{
+    var {username, promoID} = req.body;
+    if ((!username) || (!promoID)){
+      console.log('missing a field');
+      res.status(401).end();
+    }
+    else{
+      database.connect(db=>{
+        db.db('promotions').collection('discounts').findOne({'promoID':promoID}, (err1, coupon)=>{
+          if (err1){
+            console.log('There was an error finding coupon with promoid: ' + promoID);
+            res.status(500).end();
+            db.close();
+          }
+          else{
+
+            if (coupon.hasOwnProperty('users')){
+              if (coupon.users==null){
+                console.warn('Someone might be trying to HACK BANDA username: ' + username +' this user clicekd use coupon for a discount with no registered users.');
+                res.status(200).send('invalid');
+                db.close();
+              }
+              else{
+                if (coupon.users.length==0){
+                  console.warn('Someone might be trying to HACK BANDA username: ' + username +' this user clicekd use coupon for a discount with no registered users.');
+                  res.status(200).send('invalid');
+                  db.close();
+                }
+                else{
+                  var ourUser = null;
+                  var couponUsers = [];
+                  for (var u in coupon.users){
+                    if (coupon.users[u].username==username){
+                      ourUser=coupon.users[u];
+                      ourUser['used']=true;
+                      couponUsers.push(ourUser);
+                    }
+                    else{
+                      couponUsers.push(coupon.users[u]);
+                    }
+                  }
+                  if (ourUser){
+                    db.db('promotions').collection('discounts').updateOne({'promoID':promoID}, {$set:{'users':couponUsers}}, (err6, res6)=>{
+                      if (err6){
+                        console.log('There was an error tryign to set used for user: ' + username+ ' for coupon with promoID: ' + promoID + err6);
+                        res.status(200).send('Congratulations! We have noted that you have used this coupon. Keep checking www.banda-inc.com for exclusive events, deals and artists. We add new features all the time. Thank you for being a part of the movement and keep Banding Together! \n---Enjoy the music');
+                        db.close();
+                      }
+                      else{
+                        res.status(200).send('Congratulations! We have noted that you have used this coupon. Keep checking www.banda-inc.com for exclusive events, deals and artists. We add new features all the time. Thank you for being a part of the movement and keep Banding Together! \n---Enjoy the music');
+                        db.close();
+                      }
+                    })
+                  }
+                  else{
+                    console.warn('Someone might be trying to HACK BANDA username: ' + username +' this user clicekd use coupon for a discount with no registered users.');
+                    res.status(200).send('invalid');
+                    db.close();
+                  }
+                }
+              }
+            }
+            else{
+              console.warn('Someone might be trying to HACK BANDA username: ' + username +' this user clicekd use coupon for a discount with no registered users.');
+              res.status(200).send('invalid');
+              db.close();
+            }
+
+          }
+        })
+      }, dbErr=>{
+        console.log('There was an error connecting to mogno: ' + dbErr);
+        res.status(500).end();
+      })
+    }
+  }
+});
 } //end of exports

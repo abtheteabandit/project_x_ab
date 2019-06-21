@@ -85,15 +85,16 @@
       <div id="declined-coupon-content" class="animate">
         <input type="button" value="" id="close-declined-coupon" onclick="document.getElementById('modal-wrapper-declined-coupon').style.display = 'none';"/>
         <p id="declined-coupon-p">DECLINED</p>
-        <button id="declined-coupon-btn">sign up</button>
+        <a href='/about' id="declined-coupon-btn">About Banda</a>
       </div>
     </div>
 
     <div id="modal-wrapper-accepted-coupon">
       <div id="accepted-coupon-content" class="animate">
         <input type="button" value="" id="close-accepted-coupon" onclick="document.getElementById('modal-wrapper-accepted-coupon').style.display = 'none';"/>
+        <h1 id='gig-title-label-accepted'></h1>
         <p id="accepted-coupon-p">ACCEPTED</p>
-        <button id="accepted-coupon-btn">use</button>
+        <button id="accepted-coupon-btn" onclick='use()'>use</button>
       </div>
     </div>
 
