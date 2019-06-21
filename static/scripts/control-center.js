@@ -2610,6 +2610,26 @@ function getUsername(){
         $("#chat-div").chatbox("option", "boxManager").addMsg(newName, msg.body);
       }
     });
+
+    // get promotions
+    $.get('/aUserPromo', {'userID':id}, res=>{
+      if (res.successs){
+        console.log("GETTING PROMOS");
+        console.log(res);
+      }
+      else{
+        alert(JSON.stringify(res.data));
+        var promos = res.data;
+        var promoSelect = document.getElementById("sp-select");
+        var newOption = document.createElement("option");
+        newOption.innerHTML = promos.name;
+        promoSelect.append(newOption);
+        // document.getElementById("modal-wrapper-select-promo").style.display = "block";
+
+        return;
+      }
+    });
+
     $.get('messages', {'recieverID':id}, result=>{
       userMessages=result;
       console.log('USER MESSAGESSSS:        ' + JSON.stringify(userMessages));
