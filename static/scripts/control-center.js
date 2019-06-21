@@ -2617,13 +2617,31 @@ function getUsername(){
         console.log("GETTING PROMOS");
         console.log(JSON.stringify(res.data[0].promotions));
         var promos = res.data[0].promotions;
+        var promoSelect = document.getElementById("sp-select");
         for(var promo in promos){
-          var promoSelect = document.getElementById("sp-select");
           var newOption = document.createElement("option");
           newOption.innerHTML = promos[promo].name;
-          newOption.value = promos[promo].value;
+          if(promos[promo].hasOwnProperty('_id')){
+            newOption.value = promos[promo]._id;
+          }else{
+            newOption.value = promos[promo].caption;
+          }
           promoSelect.append(newOption);
         }
+        // set up the action of the 'continue' button
+        var spSubmit = document.getElementById("sp-submit");
+
+
+        spSubmit.addEventListener('click',function(){
+          jQuery(function($) {
+            var optionSelected = $('#sp-select').find("option:selected");
+            var valueSelected  = optionSelected.val();
+            var textSelected   = optionSelected.text();
+            console.log("VALUE SELECTED IS: "+valueSelected);
+            console.log("TEXT SELECTED IS: "+textSelected);
+          });
+        });
+
         document.getElementById("modal-wrapper-select-promo").style.display = "block";
       }
       else{
