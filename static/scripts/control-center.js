@@ -2612,20 +2612,22 @@ function getUsername(){
     });
 
     // get promotions
-    $.get('/aUserPromo', {'userID':id}, res=>{
-      if (res.successs){
+    $.get('/aUserPromo', {'stuff':'doesnt matter'}, res=>{
+      if (res.success){
         console.log("GETTING PROMOS");
-        console.log(res);
+        console.log(JSON.stringify(res.data[0].promotions));
+        var promos = res.data[0].promotions;
+        for(var promo in promos){
+          var promoSelect = document.getElementById("sp-select");
+          var newOption = document.createElement("option");
+          newOption.innerHTML = promos[promo].name;
+          newOption.value = promos[promo].value;
+          promoSelect.append(newOption);
+        }
+        document.getElementById("modal-wrapper-select-promo").style.display = "block";
       }
       else{
         alert(JSON.stringify(res.data));
-        var promos = res.data;
-        var promoSelect = document.getElementById("sp-select");
-        var newOption = document.createElement("option");
-        newOption.innerHTML = promos.name;
-        promoSelect.append(newOption);
-        // document.getElementById("modal-wrapper-select-promo").style.display = "block";
-
         return;
       }
     });
