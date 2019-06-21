@@ -167,7 +167,8 @@ router.post('/login', (req, res) => {
 					console.log("////////////////////////////////////////////////////////////////////////////////////");
 					req.session.key = username;
 					console.log('In the login, just made the session key from obj key and it is: ' + req.session.key);
-					res.status(200).send('Success');
+					res.status(200).send('Success').end();
+					return;
 					db.close();
 				}
 				//else it is not correct

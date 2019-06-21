@@ -1142,5 +1142,85 @@ router.get('/discounts', (req, res)=>{
     res.status(500).end();
   });
 });
-
+router.post('/applyCoupon', (req, res)=>{
+  if (!req.body){
+    console.log('No req body in apply coupon.');
+    res.status(401).end();
+  }
+  else{
+    var {promoID, username, password} = req.body;
+    if ((!promoID) || (!username) || (!password)){
+      console.log('Missing a required field in applyCoupon');
+      res.status(401).end();
+    }
+    else{
+      database.connect(db=>{
+        db.db('promotions').collection('discounts').findOne({'promoID':promoID}, (err1, promo)=>{
+          if (err1){
+            console.log('There was an error trying to find promo: ' + promoID + ' Error: ' + err1);
+            res.status(200).json({'success':false, 'data':'Sorry, we could not find a coupon for this link. Please refresh and try again or email our customer support team at banda.customers.help@gmail.com. We have real people live to help 24/7. Sorry for this inconvience. '});
+            db.close();
+          }
+          else{
+            if (promo==null){
+              console.log('There was an error trying to find promo ---- was null.');
+              res.status(200).json({'success':false, 'data':'Sorry, we could not find a coupon for this link. Please refresh and try again or email our customer support team at banda.customers.help@gmail.com. We have real people live to help 24/7. Sorry for this inconvience. '});
+              db.close();
+            }
+            else{
+              if (promo.hasOwnProperty('users')){
+                if (promo.users==null){
+                  console.log('No users signed up for promo: ' + promoID);
+                  res.status(200).json({'success':false, 'data':'Sorry, it seems you are not registered for this coupon. Check www.banda-inc.com regularly to find coupons, exclusive events, amazing bands and much, much more. We constanly release awesome updates. If you are a artist, venue owner, promoter or in the music industry in anyway Banda is your home! \n---Enjoy the music'});
+                  db.close();
+                }
+                else{
+                  if (promo.users.length==0){
+                    console.log('No users signed up for promo: ' + promoID);
+                    res.status(200).json({'success':false, 'data':'Sorry, it seems you are not registered for this coupon. Check www.banda-inc.com regularly to find coupons, exclusive events, amazing bands and much, much more. We constanly release awesome updates. If you are a artist, venue owner, promoter or in the music industry in anyway Banda is your home! \n---Enjoy the music'});
+                    db.close();
+                  }
+                  else{
+                    var ourUser=null;
+                    for (var u in promo.users){
+                      var user = promo.users[u];
+                      if (user.username==username){
+                        ourUser=user;
+                      }
+                    }
+                    if(ourUser){
+                      if(passwordHash.verify(password, user.password)){
+                        console.log('Valid user: ' + username + ' for coupon with promo: ' + promoID);
+                        res.status(200).json({'success':true, 'data':'valid'});
+                        db.close();
+                      }
+                      else{
+                        console.log('User: ' + username + ' did sign up for coupon. But password: ' + password + ' was incorrect.');
+                        res.status(200).json({'success':true, 'data':'Sorry, it seems '+username+' is registered for this coupon, but the password you supplied is incorrect, please try again. Thank you!'});
+                        db.close();
+                      }
+                    }
+                    else{
+                      console.log('User: ' + username + ' did not sign up for coupon.');
+                      res.status(200).json({'success':true, 'data':'Sorry, it seems you are not registered for this coupon. Check www.banda-inc.com regularly to find coupons, exclusive events, amazing bands and much, much more. We constanly release awesome updates. If you are a artist, venue owner, promoter or in the music industry in anyway Banda is your home! \n---Enjoy the music'});
+                      db.close();
+                    }
+                  }
+                }
+              }
+              else{
+                console.log('No users signed up for promo: ' + promoID);
+                res.status(200).json({'success':false, 'data':'Sorry, it seems you are not registered for this coupon. Check www.banda-inc.com regularly to find coupons, exclusive events, amazing bands and much, much more. We constanly release awesome updates. If you are a artist, venue owner, promoter or in the music industry in anyway Banda is your home! \n---Enjoy the music'});
+                db.close();
+              }
+            }
+          }
+        });
+      }, dbErr=>{
+        console.log('There was an error connecting to mogno: ' + dbErr);
+        res.status(500).end();
+      })
+    }
+  }
+})
 } //end of exports

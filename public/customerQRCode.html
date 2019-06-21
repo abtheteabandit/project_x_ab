@@ -71,11 +71,12 @@
       <div id="apply-coupon-content" class="animate">
         <input type="button" value="" id="close-apply-coupon" onclick="document.getElementById('modal-wrapper-apply-coupon').style.display = 'none';"/>
         <div id="apply-coupon-grid">
+          <h1 id='gig-title-label'></h1>
           <p id="apply-coupon-username-label">username</p>
           <input id="apply-coupon-username" type="text" value="username" />
           <p id="apply-coupon-password-label">password</p>
           <input id="apply-coupon-password" type="password" value="password" />
-          <button id="apply-coupon-btn">apply</button>
+          <button id="apply-coupon-btn" onclick='apply()'>apply</button>
         </div>
       </div>
     </div>
@@ -111,4 +112,5 @@
      })
    })
   </script>
+  <script src = '/scripts/customerQRCode.js'></script>
 </html>
