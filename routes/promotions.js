@@ -5,7 +5,9 @@ module.exports = router =>{
         QRCODE = require('qrcode'),
         OUR_ADDRESS = "banda.confirmation@gmail.com";
 
-
+  var passwordHash = require('password-hash')
+  var passwordValidator = require('password-validator');
+  var validator = require("email-validator");
   //request to make a cross promotion
   router.post('/cross_promote', (req, res)=>{
     //if the user does not have a session
@@ -217,7 +219,7 @@ router.post('/promotion', (req, res)=>{
     var {name, imgURL, caption, handles, location, mode, medias} = req.body;
     console.log('IN POST PROMO NAME IS: ' + name + ' and imgURL is: ' + imgURL);
     database.connect(db=>{
-      db.db('promotions').collection('promotions').updateOne({'creator':req.session.key}, {$push:{'promotions':{'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias}}}, {upsert:true}, (err2, res2)=>{
+      db.db('promotions').collection('promotions').insertOne({'creator':req.session.key, 'name':name, 'imgURL':imgURL, 'caption':caption, 'location':location, 'handles':handles, 'mode':mode, 'medias':medias}, (err2, res2)=>{
         if (err2){
           console.log('There was an error setting promotion: '+name+' for user: ' +req.session.key+' Error: ' + err2);
           res.status(500).end();
@@ -247,7 +249,7 @@ router.get('/search_promos', (req, res)=>{
   else{
     var {lat, lng, searchText} = req.query;
     database.connect(db=>{
-      db.db('promotions').collection('promotions').findOne({'creator':req.session.key}, (err10, res10)=>{
+      db.db('promotions').collection('promotions').find({'creator':req.session.key}).toArray((err10, res10)=>{
         if (err10){
           console.log('There was an error finding promos for creator: '+creator +' error: ' + err10);
           res.status(200).json({success:false, data:'Sorry, there was an error on our end. Please try searching again. If this error persits please notify us via our support tab on the Banda "b"'});
@@ -260,13 +262,13 @@ router.get('/search_promos', (req, res)=>{
             db.close();
           }
           else{
-            if(res10.promotions.length==0){
+            if(res10.length==0){
               console.log('There was no promotions for creator: ' + req.session.key);
               res.status(200).json({success:false, data:'Sorry, you must create a promotion first to be able to search for promoters.'});
               db.close();
             }
             else{
-              var promoSearchingAs = res10.promotions[res10.promotions.length-1];
+              var promoSearchingAs = res10[res10.length-1];
               matching.findCrossPromoters(req.session.key, promoSearchingAs, lat, lng, searchText, db, errCB=>{
                 console.log('There was an error : ' + errCB);
                 if (errCB=="Internal Server Error"){
@@ -316,95 +318,7 @@ router.post('/user_socials', (req, res)=>{
   }
 });
 
-router.post('/add_pull', (req, res)=>{
-  //this is the route that gets called from outside our site, such that our bands can quantify their clout.
-  if (!req.body){
-    console.log('request had no body');
-    req.status(401).end();
-  }
-  else{
-    var {id, mode} = req.body;
-    database.connect(db=>{
-      switch(mode){
-        // adds 1 pull to a band, gig or user depending on what mode we recieved. That mode should be set in the route above
-        case "bands":
-        db.db('bands').collection('bands').updateOne({'_id':database.objectId(id)}, {$inc:{'pull':1}}, (err1, res1)=>{
-          if (err1){
-            console.log('There was an an error incrementing pull for band:: ' + err1);
-            res.status(500).end();
-            db.close();
-          }
-          else{
-            console.log('Set promotion ' +name+ ' for user: '+req.session.key);
-            res.redirect('/about');
-            db.close();
-          }
-        });
-        case "gigs":
-        db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(id)}, {$inc:{'pull':1}}, (err1, res1)=>{
-          if (err1){
-            console.log('There was an an error incrementing pull for band:: ' + err1);
-            res.status(500).end();
-            db.close();
-          }
-          else{
-            console.log('Set promotion ' +name+ ' for user: '+req.session.key);
-            res.redirect('/about');
-            db.close();
-          }
-        });
-        break;
-        default:
-        console.log('On recognized mode in pull.' + mode);
-        res.status(404).end();
-        db.close();
-        break;
-        }
-      }, dbErr=>{
-        console.log('There was an error connecting to mongo: ' + dbErr);
-        res.status(500).end();
-      });
-    }
-  });
-
   //post request to search for a promo
-  router.get('/search_promos', (req, res)=>{
-    if (!req.session.key){
-      console.log('No logged in user tried to cross promote');
-      req.status(404).end();
-    }
-    if (!req.query){
-      console.log('Cross promote had no body');
-      req.status(401).end();
-    }
-    //success case
-    else{
-      var {lat, lng, searchText} = req.query;
-      database.connect(db=>{
-        //match the cross promoters
-        matching.findCrossPromoters(req.session.key, lat, lng, searchText, db, errCB=>{
-          console.log('There was an error : ' + errCB);
-          if (errCB=="Internal Server Error"){
-            res.status(200).json({success:false, data:'Sorry, there was an error on our end. Please try searching again. If this error persits please notify us via our support tab on the Banda "b"'});
-            db.close();
-          }
-          else{
-            //no matchs
-            res.status(500).json({success:false, data:errCB});
-            db.close();
-          }
-        }, okCB=>{
-          //matchs found
-          console.log('Got in ok CB');
-          res.status(200).json({success: true, data:okCB});
-          db.close();
-        });
-      }, dbErr=>{
-        console.log('There was an error connectiong to mongo: ' + dbErr);
-        res.status(500).end();
-      });
-    }
-  });
 
   //post request for social media
   router.post('/user_socials', (req, res)=>{
@@ -498,18 +412,18 @@ router.post('/add_pull', (req, res)=>{
     }
   });
 
-  var fs  = require('fs');
   //route for a promoter to add a promotion that users can apply for through our website with a given code
   router.post('/createDiscountPromo', (req, res)=>{
     var {name, details, gigID, location, medias, promoID} = req.body;
+    console.log('$$$*$*$*$*$*$*$*$*$*$ got promo ID: ' + promoID);
     var code = createPromoCode();
       database.connect(db=>{
         //store the promotion in the database
-        db.db('promotions').collection('discounts').insertOne({
+        db.db('promotions').collection('discounts').updateOne({'promoID':promoID},{$set:{
           'details':details,
           'gigID':gigID,
           'code':code,
-          'promoID':promoID}, (err2, res2)=>{
+          'promoID':promoID}}, {upsert:true}, (err2, res2)=>{
           if (err2){
             console.log('There was an error setting coupon: '+promoID+' for user: ' +req.session.key+' Error: ' + err2);
             res.status(500).end();
@@ -531,7 +445,7 @@ router.post('/add_pull', (req, res)=>{
                     db.close();
                   }
                   else{
-                   var data = "http://localhost:1600/customerQRCode";  // for testing
+                   var data = "http://localhost:1600/customerQRCode?promoID="+promoID+"&gigID="+gigID;  // for testing
                   //  var data = 'https://banda-inc.com/customerQRCode?gigID='+gigID+'&code='+code
                     QRCODE.toDataURL(data, (err6, img)=>{
                       if (err6){
@@ -737,7 +651,7 @@ router.get('/aUserPromo', (req, res)=>{
       creator = req.session.key;
     }
     database.connect(db=>{
-      db.db('promotions').collection('promotions').findOne({'creator':creator}, (err2, res2)=>{
+      db.db('promotions').collection('promotions').find({'creator':creator}).toArray((err2, res2)=>{
         if (err2){
           console.log('There was err2 getting a promo for creator: '+creator + err2);
           res.status(200).json({success:false, data:null});
@@ -749,13 +663,14 @@ router.get('/aUserPromo', (req, res)=>{
             db.close();
             return
           }
-          if (res2.promotions.length==0){
+          if (res2.length==0){
             res.status(200).json({success:false, data:null});
             db.close();
             return;
           }
           else{
-            res.status(200).json({success:true, data:res2.promotions[0]});
+            console.log('Got a promo');
+            res.status(200).json({success:true, data:res2});
             db.close();
           }
         }
@@ -787,7 +702,7 @@ router.get('/getContactRequests', (req, res)=>{
     req.status(404).end();
   }
   if (!req.query){
-    console.log('user_has_socials had no query');
+    console.log('getContactRequests had no query');
     req.status(401).end();
   }
   else{
@@ -913,9 +828,9 @@ router.get('/aPromo', (req, res)=>{
     req.status(401).end();
   }
   else{
-    var {promoName, username} = req.query;
+    var {promoID, username} = req.query;
     database.connect(db=>{
-      db.db('promotions').collection('promotions').findOne({'creator':username}, (err1, res1)=>{
+      db.db('promotions').collection('promotions').findOne({'_id':database.objectId(promoID)}, (err1, res1)=>{
         if (err1){
           console.log('THere was an error finding promos for user: ' + username + " error: " + err1);
           res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
@@ -935,12 +850,6 @@ router.get('/aPromo', (req, res)=>{
                 db.close();
               }
               else{
-                var ourPromo = res1.promotions[res1.promotions.length-1];
-                for (var p in res1.promotions){
-                  if (res1.promotions[p].name==promoName){
-                    ourPromo = res1.promotions[p];
-                  }
-                }
                 res.status(200).json({'success':true, 'data': ourPromo});
                 db.close();
               }
@@ -959,21 +868,279 @@ router.get('/aPromo', (req, res)=>{
     });
   }
 });
-router.get('/couponFromSocial',(req,res)=>{
-  //redirect to email page
-  //res.redirect()
-});
-router.post('/sendQrCode', (req, res)=>{
-  if (!req.body){
-    res.status(403).end();
-  }
-  else{
-    var {username} = req.body;
-
-  }
-});
 router.get('/customerQRCode', (req, res)=>{
   console.log('Got a customer using a qr code');
   res.render('customerQRCode.html');
 })
+
+router.post('/couponRegister', (req, res)=>{
+  if (!req.body){
+    console.log('No req body in couponRegister');
+    res.status(403).end();
+  }
+  if (req.session.key) {
+    console.info(`User ${req.session.key} from ${req.ip} attempted to register whilst logged in`);
+    req.session.key=req.session.key
+    res.status(200).send('Already logged in');
+    return;
+  }
+
+  else{
+    var {username, email, password, confirm_password, promoID} = req.body;
+    if (!promoID){
+      res.status(403).end();
+    }
+  	console.log("GOT user name, email and passowrd they are: " + username + " " + email + " " + password + " " + confirm_password);
+    if(password != confirm_password){
+  	  res.status(200).send('Passwords do not match')
+  		return;
+  	}
+    if (!username) {
+  		return res.status(400).send('No username supplied')
+  	} else if (!password) {
+  		return res.status(400).send('No password supplied')
+  	} else if (!email) {
+  		return res.status(400).send('No email supplied')
+  	}
+    if(!validator.validate(email)){
+  		console.log("password is not valid")
+  	  res.status(200).send('Please enter a valid email').end();
+  		return;
+  	}
+    if (validatePassword(password) == false) {
+  		console.log("password is not valid")
+  	  res.status(200).send('Your password must contain atleast 8 characters, a number, a lower case character, an upper case character, and no spaces').end();
+  		return;
+  	}
+    else{
+      password = hashPassword(password);
+      database.connect(db=>{
+        db.db('users').collection('users').findOne({ $or: [{'email': email}, {'username': username}]}, (err1, user)=>{
+          if (err1){
+            console.log('There wsa an error fidning user with username: ' + username + ' Error: ' + err1);
+            res.status(500).end();
+            db.close();
+          }
+          else{
+            if (user){
+              console.log('That username or email already exists sending that info back.')
+      				res.status(200).send('Username or email already exists');
+              db.close();
+            }
+            else{
+              db.db('users').collection('users').insertOne({ email: email, username: username, password: password, contacts:[]}, (err2, obj) => {
+      					if (err2) {
+      						console.error(`Register request from ${req.ip} (for ${username}, ${email}, ${password}) returned error: ${err}`);
+      						res.status(200).send('Sorry, there was an error on our end creating your account. Please refresh and try again.  If this problem persists please email banda.customers.help@gmail.com.');
+      						db.close();
+      					}
+                else {
+      						//booth code, testing how to store usernames in sessions//
+      						req.session.key = username;
+      						console.log('Req session key after inserting user for register is: ' + req.session.key);
+                  db.db('promotions').collection('discounts').updateOne({'promoID':promoID},{$push:{'users':{'username':username, 'password':password}}}, (err3, coupon)=>{
+                    if (err3){
+                      console.log('There was an error finding coupon with promoID: ' + promoID);
+                      res.status(200).send('You have signed up, however we could not find the coupon for this event. Please try to login on this page and try again. If this problem persists please email banda.customers.help@gmail.com.');
+                      db.close();
+                    }
+                    else{
+                      console.log('Instered user: ' + username + ' into coupon with promoID: ' + promoID);
+                      db.db('gigs').collection('gigs').findOne({'_id':database.objectId(coupon.gigID)}, (err4, theGig)=>{
+                        if (err4){
+                          console.log('error finding gig with id: ' + coupon.gigID + ' Error: ' + err4);
+                          res.status(200).send('You have signed up, however we could not find the event for this coupon. Please try to login on this page and try again. If this problem persists please email banda.customers.help@gmail.com.');
+                          db.close();
+                        }
+                        else{
+                          let transporter = nodeMailer.createTransport({
+                              host: 'smtp.gmail.com', // go daddy email host port
+                              port: 465, // could be 993
+                              secure: true,
+                              auth: {
+                                  user: 'banda.confirmation@gmail.com',
+                                  pass: 'N5gdakxq9!'
+                              }
+                          });
+                          mailOptions = {
+                             from: OUR_ADDRESS, // our address
+                             to: email, // who we sending to
+                             subject: "Coupon From Banda For "+theGig.name+"", // Subject line
+                             text: "", // plain text body
+                             html: "<div><h1>Hello, "+username+".</h1> Here is your code for the coupon for the event "+theGig.name+".<h3>Verfied: </h3> \n -----------------  ACCEPTED COUPON FOR "+theGig.name+" FROM BANDA  -----------------  You will need to scan the qr code at the event and enter your username and password to verify this coupon. We do this to ensure there are no fradulant transactions. \n Enjoy the music and thank you for using Banda. \n —Your team at Banda.</div>"// html body
+                          };
+
+                          transporter.sendMail(mailOptions, (error, info) => {
+                             if (error) {
+                                console.log('There was an error sending the email: ' + error);
+                                res.status(200).send('Hmmm...it seems there was an issue emailing the coupon to you. Please login and try again.');
+                                db.close();
+                             }
+                             console.log('Message sent: ' + JSON.stringify(info));
+                             console.log('mail options: ' + mailOptions.html)
+                             res.status(200).send('Congratulations, you have been emailed a coupon code for this coupon! At the event, '+theGig.name+', you should look for a qr code to scan it may be printed and posted somewhere or avaible to you in some fashion. This code will direct you to a page, on which you should enter your username and password. Which will then show an accepted page. Show this page to the bartender or event manager and have them press the "use" button to redeem this coupon. Keep checking www.banda-inc.com for new features, exclusive events, coupons and much, much more! If you are an artist, venue owner, promoter, studio owner, or in the music-industry in any way, please contact our support team (banda.cusotmers.help@gmail.com) to find out how we can help your career or business!');
+                             db.close();
+                           });
+                        }
+                      });
+                    }
+                  });
+      					}
+      				});
+            }
+          }
+        });
+      }, dbErr=>{
+        console.warn("Couldn't connect to database: " + dbErr);
+        res.status(500).end();
+      });
+    }
+  }
+});
+router.post('/couponLogin', (req,res)=>{
+  if (req.session.key) {
+		console.info(`User ${req.session.key} from ${req.ip} attempted to login whilst logged in`);
+		req.session.key = req.session.key;
+	  res.status(402).send('Already logged in').end();
+	}
+  if (!req.body){
+    res.status(403).end();
+  }
+  else{
+    var {username, password, promoID} = req.body;
+  	console.log("////////////////////////////////////////////////////////////////////////////////////");
+  	console.log("GOt username it is : " + username);
+  	console.log(" ");
+  	console.log("////////////////////////////////////////////////////////////////////////////////////");
+  	console.log("GOt password it is : " + password);
+  	console.log(" ");
+  	if (!username) {
+  	  res.status(200).send('No username supplied')
+  	} else if (!password) {
+  	  res.status(200).send('No password supplied')
+  	}
+    database.connect(db => {
+  		console.log("Got in database connect");
+  		//find the user in the db
+  		db.db('users').collection('users').findOne({'username': username}, (err, obj) => {
+  			console.log("Got in find one");
+  			console.log(JSON.stringify(obj));
+  			if (err) {
+  				console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+  				res.status(500).end()
+  			} else if (!obj) {
+  				console.log('No user with that username');
+  				res.status(200).send('Hmmm...It seems there is no user with that username on record, please try again.')
+
+  			} else {
+          if(passwordHash.verify(password, obj.password)){
+            var hashedPass = hashPassword(password)
+            db.db('promotions').collection('discounts').findOneAndUpdate({'promoID':promoID}, {$push:{'users':{'username':username, 'password':hashedPass}}}, (err4, data)=>{
+              if (err4){
+                req.session.key=null;
+                console.log('There was an error finding promo for this promo: ' + promoID + err4);
+                res.status(200).send('Sorry, there we could not find a coupon for this link. Please refresh your page and try again. If this problem perists please email banda.customers.help@gmail.com to speak with our 24/7 support team.');
+                db.close();
+              }
+              else{
+                var coupon = data.value;
+                console.log('//')
+                console.log('COUPON: ' + JSON.stringify(coupon));
+                console.log('gig id form cop is: ' + coupon.gigID);
+                db.db('gigs').collection('gigs').findOne({'_id':database.objectId(coupon.gigID)}, (err5, theGig)=>{
+                  if (err5){
+                    req.session.key=null;
+                    console.log('There was an error finding promo for this promo: ' + coupon.gigID + err5);
+                    res.status(200).send('Sorry, there we could not find an event for this coupon. Please refresh your page and try again. If this problem perists please email banda.customers.help@gmail.com to speak with our 24/7 support team.');
+                    db.close();
+                  }
+                  else{
+            					console.log("////////////////////////////////////////////////////////////////////////////////////");
+            					req.session.key = username;
+            					console.log('In the login, just made the session key from obj key and it is: ' + req.session.key);
+                      var email = obj.email;
+                      let transporter = nodeMailer.createTransport({
+                          host: 'smtp.gmail.com', // go daddy email host port
+                          port: 465, // could be 993
+                          secure: true,
+                          auth: {
+                              user: 'banda.confirmation@gmail.com',
+                              pass: 'N5gdakxq9!'
+                          }
+                      });
+                      mailOptions = {
+                         from: OUR_ADDRESS, // our address
+                         to: email, // who we sending to
+                         subject: "Coupon From Banda For "+theGig.name+"", // Subject line
+                         text: "", // plain text body
+                         html: "<div><h1>Hello, "+username+".</h1> Here is your code for the coupon for the event "+theGig.name+".<h3>Verfied: </h3> \n -----------------  ACCEPTED COUPON FOR "+theGig.name+" FROM BANDA  -----------------  You will need to scan the qr code at the event and enter your username and password to verify this coupon. We do this to ensure there are no fradulant transactions. \n Enjoy the music and thank you for using Banda. \n —Your team at Banda.</div>"// html body
+                      };
+
+                      transporter.sendMail(mailOptions, (error, info) => {
+                         if (error) {
+                            console.log('There was an error sending the email: ' + error);
+                            res.status(200).send('Hmmm...it seems there was an issue emailing the coupon to you. Please refresh your page and try again.');
+                            db.close();
+                         }
+                         console.log('Message sent: ' + JSON.stringify(info));
+                         console.log('mail options: ' + mailOptions.html)
+                         res.status(200).send('Congratulations, you have been emailed a coupon code for this coupon! At the event, '+theGig.name+', you should look for a qr code to scan it may be printed and posted somewhere or avaible to you in some fashion. This code will direct you to a page, on which you should enter your username and password. Which will then show an accepted page. Show this page to the bartender or event manager and have them press the "use" button to redeem this coupon. Keep checking www.banda-inc.com for new features, exclusive events, coupons and much, much more! If you are an artist, venue owner, promoter, studio owner, or in the music-industry in any way, please contact our support team (banda.cusotmers.help@gmail.com) to find out how we can help your career or business!');
+                         db.close();
+                       });
+                  }
+                });
+              }
+            });
+          }
+          else{
+            console.log('got in else meaning passwordhas veirfy returned false for username: ' + username + 'passowrd: ' + password)
+            res.status(200).send('Not a valid login')
+            db.close();
+          }
+        }
+  		});
+  	}, err => {
+  		console.warn("Couldn't connect to database: " + err)
+  		res.status(500).end()
+  	});
+  }
+});
+
+function validatePassword(password) {
+	console.log("validate password entered!!!!!!!!!!!")
+	var schema = new passwordValidator();
+	schema
+	.is().min(8)                                    // Minimum length 8
+	.is().max(100)                                  // Maximum length 100
+	.has().uppercase()                              // Must have uppercase letters
+	.has().lowercase()                              // Must have lowercase letters
+	.has().digits()                                 // Must have digits
+	.has().not().spaces()                           // Should not have spaces
+	console.log(schema.validate(password))
+	return schema.validate(password)
+}
+
+function hashPassword(password) {
+	password = passwordHash.generate(password);
+	return password;
+}
+router.get('/discounts', (req, res)=>{
+  database.connect(db=>{
+    db.db('promotions').collection('discounts').find({}).toArray((err2, res2)=>{
+      if (err2){
+        console.log('**%**@#**@#$(*$*$**) error: ' + err2);
+        res.status(500).end();
+        db.close();
+      }
+      else{
+        console.log('DISOCUNTS: ' + JSON.stringify(res2));
+        res.status(200).json(res2);
+        db.close();
+      }
+    });
+  }, err=>{
+    res.status(500).end();
+  });
+});
+
 } //end of exports

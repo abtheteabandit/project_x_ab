@@ -459,13 +459,13 @@ module.exports = {
           errCB('Internal Server Error');
         }
         else{
-          db.db('promotions').collection('promotions').findOne({'creator':ourUsername}, (errPromo, promos)=>{
+          db.db('promotions').collection('promotions').find({'creator':ourUsername}).toArray((errPromo, promos)=>{
             if (errPromo){
               console.log('There waz an error finding promos for creator: ' + ourUsername + 'Error: ' + errPromo);
               errCB('Internal Server Error');
             }
             else{
-              if (promos == null || promos.promotions.length==0){
+              if (promos == null || promos.length==0){
                 errCB('Sorry, you must create and save your own promotion before you can begin searching for people to post your promotion.');
               }
               else{
@@ -514,7 +514,7 @@ module.exports = {
                       console.log('Our pull is: ' + ourPull);
                       // now we have ourUsers value set, moving on to looping through all users to find a match
                       allUsers.forEach(function(otherUser, i){
-                        db.db('promotions').collection('promotions').findOne({'creator':otherUser.username}, (errOtherPromo, otherPromos)=>{
+                        db.db('promotions').collection('promotions').find({'creator':otherUser.username}).toArray((errOtherPromo, otherPromos)=>{
                           if (errOtherPromo){
                             console.log('There was an error find other user: '+otherUser.username+' Error: ' + errOtherPromo);
                             errCB('Internal Server Error');

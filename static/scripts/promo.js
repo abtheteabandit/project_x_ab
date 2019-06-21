@@ -16,7 +16,7 @@ var promotionOnSocial4 = false;
 // for seeing if we have enoguh info to do a coupon
 //CHANGE TO FLASE
 var promoCreated = true;
-var promoID = "";
+var the_promo_ID = "";
 //if the user has made gigS
 var hasGigs = false;
 var ourUser = {};
@@ -410,8 +410,6 @@ function submit_promotion(){
             $.post('/promotion', {'name':name, 'caption':desc, 'location':loc, 'medias':medias, 'imgURL':imageURL, 'handles':url_text}, res=>{
               alert(res.message);
               console.log('PROMO RES: ' + JSON.stringify(res));
-
-              promoID = res.data._id;
               console.log('PROMO ID IS: ' + promoID);
               promoCreated = true;
             });
@@ -453,7 +451,7 @@ function submit_coupon(){
     return;
   }
     console.log('User has not created a promo on this page yet.');
-    $.get('/aUserPromo', {query:'nada'}, res=>{
+    $.get('/aUserPromo', {'stuff':'lol'}, res=>{
       if (!res.success){
         console.log('User promo failed');
         alert('Sorry, you must create and save a promotion first in order to create a coupon. We need the information from the promotion form to optimize your coupons reach.');
@@ -470,7 +468,7 @@ function submit_coupon(){
             return;
           }
           else{
-            var thePromo = res.data;
+            var thePromo = res.data[res.data.length-1];
             var promoID = thePromo._id;
             var coupBody = document.getElementById("coupon-text").value;
             if (coupBody == "" || coupBody == " "){
