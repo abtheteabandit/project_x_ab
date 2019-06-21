@@ -289,7 +289,6 @@ function(req, token, tokenSecret, profile, done) {
 				console.log(req.session)
 				console.log('Req session key after inserting user for register is: ' + req.session.key);
 				db.close();
-				//return res.redirect('/twitter/successAuth' + username);
 			} else {
 				//if not, create a new user 
 				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
@@ -332,24 +331,24 @@ router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/return', 
-  passport.authenticate('auth_facebook', { failureRedirect: '/facebook/successAuth' }),
+  passport.authenticate('auth_facebook', { failureRedirect: 'http://localhost:1600/facebook/successAuth' }),
   function(req, res) {
-    res.redirect('/facebook/failedAuth');
+    res.redirect('http://localhost:1600/facebook/failedAuth');
 	});
 	
 //route for failed oauth callback for facebook
 router.get('/facebook/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //route for succesful oauth callback for facebook
 router.get('/facebook/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //route for failed oauth callback for twitter
 router.get('/twitter/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //route for succesful oauth callback for twitter
@@ -377,11 +376,12 @@ passport.use("token_twitter", new TwitterTokenStrategy({
   passReqToCallback: true
 },
 function(req, token, tokenSecret, profile, done) {
-	let username = profile.username
-	let email = profile.emails[0].value
-	let followers_count = profile.followers_count
-	let status_count = profile.status_count
-	let screen_name = profile.screen_name
+	console.log(profile)
+	var username = profile.username
+	var email = profile.emails[0].value
+	var followers_count = profile.followers_count
+	var status_count = profile._json.statuses_count
+	var screen_name = profile.screen_name
 
 	//check for null values
 	if (!username) {
@@ -390,73 +390,68 @@ function(req, token, tokenSecret, profile, done) {
 		return res.status(400).send('Email not found')
 	}
 
-	console.log("the username is " + username)
-	console.log("the email is " + email)
-
 	//create an instance of the twitter api
 	T = new Twit({
 		consumer_key:         'vTzIdwGET3J1GVoytgt1maOqC',
 		consumer_secret:      'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
-		access_token:         twitterToken,
-		access_token_secret:  twitterTokenSecret,
+		access_token:         token,
+		access_token_secret:  tokenSecret,
 		timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 		//strictSSL:            true,     // optional - requires SSL certificates to be valid. todo: uncomment for production
 	})
 
 	//query for the most recent tweets
 	var optionsT = { screen_name: screen_name, count: 200 };
-  let retweets = 0
-	let favorites = 0
+  var retweets = 0
+	var favorites = 0
 	T.get('statuses/user_timeline', optionsT , function(err, data) {
 		for (var i = 0; i < data.length ; i++) {
 			retweets += data[i].retweet_count
 			favorites += data[i].favorite_count
 		}
-	})
+		retweets /= data.length
+		favorites /= data.length
 		
-	retweets /= data.length
-	favorites /= data.length
+		retweets = retweets*status_count
+		favorites = favorites*status_count
 
-	retweets = retweets*status_count
-	favorites = favorites*status_count
-
-
-	database.connect(db => {
-		//store the access tokens
-		db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'twitter':{'access_token':token,
-																																																	'token_secret':tokenSecret,
-																																																	'retweets':retweets,
-																																																	'favorites':favorites,
-																																																	'follower_count':followers_count,
-																																																	'status_count':status_count,
-																																																	'screen_name':screen_name}}}
-			 , (err4, res4)=>{
-					if (err4){
-						res.status(500).end();
-						db.close();
-					}
-					else{
-						console.log("the token was retrieved")
-						db.close();
-					}
+		database.connect(db => {
+			//store the access tokens
+			db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'twitter':{'access_token':token,
+																																																		'token_secret':tokenSecret,
+																																																		'retweets':retweets,
+																																																		'favorites':favorites,
+																																																		'follower_count':followers_count,
+																																																		'status_count':status_count,
+																																																		'screen_name':screen_name}}}
+				, (err4, res4)=>{
+						if (err4){
+							res.status(500).end();
+							db.close();
+						}
+						else{
+							console.log("the token was retrieved")
+							db.close();
+						}
+			});
+		}, err => {
+			console.warn("Couldn't connect to database: " + err)
 		});
-	}, err => {
-		console.warn("Couldn't connect to database: " + err)
-	});
-	done(null, null);
+		done(null, null);
+	})
 }
 ));
 
 //route for failed oauth callback for twitter
 router.get('/twitter/token/failedAuth', (req, res) => {
 	//todo: change to promotions route
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //route for succesful oauth callback for twitter
 router.get('/twitter/token/successAuth', (req, res) => {
 	//todo: change to promotions route
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //authenticate twitter redirect url
@@ -591,12 +586,12 @@ router.get('/facebook/token/return',
 
 //route for failed token callback for facebook
 router.get('/facebook/token/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //route for succesful token  callback for facebook
 router.get('/facebook/token/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //get the page access token for facebook based on selected page in modal
@@ -827,12 +822,12 @@ router.get('/inst/token/return',
 
 //route for failed token callback for facebook
 router.get('/inst/token/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //route for succesful token  callback for facebook
 router.get('/inst/token/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('http://localhost:1600/promo#');
 })
 
 //route to store users insta data
