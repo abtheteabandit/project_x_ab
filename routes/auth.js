@@ -173,9 +173,9 @@ router.post('/login', (req, res) => {
 				//else it is not correct
 				else{
 					console.log('got in else meaning passwordhas veirfy returned false for username: ' + username + 'passowrd: ' + password)
+					res.status(200).send('Not a valid login')
 					db.close();
-					return res.status(200).send('Not a valid login')
-					
+
 				}
 			}
 		})

@@ -9,10 +9,13 @@
     <!-- CSS link -->
     <link rel="stylesheet" type="text/css" href="/css/socialSignUp.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/socialSignUpModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/loginModal.css">
     <!-- Ajax -->
     <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <!-- JQUERY -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="/scripts/socialSignUp.js"></script>
     <script type="text/javascript">
 			(function($) {
 				$(function() {
@@ -55,12 +58,28 @@
           <input class="modal-input" id="reg_confirm" type="password" placeholder="confirm password">
           <button class="popUpButtons" id="reg_submit" onclick="register()">Register</button>
           <div id="other-register-grid">
-            <a id="signup-with-twitter-btn" href='http://localhost:1600/auth/twitter' class="modal-button"><i class="fab fa-twitter"></i> Sign Up with Twitter</a>
-            <a id="signup-with-fb-btn" href='http://localhost:1600/loginWithFacebook' class="modal-button"><i class="fab fa-facebook-f"></i> Sign Up with Facebook</a>
             <a href="#" class="modal-button" onclick="regToLogin()" id="register-login-text">already have an account? log in</a>
           </div>
         </div>
       </div>
+    </div>
+
+    <div id="modal-wrapper-login">
+      <form class="animate" id="modal-login-id">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('modal-wrapper-login').style.display='none'" class="close" title="Close PopUp">&times;</span>
+          <h1 id="login-modal-header">account login</h1>
+        </div>
+        <div class="container">
+          <input class="modal-input" type="text" placeholder="Enter Username" name="uname" id="loginUsername">
+          <input class="modal-input" type="password" placeholder="Enter Password" name="psw" id='loginPassword'>
+          <button class="popUpButtons" onclick="loginCoupon()">Login</button>
+          <!-- <a href="#" class="modal-button" id="forgot-password-text">forgot password?</a> -->
+          <div id="other-login-grid">
+            <a id="login-register-text" href="#" class="modal-button"  onclick="loginToReg()" style="">don't have an account? sign up!</a>
+          </div>
+        </div>
+      </form>
     </div>
 
   </body>
