@@ -12,7 +12,6 @@
     <link rel="stylesheet" type="text/css" href="/css/qr/declinedCouponModal.css">
     <link rel="stylesheet" type="text/css" href="/css/qr/acceptedCouponModal.css">
     <link rel="stylesheet" type="text/css" href="/css/qr/usedCouponModal.css">
-    <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
 
     <!-- Ajax -->
     <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -37,7 +36,6 @@
        <ul id = "mobile-menu-ul" class="mobile-active">
          <li><a href='index'><p class="radialText">Landing</p></a></li>
          <li><a href='about'><p class="radialText">About</p></a></li>
-         <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
        </ul>
    </div>
     <div id="container">
@@ -46,25 +44,8 @@
       </div>
     </div>
     <div class='circle-container'>
-      <a href='#' class='deg30' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
       <a href='about' class='deg60'><p class="radialText">About</p></a>
       <a href='index' class='deg90'><p class="radialText">Landing</p></a>
-    </div>
-
-    <div id="modal-wrapper-support" class="modal-support">
-
-      <form class="modal-content-support animate">
-        <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close Pop Up">&times;</span>
-        <div class="container">
-          <h1 id="account-support-header">account support</h1>
-          <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
-          <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
-          <button id="request-support-btn" type="submit" onclick="requestSupport()">Make Request</button>
-          <p class="support-text-small">Alternatively, reach out to the team directly:</p>
-          <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
-        </div>
-      </form>
-
     </div>
 
     <div id="modal-wrapper-apply-coupon">
