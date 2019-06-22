@@ -1,5 +1,5 @@
 #modal-wrapper-declined-coupon{
-  display: none;
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -43,10 +43,12 @@
 }
 
 #declined-coupon-btn{
+  display: block;
   text-align: center;
   color: #56dff0;
   font-size: 48pt;
-  width: 100%;
+  font-family: Industry;
+  margin: 0 auto;
 }
 
 @media(max-width: 800px){
