@@ -22,7 +22,7 @@ module.exports = router =>{
     }
     else{
       //get content of body
-      var {promoterName, posterName, medias, promoName} =req.body;
+      var {promoterName, posterName, medias, promoID} =req.body;
       database.connect(db=>{
         //get the promoter from the db
         db.db('users').collection('users').findOne({'username':promoterName}, (err, promoter)=>{
@@ -52,23 +52,70 @@ module.exports = router =>{
 
                 //make post to social
                 if(posterKnowsPromoter){
-                  res.status(200).send('Congratulations! We have posted this promotion to your selected socials. You should ask ' +promoterName+ ' to post one of your promotions. Just click the cross-promotion button next to ' +promoterName+ ' in your contact list. You must first create a promotion by clicking "promotions" if you have not already.')
-                  //get promotion from poster
-                  /*
-                  for (var m in medias){
-                    var mediaOn = medias[m];
-                    if (mediaOn=='twitter'){
-
+                  //res.status(200).send('Congratulations! We have posted this promotion to your selected socials. You should ask ' +promoterName+ ' to post one of your promotions. Just click the cross-promotion button next to ' +promoterName+ ' in your contact list. You must first create a promotion by clicking "promotions" if you have not already.')
+                  db.db('promotions').collection('promotions').findOne({'_id':database.objectId(promoID)}, (err5, ourPromo)=>{
+                    if (err5){
+                      console.log('There as an error trying to find promo: ' + promoID+ ' error was: ' + err5);
+                      res.status(500).end();
+                      db.close();
                     }
-                    if (mediaOn=='facebook'){
+                    else{
+                      if (!ourPromo){
+                        console.warn('WATCH OUT SOMEONE MAY BE TRYING TO HACK BANDA. Our promo: ' + promoID + ' was null even though we got through four checks. Names: ' +promoterName + ' is sketch as is, more so the second one: ' + posterName );
+                        res.status(200).send('Sorry, it seems that ' + promoterName + ' accidently sent you a promtoion to post that he/she does not have access to. Please ignore this request.');
+                        db.close();
+                      }
+                      else{
+                        db.db('promotions').collection('discounts').findOne({'promoID':promoID}, (err6, ourCoupon)=>{
+                          if (err6){
+                            console.log('There was an error fidning a coupon wit promoID: ' + promoID);
+                            res.status(500).end();
+                            db.close();
+                          }
+                          if (ourCoupon){
+                            //there is a coupon
+                            console.log('We have a coupon with this promo: ' + promoID);
+                            /*
+                            for (var m in medias){
+                              var mediaOn = medias[m];
+                              if (mediaOn=='twitter'){
 
-                    }
-                    if (mediaOn=='instagram'){
+                              }
+                              if (mediaOn=='facebook'){
 
+                              }
+                              if (mediaOn=='instagram'){
+
+                              }
+                            }
+                            */
+                            //ed code, post this promotion to posters selected socials
+                          }
+                          else{
+                            //there is not a coupon
+                            console.log('We do not have a coupon with this promo: ' + promoID);
+                            /*
+                            for (var m in medias){
+                              var mediaOn = medias[m];
+                              if (mediaOn=='twitter'){
+
+                              }
+                              if (mediaOn=='facebook'){
+
+                              }
+                              if (mediaOn=='instagram'){
+
+                              }
+                            }
+                            */
+                            //ed code, post this promotion to posters selected socials, post a combination of cuopon shit and promo shit
+
+                          }
+                        });
+                      }
                     }
-                  }
-                  */
-                  //ed code, post this promotion to posters selected socials
+                  });
+
                 }
                 //if the promoter is not in the list, do not make the post
                 else{
