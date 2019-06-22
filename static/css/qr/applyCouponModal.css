@@ -38,12 +38,16 @@
 }
 
 #apply-coupon-grid{
-  padding-top: 100px;
+  padding-top: 80px;
   display: grid;
   grid-template-columns: auto;
   text-align: center;
   width: 600px;
   margin-left: 100px;
+}
+
+#gig-title-label{
+  font-size: 22pt;
 }
 
 #apply-coupon-username, #apply-coupon-password{
@@ -93,7 +97,7 @@
     margin-top: 10px;
   }
   #apply-coupon-grid{
-    padding-top: 60px;
+    padding-top: 10px;
     width: 250px;
     margin-left: 25px;
   }
