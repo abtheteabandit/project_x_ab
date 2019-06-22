@@ -1,5 +1,5 @@
 #modal-wrapper-accepted-coupon{
-  display: none;
+  display: block;
   position: fixed;
   top: 0;
   left: 0;
@@ -36,9 +36,17 @@
   margin-top: 20px;
 }
 
+#gig-title-label-accepted{
+  display: block;
+  padding-top: 100px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+}
+
 #accepted-coupon-p{
   text-align: center;
-  padding-top: 140px;
+  padding-top: 20px;
   font-size: 72pt;
 }
 
@@ -50,6 +58,10 @@
 }
 
 @media(max-width: 800px){
+  #gig-title-label-accepted{
+    font-size: 28pt;
+    padding-top: 80px;
+  }
   #accepted-coupon-content{
     width: 500px;
     height: 600px;
@@ -61,6 +73,10 @@
 }
 
 @media(max-width: 550px){
+  #gig-title-label-accepted{
+    font-size: 22pt;
+    padding-top: 80px;
+  }
   #accepted-coupon-content{
     width: 300px;
   }
@@ -69,7 +85,6 @@
     margin-top: 10px;
   }
   #accepted-coupon-p{
-    padding-top: 200px;
     font-size: 40pt;
   }
   #accepted-coupon-btn{
