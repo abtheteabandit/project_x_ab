@@ -2615,8 +2615,8 @@ function getUsername(){
     $.get('/aUserPromo', {'stuff':'doesnt matter'}, res=>{
       if (res.success){
         console.log("GETTING PROMOS");
-        console.log(JSON.stringify(res.data[0].promotions));
-        var promos = res.data[0].promotions;
+        console.log(JSON.stringify(res.data));
+        var promos = res.data;
         var promoSelect = document.getElementById("sp-select");
         for(var promo in promos){
           var newOption = document.createElement("option");
@@ -2628,24 +2628,8 @@ function getUsername(){
           }
           promoSelect.append(newOption);
         }
-        // set up the action of the 'continue' button
-        var spSubmit = document.getElementById("sp-submit");
-
-
-        spSubmit.addEventListener('click',function(){
-          jQuery(function($) {
-            var optionSelected = $('#sp-select').find("option:selected");
-            var valueSelected  = optionSelected.val();
-            var textSelected   = optionSelected.text();
-            console.log("VALUE SELECTED IS: "+valueSelected);
-            console.log("TEXT SELECTED IS: "+textSelected);
-          });
-        });
-
-        document.getElementById("modal-wrapper-select-promo").style.display = "block";
       }
       else{
-        alert(JSON.stringify(res.data));
         return;
       }
     });
@@ -3630,18 +3614,35 @@ class ContactLink {
     this.crossPromo.addEventListener('click',function(){
       console.log('Name to cross promo with is: ' + name);
       console.log('id to cross promo with is: ' + id);
-      $.post('/askToPromote', {'asker':username, 'promoter':name}, res2=>{
-        if (res2.success){
-          var now = new Date().toString();
-          console.log('our promo is: ' + JSON.stringify(res2.data));
-          $.post('/messages', {'senderID':our_user_id, 'recieverID':id, 'body':'<button class="open-promo-btn" value='+username+'*;!'+res2.data.name+' onclick="openPromotionModal(this)">view promotion</button>','timeStamp':now}, res3=>{
-            alert('We have asked '+name+' to post your most recently created promotion! Feel free to message them as well to follow up.');
+      document.getElementById("modal-wrapper-select-promo").style.display = "block";
+      //Here boothMANE
+      var spSubmit = document.getElementById("sp-submit");
+
+
+      spSubmit.addEventListener('click',function(){
+        jQuery(function($) {
+          var optionSelected = $('#sp-select').find("option:selected");
+          var valueSelected  = optionSelected.val();
+          var textSelected   = optionSelected.text();
+          console.log("VALUE SELECTED IS: "+valueSelected);
+          console.log("TEXT SELECTED IS: "+textSelected);
+          //HERE BOOTHMANE
+          $.post('/askToPromote', {'asker':username, 'promoter':name, 'promoID':valueSelected}, res2=>{
+            if (res2.success){
+              var now = new Date().toString();
+              console.log('our promo is: ' + JSON.stringify(res2.data));
+              $.post('/messages', {'senderID':our_user_id, 'recieverID':id, 'body':'<button class="open-promo-btn" value='+username+'*;!'+valueSelected+' onclick="openPromotionModal(this)">view promotion</button>','timeStamp':now}, res3=>{
+                alert('We have asked '+name+' to post your most recently created promotion! Feel free to message them as well to follow up.');
+                document.getElementById("modal-wrapper-select-promo").style.display = "none";
+              });
+            }
+            else{
+              alert(res2.data);
+              document.getElementById("modal-wrapper-select-promo").style.display = "none";
+              return;
+            }
           });
-        }
-        else{
-          alert(res2.data);
-          return;
-        }
+        });
       });
     });
     this.contactLink = document.createElement("a");
@@ -3665,9 +3666,9 @@ function openPromotionModal(button){
   var data = button.value;
   var pieces = data.split('*;!');
   var askerName = pieces[0];
-  var promoName = pieces[1];
-  console.log(' CLICKED OPEN PROMO: ' + promoName +' '+ askerName);
-  $.get('/aPromo', {'username':askerName, 'promoName':promoName}, res=>{
+  var promoID = pieces[1];
+  console.log(' CLICKED OPEN PROMO: ' + promoID +' '+ askerName);
+  $.get('/aPromo', {'username':askerName, 'promoID':promoID}, res=>{
     if (res.success){
       var ourPromo = res.data;
       var our_cap = ourPromo.caption + '\n\n\nposted from www.banda-inc.com (where the music industry bands together)'
@@ -3675,7 +3676,7 @@ function openPromotionModal(button){
       var cleanSRC = ourPromo.imgURL.replace('www.banda-inc.com//', '');
       document.getElementById('promo-req-pic').src = cleanSRC;
       document.getElementById('promo-req-header').innerHTML = askerName;
-      document.getElementById('promo-req-accept').value=askerName+'*;!'+promoName;
+      document.getElementById('promo-req-accept').value=askerName+'*;!'+ourPromo.name;
 
     }
     else{
@@ -3706,7 +3707,7 @@ function postPromo(button){
     medias.push('twitter');
   }
   console.log('PROMOTER: ' + promoter+' poster: '+username + ' promoName: ' + promoName);
-  $.post('cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoName':promoName}, res=>{
+  $.post('/cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoName':promoName}, res=>{
     alert(res);
     return;
   });
