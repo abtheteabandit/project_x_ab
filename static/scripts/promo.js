@@ -21,6 +21,8 @@ var the_promo_ID = "";
 var hasGigs = false;
 var ourUser = {};
 
+var isPromo;
+
 class SearchResult {
 
   constructor(obj){
@@ -82,11 +84,20 @@ class SearchResult {
   }
 }
 
-
 function init(){
   setUpStepTwo();
   checkUserSocials();
   getGigs();
+
+  let pageURL = window.location.href;
+  var urlAux = pageURL.split('=');
+
+  isPromo = urlAux[1];
+  console.log(isPromo);
+
+  if(isPromo){
+    userClickStart();
+  }
 }
 function getGigs(){
   $.get('/user', {'query':'nada'}, res=>{
