@@ -283,6 +283,7 @@ function(req, token, tokenSecret, profile, done) {
 			//if the user already exists
 			else if (obj) {
 				//sign the user in
+				console.log(username + " is the username")
 				req.session.key = username;
 				req.session.cookie.expires = false
 				req.session.save()
@@ -290,7 +291,7 @@ function(req, token, tokenSecret, profile, done) {
 				console.log('Req session key after inserting user for register is: ' + req.session.key);
 				db.close();
 			} else {
-				//if not, create a new user
+				//if not, create a new user 
 				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
 					//catch error
 					if (err) {
@@ -561,12 +562,12 @@ function(req, accessToken, refreshToken, profile, cb) {
     // .catch(function (error) {
     //   console.log(error);
     // })
-
-	}
-	console.log(options.url)
+		console.log(options.url)
 	request(options, callback);
 
 	return cb(null, profile);
+	}
+	
 }));
 
 //route to get facebook access token
