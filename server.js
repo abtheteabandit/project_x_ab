@@ -36,7 +36,7 @@ const express = require('express'),
       redisStore = require('connect-redis')(session),
       bodyParser = require('body-parser'),
 			cookieParser = require('cookie-parser');
-			
+
 //social media signin
 var   passport = require('passport');
 var   FacebookStrategy = require('passport-facebook').Strategy
@@ -44,14 +44,14 @@ var   TwitterStrategy = require('passport-twitter').Strategy;
 var   request = require('request')
 var   axios = require('axios')
 
-//social media access token 
+//social media access token
 var TokenPassport = require('passport');
 var TwitterTokenStrategy = require('passport-twitter').Strategy;
 var Twit = require('twit')
 
 var client = redis.createClient();
 var app = express();
-			
+
 //for real time capabilities:
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -191,7 +191,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 		}, function (err, response, body) {
 				//store the needed values from the facebook api  call
 				console.log(body)
-				let email = body.email;  
+				let email = body.email;
 				let username = body.name.replace(/\s+/g, '_')
 				console.log("username is  " + username)
 				//check for null values
@@ -210,7 +210,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 						if (err) {
 							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 							db.close();
-						} 
+						}
 
 						//if the user already exists
 						else if (obj) {
@@ -221,7 +221,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 							req.session.save()
 							db.close();
 						} else {
-							//if not, create a new user 
+							//if not, create a new user
 							users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
 								//catch error
 								if (err) {
@@ -279,7 +279,7 @@ function(req, token, tokenSecret, profile, done) {
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
-			} 
+			}
 			//if the user already exists
 			else if (obj) {
 				//sign the user in
@@ -291,7 +291,6 @@ function(req, token, tokenSecret, profile, done) {
 				console.log('Req session key after inserting user for register is: ' + req.session.key);
 				db.close();
 			} else {
-				console.log(username + " is the username")
 				//if not, create a new user 
 				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
 					//catch error
@@ -332,12 +331,12 @@ passport.deserializeUser(function(obj, cb){
 router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope: ['email']}))
 
 //route for facebook oauth callback
-router.get('/facebook/return', 
+router.get('/facebook/return',
   passport.authenticate('auth_facebook', { failureRedirect: 'http://localhost:1600/facebook/successAuth' }),
   function(req, res) {
     res.redirect('http://localhost:1600/facebook/failedAuth');
 	});
-	
+
 //route for failed oauth callback for facebook
 router.get('/facebook/failedAuth', (req, res) => {
 	return res.redirect('http://localhost:1600/index#');
@@ -413,7 +412,7 @@ function(req, token, tokenSecret, profile, done) {
 		}
 		retweets /= data.length
 		favorites /= data.length
-		
+
 		retweets = retweets*status_count
 		favorites = favorites*status_count
 
@@ -490,14 +489,14 @@ router.post('/postTweet', (req, res) =>{
 		console.warn("Couldn't connect to database: " + err)
 		res.status(500).end()
 	});
-	
+
 })
 
 
 
 
 
-//setup passport for getting a facebook token 
+//setup passport for getting a facebook token
 //instialize passport js for user login with facebook
 passport.use('token_facebook',new FacebookStrategy({
 	clientID: 475851112957866,
@@ -528,7 +527,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 		const longToken = body.access_token
 		const date = Math.floor(new Date() / 1000)
 
-		//store values in database 
+		//store values in database
 		database.connect(db => {
 			//store the access tokens and profile information
 			db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'access_token':longToken,
@@ -573,7 +572,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 
 //route to get facebook access token
 router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope: [
-	'manage_pages', 
+	'manage_pages',
 		'user_posts',
 			'read_insights',
 				'pages_show_list',
@@ -582,7 +581,7 @@ router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope:
 							'public_profile']}))
 
 //route for facebook oauth callback
-router.get('/facebook/token/return', 
+router.get('/facebook/token/return',
   passport.authenticate('token_facebook', { failureRedirect: '/facebook/token/successAuth' }),
   function(req, res) {
     res.redirect('/facebook/token/failedAuth');
@@ -602,19 +601,19 @@ router.get('/facebook/token/successAuth', (req, res) => {
 router.post('/getFacebookPageTokens', (req, res) =>{
 	let pageId = req.body.pageId
 	let pageName = req.body.pageName
-	
+
 	//get short term page token
 	axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
     .then(function (response) {
       console.log(response.data);
       let pageToken = response.data.access_token
-			
+
 			//get long term page token
 			axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
 				.then(function (response) {
 					console.log(response.data);
 					let pageToken = response.data.access_token
-					
+
 					//get the number of followers on a page
 					axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
 					.then(function (response) {
@@ -631,7 +630,7 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 							}
 
 							//store all values from the facebook api in the database
-							//store values in database 
+							//store values in database
 							database.connect(db => {
 								//store the access tokens and profile information
 								db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'page_token':pageToken,
@@ -683,7 +682,7 @@ database.connect(db => {
 		if (err) {
 			console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
 			res.status(500).end()
-		}  
+		}
 
 		const dateSent = obj.facebook.date
 		const currDate = Math.floor(new Date() / 1000)
@@ -732,7 +731,7 @@ database.connect(db => {
 
 
 
-	//setup passport for getting a facebook token 
+	//setup passport for getting a facebook token
 //instialize passport js for user login with facebook
 passport.use('inst_data',new FacebookStrategy({
 	clientID: 475851112957866,
@@ -818,7 +817,7 @@ router.get('/getInstData', passport.authenticate('inst_data', { scope: [
 	]}))
 
 //route for facebook oauth callback
-router.get('/inst/token/return', 
+router.get('/inst/token/return',
   passport.authenticate('inst_data', { failureRedirect: '/inst/token/successAuth' }),
   function(req, res) {
     res.redirect('/inst/token/failedAuth');
@@ -841,7 +840,7 @@ router.get('/storeInstData', (req,res)=>{
 
 	let instaId = ""
 	let token = ""
-	
+
 	//todo: quert for insta id and page token
 
 	//get follower count and media count
@@ -850,7 +849,7 @@ router.get('/storeInstData', (req,res)=>{
 			console.log(response.data);
 			followerCount = response.data.business_discovery.followers_count
 			postCount = response.data.business_discovery.media_count
-			
+
     })
     .catch(function (error) {
       console.log(error);
@@ -864,9 +863,9 @@ router.get('/storeInstData', (req,res)=>{
     .catch(function (error) {
       console.log(error);
 		})
-		
+
 	//get mentions by others
-	//GET /{ig-user-id}/mentions 
+	//GET /{ig-user-id}/mentions
 	axios.post("https://graph.facebook.com/v3.3/" + instaId + "/mentions&access_token=" + pageToken)
     .then(function (response) {
       console.log(response.data);
@@ -936,5 +935,3 @@ var email_port = 3000;
 app.listen(email_port, function(req, res){
   console.log('Email is running on port: ',email_port);
 });
-
-
