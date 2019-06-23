@@ -91,7 +91,9 @@ function init(){
 
   let pageURL = window.location.href;
   var urlAux = pageURL.split('=');
-
+  // CHECKING THE URL ON PROMO HERE
+  // ON REDIRECT FROM SOCIAL AUTH,
+  // PAGE SKIPS TO STEP ONE
   isPromo = urlAux[1];
   console.log(isPromo);
 
