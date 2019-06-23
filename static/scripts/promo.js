@@ -444,11 +444,11 @@ function clickedSocial1(){
 }
 function clickedSocial2(){
   document.getElementById("promo-insta").classList.toggle('deactivated-social');
-  promotionOnSocial2 = !promotionOnSocial2;
+  // promotionOnSocial2 = !promotionOnSocial2;
 }
 function clickedSocial3(){
   document.getElementById("promo-snap").classList.toggle('deactivated-social');
-  promotionOnSocial3 = !promotionOnSocial3;
+  // promotionOnSocial3 = !promotionOnSocial3;
 }
 function clickedSocial4(){
   document.getElementById("promo-twitter").classList.toggle('deactivated-social');
