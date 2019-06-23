@@ -37,6 +37,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/promoSendBackModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/newContactModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/selectPromoModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/testing/tooltiptest.css">
 
 
     <!-- jquery -->
@@ -533,7 +534,11 @@
           <li><a href="#" onclick="document.getElementById('modal-wrapper-account-settings').style.display = 'block';">Account Settings</a>
           <li><a href="#" onclick="openBandModal()">Create a Band</a></li>
           <li><a href="#" onclick="openGigModal()">Post an Event</a></li>
-          <li><a href="promo" id='promotion-link'>Create a Promotion</a></li>
+          <li>
+            <a class="tooltip-2" href="promo" id='promotion-link'>Create a Promotion
+              <span class="tooltiptext-2">Tooltip text</span>
+            </a>
+          </li>
         </ul>
       </div>
 

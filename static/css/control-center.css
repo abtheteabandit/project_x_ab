@@ -492,11 +492,11 @@ open gig Elements
   width: 2px;
 }
 
-.profiles-list li{
+.profiles-list li, .profiles-list-li{
   padding: 10px;
 }
 
-.profiles-list a{
+.profiles-list a, .profiles-list-a{
   color: white;
   font-size: 14pt;
 }
