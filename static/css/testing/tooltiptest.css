@@ -4,9 +4,13 @@
   border-bottom: 1px dotted black;
 }
 
+.tooltiptext-2{
+  word-wrap: break-word;
+}
+
 .tooltip-2 .tooltiptext-2 {
   visibility: hidden;
-  width: 120px;
+  width: 148px;
   background-color: #555;
   color: #fff;
   text-align: center;
