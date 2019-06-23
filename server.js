@@ -283,6 +283,7 @@ function(req, token, tokenSecret, profile, done) {
 			//if the user already exists
 			else if (obj) {
 				//sign the user in
+				console.log(username + " is the username")
 				req.session.key = username;
 				req.session.cookie.expires = false
 				req.session.save()
@@ -290,6 +291,7 @@ function(req, token, tokenSecret, profile, done) {
 				console.log('Req session key after inserting user for register is: ' + req.session.key);
 				db.close();
 			} else {
+				console.log(username + " is the username")
 				//if not, create a new user 
 				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
 					//catch error
@@ -445,13 +447,13 @@ function(req, token, tokenSecret, profile, done) {
 //route for failed oauth callback for twitter
 router.get('/twitter/token/failedAuth', (req, res) => {
 	//todo: change to promotions route
-	return res.redirect('http://localhost:1600/promo#');
+	return res.redirect('http://localhost:1600/promo#?isPromo=true');
 })
 
 //route for succesful oauth callback for twitter
 router.get('/twitter/token/successAuth', (req, res) => {
 	//todo: change to promotions route
-	return res.redirect('http://localhost:1600/promo#');
+	return res.redirect('http://localhost:1600/promo#?isPromo=true');
 })
 
 //authenticate twitter redirect url
@@ -561,12 +563,12 @@ function(req, accessToken, refreshToken, profile, cb) {
     // .catch(function (error) {
     //   console.log(error);
     // })
-
-	}
-	console.log(options.url)
+		console.log(options.url)
 	request(options, callback);
 
 	return cb(null, profile);
+	}
+	
 }));
 
 //route to get facebook access token
