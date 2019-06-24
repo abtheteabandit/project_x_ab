@@ -636,3 +636,22 @@ function requestSupport(){
     modal.style.display = "none";
   });
 }
+
+function populateSelectSocialPageModal(data){
+  var selector = document.getElementById("ssp-select");
+  jQuery(function($) {
+    $('#ssp-select').change(function () {
+      var optionSelected = $(this).find("option:selected");
+      var valueSelected  = optionSelected.val();
+      var textSelected   = optionSelected.text();
+      console.log("VALUE SELECTED IS: "+valueSelected);
+      console.log("TEXT SELECTED IS: "+textSelected);
+    });
+  });
+  for(var index in data){
+    var page = document.createElement('option');
+    page.value = data[index].id;
+    page.innerHTML = data[index].name;
+    selector.append(page);
+  }
+}
