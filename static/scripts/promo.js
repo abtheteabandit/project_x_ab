@@ -92,8 +92,8 @@ function init(){
   console.log(JSON.stringify(parsedURL));
   if(parsedURL.hasOwnProperty('searchObject') && parsedURL.searchObject != null){
     if(parsedURL.searchObject.isPromo == 'true'){
+      userClickStart();
       if(parsedURL.searchObject.hasOwnProperty('pages')){
-        userClickStart();
         populateSelectSocialPageModal(parsedURL.searchObject.pages);
       }
     }
@@ -321,6 +321,15 @@ function parseURL(url){
      var urlAux = pageURL.split('#?');
      var urlVarStr = urlAux[1];
      queries = urlVarStr.split('&');
+
+     // detect Twitter
+     if(queries.length == 1){
+       var isPromoSplit = queries[0].split('=');
+       var isPromo = isPromoSplit[1];
+       searchObject['isPromo'] = isPromo;
+       return {searchObject: searchObject};
+     }
+
 
      var pageNumSplit = queries[queries.length-2].split('=');
      var numPages = pageNumSplit[1];
