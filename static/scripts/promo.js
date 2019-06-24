@@ -682,3 +682,14 @@ function populateSelectSocialPageModal(data){
   }
   document.getElementById('modal-wrapper-select-social-page').style.display = 'block';
 }
+
+function selectMainFacebookPage(){
+  // ED LOOK HERE
+  jQuery(function($) {
+    var optionSelected = $("#ssp-select").find("option:selected");
+    var valueSelected  = optionSelected.val(); // the page ID
+    var textSelected   = optionSelected.text(); // the page name
+    console.log("VALUE SELECTED IS: "+valueSelected);
+    console.log("TEXT SELECTED IS: "+textSelected);
+  });
+}
