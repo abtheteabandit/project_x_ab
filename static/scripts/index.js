@@ -412,6 +412,7 @@ console.log("script was loaded int the htmllll!");
 //register goes here
 function loginHit(){
 	console.log("got into login hit");
+  document.getElementById('"modal-wrapper-login"').style.display='block';
 };
 function signInHit(){
 	console.log("got into signInHit");
