@@ -8,6 +8,8 @@
     <!-- Bootstrap --> <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- CSS link --> <link rel="stylesheet" type="text/css" href="/css/promo.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/selectSocialPageModal.css">
+
     <!-- Font Awesome --> <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <!-- Ajax -->  <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
@@ -48,6 +50,13 @@
    <a href='about' class='deg30'><p class="radialText">About</p></a>
    <a href='index' class='deg60'><p class="radialText">Landing</p></a>
    <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
+ </div>
+ <div id="modal-wrapper-select-social-page">
+   <div id="ssp-content">
+     <h1 id="ssp-h1">select your main page from the dropdown below</h1>
+     <select id="ssp-select"></select>
+     <input id="ssp-submit" type="button" value="continue with selected page">
+   </div>
  </div>
  <div id="modal-wrapper-support" class="modal-support">
    <form class="modal-content-support animate">
