@@ -418,9 +418,11 @@ body{
   background-image: url("/assets/Promo/fb.png");
 }
 #promo-insta{
+  opacity: 0;
   background-image: url("/assets/Promo/insta.png");
 }
 #promo-snap{
+  opacity: 0;
   background-image: url("/assets/Promo/snap.png");
 }
 #promo-twitter{
