@@ -4866,6 +4866,7 @@ function toggleActiveSocial(elem){
 // add pull SECTION
 function openAddPullModal(){
   console.log("ADDDD PULLLLL");
+  document.getElementById('modal-wrapper-create-pull').style.display = 'block';
   //var link = 'www.banda-inc.com/add_pull?'
   // need add_pull modal
   //document.getElementById('modal-wrapper-promo-request').style.display='block';
