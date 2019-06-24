@@ -21,7 +21,6 @@ var the_promo_ID = "";
 var hasGigs = false;
 var ourUser = {};
 
-var isPromo;
 
 class SearchResult {
 
@@ -89,17 +88,17 @@ function init(){
   checkUserSocials();
   getGigs();
 
-  let pageURL = window.location.href;
-  var urlAux = pageURL.split('=');
-  // CHECKING THE URL ON PROMO HERE
-  // ON REDIRECT FROM SOCIAL AUTH,
-  // PAGE SKIPS TO STEP ONE
-  isPromo = urlAux[1];
-  console.log(isPromo);
-
-  if(isPromo){
-    userClickStart();
+  var parsedURL =  parseURL(window.location.href);
+  console.log(JSON.stringify(parsedURL));
+  if(parsedURL.hasOwnProperty('searchObject') && parsedURL.searchObject != null){
+    if(parsedURL.searchObject.isPromo == 'true'){
+      if(parsedURL.searchObject.hasOwnProperty('pages')){
+        populateSelectSocialPageModal(parsedURL.searchObject.pages);
+      }
+    }
   }
+
+
 }
 function getGigs(){
   $.get('/user', {'query':'nada'}, res=>{
@@ -313,25 +312,51 @@ function showCreateSpecialPromo(){
 function parseURL(url){
   var parser = document.createElement('a'),
        searchObject = {},
-       queries, split, i;
+       queries, split;
    // Let the browser do the work
-   parser.href = url;
-   // Convert query string to object
-   queries = parser.search.replace(/^\?/, '').split('&');
-   for( i = 0; i < queries.length; i++ ) {
-       split = queries[i].split('=');
-       searchObject[split[0]] = split[1];
+   if(url.includes('?')){
+     let pageURL = window.location.href;
+     parser.hash = pageURL;
+     var urlAux = pageURL.split('#?');
+     var urlVarStr = urlAux[1];
+     queries = urlVarStr.split('&');
+
+     var pageNumSplit = queries[queries.length-2].split('=');
+     var numPages = pageNumSplit[1];
+     var isPromoSplit = queries[queries.length-1].split('=');
+     var isPromo = isPromoSplit[1];
+
+     searchObject['numPages'] = numPages;
+     searchObject['isPromo'] = isPromo;
+     searchObject['pages'] = [];
+
+     var i = 0;
+     while(i<(numPages)){
+       console.log('looping a page');
+       var nameSplit = queries[i].split('=');
+       var idSplit = queries[i+1].split('=');
+       var page = {
+         'id': idSplit[1],
+         'name': nameSplit[1].replace('%20',' ')
+       };
+       searchObject['pages'].push(page);
+       i+=2;
+     }
+     return {
+         protocol: parser.protocol,
+         host: parser.host,
+         hostname: parser.hostname,
+         port: parser.port,
+         pathname: parser.pathname,
+         search: parser.search,
+         searchObject: searchObject,
+         hash: parser.hash
+     };
+   }else{
+     return{
+       nothing: 'nothing!'
+     };
    }
-   return {
-       protocol: parser.protocol,
-       host: parser.host,
-       hostname: parser.hostname,
-       port: parser.port,
-       pathname: parser.pathname,
-       search: parser.search,
-       searchObject: searchObject,
-       hash: parser.hash
-   };
 }
 
 //BOOTH CODE SECTION
@@ -638,6 +663,7 @@ function requestSupport(){
 }
 
 function populateSelectSocialPageModal(data){
+  console.log(data);
   var selector = document.getElementById("ssp-select");
   jQuery(function($) {
     $('#ssp-select').change(function () {
@@ -654,4 +680,5 @@ function populateSelectSocialPageModal(data){
     page.innerHTML = data[index].name;
     selector.append(page);
   }
+  document.getElementById('modal-wrapper-select-social-page').style.display = 'block';
 }
