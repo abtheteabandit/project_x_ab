@@ -4881,3 +4881,7 @@ function downloadFromPromoSB(){
 function downloadFromPromoRequest(){
 
 }
+
+function downloadFromCreatePull(){
+
+}
