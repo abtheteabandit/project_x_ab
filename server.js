@@ -609,7 +609,7 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 					console.log(pageData.data[i])
 					xurl += "page" + i + "=" + pageData.data[i].name + "&id" + i + "=" + pageData.data[i].id + "&"
 				}
-
+				xurl += "isPromo=true"
 				console.log(xurl + " is the url !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 				return res.redirect(xurl);
 			})
