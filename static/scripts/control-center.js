@@ -5038,12 +5038,43 @@ function addPullAccept(){
 
 function downloadFromPromoSB(){
   downloadedPromo=true;
+  console.log('downloadFromPromoSB');
 }
 
 function downloadFromPromoRequest(){
   downloadedPromo=true;
+  console.log('downloadFromPromoRequest');
+
+  var element = document.createElement('a');
+  var imgURL = document.getElementById('promo-req-pic').src
+  console.log('IMGURL:  ' + imgURL);
+
+  element.setAttribute('href', '/'+imgURL);
+  element.setAttribute('download', 'promotionImage');
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+  var toCopy = document.getElementById('promo-req-caption')
+  toCopy.select();
+  document.execCommand("copy");
+  alert("You have downloaded this promotion picture to your deivce and copied the supplied link/caption. Post these two things wherever you can to help your fellow Banda member! Just load in the image from your downloads folder and paste the link. (We recomend Snapchat and Instagram). Band Together!");
 }
 
 function downloadFromCreatePull(){
   downloadedPromo=true;
+  console.log('downloadFromCreatePull');
+  var element = document.createElement('a');
+  element.setAttribute('href', '/assets/Promo/bandapromo1.2.png');
+  element.setAttribute('download', 'bandapromo1.2.png');
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+  var toCopy = document.getElementById('create-pull-boiler')
+  toCopy.select();
+  document.execCommand("copy");
+  alert("You have downloaded the Banda pull picture to your deivce and copied the supplied link/caption. Post these two things wherever you can to increase your pull! Just load in the image from your downloads folder and paste the link. (We recomend Snapchat and Instagram). Let the world know your a Banda recognized aritst / event owner and Band Together!");
 }
