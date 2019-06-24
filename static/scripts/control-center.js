@@ -4873,3 +4873,11 @@ function openAddPullModal(){
   //document.getElementById("promo-req-subheader").innerHTML = 'let your fans show their support'
   //document.getElementById("promo-req-caption").innerHTML = 'Click on this link to show your support! Every click increases my "pull" on Banda (where music is made).'
 }
+
+function downloadFromPromoSB(){
+
+}
+
+function downloadFromPromoRequest(){
+
+}

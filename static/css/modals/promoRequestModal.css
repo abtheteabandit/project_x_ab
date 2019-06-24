@@ -147,6 +147,14 @@ width: 240px;
   margin-right: 20px;
 }
 
+#promo-req-dl{
+  cursor: pointer;
+  color: #56dff0;
+  width: 60px;
+  height: 60px;
+  font-size: 60px;
+}
+
 @media(max-width: 800px){
   #promo-req-content{
     width: 500px;
