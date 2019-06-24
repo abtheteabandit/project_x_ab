@@ -88,21 +88,21 @@
     </div>
     <div id="modal-wrapper-create-pull">
       <div id="create-pull-content" class="animate">
-        <h1 id="create-pull-header">create pull</h1>
+        <h1 id="create-pull-header">add pull</h1>
         <input type="button" value="" id="close-create-pull" onclick="document.getElementById('modal-wrapper-create-pull').style.display = 'none';"/>
         <div id="create-pull-grid">
           <div id="create-pull-pic-div">
-            <img id="create-pull-pic" src="/assets/Home/Art/8.jpeg"/>
+            <img id="create-pull-pic" src="/assets/Promo/bandapromo1.2.png"/>
             <img id="create-pull-frame" src="/assets/Home/pinkbox.png"/>
           </div>
-          <textarea id="create-pull-caption">yo we bout to light it up on fire here BOYSSSSS</textarea>
-          <textarea id="create-pull-boiler" readonly>READONLY yo we bout to light it up on fire here BOYSSSSS</textarea>
+          <textarea id="create-pull-caption" placeholder='Add you caption here...You know your followers/friends better than we do, so provide some text that will encourage them to support you by clicking the link.'></textarea>
+          <textarea id="create-pull-boiler" readonly>www.banda-inc.com</textarea>
         </div>
-        <p id="create-pull-select-p">select a band/event to pull</p>
-        <select id="create-pull-select">
-          <option>example band</option>
+        <p id="create-pull-select-p">select a band/event to add "pull" to</p>
+        <select id="create-pull-select" onchange='changedPullPicker()'>
+
         </select>
-        <p id="create-pull-p">yo bothe fix this: creating a pull will help you grow your clout on our website.</p>
+        <p id="create-pull-p">This is a promotion for <em>you </em>  that allows you to quantify your entire social media following and let the world know you are a Banda recognized artist or event owner. Every click on this link will increase your "pull" on Banda which will be displayed on your profile, making you an even better contact for other users. Just select one of your bands or events to add pull to.</p>
         <p id="create-pull-social-text">post to</p>
         <div id="create-pull-social-grid">
           <input class="create-pull-social" type="button" value="fb" id="create-pull-fb" onclick="toggleActiveSocial(this);"/>
@@ -110,7 +110,7 @@
           <input class="create-pull-social" type="button" value="twitter" id="create-pull-twitter" onclick="toggleActiveSocial(this);"/>
           <i id="create-pull-dl" onclick="downloadFromCreatePull()" class="fas fa-arrow-circle-down"></i>
         </div>
-        <button value="accept" id="create-pull-accept">accept</button>
+        <button value="accept" id="create-pull-accept" onclick='addPullAccept()'>accept</button>
       </div>
     </div>
     <div id="modal-wrapper-promo-request">

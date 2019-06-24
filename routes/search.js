@@ -91,7 +91,7 @@ router.get('/current_events', (req, res) => {
 
 //get request for bands
 router.get('/getBands', (req, res)=>{
-  if (! req.body){
+  if (! req.query){
     console.log("No req body sent, in get bands And Gigs for user");
     res.status(400).send('No req body sent');
   }

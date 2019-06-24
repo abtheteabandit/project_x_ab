@@ -1331,4 +1331,60 @@ router.post('/useCoupon', (req, res)=>{
     }
   }
 });
+
+router.post('/pull', (req,res)=>{
+  if (!req.session.key){
+    console.log('Non logged in user tried to add pull.');
+    res.status(404).end();
+  }
+  if (!req.body){
+    console.log('add pull--no body in req');
+    res.status(401).end();
+  }
+  else{
+    var {id, mode, name, caption, medias} = req.body;
+    if (!(mode== 'bands'|| mode=='gigs')){
+      console.warn("non-recogonized mode: " + mode + ' BANDA MIGHT BE GETTING HACKED by user: ' + req.session.key);
+      res.status(401).end();
+    }
+    else{
+      var link = 'https://www.banda-inc.com/add_pull?mode='+mode+'&id='+id
+      var postableCaption = caption + '\n You can help '+name+' by clicking on this link: \n'+link
+      var imgURL = 'https://www.banda-inc.com/static/assets/Promo/bandapromo1.2.png';
+      database.connect(db=>{
+        db.db('users').collection('users').findOne({'username':req.session.key}, (err1, ourUser)=>{
+          if (err1){
+            console.log('There was an error finding user: ' + req.session.key+ ' Error: ' + err1);
+            res.status(500).end();
+          }
+          else{
+
+            // ourUser should contain tokens and such
+            console.log('Our User in post to pull: ' + JSON.stringify(ourUser));
+
+            medias.forEach(function(media){
+              if (media=='twitter'){
+                //post to twitter
+                //Ed
+
+              }
+              if (media=='facebook'){
+                //post to Facebook
+
+
+              }
+            });
+
+            //move this inward later putting it here for testing purposes rn
+            res.status(200).send('Congratulations! We have posted this "Add Pull" to your selected social medias! ');
+          }
+        });
+      }, dbErr=>{
+        console.log('There was an error connecting to mogno: ' + dbErr);
+        res.status(500).end();
+      });
+
+    }
+  }
+});
 } //end of exports

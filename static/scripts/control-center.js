@@ -33,6 +33,7 @@ var our_user_id=null;
 var postToTwitter = false;
 var postToFB = false;
 var postToInsta = false;
+var downloadedPromo=false;
 var messageOn = null;
 globalGigs = [];
 //CHNAGE GIGS SECTION:?////////
@@ -3663,6 +3664,9 @@ class ContactLink {
 
 function openPromotionModal(button){
   //var buttonData = button.data.promo;
+  postToFB=false;
+  postToInsta=false;
+  postToTwitter=false;
   var data = button.value;
   var pieces = data.split('*;!');
   var askerName = pieces[0];
@@ -3709,6 +3713,9 @@ function postPromo(button){
   console.log('PROMOTER: ' + promoter+' poster: '+username + ' promoName: ' + promoName);
   $.post('/cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoName':promoName}, res=>{
     alert(res);
+    postToFB=false;
+    postToInsta=false;
+    postToTwitter=false;
     return;
   });
 }
@@ -4861,12 +4868,109 @@ function toggleActiveSocial(elem){
     default:
     break;
   }
+  console.log('POST FB: '+ postToFB + 'post TWAT: ' + postToTwitter)
 }
 
 // add pull SECTION
 function openAddPullModal(){
+  postToFB=false;
+  postToInsta=false;
+  postToTwitter=false;
+  downloadedPromo=false;
   console.log("ADDDD PULLLLL");
+  document.getElementById("create-pull-select").innerHTML='';
+  $.get('/getBands', {'creator':username}, userBands=>{
+    if(userBands){
+      if (userBands.length==0){
+        $.get('/getGigs', {'creator':username}, userGigs=>{
+          if (userGigs){
+            if (userGigs.length==0){
+              alert('Sorry, you must create a band or event before you can add pull. Just click "post an event" or "create a band" to make your mark on Banda for free!');
+              document.getElementById('modal-wrapper-create-pull').style.display = 'none';
+              return;
+            }
+            else{
+              for (var g in userGigs){
+                var picker = document.getElementById('create-pull-select');
+                var option = document.createElement('option');
+                option.innerHTML=userGigs[g].name;
+                option.value = userGigs[g]._id;
+                option.setAttribute('type', 'gigs');
+                picker.append(option)
+              }
+              changedPullPicker()
+            }
+          }
+          else{
+            alert('Sorry, you must create a band or event before you can add pull. Just click "post an event" or "create a band" to make your mark on Banda for free!');
+            document.getElementById('modal-wrapper-create-pull').style.display = 'none';
+            return;
+          }
+        });
+      }
+      else{
+        for (var b in userBands){
+          var picker = document.getElementById('create-pull-select');
+          var option = document.createElement('option');
+          option.innerHTML=userBands[b].name;
+          option.value = userBands[b]._id;
+          option.setAttribute('type', 'bands');
+          picker.append(option)
+        }
+        changedPullPicker()
+        $.get('/getGigs', {'creator':username}, userGigs=>{
+          if (userGigs){
+            if (userGigs.length==0){
+
+            }
+            else{
+              for (var g in userGigs){
+                var picker = document.getElementById('create-pull-select');
+                var option = document.createElement('option');
+                option.innerHTML=userGigs[g].name;
+                option.value = userGigs[g]._id;
+                option.setAttribute('type', 'gigs');
+                picker.append(option)
+              }
+              changedPullPicker()
+            }
+          }
+        });
+      }
+    }
+    else{
+      $.get('/getGigs', {'creator':username}, userGigs=>{
+        if (userGigs){
+          if (userGigs.length==0){
+            alert('Sorry, you must create a band or event before you can add pull. Just click "post an event" or "create a band" to make your mark on Banda for free!');
+            document.getElementById('modal-wrapper-create-pull').style.display = 'none';
+            return;
+          }
+          else{
+            for (var g in userGigs){
+              var picker = document.getElementById('create-pull-select');
+              var option = document.createElement('option');
+              option.innerHTML=userGigs[g].name;
+              option.value = userGigs[g]._id;
+              option.setAttribute('type', 'gigs');
+              picker.append(option)
+            }
+            changedPullPicker()
+          }
+        }
+        else{
+          alert('Sorry, you must create a band or event before you can add pull. Just click "post an event" or "create a band" to make your mark on Banda for free!');
+          document.getElementById('modal-wrapper-create-pull').style.display = 'none';
+          return;
+        }
+
+      });
+    }
+  });
   document.getElementById('modal-wrapper-create-pull').style.display = 'block';
+  document.getElementById('create-pull-boiler').innerHTML = '(posted from www.banda-inc.com)'
+
+  //console.log('bands on pull: ' + JSON.stringify(user.bands))
   //var link = 'www.banda-inc.com/add_pull?'
   // need add_pull modal
   //document.getElementById('modal-wrapper-promo-request').style.display='block';
@@ -4875,14 +4979,71 @@ function openAddPullModal(){
   //document.getElementById("promo-req-caption").innerHTML = 'Click on this link to show your support! Every click increases my "pull" on Banda (where music is made).'
 }
 
-function downloadFromPromoSB(){
+function changedPullPicker(){
+  console.log('CHanged picker');
+  var picker = document.getElementById("create-pull-select");
+  var id = picker.options[ picker.selectedIndex ].value;
+  var name = picker.options[picker.selectedIndex].innerHTML;
+  var mode = picker.options[picker.selectedIndex].getAttribute('type')
+  console.log('option val in add pull: ' + id + ' ' + name + " tpe: " + mode)
 
+  document.getElementById('create-pull-boiler').innerHTML = 'You can help '+name+' by clicking this link: \n \n https://www.banda-inc.com/add_pull?mode='+mode+'&id='+id
+
+}
+function addPullAccept(){
+  console.log('ADD PULL POST GO: ');
+  if (!(postToFB || postToInsta || postToTwitter || downloadedPromo)){
+    alert('Sorry, '+username+' you must either select one or more social-medias to post this "add pull" to or download the promotion. If you do not want to post this right now or download it just click the x in the top right corner of the modal.');
+    return;
+  }
+  var caption = document.getElementById('create-pull-caption').value;
+  if (caption==" " || caption==null || caption==""){
+    alert('Sorry, you must add a caption to be able to post this to your socials.');
+    return;
+  }
+  var picker = document.getElementById("create-pull-select");
+  var id = picker.options[ picker.selectedIndex ].value;
+  var name = picker.options[picker.selectedIndex].innerHTML;
+  var mode = picker.options[picker.selectedIndex].getAttribute('type')
+
+  if (name=="" || name == " " || name==null){
+    alert('Sorry, you must create a band or event before you can add pull. Just click "post an event" or "create a band" to make your mark on Banda for free!');
+    document.getElementById('modal-wrapper-create-pull').style.display = 'none';
+    return;
+  }
+  else{
+    var medias = [];
+    if (postToFB){
+      medias.push('facebook');
+    }
+    if (postToInsta){
+      medias.push('twitter');
+    }
+    if (postToTwitter){
+      medias.push('instagram');
+    }
+    $.post('/pull', {'name':name, 'id':id, 'mode':mode, 'caption':caption, 'medias':medias}, res=>{
+      if (res==""){
+        alert('Hmmm...it seems something went wrong on our end, please refresh your page and try again. If this problem persists just click the Banda "b" top left and use our support tab to email our live support team. Thank you!');
+      }
+      else{
+        alert(res);
+      }
+    })
+  }
+
+
+//
+}
+
+function downloadFromPromoSB(){
+  downloadedPromo=true;
 }
 
 function downloadFromPromoRequest(){
-
+  downloadedPromo=true;
 }
 
 function downloadFromCreatePull(){
-
+  downloadedPromo=true;
 }
