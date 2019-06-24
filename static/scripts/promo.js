@@ -90,12 +90,18 @@ function init(){
   getGigs();
 
   let pageURL = window.location.href;
-  var urlAux = pageURL.split('=');
+  var urlAux = pageURL.split('?');
+  var urlVarStr = urlAux[1];
+  var urlVars = urlVarStr.split('&');
+  console.log(urlVarStr);
+  console.log(urlVars[0]);
+  console.log(urlVars[1]);
+  console.log(urlVars[2]);
   // CHECKING THE URL ON PROMO HERE
   // ON REDIRECT FROM SOCIAL AUTH,
   // PAGE SKIPS TO STEP ONE
   isPromo = urlAux[1];
-  console.log(isPromo);
+  // console.log(isPromo);
 
   if(isPromo){
     userClickStart();
