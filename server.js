@@ -43,6 +43,8 @@ var   FacebookStrategy = require('passport-facebook').Strategy
 var   TwitterStrategy = require('passport-twitter').Strategy;
 var   request = require('request')
 var   axios = require('axios')
+const url = require('url'); 
+var querystring = require('querystring');
 
 //social media access token
 var TokenPassport = require('passport');
@@ -244,6 +246,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 					res.status(500).send()
 				});
 			});
+	//done(null, profile);
 	return cb(null, profile);
 }));
 
@@ -416,15 +419,19 @@ function(req, token, tokenSecret, profile, done) {
 		retweets = retweets*status_count
 		favorites = favorites*status_count
 
+		if(data.length == 0){
+			retweets = 0
+			favorites = 0
+		}
 		database.connect(db => {
 			//store the access tokens
-			db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'twitter':{'access_token':token,
+			db.db('users').collection('users').update({'username':req.session.key}, {$push:{'twitter':{'access_token':token,
 																																																		'token_secret':tokenSecret,
 																																																		'retweets':retweets,
 																																																		'favorites':favorites,
 																																																		'follower_count':followers_count,
 																																																		'status_count':status_count,
-																																																		'screen_name':screen_name}}}
+																																																		'screen_name':screen_name}}}, {upsert:true}
 				, (err4, res4)=>{
 						if (err4){
 							res.status(500).end();
@@ -510,63 +517,43 @@ function(req, accessToken, refreshToken, profile, cb) {
 	let profile_id = profile.id
 	let token = accessToken
 	let refresh = refreshToken
+	
+axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
+	.then(function (response) {
 
-	//request a long term access token
-	var options = {
-		url: 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token,
-		method: 'GET'
-	};
-
-	//callback for result request
-	function callback(error, response, body) {
-		if (!error && response.statusCode == 200) {
-				console.log(body);
-		}
-
-		//store the long token and the date
-		const longToken = body.access_token
+		// handle success
+		var longToken = response.data.access_token
 		const date = Math.floor(new Date() / 1000)
-
-		//store values in database
+		console.log(req.session.key + " owns the token " + longToken)
 		database.connect(db => {
-			//store the access tokens and profile information
-			db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'access_token':longToken,
-																																																		'token_secret':profile_id,
-																																																		'refresh_token':refresh,
-																																																		'profile':profile,
-																																																		'date': date}}}
-				 , (err4, res4)=>{
-						if (err4){
-							res.status(500).end();
-							db.close();
-						}
-						else{
-							console.log("the token was retrieved")
-							db.close();
-						}
-			});
-		}, err => {
-			console.warn("Couldn't connect to database: " + err)
+
+		//store the access tokens and profile information
+		db.db('users').collection('users').updateOne({'username':req.session.key},{$push:{'facebook':{'accessToken': longToken,
+																																																	'profile':profile,
+																																																	'date': date}}}
+				, (err4, res4)=>{
+					if (err4){
+						res.status(500).end();
+						db.close();
+					}
+					else{
+						console.log("the token was stored YOU FUCKING FUCKS QQQQQQQQQQQQQQQ")
+						db.close();
+					}
 		});
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+	});
 
-		// //get and return all of the pages the user controls to render in a modal on /promo
-		// axios.get('https://graph.facebook.com/v3.3/me/accounts' + '?access_token=' + longToken)
-    // .then(function (response) {
-		// 	console.log("BEFORE REDIRECT")
-		// 	console.log(response.data);
-		// 	// res.redirect(url.format({
-		// 	// 	pathname:"http://localhost/promo",
-		// 	// 	query:res.data,
-		// 	// }))
-    // })
-    // .catch(function (error) {
-    //   console.log(error);
-    // })
-		console.log(options.url)
-	request(options, callback);
-
-	return cb(null, profile);
-	}
+	})
+	.catch(function (error) {
+		// handle error
+		console.log(error);
+	})
+	.finally(function () {
+		// always executed
+		return cb(null, profile);
+	});
 	
 }));
 
@@ -582,14 +569,55 @@ router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/token/return',
-  passport.authenticate('token_facebook', { failureRedirect: '/facebook/token/successAuth' }),
+  passport.authenticate('token_facebook', { failureRedirect: 'http://localhost:1600/facebook/token/successAuth' }),
   function(req, res) {
-    res.redirect('/facebook/token/failedAuth');
+    res.redirect('http://localhost:1600/facebook/token/failedAuth');
 	});
 
 //route for failed token callback for facebook
 router.get('/facebook/token/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/promo#');
+	console.log("!!!!!!!!!!!!!!!!!!!!!!!make a request for the page here!!!!!!!!!!!!!!!!!!!!!!!")
+	var pageData = ""
+	database.connect(db => {
+		//set database path
+		db.db('users').collection('users').findOne({username: req.session.key}, (err, obj) => {
+			//catch error
+			if (err) {
+				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+				db.close();
+			}
+			console.log("-------------------------in the fucking callback------------------------------------------------")
+			console.log(obj.facebook[obj.facebook.length-1].profile)
+			console.log(obj.facebook[obj.facebook.length-1].accessToken)
+
+			axios.get('https://graph.facebook.com//v3.3/me/accounts' + '?access_token=' + obj.facebook[obj.facebook.length-1].accessToken)
+			.then(function (response) {
+				console.log(response.data);
+				pageData = response.data
+			})
+			.catch(function (error) {
+				console.log(error);
+			})
+			.finally(function () {
+				// always executed
+				console.log("page data is below")
+				console.log(pageData.data)
+				console.log(pageData.data.length)
+				var xurl = 'http://localhost:1600/promo#?'
+				for(let i = 0; i < pageData.data.length; i++){
+					console.log("page is below")
+					console.log(pageData.data[i])
+					xurl += "page" + i + "=" + pageData.data[i].name + "&id" + i + "=" + pageData.data[i].id + "&"
+				}
+				xurl += "isPromo=true"
+				console.log(xurl + " is the url !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+				return res.redirect(xurl);
+			})
+		})
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+		res.status(500).send()
+	});
 })
 
 //route for succesful token  callback for facebook
@@ -768,10 +796,9 @@ function(req, accessToken, refreshToken, profile, cb) {
 			//store the access tokens and profile information
 			db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'access_token':longToken,
 																																																		'token_secret':profile_id,
-																																																		'refresh_token':refresh,
 																																																		'profile':profile,
 																																																		'date': date,
-																																																		'hasInsta': true}}}
+																																																		'hasInsta': true}}}, {upsert: true}
 				 , (err4, res4)=>{
 						if (err4){
 							res.status(500).end();
