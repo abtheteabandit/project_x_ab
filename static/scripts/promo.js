@@ -93,6 +93,7 @@ function init(){
   if(parsedURL.hasOwnProperty('searchObject') && parsedURL.searchObject != null){
     if(parsedURL.searchObject.isPromo == 'true'){
       if(parsedURL.searchObject.hasOwnProperty('pages')){
+        userClickStart();
         populateSelectSocialPageModal(parsedURL.searchObject.pages);
       }
     }
