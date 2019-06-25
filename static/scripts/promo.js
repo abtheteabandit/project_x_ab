@@ -705,8 +705,7 @@ function selectMainFacebookPage(){
     //make post request to store the page token and page statistics
     $.post('http://localhost:1600/getFacebookPageTokens', {pageId: valueSelected, pageName: textSelected}, res=>{
       alert(res);
-      var modal = document.getElementById("modal-wrapper-support");
-      modal.style.display = "none";
+      document.getElementById("modal-wrapper-select-social-page").style.display = "none";
     });
   });
 }
