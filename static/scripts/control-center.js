@@ -3675,7 +3675,7 @@ function openPromotionModal(button){
   $.get('/aPromo', {'username':askerName, 'promoID':promoID}, res=>{
     if (res.success){
       var ourPromo = res.data;
-      var our_cap = ourPromo.caption + '\n\n\nposted from www.banda-inc.com (where the music industry bands together)'
+      var our_cap = ourPromo.caption + '\n'+ourPromo.handles+'\n\nposted from www.banda-inc.com (where the music industry bands together)'
       document.getElementById('promo-req-caption').innerHTML = our_cap;
       var cleanSRC = ourPromo.imgURL.replace('www.banda-inc.com//', '');
       document.getElementById('promo-req-pic').src = cleanSRC;
