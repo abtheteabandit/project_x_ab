@@ -701,5 +701,12 @@ function selectMainFacebookPage(){
     var textSelected   = optionSelected.text(); // the page name
     console.log("VALUE SELECTED IS: "+valueSelected);
     console.log("TEXT SELECTED IS: "+textSelected);
+
+    //make post request to store the page token and page statistics
+    $.post('http://localhost:1600/getFacebookPageTokens', {pageId: valueSelected, pageName: textSelected}, res=>{
+      alert(res);
+      var modal = document.getElementById("modal-wrapper-support");
+      modal.style.display = "none";
+    });
   });
 }

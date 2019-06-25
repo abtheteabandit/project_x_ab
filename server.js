@@ -591,29 +591,29 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 			console.log(obj.facebook[obj.facebook.length-1].accessToken)
 
 			axios.get('https://graph.facebook.com//v3.3/me/accounts' + '?access_token=' + obj.facebook[obj.facebook.length-1].accessToken)
-			.then(function (response) {
-				console.log(response.data);
-				pageData = response.data
+				.then(function (response) {
+					console.log(response.data);
+					pageData = response.data
+				})
+				.catch(function (error) {
+					console.log(error);
+				})
+				.finally(function () {
+					// always executed
+					console.log("page data is below")
+					console.log(pageData.data)
+					console.log(pageData.data.length)
+					var xurl = 'http://localhost:1600/promo#?'
+					for(let i = 0; i < pageData.data.length; i++){
+						console.log("page is below")
+						console.log(pageData.data[i])
+						xurl += "page" + i + "=" + pageData.data[i].name + "&id" + i + "=" + pageData.data[i].id + "&"
+					}
+					xurl += "pageNum=" + pageData.data.length + "&isPromo=true"
+					console.log(xurl + " is the url !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+					return res.redirect(xurl);
+				})
 			})
-			.catch(function (error) {
-				console.log(error);
-			})
-			.finally(function () {
-				// always executed
-				console.log("page data is below")
-				console.log(pageData.data)
-				console.log(pageData.data.length)
-				var xurl = 'http://localhost:1600/promo#?'
-				for(let i = 0; i < pageData.data.length; i++){
-					console.log("page is below")
-					console.log(pageData.data[i])
-					xurl += "page" + i + "=" + pageData.data[i].name + "&id" + i + "=" + pageData.data[i].id + "&"
-				}
-				xurl += "pageNum=" + pageData.data.length + "&isPromo=true"
-				console.log(xurl + " is the url !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-				return res.redirect(xurl);
-			})
-		})
 	}, err => {
 		console.warn("Couldn't connect to database: " + err)
 		res.status(500).send()
@@ -630,73 +630,95 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 	let pageId = req.body.pageId
 	let pageName = req.body.pageName
 
-	//get short term page token
-	axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
-    .then(function (response) {
-      console.log(response.data);
-      let pageToken = response.data.access_token
+	console.log("the page id is " + pageId)
+	console.log("the page name is " + pageName)
 
-			//get long term page token
-			axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
+	database.connect(db => {
+		//set database path
+		db.db('users').collection('users').findOne({username: req.session.key}, (err, obj) => {
+			//catch error
+			if (err) {
+				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+				db.close();
+			}
+			console.log(obj.facebook[obj.facebook.length-1].profile)
+			console.log(obj.facebook[obj.facebook.length-1].accessToken)
+
+			let token = obj.facebook[obj.facebook.length-1].accessToken
+			//get short term page token
+			axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
 				.then(function (response) {
 					console.log(response.data);
 					let pageToken = response.data.access_token
-
-					//get the number of followers on a page
-					axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
-					.then(function (response) {
-						console.log(response.data);
-						let followerCount = response.data.fan_count
-
-						//get page consumption for the last 28 days
-						axios.get('https://graph.facebook.com/' + pageId + '/insights/page_consumptions' + '?access_token=' + pageToken)
+					console.log("the short term page token  is " + pageToken)
+					//get long term page token
+					axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
 						.then(function (response) {
-							let values = response.data.data[2].values
-							let totalConsumption = 0
-							for (v in values){
-								totalConsumption += v.value
-							}
+							let pageToken = response.data.access_token
+							console.log("the long page token is " + pageToken)
+					 		//get the number of followers on a page
+							axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
+							.then(function (response) {
+								let followerCount = response.data.fan_count
+								console.log("the follower count is " + followerCount)
+								//get page consumption for the last 28 days
+					 			axios.get('https://graph.facebook.com/' + pageId + '/insights/page_consumptions' + '?access_token=' + pageToken)
+									.then(function (response) {
+										let values = response.data.data[2].values
+										console.log(values)
+										var totalConsumption = 0
+										for (let i = 0; i < values.length; i++){
+											console.log(values[i].value+ " is the v")
+											totalConsumption += values[i].value
+										}
+										console.log(totalConsumption  + " total consumption")
+										//store all values from the facebook api in the database
+										database.connect(db => {
+											//store the access tokens and profile information
+											db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{
+																																																										'profile':obj.facebook[obj.facebook.length-1].profile,
+																																																										'accessToken':token,
+																																																										'pageToken':pageToken,
+																																																										'followerCount':followerCount,
+																																																										'totalConsumption':totalConsumption
+																																																										}}}
+												, (err4, res4)=>{
+														if (err4){
+															res.status(500).end();
+															db.close();
+														}
+														else{
+															//success case
+															db.close();
+															res.status(200).send('Success');
 
-							//store all values from the facebook api in the database
-							//store values in database
-							database.connect(db => {
-								//store the access tokens and profile information
-								db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'page_token':pageToken,
-																																																							'follower_count':followerCount,
-																																																							'total_consumption':totalConsumption
-																																																							}}}
-									, (err4, res4)=>{
-											if (err4){
-												res.status(500).end();
-												db.close();
-											}
-											else{
-												//success case
-												db.close();
-												res.status(200).send('Success');
+														}
+											});
+										}, err => {
+											console.warn("Couldn't connect to database: " + err)
+										});
 
-											}
-								});
-							}, err => {
-								console.warn("Couldn't connect to database: " + err)
-							});
-
+					 			})
+					 			.catch(function (error) {
+					 				console.log(error);
+					 			})
+							})
+							.catch(function (error) {
+								console.log(error);
+							})
 						})
 						.catch(function (error) {
 							console.log(error);
-						})
-					})
-					.catch(function (error) {
-						console.log(error);
-					})
+						});
 				})
 				.catch(function (error) {
 					console.log(error);
 				});
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+		})
+	}, err => {
+		console.warn("Couldn't connect to database: " + err)
+		res.status(500).send()
+	});
 })
 
 //make post on facebook using message parameter
@@ -753,95 +775,128 @@ database.connect(db => {
 
 
 
-
-
-
-
-
-
-	//setup passport for getting a facebook token
 //instialize passport js for user login with facebook
 passport.use('inst_data',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-	callbackURL: '/facebook/token/return',
+	callbackURL: 'http://localhost:1600/inst/token/return',
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
 	//store values from the intial request
 	let profile_id = profile.id
 	let token = accessToken
-	let refresh = refreshToken
+	let longToken = ""
+	console.log("the insta token is " + token)
+	console.log("the profile id " + profile_id)
 
-	//request a long term access token
-	var options = {
-		url: 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token,
-		method: 'GET'
-	};
-
-	//callback for result request
-	function callback(error, response, body) {
-		if (!error && response.statusCode == 200) {
-				console.log(body);
-		}
-
-		//store the long token and the date
-		const longToken = body.access_token
-		const date = Math.floor(new Date() / 1000)
-
-
-
-		//store tokens and permissions for insta
-		database.connect(db => {
-			//store the access tokens and profile information
-			db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'access_token':longToken,
-																																																		'token_secret':profile_id,
-																																																		'profile':profile,
-																																																		'date': date,
-																																																		'hasInsta': true}}}, {upsert: true}
-				 , (err4, res4)=>{
-						if (err4){
-							res.status(500).end();
-							db.close();
-						}
-						else{
-							console.log("the token was retrieved")
-							db.close();
-						}
-			});
-		}, err => {
-			console.warn("Couldn't connect to database: " + err)
-		});
-
-
-		let instaId = ""
-		//the id is a page id
-		axios.get("https://graph.facebook.com/v3.3/" + profile_id + "?fields=instagram_business_account&access_token=" + pageToken)
+	axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
 		.then(function (response) {
-			console.log(response.data.instagram_business_account.id);
-			instaId = response.data.instagram_business_account.id
+			//store intial values
+			console.log(response.data);
+			pageData = response.data
+			longToken = response.data.access_token
+
+			database.connect(db => {
+				//set database path
+				var users = db.db('users').collection('users');
+				//check to see if the user laready exists
+				users.findOne({username: req.session.key}, (err, obj) => {
+					//catch error
+					if (err) {
+						console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+						db.close();
+					}
+					console.log(obj)
+					let pageToken = obj.facebook[obj.facebook.length-1].pageToken
+					console.log(pageToken + " is the page token")
+					let facebookId = obj.facebook[obj.facebook.length-1].profile.id
+					db.close();
+					axios.get("https://graph.facebook.com/v3.3/" + facebookId+ "?fields=instagram_business_account&access_token=" + pageToken)
+						.then(function (response) {
+							console.log(response.data);
+							instaId = response.data.instagram_business_account.id
+						})
+						.catch(function (error) {
+							console.log(error);
+						});
+				})
+			}, err => {
+				console.warn("Couldn't connect to database: " + err)
+			});
+
+
 		})
 		.catch(function (error) {
 			console.log(error);
-		});
+		})
+	
+	// //request a long term access token
+	// var options = {
+	// 	url: 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token,
+	// 	method: 'GET'
+	// };
 
-		console.log("the insta id is set")
+	// //callback for result request
+	// function callback(error, response, body) {
+	// 	if (!error && response.statusCode == 200) {
+	// 			console.log(body);
+	// 	}
+
+	// 	//store the long token and the date
+	// 	const longToken = body.access_token
+	// 	const date = Math.floor(new Date() / 1000)
+
+	// 	//store tokens and permissions for insta
+	// 	database.connect(db => {
+	// 		//store the access tokens and profile information
+	// 		db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{'access_token':longToken,
+	// 																																																	'token_secret':profile_id,
+	// 																																																	'profile':profile,
+	// 																																																	'date': date,
+	// 																																																	'hasInsta': true}}}
+	// 			 , (err4, res4)=>{
+	// 					if (err4){
+	// 						res.status(500).end();
+	// 						db.close();
+	// 					}
+	// 					else{
+	// 						console.log("the token was retrieved")
+	// 						db.close();
+	// 					}
+	// 		});
+	// 	}, err => {
+	// 		console.warn("Couldn't connect to database: " + err)
+	// 	});
+
+
+	// 	let instaId = ""
+	// 	//the id is a page id
+	// 	axios.get("https://graph.facebook.com/v3.3/" + profile_id + "?fields=instagram_business_account&access_token=" + pageToken)
+	// 		.then(function (response) {
+	// 			console.log(response.data.instagram_business_account.id);
+	// 			instaId = response.data.instagram_business_account.id
+	// 		})
+	// 		.catch(function (error) {
+	// 			console.log(error);
+	// 		});
+
+	// 	console.log("the insta id is set")
 
 
 	return cb(null, profile);
-	}
+	// }
 	}
 ));
 
 //route to get facebook access token
 router.get('/getInstData', passport.authenticate('inst_data', { scope: [
-		'instagram_basic',
+	'instagram_basic',
 		'instagram_manage_comments',
-		'instagram_manage_insights',
-		'business_management',
-		'read_insights',
-		'pages_show_list'
-	]}))
+			'instagram_manage_insights',
+				'business_management',
+					'read_insights',
+						'pages_show_list']}))
 
 //route for facebook oauth callback
 router.get('/inst/token/return',
