@@ -38,7 +38,19 @@ class SearchResult {
     });
     this.newOverlay.setAttribute("id",this.overlayID);
     // follower count
-
+    this.followerCount = document.createElement("p");
+    this.followers = 0;
+    // figure out how many followers there are
+    // TODO
+    this.followerCount.className = "follower-count-p";
+    this.followerCount.innerHTML = "followers: "+this.followers;
+    // engage score
+    this.engagementScore = document.createElement("p");
+    this.engagement = 0;
+    // figure out total user engagement
+    // TODO
+    this.engagementScore.className = "user-engagement-p";
+    this.engagementScore.innerHTML = "engagement: "+this.engagement;
     // button
     this.addContactBtn = document.createElement("input");
     this.addContactBtn.type = "button";
@@ -55,6 +67,8 @@ class SearchResult {
     this.nameP = document.createElement("p");
     this.nameP.innerHTML = this.name;
     // appends
+    this.newOverlay.appendChild(this.followerCount);
+    this.newOverlay.appendChild(this.engagementScore);
     this.newOverlay.appendChild(this.addContactBtn);
     this.newDiv.appendChild(this.newOverlay);
     this.newDiv.appendChild(this.newFrame);

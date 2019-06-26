@@ -628,12 +628,20 @@ body{
   color: white;
 }
 
+.follower-count-p, .user-engagement-p{
+  color: white;
+  font-size: 10pt;
+  margin-top: 20px !important;
+}
+.user-engagement-p{
+  margin-bottom: 20px !important;
+}
+
 .add-contact-btn{
   color: #56dff0;
   background-color: rgba(0,0,0,0.7);
   border-radius: 10px;
   font-size: 20pt;
-  margin-top: 35%;
   border: 1px solid #56dff0;
 }
 
