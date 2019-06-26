@@ -37,6 +37,8 @@ class SearchResult {
       // nothing yet
     });
     this.newOverlay.setAttribute("id",this.overlayID);
+    // follower count
+
     // button
     this.addContactBtn = document.createElement("input");
     this.addContactBtn.type = "button";
@@ -643,11 +645,12 @@ function convertZip(mySearch){
 }
 
 function fillResultsTable(resArr){
+  console.log("RESULTS ARRAY: ");
+  console.log(resArr);
   var results = [];
   for(user in resArr){
     results[user] = new SearchResult(resArr[user][0]);
   }
-
 }
 function sendContactRequest(recieverID, name){
   var now = new Date().toString();
