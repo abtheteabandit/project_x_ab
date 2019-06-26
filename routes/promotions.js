@@ -1387,4 +1387,160 @@ router.post('/pull', (req,res)=>{
     }
   }
 });
+router.get('/userSocialData', (req,res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to find pull.');
+    res.status(401).end();
+  }
+  if (!req.query){
+    console.log('No query in a user pull');
+    res.status(401).end();
+  }
+  else{
+    var {username}=req.query;
+    if(!username){
+      username=req.session.key;
+    }
+    database.connect(db=>{
+      db.db('users').collection('users').findOne({'username':username}, (err1, ourUser)=>{
+        if (err1){
+          console.log('There was an error finding user: ' + username+ ' Error: ' + err1);
+          res.status(200).json({'success':false, 'data':'none'});
+        }
+        else{
+          var pull = 0;
+          if(ourUser.hasOwnProperty('pull')){
+            pull=ourUser.pull;
+
+          }
+          else{
+            var totalFollowers = 0;
+            var totalEngament = 0;
+            var socialsEngUsed = 0;
+            if (ourUser.hasOwnProperty('twitter')){
+              if (ourUser.twitter.hasOwnProperty('followers')){
+                totalFollowers+=ourUser.twitter.followers;
+              }
+              if (ourUser.twitter.hasOwnProperty('engagment')){
+                totalEngament+=ourUser.twitter.engagment;
+                socialsEngUsed+=1;
+              }
+            }
+            if (ourUser.hasOwnProperty('facebook')){
+              if (ourUser.facebook.hasOwnProperty('followers')){
+                totalFollowers+=ourUser.facebook.followers;
+              }
+              if (ourUser.facebook.hasOwnProperty('engagment')){
+                totalEngament+=ourUser.facebook.engagment;
+                socialsEngUsed+=1;
+              }
+            }
+            if (ourUser.hasOwnProperty('instagram')){
+              if (ourUser.instagram.hasOwnProperty('followers')){
+                totalFollowers+=ourUser.instagram.followers;
+              }
+              if (ourUser.instagram.hasOwnProperty('engagment')){
+                totalEngament+=ourUser.instagram.engagment;
+                socialsEngUsed+=1;
+              }
+            }
+            if (ourUser.hasOwnProperty('snapchat')){
+              if (ourUser.snapchat.hasOwnProperty('followers')){
+                totalFollowers+=ourUser.snapchat.followers;
+              }
+              if (ourUser.snapchat.hasOwnProperty('engagment')){
+                totalEngament+=ourUser.snapchat.engagment;
+                socialsEngUsed+=1;
+              }
+            }
+            if (socialsEngUsed==0){
+              eng = 0;
+            }
+            else{
+              var eng = totalEngament/socialsEngUsed;
+            }
+            res.status(200).json({'success':true, 'data':{'pull':ourUser.pull, 'engament':eng, 'followers':totalFollowers}});
+            db.close();
+          }
+        }
+      })
+    }, dbErr=>{
+      console.log('There was an error connecting to mogno: ' + dbErr);
+      res.status(500).end();
+    })
+
+  }
+});
+
+router.get('/bandPull', (req,res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to find bandpull.');
+    res.status(401).end();
+  }
+  if (!req.query){
+    console.log('No query in a band pull');
+    res.status(401).end();
+  }
+  else{
+    var {id} = req.query;
+    database.connect(db=>{
+      db.db('bands').collection('bands').findOne({'_id':database.objectId(id)}, (err1, ourBand)=>{
+        if (err1){
+          console.log('There was an error fidnig band with id: ' + id+ ' Error: '+err1);
+          res.status(200).json({'success':false, 'data':'none'});
+          db.close();
+        }
+        else{
+          if (ourBand.hasOwnProperty('pull')){
+            res.status(200).json({'success':true, 'data':ourBand.pull});
+            db.close();
+          }
+          else{
+            res.status(200).json({'success':false, 'data':'none'});
+            db.close();
+          }
+        }
+      });
+    }, dbErr=>{
+      console.log('There was an error connecting to mogno: ' + dbErr);
+      res.status(500).end();
+    })
+  }
+});
+
+router.get('/gigPull', (req,res)=>{
+  if (!req.session.key){
+    console.log('No logged in user tried to find bandpull.');
+    res.status(401).end();
+  }
+  if (!req.query){
+    console.log('No query in a band pull');
+    res.status(401).end();
+  }
+  else{
+    var {id} = req.query;
+    database.connect(db=>{
+      db.db('gigs').collection('gigs').findOne({'_id':database.objectId(id)}, (err1, ourGig)=>{
+        if (err1){
+          console.log('There was an error fidnig gig with id: ' + id+ ' Error: '+err1);
+          res.status(200).json({'success':false, 'data':'none'});
+          db.close();
+        }
+        else{
+          if (ourGig.hasOwnProperty('pull')){
+            res.status(200).json({'success':true, 'data':ourGig.pull});
+            db.close();
+          }
+          else{
+            res.status(200).json({'success':false, 'data':'none'});
+            db.close();
+          }
+        }
+      });
+    }, dbErr=>{
+      console.log('There was an error connecting to mogno: ' + dbErr);
+      res.status(500).end();
+    })
+  }
+});
 } //end of exports
