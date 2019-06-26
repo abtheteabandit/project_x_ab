@@ -717,7 +717,7 @@ profile img elements
   padding: 0px 20px;
 }
 
-.genres, .instruments, .vibes, .good-for, .date, .num-applicants, .start-time, .end-time{
+.pulls, .genres, .instruments, .vibes, .good-for, .date, .num-applicants, .start-time, .end-time{
   width: 100%;
   padding: 20px;
   background-color: rgba(0,0,0,0.3);

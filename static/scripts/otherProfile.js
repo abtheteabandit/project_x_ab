@@ -8,6 +8,7 @@ var myGig = null;
 var userContacts = {};
 var userMessages={};
 var selectedMobileProfile = {};
+var otherProfileID = null;
 class SampleCarousel{
   constructor(sampleCarCallback){
     this.carWrap = document.createElement("div");
@@ -323,6 +324,7 @@ document.addEventListener('ready', init);
 function init(){
   var urlJSON = parseURL(window.location.href);
   var searchObject = urlJSON['searchObject'];
+  otherProfileID = searchObject['id'];
   console.log('Search obj is: ' + JSON.stringify(searchObject));
   getUserInfo(searchObject);
 
@@ -601,6 +603,17 @@ function createPageAsBand(){
   if(otherBand.categories != null){
     var detailGrid = document.createElement("div");
     detailGrid.className = "band-detail-grid";
+    getBandPull(otherProfileID, pullCallback =>{
+      var div0 = document.createElement("div");
+      var pullH = document.createElement("h2");
+      pullH.innerHTML = "pull rating";
+      div0.append(pullH);
+      var pullP = document.createElement("p");
+      pullP.innerHTML = pullCallback;
+      pullP.className = "pulls";
+      div0.append(pullP);
+      detailGrid.append(div0);
+    });
     // genres
     if(otherBand.categories.hasOwnProperty("genres")){
       var div1 = document.createElement("div");
@@ -758,6 +771,19 @@ function createPageAsGig(){
 
   var gigDetailGrid = document.createElement("div");
   gigDetailGrid.className = "gig-detail-grid";
+
+  // pulls
+  getGigPull(otherProfileID, pullCallback =>{
+    var div0 = document.createElement("div");
+    var pullH = document.createElement("h2");
+    pullH.innerHTML = "pull rating";
+    div0.append(pullH);
+    var pullP = document.createElement("p");
+    pullP.innerHTML = pullCallback;
+    pullP.className = "pulls";
+    div0.append(pullP);
+    gigDetailGrid.append(div0);
+  });
   // date
   var div1 = document.createElement("div");
   var dateH = document.createElement("h2");
@@ -1661,6 +1687,57 @@ function checkForVideoSample(id, mode, cbErr, cbOk){
     else{
       console.log('There was an error checkign for uploads: ' + res.data);
       cbErr(res.data);
+    }
+  });
+}
+
+function getBandPull(id, cb){
+  $.get('/bandPull', {'id':id}, res=>{
+    if (res){
+      if (res.success){
+        if (res.data=='none'){
+          //set  pull to "Unknown"
+          cb('unknown');
+        }
+        else{
+          var pull = res.data
+          console.log('Pull for band id: ' + id + ' pull: ' + pull);
+          cb(pull);
+        }
+      }
+      else{
+        //set pull to "Unknown"
+        cb('unknown');
+      }
+    }
+    else{
+      //set  pull to "Unknown"
+      cb('unknown');
+    }
+  });
+}
+function getGigPull(id, cb){
+  $.get('/gigPull', {'id':id}, res=>{
+    if (res){
+      if (res.success){
+        if (res.data=='none'){
+          //set  pull to "Unknown"
+          cb('unknown');
+        }
+        else{
+          var pull = res.data
+          console.log('Pull for gig id: ' + id + ' pull: ' + pull);
+          cb(pull);
+        }
+      }
+      else{
+        //set pull to "Unknown"
+        cb('unknown');
+      }
+    }
+    else{
+      //set  pull to "Unknown"
+      cb('unknown');
     }
   });
 }
