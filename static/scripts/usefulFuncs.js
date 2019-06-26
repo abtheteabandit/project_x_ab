@@ -138,3 +138,74 @@ function haversineDistance(coords1, coords2, isMiles) {
 
   return d;
 }
+
+
+//AB PROMO IS HERE pal  \
+function getUserSocialData(username){
+  $.get('/userSocialData', {'username':username}, res=>{
+    if (res){
+      if (res.success){
+        if (res.data=='none'){
+          //set followers, engamnet and pull to "Unknown"
+        }
+        else{
+          var engagment = res.data.engament;
+          var followers = res.data.followers;
+          var pull = res.data.pull;
+          console.log('SOCIAL DATA FOR ' + username + ': PULL: ' + pull + ' eng: ' + engament + ' followers: ' + followers);
+        }
+      }
+      else{
+        //set followers, engamnet and pull to "Unknown"
+      }
+    }
+    else{
+      //set followers, engamnet and pull to "Unknown"
+    }
+  });
+}
+
+function getBandPull(id){
+  $.get('/bandPull', {'id':id}, res=>{
+    if (res){
+      if (res.success){
+        if (res.data=='none'){
+          //set  pull to "Unknown"
+        }
+        else{
+
+          var pull = res.data
+          console.log('Pull for band id: ' + id + ' pull: ' + pull);
+        }
+      }
+      else{
+        //set pull to "Unknown"
+      }
+    }
+    else{
+      //set  pull to "Unknown"
+    }
+  });
+}
+function getGigPull(id){
+  $.get('/gigPull', {'id':id}, res=>{
+    if (res){
+      if (res.success){
+        if (res.data=='none'){
+          //set  pull to "Unknown"
+        }
+        else{
+
+          var pull = res.data
+          console.log('Pull for gig id: ' + id + ' pull: ' + pull);
+        }
+      }
+      else{
+        //set pull to "Unknown"
+      }
+    }
+    else{
+      //set  pull to "Unknown"
+    }
+  });
+}
