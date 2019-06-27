@@ -9,6 +9,7 @@
     <!-- CSS link --> <link rel="stylesheet" type="text/css" href="/css/promo.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/selectSocialPageModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/selectSocialPageInstaModal.css">
 
     <!-- Font Awesome --> <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <!-- Ajax -->  <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
@@ -52,11 +53,19 @@
    <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
  </div>
  <div id="modal-wrapper-select-social-page">
-   <div id="ssp-content">
+   <div id="ssp-content" class="animate">
      <h1 id="ssp-h1">select your main page from the dropdown below</h1>
      <select id="ssp-select"></select>
      <input id="ssp-submit" type="button" value="continue with selected page" onclick="selectMainFacebookPage()">
-     <input id="ssp-skip" type="button" value="skip..." onclick="document.getElementById('modal-wrapper-select-social-page').style.display = 'none';">
+     <input id="ssp-skip" type="button" value="skip..." onclick="document.getElementById('modal-wrapper-select-social-page-twitter').style.display = 'none';">
+   </div>
+ </div>
+ <div id="modal-wrapper-select-social-page-insta">
+   <div id="ssp-insta-content" class="animate">
+     <h1 id="ssp-insta-h1">select your main page from the dropdown below</h1>
+     <select id="ssp-insta-select"></select>
+     <input id="ssp-insta-submit" type="button" value="continue with selected page" onclick="selectMainInstagramPage()">
+     <input id="ssp-insta-skip" type="button" value="skip..." onclick="document.getElementById('modal-wrapper-select-social-page-insta').style.display = 'none';">
    </div>
  </div>
  <div id="modal-wrapper-support" class="modal-support">

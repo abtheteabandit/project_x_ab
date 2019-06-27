@@ -148,6 +148,16 @@ body{
   background: red;
 }
 
+/* Add Zoom Animation */
+.animate {
+    animation: zoom 0.6s
+}
+
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
 /* Page Content */
 
 .body-bg{

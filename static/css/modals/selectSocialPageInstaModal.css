@@ -1,0 +1,74 @@
+#modal-wrapper-select-social-page-insta{
+  z-index: 111;
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#ssp-insta-content{
+  background-image: url("/assets/Home/modalbg.png");
+  background-color: transparent;
+  background-size: cover;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 15% auto 15% auto;
+  width: 600px;
+  height: 300px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+}
+
+#ssp-insta-select{
+  width: 400px;
+  margin: 0 auto;
+  margin-top: 20px;
+  color: white;
+  background-color: rgba(0,0,0,0.7);
+  border-radius: 10px;
+  height: 50px;
+  font-size: 20pt;
+  border: none;
+  font-family: Industry;
+}
+
+#ssp-insta-submit{
+  border: none;
+  background-color: transparent;
+  margin-top: 40px;
+  height: 50px;
+  color: #56dff0;
+  font-size: 20pt;
+}
+
+#ssp-insta-skip{
+  border: none;
+  background-color: transparent;
+  color: #56dff0;
+  font-size: 12pt;
+}
+
+@media(max-width: 600px){
+  #ssp-insta-content{
+    width: 300px;
+    height: 400px;
+  }
+  #ssp-insta-h1{
+    font-size: 22pt;
+  }
+  #ssp-insta-select{
+    width: 250px;
+    font-size: 14pt;
+  }
+  #ssp-insta-submit{
+    width: 250px;
+    height: 100px;
+    white-space: normal;
+    margin-top: 10px;
+  }
+}
