@@ -614,7 +614,7 @@
 
 						<div id="reg_form" class="modal-content animate">
 
-							<div class="imgcontainer">
+							<div id="reg-imgcontainer">
 						   <span onclick="document.getElementById('modal-wrapper-register').style.display='none'" class="close" title="Close PopUp">&times;</span>
 						   <h1 id="register-modal-header">register</h1>
 						  </div>
@@ -622,9 +622,10 @@
 							<div id="reg_1" class="container">
 								<input minlength="3" maxlength="15" class="modal-input" id="reg_username" type="text" placeholder="username">
 								<input class="modal-input" id="reg_email" type="text" placeholder="email address">
+								<input maxlength="10" class="modal-input" id="reg_phone" type="tel" placeholder="phone number">
 								<input class="modal-input" id="reg_password" type="password" placeholder="password">
 								<input class="modal-input" id="reg_confirm" type="password" placeholder="confirm password">
-								<button class="popUpButtons" id="reg_submit" onclick="register()">Register</button>
+								<button id="reg_submit" onclick="register()">Register</button>
 								<div id="other-register-grid">
 									<a id="signup-with-twitter-btn" href='http://localhost:1600/auth/twitter' class="modal-button"><i class="fab fa-twitter"></i> Sign Up with Twitter</a>
 									<a id="signup-with-fb-btn" href='http://localhost:1600/loginWithFacebook' class="modal-button"><i class="fab fa-facebook-f"></i> Sign Up with Facebook</a>

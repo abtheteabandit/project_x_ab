@@ -11,6 +11,12 @@
   background-color: rgba(0,0,0,0.4);
 }
 
+#reg-imgcontainer {
+  text-align: center;
+  margin: 12px 0 12px 0;
+  position: relative;
+}
+
 #reg_form{
   background-image: url("/assets/Home/modalbg.png");
   background-color: transparent;
@@ -27,7 +33,7 @@
 #register-modal-header{
   text-align:left;
   padding-left: 20px;
-  font-size: 50pt;
+  font-size: 40pt;
 }
 
 /* The Close Button (x) */
@@ -75,6 +81,19 @@
   text-align: center;
 }
 
+#reg_submit {
+  background-color: transparent;
+  color: #56dff0;
+  margin: 8px 26px;
+  border: none;
+  cursor: pointer;
+  width: 90%;
+  font-size: 32px;
+}
+#reg_submit:hover {
+    opacity: 0.8;
+}
+
 @media(max-width: 550px){
   #reg_form{
     width: 300px;
@@ -86,11 +105,5 @@
   #register-modal-header{
     font-size: 20pt;
     margin-bottom:10px;
-  }
-  #reg_submit{
-    height: 10px;
-    width: 100px;
-    text-align: left;
-    margin-right: 65px;
   }
 }

@@ -35,6 +35,7 @@ var isLoggedIn=false;
 // AB document stuff//
 function init(){
 
+
   document.getElementById('search_input').addEventListener('keyup', function(e){
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13) {
@@ -80,8 +81,8 @@ function init(){
         samples.push(aSample);
       }
       if(container.width >= 600){
-        rainTimer = setInterval(addDrop, 1600);
-      	setInterval(animate, 40);
+        // rainTimer = setInterval(addDrop, 1600);
+      	// setInterval(animate, 40);
       }
     });
   }
