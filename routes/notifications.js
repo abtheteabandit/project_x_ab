@@ -175,7 +175,6 @@ module.exports = router=>{
 
   }
 */
-var textbelt = require('textbelt');
 
   router.post('/testSMS', (req, res)=>{
     let transporter = nodeMailer.createTransport({
