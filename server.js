@@ -728,9 +728,9 @@ router.post("/makePostOnPage", function(req, res){
 database.connect(db => {
 	console.log("Got in database connect");
 	//find the user in the db
-	db.db('users').collection('users').findOne({ 'username': username}, (err, obj) => {
+	db.db('users').collection('users').findOne({ 'username': req.session.key}, (err, obj) => {
 		if (err) {
-			console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+			console.error(`Login request from ${req.ip} (for ${req.session.key}) returned error: ${err}`)
 			res.status(500).end()
 		}
 
@@ -743,33 +743,35 @@ database.connect(db => {
 			res.status(500).send("Token is expired, please reconnect facebook in promotions")
 		}
 
+		//get the massage
+		const message = req.body.message
+		const pageToken = obj.facebook.pageToken
+		const pageId = obj.facebook.pageId
+
+		//set the parameters
+		var options = {
+			url: 'https://graph.facebook.com/' + pageId + '/feed?message=' + message + '&access_token=' + pageToken,
+			method: 'POST'
+		};
+
+		function callback(error, response, body) {
+			if (!error && response.statusCode == 200) {
+					console.log(body);
+			}
+			//success case
+			console.log(body);
+			res.status(200).send('Success');
+		}
+
+		//make the post request
+		request(options, callback);
+
 		db.close();
 		})
 	}, err => {
 			console.warn("Couldn't connect to database: " + err)
 			res.status(500).end()
 	});
-
-	//get the massage
-	const message = req.body.message
-
-	//set the parameters
-	var options = {
-		url: 'https://graph.facebook.com/452827048617657/feed?message=' + message + '&access_token=' + pageToken,
-		method: 'POST'
-	};
-
-	function callback(error, response, body) {
-		if (!error && response.statusCode == 200) {
-				console.log(body);
-		}
-		//success case
-		console.log(body);
-		res.status(200).send('Success');
-	}
-
-	//make the post request
-	request(options, callback);
 
 	})
 
