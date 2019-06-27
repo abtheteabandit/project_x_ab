@@ -35,6 +35,7 @@ var postToFB = false;
 var postToInsta = false;
 var downloadedPromo=false;
 var messageOn = null;
+var ourBands = null;
 globalGigs = [];
 //CHNAGE GIGS SECTION:?////////
 
@@ -2737,10 +2738,12 @@ function getUserInfo(user){
     console.log("bands from db are: " + JSON.stringify(result));
     var bands = JSON.parse(JSON.stringify(result));
     user['bands']=bands;
+    ourBands = bands;
     $.get('/getGigs', {'creator':username}, result => {
       console.log("gigs from db are: " + JSON.stringify(result));
       globalGigs = JSON.parse(JSON.stringify(result));
       user['gigs']=globalGigs;
+
       document.getElementById('userNameHeader').innerHTML=user['username'];
       createWebPage(user);
   	});
@@ -4254,6 +4257,80 @@ function parseQueryString(str){
 //MESSAGING SECTION:
 var socket = io();
 function sendMessage(body, recID){
+  //validates text to protect us
+  console.log('SENDING MESSAGE BODY IS: ' + body);
+  if (body==""){
+    alert('Sorry, you must enter some text to send a message.');
+    return;
+  }
+  if (body==" "){
+    alert('Sorry, you must enter some text to send a message.');
+    return;
+  }
+
+  //check if text is email
+  if (body.includes("@")){
+    console.log('@ detetced');
+    alert('Hmmm...we saw that you tried to share an email. We ask that all communication occur on Banda to ensure the safety of our users and fair transactions.\nThank you, and keep Banding Together!');
+    return;
+  }
+
+  // check if whole text is phone number
+  var intRegex = /[0-9 -()+]+$/;
+  if((body.length > 6) && (intRegex.test(body)))
+  {
+    console.log('No phone number in chat');
+    alert('Hmmm...we saw that you tried to share a phone number. We ask that all communication occur on Banda to ensure the safety of our users and fair transactions.\nThank you, and keep Banding Together!');
+    return;
+  }
+
+  //check for internet links and socials
+  var lowerCased = body.toLowerCase();
+  if (lowerCased.includes('facebook') || lowerCased.includes('twitter') || lowerCased.includes('snapchat') || lowerCased.includes('instagram')){
+    alert('Hmmm...we saw that you tried to share a social media. We ask that all communication occur on Banda to ensure the safety of our users and fair transactions.\nThank you, and keep Banding Together!');
+    return;
+  }
+  if (lowerCased.includes('www') || lowerCased.includes('.com') || lowerCased.includes('.net') || lowerCased.includes('https') || lowerCased.includes('http')){
+    alert('Hmmm...we saw that you tried to share an outside link. We ask that all communication occur on Banda to ensure the safety of our users and fair transactions.\nThank you, and keep Banding Together!');
+    return;
+  }
+
+  //check if any word is a phone number
+  var words = body.split(' ');
+
+  for (var str in words){
+
+    var word = words[str];
+    console.log('word: ' + word);
+
+    if((word.length > 6) && (intRegex.test(word)))
+    {
+      alert('Hmmm...we saw that you tried to share a phone number. We ask that all communication occur on Banda to ensure the safety of our users and fair transactions.\nThank you, and keep Banding Together!');
+      console.log('No phone number in chat');
+      return;
+    }
+  }
+
+  //check if user is sending band or gig name
+  if (ourBands){
+    for (var b in ourBands){
+      if (lowerCased.includes(ourBands[b].name.toLowerCase())) {
+        alert('Hmmm...we saw that you tried to share one of your band names. We ask that all communication occur on Banda to ensure the safety of our users and fair transactions.\nThank you, and keep Banding Together!');
+        return;
+      }
+    }
+  }
+  if (globalGigs){
+    for (var g in globalGigs){
+      if (lowerCased.includes(globalGigs[g].name.toLowerCase())) {
+        alert('Hmmm...we saw that you tried to share the name of one your events.We ask that all communication occur on Banda to ensure the safety of our users and fair transactions.\nThank you, and keep Banding Together!');
+        return;
+      }
+    }
+  }
+
+
+
   //set body to text from box and rec id to the inteded reciver's user ID
   var today = new Date();
   var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
