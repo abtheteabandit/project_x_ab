@@ -43,7 +43,7 @@ var   FacebookStrategy = require('passport-facebook').Strategy
 var   TwitterStrategy = require('passport-twitter').Strategy;
 var   request = require('request')
 var   axios = require('axios')
-const url = require('url'); 
+const url = require('url');
 var querystring = require('querystring');
 
 //social media access token
@@ -129,6 +129,7 @@ require('./routes/meta-data.js')(router, app) //for exporting meta-data
 require('./routes/support.js')(router, app) //for letting customers email us with issues.
 require('./routes/promotions.js')(router, app) //for letting users find contacts, create promos and post them
 require('./routes/media.js')(router, app) //for getting media based on username
+require('./routes/notifications.js')(router, app) // for real time notifications
 
 
 
@@ -294,7 +295,7 @@ function(req, token, tokenSecret, profile, done) {
 				console.log('Req session key after inserting user for register is: ' + req.session.key);
 				db.close();
 			} else {
-				//if not, create a new user 
+				//if not, create a new user
 				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
 					//catch error
 					if (err) {
@@ -517,7 +518,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 	let profile_id = profile.id
 	let token = accessToken
 	let refresh = refreshToken
-	
+
 axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
 	.then(function (response) {
 
@@ -554,7 +555,7 @@ axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_
 		// always executed
 		return cb(null, profile);
 	});
-	
+
 }));
 
 //route to get facebook access token
@@ -802,7 +803,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 
 	// 		console.log("the long token is " + longToken)
 
-			
+
 	// 		//store the access tokens and profile information
 	// 		axios.get("https://graph.facebook.com/v3.2/me/accounts?access_token=" + longToken)
 	// 			.then(function (response) {
@@ -885,7 +886,7 @@ router.get('/inst/token/failedAuth', (req, res) => {
 				db.close();
 			}
 			console.log(obj.instagram)
-			
+
 		})
 	}, err => {
 		console.warn("Couldn't connect to database: " + err)

@@ -33,6 +33,8 @@
     "request": "^2.88.0",
     "socket.io": "^2.2.0",
     "stripe": "^6.28.0",
+    "tel-carrier": "^1.3.10",
+    "textbelt": "0.0.4",
     "twilio": "^3.31.1",
     "twit": "^2.2.11"
   },
