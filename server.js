@@ -909,7 +909,7 @@ router.get('/inst/token/successAuth', (req, res) => {
 				db.close();
 			}
 			let token = obj.instagram[obj.instagram.length-1].accessToken
-			let xurl = 'http://localhost:1600/promo#'
+			let xurl = 'http://localhost:1600/promo#?'
 			//store the access tokens and profile information
 			axios.get("https://graph.facebook.com/v3.2/me/accounts?access_token=" + token)
 				.then(function (response) {
@@ -920,7 +920,7 @@ router.get('/inst/token/successAuth', (req, res) => {
 						console.log(pages.data[i])
 						xurl += "page" + i + "=" + pages.data[i].name + "&id" + i + "=" + pages.data[i].id + "&"
 					}
-					xurl += "pageNum=" + pages.data.length + "&isPromo=true"
+					xurl += "pageNum=" + pages.data.length + "&isPromo=true" + "&isInsta=true"
 					console.log(xurl + " is the url !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 					return res.redirect(xurl);
 				})
