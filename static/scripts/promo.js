@@ -106,7 +106,7 @@ function init(){
 
   var parsedURL =  parseURL(window.location.href);
   console.log("parsed url is below")
-  
+
   console.log(JSON.stringify(parsedURL));
   if(parsedURL.hasOwnProperty('searchObject') && parsedURL.searchObject != null){
     if(parsedURL.searchObject.isPromo == 'true'){
@@ -358,7 +358,7 @@ function parseURL(url){
      searchObject['pages'] = [];
      console.log(searchObject['numPages'] +  " is the num pages")
      var i = 0;
-     while(i<(numPages)){
+     while(i<(2*numPages)){
        console.log('looping a page');
        var nameSplit = queries[i].split('=');
        var idSplit = queries[i+1].split('=');
