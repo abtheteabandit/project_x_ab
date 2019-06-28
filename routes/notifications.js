@@ -1,10 +1,10 @@
 module.exports = router=>{
   const OUR_ADDRESS = 'banda.confirmation@gmail.com',
         database = require ('../database')
-        /*
+
   router.post('/newGigNotification', (req, res)=>{
     if (!req.session.key){
-      console.log('No logged in user tried to check for gig notification');
+      console.log('Non logged in user tried to check for gig notification');
       res.status(401).end();
     }
     if (!req.body){
@@ -12,21 +12,22 @@ module.exports = router=>{
       res.status(401).end();
     }
     else{
-      var {id} = req.body;
-      if (!id){
-        console.log('no id');
+      var {creator} = req.body;
+      if (!creator){
+        console.log('no creator');
         res.status(401).end();
       }
       else{
         database.connect(db=>{
-          db.db('gigs').collection('gigs').findOne({'_id':database.objectId(id)}, (err1, ourGig)=>{
+          db.db('gigs').collection('gigs').find({'creator':creator}).toArray((err1, ourGigs)=>{
             if (err1){
-              console.log('There was an error finding gig with id: ' + id + ' Error: ' + err1);
+              console.log('There was an error finding gigs with creator: ' + creator + ' Error: ' + err1);
               res.status(500).end();
               db.close();
             }
             else{
-              if (ourGig){
+              if (ourGigs){
+                var ourGig = ourGigs[ourGigs.length-1];
                 db.db('bands').collection('bands').find({'zipcode':ourGig.zipcode}).toArray((err2, allBands)=>{
                   if (err2){
                     console.log('There was an error finding bands with zipcode: ' + zipcode + ' Error: ' + err2);
@@ -53,10 +54,10 @@ module.exports = router=>{
                               if (bandUser.hasOwnProperty('phone')){
                                 if (bandUser.hasOwnProperty('newGigNotifications')){
                                   if (bandUser.newGigNotifications){
-                                    sendBandNewGigText(bandUser, ourGig, cbErr=>{
+                                    sendBandNewGigText(bandUser, band, ourGig, cbErr=>{
                                       console.log('There was an error sending SMS to bandUser: ' + username + ' with phone: ' + bandUser.phone + ' Error: ' + cbErr);
                                       //send email
-                                      sendBandNewGigEmail(bandUser, ourGig, cbErr2=>{
+                                      sendBandNewGigEmail(bandUser, band, ourGig, cbErr2=>{
                                         console.log('There was an error sending email to bandUser: ' + username + ' with email: ' + bandUser.email + ' Error: ' + cbErr2);
 
                                       }, cbOk2=>{
@@ -67,7 +68,7 @@ module.exports = router=>{
                                     }, cbOk=>{
                                       console.log('Sent SMS to bandUser: ' + username + ' with phone: ' + bandUser.phone);
                                       //send Email
-                                      sendBandNewGigEmail(bandUser, ourGig, cbErr2=>{
+                                      sendBandNewGigEmail(bandUser, band, ourGig, cbErr2=>{
                                         console.log('There was an error sending email to bandUser: ' + username + ' with email: ' + bandUser.email + ' Error: ' + cbErr2);
 
                                       }, cbOk2=>{
@@ -84,10 +85,10 @@ module.exports = router=>{
                                 }
                                 else{
                                   //send text
-                                  sendBandNewGigText(bandUser, ourGig, cbErr=>{
+                                  sendBandNewGigText(bandUser, band, ourGig, cbErr=>{
                                     console.log('There was an error sending SMS to bandUser: ' + username + ' with phone: ' + bandUser.phone + ' Error: ' + cbErr);
                                     //send email
-                                    sendBandNewGigEmail(bandUser, ourGig, cbErr2=>{
+                                    sendBandNewGigEmail(bandUser, band, ourGig, cbErr2=>{
                                       console.log('There was an error sending email to bandUser: ' + username + ' with email: ' + bandUser.email + ' Error: ' + cbErr2);
 
                                     }, cbOk2=>{
@@ -98,7 +99,7 @@ module.exports = router=>{
                                   }, cbOk=>{
                                     console.log('Sent SMS to bandUser: ' + username + ' with phone: ' + bandUser.phone);
                                     //send Email
-                                    sendBandNewGigEmail(bandUser, ourGig, cbErr2=>{
+                                    sendBandNewGigEmail(bandUser, band, ourGig, cbErr2=>{
                                       console.log('There was an error sending email to bandUser: ' + username + ' with email: ' + bandUser.email + ' Error: ' + cbErr2);
 
                                     }, cbOk2=>{
@@ -111,7 +112,7 @@ module.exports = router=>{
                               }
                               else{
                                 // no phone just email
-                                sendBandNewGigEmail(bandUser, ourGig, cbErr2=>{
+                                sendBandNewGigEmail(bandUser, band, ourGig, cbErr2=>{
                                   console.log('There was an error sending email to bandUser: ' + username + ' with email: ' + bandUser.email + ' Error: ' + cbErr2);
 
                                 }, cbOk2=>{
@@ -144,7 +145,35 @@ module.exports = router=>{
     }
   });
 
-  function sendBandNewGigText(ourUser, theGig, cbOk, cbErr){
+  function sendBandNewGigText(ourUser, theBand, theGig, cbOk, cbErr){
+    var cats = theGig.categories
+    if (cats.hasOwnProperty('genres')){
+      var genres = ""
+      for (var g in cats.genres){
+        var newG = cats.genres[g]+', '
+        genres += newG;
+      }
+    }
+    if (genres==""){
+      var body = 'Message From Banda:\nHello '+ourUser.username+',\n a new gig was just added in your area! It might be good for your band, '+theBand.name+'. You should login into www.banda-inc.com, search for an event, and apply as one of your bands now! Thank you and keep Banding Together. \n (You can disable these notifications in settings on your Home page).'
+
+    }
+    else{
+      var body = 'Message From Banda:\nHello '+ourUser.username+',\n a new gig with genres: '+genres+'was just added in your area! It might be good for your band, '+theBand.name+'. You should login into www.banda-inc.com, search for an event, and apply as one of your bands now! Thank you and keep Banding Together. \n (You can disable these notifications in settings on your Home page).'
+    }
+    var phone = ourUser.phone;
+    if (!(phone.length==10)){
+      cbErr('Phone number: '+phone+' was incorrect length for user: ' + ourUser.username);
+    }
+    else{
+      sendSMS(phone, body, cb=>{
+        console.log('Got cb from sendSMS.');
+        cbOk(cb);
+      });
+    }
+  }
+
+  function sendBandNewGigEmail(recUser, theBand, gig, cbOk, cbErr){
     let transporter = nodeMailer.createTransport({
         host: 'smtp.gmail.com', // go daddy email host port
         port: 465, // could be 993
@@ -154,29 +183,45 @@ module.exports = router=>{
             pass: 'N5gdakxq9!'
         }
     });
-    mailOptions = {
+    var cats = gig.categories
+    if (cats.hasOwnProperty('genres')){
+      var genres = ""
+      for (var g in cats.genres){
+        var newG = cats.genres[g]+', '
+        genres += newG;
+      }
+    }
+    if (genres==""){
+      var body = 'Hello '+recUser.username+',\n a new gig was just added in your area! It might be good for your band, '+theBand.name+'. You should login into www.banda-inc.com, search for an event, and apply as one of your bands now! Thank you and keep Banding Together.\nSincerely,\nyour team at Banda.'
+
+    }
+    else{
+      var body = 'Hello '+recUser.username+',\n a new gig with genres: '+genres+'was just added in your area! It might be good for your band, '+theBand.name+'. You should login into www.banda-inc.com, search for an event, and apply as one of your bands now! Thank you and keep Banding Together.\nSincerely,\nyour team at Banda.'
+    }
+
+    var mailOptions = {
        from: OUR_ADDRESS, // our address
-       to: ourUser.phone+'@SMS_GATEWAY', // who we sending to
-       subject: "QR Coupon Code From Banda For "+theGig.name+"", // Subject line
-       text: "", // plain text body
-       html: "<div><h1>Hello, "+req.session.key+".</h1> Here is your QR code for the coupon you created for the event "+theGig.name+". You can print this page or set it up at your bar to let customers redeem their coupon. If a customer can display a page that says, '"+theGig.name+"\n Coupon Verified' it is from this coupon, as they can only display that page via entering the password they created through this promotion after scanning this QR Code. If you have any questions at all simply reply to this email. Enjoy the music and thank you for using Banda. —Your team at Banda.</div> <h1>QR Code Attached</h1>>"// html body
+       to: recUser.email, // who we sending to
+       subject: "New Gig Added In Your Area!", // Subject line
+       text: body, // plain text body
+       html: ""// html body
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-       if (error) {
-          console.log('There was an error sending the email: ' + error);
+    transporter.sendMail(mailOptions, (error5, info5) => {
+       if (error5) {
+          console.log('There was an error sending the email: ' + error5);
+          cbErr(error5);
        }
-
-       console.log('Message sent: ' + JSON.stringify(info));
-       console.log('mail options: ' + mailOptions.html)
+       else{
+         console.log('Message sent: ' + JSON.stringify(info5));
+         cbOk(info5);
+       }
      });
   }
-  function sendBandNewGigEmail(recUser, gig, cbOk, cbErr){
 
-  }
-*/
 
-  router.post('/testSMS', (req, res)=>{
+
+  function sendSMS(phone, body, cb){
     let transporter = nodeMailer.createTransport({
         host: 'smtp.gmail.com', // go daddy email host port
         port: 465, // could be 993
@@ -186,11 +231,13 @@ module.exports = router=>{
             pass: 'N5gdakxq9!'
         }
     });
-    mailOptions = {
+
+    //AT&T
+    var mailOptions = {
        from: OUR_ADDRESS, // our address
-       to: '4146904606'+'@txt.att.net', // who we sending to
+       to: phone+'@txt.att.net', // who we sending to
        subject: "", // Subject line
-       text: "HELLO", // plain text body
+       text: body, // plain text body
        html: ""// html body
     };
 
@@ -199,7 +246,398 @@ module.exports = router=>{
           console.log('There was an error sending the email: ' + error);
        }
        console.log('Message sent: ' + JSON.stringify(info));
-       res.status(200).send('AIDS');
+
+       //verizon
+       mailOptions.to = phone+'@vtext.com';
+       transporter.sendMail(mailOptions, (error2, info1) => {
+          if (error2) {
+             console.log('There was an error sending the email: ' + error2);
+          }
+          console.log('Message sent: ' + JSON.stringify(info1));
+
+          //sprint
+          mailOptions.to = phone+'@messaging.sprintpcs.com';
+          transporter.sendMail(mailOptions, (error3, info2) => {
+             if (error3) {
+                console.log('There was an error sending the email: ' + error3);
+             }
+             console.log('Message sent: ' + JSON.stringify(info2));
+
+             //TMobile
+             mailOptions.to = phone+'@tmomail.net';
+             transporter.sendMail(mailOptions, (error4, info4) => {
+                if (error4) {
+                   console.log('There was an error sending the email: ' + error4);
+                }
+                console.log('Message sent: ' + JSON.stringify(info4));
+
+                //US Cellular
+                mailOptions.to = phone+'@email.uscc.net';
+                transporter.sendMail(mailOptions, (error5, info5) => {
+                   if (error5) {
+                      console.log('There was an error sending the email: ' + error5);
+                      cb('Error5: ' + error5);
+                   }
+                   else{
+                     console.log('Message sent: ' + JSON.stringify(info5));
+                     cb(info5);
+                   }
+                 });
+              });
+           });
+        });
      });
+  }
+
+  router.post('/bookingNotification', (req, res)=>{
+    if (!req.session.key){
+      console.log('Non logged in user tried to check for booking notification');
+      res.status(401).end();
+    }
+    if (!req.body){
+      console.log('No body booking notification');
+      res.status(401).end();
+    }
+    else{
+      var {gigID, bandID} = req.body
+      if (!gigID || !bandID){
+        res.status(401).end();
+      }
+      else{
+        database.connect(db=>{
+          db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err1, ourGig)=>{
+            if (err1){
+              console.log('THere was an error finding gig: ' + gigID + ' Error: ' + err1);
+              res.status(500).end();
+              db.close();
+            }
+            else{
+              db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err2, ourBand)=>{
+                if (err2){
+                  console.log('THere was an error finding band: ' + bandID + ' Error: ' + err2);
+                  res.status(500).end();
+                  db.close();
+                }
+                else{
+                  db.db('users').collection('users').findOne({'username':ourBand.creator}, (err3, recUser)=>{
+                    if (err3){
+                      console.log('THere was an error finding user: ' + ourBand.creator + ' Error: ' + err3);
+                      res.status(500).end();
+                      db.close();
+                    }
+                    else{
+                      sendBookingNotificationEmail(recUser, ourBand, ourGig, cb=>{
+                        if (recUser.hasOwnProperty('phone')){
+                          if (recUser.hasOwnProperty('notificationForBooking')){
+                            if (recUser.notificationForBooking){
+                              var body = 'Message from Banda:\nCongratulations! Your band, '+ourBand.name+' was just booked for the event, '+ourGig.name+'. This event is scheduled for '+ourGig.date+'. Login into www.banda-inc.com and click "home" to see the event under '+ourBand.name+'. Thank you, good luck, and keep Banding Together! --- \n Sincerely,,\nyour team at Banda.'
+                              sendSMS(recUser.phone, body, cb=>{
+                                res.status(200).send('We have notified ' +ourBand.name+' that you booked them.');
+                                db.close();
+                              });
+                            }
+                            else{
+                              res.status(200).send('We have notified ' +ourBand.name+' that you booked them.');
+                              db.close();
+                            }
+                          }
+                          else{
+                            var body = 'Message from Banda:\nCongratulations! Your band, '+ourBand.name+' was just booked for the event, '+ourGig.name+'. This event is scheduled for '+ourGig.date+'. Login into www.banda-inc.com and click "home" to see the event under '+ourBand.name+'. Thank you, good luck, and keep Banding Together! --- \n Sincerely,,\nyour team at Banda.'
+                            sendSMS(recUser.phone, body, cb=>{
+                              res.status(200).send('We have notified ' +ourBand.name+' that you booked them.');
+                              db.close();
+                            });
+                          }
+                        }
+                        else{
+                          res.status(200).send('We have notified ' +ourBand.name+' that you booked them.');
+                          db.close();
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }, dbErr=>{
+          console.log('There was an error connecting to Mongo: ' + dbErr);
+          res.status(500).end();
+        });
+      }
+    }
   });
-}
+
+  function sendBookingNotificationEmail(recUser, ourBand, ourGig, cb){
+    let transporter = nodeMailer.createTransport({
+        host: 'smtp.gmail.com', // go daddy email host port
+        port: 465, // could be 993
+        secure: true,
+        auth: {
+            user: 'banda.confirmation@gmail.com',
+            pass: 'N5gdakxq9!'
+        }
+    });
+    var body = 'Congratulations! Your band '+ourBand.name+' was just booked for the event '+ourGig.name+'. This event is scheduled for '+ ourGig.date+'. Login to www.banda-inc.com and click "home" to go your home page to see the event under '+ourBand.name+'. Thank you, good luck, and keep Banding Together! --- \n Sincerely,,\nyour team at Banda.';
+    var mailOptions = {
+       from: OUR_ADDRESS, // our address
+       to: recUser.email, // who we sending to
+       subject: "Congratulations, you have booked an event!", // Subject line
+       text: body, // plain text body
+       html: ""// html body
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+       if (error) {
+          console.log('There was an error sending the email: ' + error);
+          cb(error);
+       }
+       else{
+         console.log('Message sent: ' + JSON.stringify(info));
+         cb(info);
+       }
+     });
+
+  }
+
+router.post('/applicationNotification', (req, res)=>{
+  if (!req.session.key){
+    console.log('Non logged in user tried to check for booking notification');
+    res.status(401).end();
+  }
+  if (!req.body){
+    console.log('No body booking notification');
+    res.status(401).end();
+  }
+  else{
+    var {bandID, gigID} = req.body;
+    if (!bandID || !bandID){
+      console.log('Missing band or gig id');
+      res.status(403).end();
+    }
+    else{
+      database.connect(db=>{
+        db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err1, ourGig)=>{
+          if (err1){
+            console.log('There was an error finding gig: ' + gigID + ' Error: ' + err1);
+            res.status(500).end();
+            db.close();
+          }
+          else{
+            db.db('bands').collection('bands').findOne({'_id':database.objectId(bandID)}, (err2, ourBand)=>{
+              if (err2){
+                console.log('there was an error trying to find band: ' + bandID + 'Error: ' + err2);
+                res.status(500).end();
+                db.close();
+              }
+              else{
+                db.db('users').collection('users').findOne({'username':ourGig.creator}, (err3, recUser)=>{
+                  if (err3){
+                    console.log('there was an error trying to gig creator: ' + ourGig.creator + 'Error: ' + err3);
+                    res.status(500).end();
+                    db.close();
+                  }
+                  else{
+                    var body = 'Hello, '+recUser.username+'\nYou have just recieved an application from a band for your event, '+ourGig.name+' on ' +ourGig.date+'. Login to your account at www.banda-inc.com and click home on the Banda "b" to view this application. Thank you for using Banda and keep Banding Together.\nSincerely,,\nyour team at Banda.';
+                    var subject = 'You recieved an application for '+ourGig.name;
+                    sendEmail(recUser.email, body, subject, cb=>{
+                      if (recUser.hasOwnProperty('phone')){
+                        if (recUser.hasOwnProperty('notifyApplications')){
+                           body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)'
+                          sendSMS(recUser.phone, body, cb2=>{
+                            res.status(200).send('We have emailed and texted '+recUser.username+', the owner of: '+ourGig.name+', for you!');
+                            db.close();
+                          });
+                        }
+                        else{
+                           body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
+                          sendSMS(recUser.phone, body, cb2=>{
+                            res.status(200).send('We have emailed and texted '+recUser.username+', the owner of: '+ourGig.name+', for you!');
+                            db.close();
+                          });
+                        }
+                      }
+                      else{
+                        res.status(200).send('We have emailed '+recUser.username+', the owner of: '+ourGig.name+', for you!');
+                        db.close();
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }, dbErr=>{
+        console.log('There was an error connecting to Mongo: ' + dbErr);
+        res.status(500).end();
+      });
+    }
+  }
+});
+
+router.post('/promotionNotification', (req, res)=>{
+  if (!req.session.key){
+    console.log('Non logged in user tried to check for booking notification');
+    res.status(401).end();
+  }
+  if (!req.body){
+    console.log('No body booking notification');
+    res.status(403).end();
+  }
+  else{
+    var {askerName, promoterName} = req.body;
+    if (!askerName || !promoterName){
+      console.log('Missing promoter or asker name');
+      res.status(403).end();
+    }
+    else{
+      console.log('AKSER: ' + askerName + ' promoter: ' + promoterName);
+      database.connect(db=>{
+        db.db('users').collection('users').findOne({'username':askerName}, (err1, asker)=>{
+          if (err1){
+            console.log('There was an error finding asker user: ' + askerName + ' Error: ' + err1);
+            res.status(500).end();
+            db.close();
+          }
+          else{
+            db.db('users').collection('users').findOne({'username':promoterName}, (err2, promoter)=>{
+              if (err2){
+                console.log('there was an error trying to find promoter user: ' + promoterName + 'Error: ' + err2);
+                res.status(500).end();
+                db.close();
+              }
+              else{
+                var body = 'Hello ' +promoter.username+',\nYou have been asked to post something made by '+ asker.username+' on Banda. Login in to www.banda-inc.com and user the Banda "b" (top left corner) to navigate to your Home page, then click contacts (bottom right corner), then click on '+askerName+', then scroll to the bottom of the chat window and click view promotion. Posting takes very little time and really helps the community. Remember, a little kidness goes a long way! Thank you and keep Banding Together.\nSincerely,\nyour team at Banda.'
+                var subject = 'You have been asked to promote something on Banda!';
+                sendEmail(promoter.email, body, subject, cb=>{
+                  if (promoter.hasOwnProperty('phone')){
+                    if (promoter.hasOwnProperty('notifyPromotions')){
+                       body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
+                      sendSMS(promoter.phone, body, cb2=>{
+                        res.status(200).send('We have emailed and texted '+promoter.username+' for you!');
+                        db.close();
+                      });
+                    }
+                    else{
+                       body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
+                      sendSMS(promoter.phone, body, cb2=>{
+                        res.status(200).send('We have emailed and texted '+promoter.username+' for you!');
+                        db.close();
+                      });
+                    }
+                  }
+                  else{
+                    res.status(200).send('We have emailed '+promoter.username+' for you!');
+                    db.close();
+                  }
+                });
+              }
+            });
+          }
+        });
+      }, dbErr=>{
+        console.log('There was an error connecting to Mongo: ' + dbErr);
+        res.status(500).end();
+      });
+    }
+  }
+});
+
+router.post('/connectNotification', (req, res)=>{
+  if (!req.session.key){
+    console.log('Non logged in user tried to check for booking notification');
+    res.status(401).end();
+  }
+  if (!req.body){
+    console.log('No body booking notification');
+    res.status(403).end();
+  }
+  else{
+    var {askerID, friendID} = req.body;
+    if (!askerID || !friendID){
+      console.log('Missing friend or asker id');
+      res.status(403).end();
+    }
+    else{
+      database.connect(db=>{
+        db.db('users').collection('users').findOne({'_id':database.objectId(askerID)}, (err1, asker)=>{
+          if (err1){
+            console.log('There was an error finding asker user: ' + askerID + ' Error: ' + err1);
+            res.status(500).end();
+            db.close();
+          }
+          else{
+            db.db('users').collection('users').findOne({'_id':database.objectId(friendID)}, (err2, newFriend)=>{
+              if (err2){
+                console.log('there was an error trying to find friend user: ' + friendID + 'Error: ' + err2);
+                res.status(500).end();
+                db.close();
+              }
+              else{
+                var body = 'Hello ' +newFriend.username+',\nYou have been asked to connect by '+ asker.username+' on Banda. Login in to www.banda-inc.com and user the Banda "b" (top left corner) to navigate to your Home page, and a modal should appear. Remember, a new contact can mean a lot in this industry! Thank you and keep Banding Together.\nSincerely,\nyour team at Banda.'
+                var subject = 'You have been asked to connect on Banda!';
+                sendEmail(newFriend.email, body, subject, cb=>{
+                  if (newFriend.hasOwnProperty('phone')){
+                    if (newFriend.hasOwnProperty('notifyPromotions')){
+                       body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
+                      sendSMS(newFriend.phone, body, cb2=>{
+                        res.status(200).send('We have emailed and texted '+newFriend.username+' for you!');
+                        db.close();
+                      });
+                    }
+                    else{
+                       body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
+                      sendSMS(newFriend.phone, body, cb2=>{
+                        res.status(200).send('We have emailed and texted '+newFriend.username+' for you!');
+                        db.close();
+                      });
+                    }
+                  }
+                  else{
+                    res.status(200).send('We have emailed '+newFriend.username+' for you!');
+                    db.close();
+                  }
+                });
+              }
+            });
+          }
+        });
+      }, dbErr=>{
+        console.log('There was an error connecting to Mongo: ' + dbErr);
+        res.status(500).end();
+      });
+    }
+  }
+});
+
+  function sendEmail(email, body, theSubject, cb,){
+    let transporter = nodeMailer.createTransport({
+        host: 'smtp.gmail.com', // go daddy email host port
+        port: 465, // could be 993
+        secure: true,
+        auth: {
+            user: 'banda.confirmation@gmail.com',
+            pass: 'N5gdakxq9!'
+        }
+    });
+    var mailOptions = {
+       from: OUR_ADDRESS, // our address
+       to: email, // who we sending to
+       subject: theSubject, // Subject line
+       text: body, // plain text body
+       html: ""// html body
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+       if (error) {
+          console.log('There was an error sending the email: ' + error);
+          cb(error);
+       }
+       else{
+         console.log('Message sent: ' + JSON.stringify(info));
+         cb(info);
+       }
+     });
+  }
+}// end of exports

@@ -2510,7 +2510,18 @@ function presentConfirmBookingModal(bandName, bandID, gigID, theGig){
           var modal = document.getElementById("modal-wrapper-confirm-booking");
           modal.style.display = "none";
           document.getElementById("loader-book").style.display = "none";
-          document.location.reload();
+          $.post('/bookingNotification', {'gigID':gigID, 'bandID':bandID}, res3=>{
+            if (res3){
+              if (res3==""){
+
+              }
+              else{
+                alert(res3);
+              }
+            }
+            document.location.reload();
+          })
+
         });
       }
       else{
@@ -3599,7 +3610,9 @@ function sendGigToDB(lat,lng, myNewGig) {
               loader.style.display = "none";
               alert('Congratulations, you have posted the event "' + name + '" to Banda! Band applications will be coming in soon. You can refresh the page to see/edit your event. Check/refresh your home page regularly to see new applicants. You can also search for bands as this event now and use our "Ask user to apply..." feature to allow an artist to apply directly to your event.');
               document.getElementById("modal-wrapper-new-gig").style.display = "none";
-              document.location.reload();
+              $.post('/newGigNotification', {'creator':username}, res4=>{
+                document.location.reload();
+              })
             });
       }
   });
@@ -3638,6 +3651,13 @@ class ContactLink {
               $.post('/messages', {'senderID':our_user_id, 'recieverID':id, 'body':'<button class="open-promo-btn" value='+username+'*;!'+valueSelected+' onclick="openPromotionModal(this)">view promotion</button>','timeStamp':now}, res3=>{
                 alert('We have asked '+name+' to post your most recently created promotion! Feel free to message them as well to follow up.');
                 document.getElementById("modal-wrapper-select-promo").style.display = "none";
+                $.post('/promotionNotification', {'askerName':username, 'promoterName':name}, res3=>{
+                  if (res3){
+                    if (!(res3=="")){
+                      alert(res3);
+                    }
+                  }
+                });
               });
             }
             else{
@@ -4410,7 +4430,14 @@ function submitBand(){
   //alert(gigID);
   $.post('/apply', {'bandID':bandID, 'gigID':gigID}, result=>{
     alert(result);
-    document.location.reload();
+    $.post('/applicationNotification', {'bandID':bandID, 'gigID':gigID}, res5=>{
+      if (res5){
+        if (!(res5=="")){
+          alert(res5);
+        }
+      }
+      document.location.reload();
+    })
   });
   document.getElementById('modal-wrapper-choose-band-for-app').style.display='none'
 }

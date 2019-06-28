@@ -39,14 +39,14 @@ class SearchResult {
     this.newOverlay.setAttribute("id",this.overlayID);
     // follower count
     this.followerCount = document.createElement("p");
-    this.followers = 0;
+    this.followers = 'unknown';
     // figure out how many followers there are
     // TODO
     this.followerCount.className = "follower-count-p";
     this.followerCount.innerHTML = "followers: "+this.followers;
     // engage score
     this.engagementScore = document.createElement("p");
-    this.engagement = 0;
+    this.engagement = 'unknown';
     // figure out total user engagement
     // TODO
     this.engagementScore.className = "user-engagement-p";
@@ -651,7 +651,6 @@ function convertZip(mySearch){
       var lat = data.coord.lat;
       var lng = data.coord.lon;
       $.get('/search_promos', {'lat':lat, 'lng':lng, 'searchText':mySearch.text}, res3=>{
-        alert(JSON.stringify(res3));
         fillResultsTable(res3['data']['overallMatchers']);
         // console.log(JSON.stringify(res3['data']['overallMatchers']));
       });
@@ -672,6 +671,13 @@ function sendContactRequest(recieverID, name){
   console.log('reciever id is: ' + recieverID);
   $.post('/messages', {'senderID':ourUser._id, 'recieverID':recieverID, 'body':'<button id="'+recieverID+'">'+ourUser.username+'"wants to connect with you."</button>', 'timeStamp':now}, res=>{
     alert('We have sent your contact request to ' + name + ' check your contacts tab often to see if they have accepted, and been added to your contacts.');
+    $.post('/connectNotification', {'askerID':ourUser._id, 'friendID':recieverID}, res2=>{
+      if (res2){
+        if (!(res2=="")){
+          alert(res2);
+        }
+      }
+    })
   });
 }
 function requestSupport(){
