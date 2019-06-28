@@ -2751,28 +2751,49 @@ function declineNewCon(){
 function getUserInfo(user){
   console.log('in get info and username is ' + user['username']);
   var username = user['username'];
-    notifyPromotions=true;
-    notifyApplications=true;
-    notifyConnect=true;
-    notificationForBooking=true;
-    newGigNotification = true;
     if (user.hasOwnProperty('phone')){
       ourPhone=user.phone
     }
    if (user.hasOwnProperty('notifyPromotions')){
-     notifyPromotions=user.notifyPromotions;
+     if (user.notifyPromotions=='true'){
+       notifyPromotions=true;
+     }
+     else{
+       notifyPromotions=false;
+     }
+
    }
    if (user.hasOwnProperty('notifyApplications')){
-     notifyApplications=user.notifyApplications;
+     if (user.notifyApplications=='true'){
+       notifyApplications=true;
+     }
+     else{
+       notifyApplications=false;
+     }
    }
    if (user.hasOwnProperty('notifyConnect')){
-     notifyConnect=user.notifyConnect;
+     if (user.notifyConnect=='true'){
+       notifyConnect=true;
+     }
+     else{
+       notifyConnect=false;
+     }
    }
    if (user.hasOwnProperty('notificationForBooking')){
-     notificationForBooking=user.notificationForBooking;
+     if (user.notificationForBooking=='true'){
+       notificationForBooking=true;
+     }
+     else{
+       notificationForBooking=false;
+     }
    }
-   if (user.hasOwnProperty('newGigNotification')){
-     newGigNotification=user.newGigNotification;
+   if (user.hasOwnProperty('newGigNotifications')){
+     if (user.newGigNotifications=='true'){
+       newGigNotification=true;
+     }
+     else{
+       newGigNotification=false;
+     }
    }
 
   $.get('/getBands', {'creator':username}, result => {
@@ -5217,11 +5238,26 @@ function downloadFromCreatePull(){
 function prepareNotificationModal(){
   document.getElementById('modal-wrapper-account-settings').style.display = 'none';
   // load phone number into #notification-settings-phone and load checkmarks for each thing
-  document.getElementById('new-events-check')
-  document.getElementById('booked-check')
-  document.getElementById('promo-check')
-  document.getElementById('apply-check')
-  document.getElementById('contact-check')
+  console.log('New gig: not: ' + newGigNotification);
+  console.log('not for book: ' + notificationForBooking);
+  console.log('Note promo : ' + notifyPromotions);
+  console.log('notif  app: ' + notifyApplications);
+  console.log('New connect not: ' + notifyConnect);
+  if (newGigNotification==false){
+    document.getElementById('notify-new-events').checked = false;
+  }
+  if (notificationForBooking==false){
+    document.getElementById('notify-bands-booked').checked = false;
+  }
+  if (notifyPromotions==false){
+    document.getElementById('notify-promo-request').checked = false;
+  }
+  if (notifyApplications==false){
+    document.getElementById('notify-new-applicant').checked = false;
+  }
+  if (notifyConnect==false){
+    document.getElementById('notify-new-contact').checked = false;
+  }
 
   document.getElementById('modal-wrapper-notification-settings').style.display = 'block';
   if (!(ourPhone=="")){
@@ -5241,12 +5277,7 @@ function clickNotify(mode){
     }
     break;
     case 'connect':
-    if (notifyConnect){
-      notifyConnect=false;
-    }
-    else{
-      notifyConnect=true;
-    }
+      notifyConnect=(!notifyConnect);
     break;
     case 'booked':
     if (notificationForBooking){
@@ -5276,6 +5307,11 @@ function clickNotify(mode){
     break
 
   }
+  console.log('New gig: not: ' + newGigNotification);
+    console.log('not for book: ' + notificationForBooking);
+    console.log('Note promo : ' + notifyPromotions);
+    console.log('notif  app: ' + notifyApplications);
+    console.log('New connect not: ' + notifyConnect);
 }
 function saveNotify(){
   var phone = document.getElementById('notification-settings-phone').value;
@@ -5292,6 +5328,7 @@ function saveNotify(){
       alert('We have updated your notification settings!');
       document.getElementById('modal-wrapper-notification-settings').style.display = 'none';
       document.getElementById('modal-wrapper-account-settings').style.display = 'block';
+      document.location.reload();
     });
   }
 
