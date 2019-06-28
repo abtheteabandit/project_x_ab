@@ -105,6 +105,8 @@ function init(){
   getGigs();
 
   var parsedURL =  parseURL(window.location.href);
+  console.log("parsed url is below")
+
   console.log(JSON.stringify(parsedURL));
   if(parsedURL.hasOwnProperty('searchObject') && parsedURL.searchObject != null){
     if(parsedURL.searchObject.isPromo == 'true'){
@@ -346,7 +348,6 @@ function parseURL(url){
        return {searchObject: searchObject};
      }
 
-
      var pageNumSplit = queries[queries.length-2].split('=');
      var numPages = pageNumSplit[1];
      var isPromoSplit = queries[queries.length-1].split('=');
@@ -355,9 +356,9 @@ function parseURL(url){
      searchObject['numPages'] = numPages;
      searchObject['isPromo'] = isPromo;
      searchObject['pages'] = [];
-
+     console.log(searchObject['numPages'] +  " is the num pages")
      var i = 0;
-     while(i<(numPages)){
+     while(i<(2*numPages)){
        console.log('looping a page');
        var nameSplit = queries[i].split('=');
        var idSplit = queries[i+1].split('=');
