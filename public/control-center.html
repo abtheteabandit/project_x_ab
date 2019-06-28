@@ -39,6 +39,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/selectPromoModal.css">
     <link rel="stylesheet" type="text/css" href="/css/testing/tooltiptest.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createPullModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/notificationSettingsModal.css">
 
 
     <!-- jquery -->
@@ -527,8 +528,41 @@
         <span onclick="document.getElementById('modal-wrapper-account-settings').style.display='none'" id="settings-close" title="Close PopUp">&times;</span>
         <input class="change-payment-btn" type="button" value="add/change bank details" onclick="alterBankingDetails()"/>
         <input class="change-payment-btn" type="button" value="add/change credit card" onclick="alterCreditDetails()"/>
+        <input class="change-payment-btn" type="button" value="notifications" onclick="prepareNotificationModal()"/>
       </div>
     </div>
+    <div id="modal-wrapper-notification-settings">
+      <div id="notification-settings-content" class="animate">
+        <h1 id="notification-settings-h1">notification settings</h1>
+        <span onclick="document.getElementById('modal-wrapper-notification-settings').style.display='none'" id="notification-close" title="Close PopUp">&times;</span>
+        <div id="notification-settings-grid">
+          <input type="tel" id="notification-settings-phone" value="1234567890" maxlength="10" />
+          <label class="notification-settings-grid-item">Notify me of new events in my area
+            <input id="notify-new-events" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+          </label>
+          <label class="notification-settings-grid-item">Notify me when one of my bands gets booked
+            <input id="notify-bands-booked" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+          </label>
+          <label class="notification-settings-grid-item">Notify me when asked to promote
+            <input id="notify-promo-request" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+          </label>
+          <label class="notification-settings-grid-item">Notify me when a band applies to one of my events
+            <input id="notify-new-applicant" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+          </label>
+          <label class="notification-settings-grid-item">Notify me when asked to connect
+            <input id="notify-new-contact" type="checkbox" checked="checked">
+            <span class="checkmark"></span>
+          </label>
+          <button id="save-notification-settings">save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="body-container">
 
       <div class="mobile-menu">

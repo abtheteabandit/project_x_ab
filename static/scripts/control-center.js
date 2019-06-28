@@ -5155,3 +5155,9 @@ function downloadFromCreatePull(){
   document.execCommand("copy");
   alert("You have downloaded the Banda pull picture to your deivce and copied the supplied link/caption. Post these two things wherever you can to increase your pull! Just load in the image from your downloads folder and paste the link. (We recomend Snapchat and Instagram). Let the world know your a Banda recognized aritst / event owner and Band Together!");
 }
+
+function prepareNotificationModal(){
+  document.getElementById('modal-wrapper-account-settings').style.display = 'none';
+  // load phone number into #notification-settings-phone and load checkmarks for each thing
+  document.getElementById('modal-wrapper-notification-settings').style.display = 'block';
+}
