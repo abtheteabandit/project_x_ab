@@ -37,6 +37,12 @@ var downloadedPromo=false;
 var messageOn = null;
 var ourBands = null;
 globalGigs = [];
+var notifyPromotions=true;
+var notifyApplications=true;
+var notifyConnect=true;
+var notificationForBooking=true;
+var newGigNotification = true;
+var ourPhone = "";
 //CHNAGE GIGS SECTION:?////////
 
 
@@ -2745,6 +2751,30 @@ function declineNewCon(){
 function getUserInfo(user){
   console.log('in get info and username is ' + user['username']);
   var username = user['username'];
+    notifyPromotions=true;
+    notifyApplications=true;
+    notifyConnect=true;
+    notificationForBooking=true;
+    newGigNotification = true;
+    if (user.hasOwnProperty('phone')){
+      ourPhone=user.phone
+    }
+   if (user.hasOwnProperty('notifyPromotions')){
+     notifyPromotions=user.notifyPromotions;
+   }
+   if (user.hasOwnProperty('notifyApplications')){
+     notifyApplications=user.notifyApplications;
+   }
+   if (user.hasOwnProperty('notifyConnect')){
+     notifyConnect=user.notifyConnect;
+   }
+   if (user.hasOwnProperty('notificationForBooking')){
+     notificationForBooking=user.notificationForBooking;
+   }
+   if (user.hasOwnProperty('newGigNotification')){
+     newGigNotification=user.newGigNotification;
+   }
+
   $.get('/getBands', {'creator':username}, result => {
     console.log("bands from db are: " + JSON.stringify(result));
     var bands = JSON.parse(JSON.stringify(result));
@@ -5182,9 +5212,87 @@ function downloadFromCreatePull(){
   document.execCommand("copy");
   alert("You have downloaded the Banda pull picture to your deivce and copied the supplied link/caption. Post these two things wherever you can to increase your pull! Just load in the image from your downloads folder and paste the link. (We recomend Snapchat and Instagram). Let the world know your a Banda recognized aritst / event owner and Band Together!");
 }
+// notifications
 
 function prepareNotificationModal(){
   document.getElementById('modal-wrapper-account-settings').style.display = 'none';
   // load phone number into #notification-settings-phone and load checkmarks for each thing
+  document.getElementById('new-events-check')
+  document.getElementById('booked-check')
+  document.getElementById('promo-check')
+  document.getElementById('apply-check')
+  document.getElementById('contact-check')
+
   document.getElementById('modal-wrapper-notification-settings').style.display = 'block';
+  if (!(ourPhone=="")){
+    document.getElementById('notification-settings-phone').value=ourPhone;
+  }
+}
+
+function clickNotify(mode){
+  console.log('NOTIFY MODE: ' + mode);
+  switch(mode){
+    case 'events':
+    if (newGigNotification){
+      newGigNotification=false;
+    }
+    else{
+      newGigNotification=true;
+    }
+    break;
+    case 'connect':
+    if (notifyConnect){
+      notifyConnect=false;
+    }
+    else{
+      notifyConnect=true;
+    }
+    break;
+    case 'booked':
+    if (notificationForBooking){
+      notificationForBooking=false;
+    }
+    else{
+      notificationForBooking=true;
+    }
+    break;
+    case 'apply':
+    if (notifyApplications){
+      notifyApplications=false;
+    }
+    else{
+      notifyApplications=true;
+    }
+    break;
+    case 'promote':
+    if (notifyPromotions){
+      notifyPromotions=false;
+    }
+    else{
+      notifyPromotions=true;
+    }
+    break;
+    default:
+    break
+
+  }
+}
+function saveNotify(){
+  var phone = document.getElementById('notification-settings-phone').value;
+  phone=phone.replace('-','');
+  phone=phone.replace(' ','');
+  phone=phone.replace('/','');
+  if (phone.length!=10){
+    alert('Sorry, the phone number must be 10 digits long. (ex. 5155555005 is the US phone number 515-555-5005)');
+    return;
+  }
+  else{
+    var query={$set:{'notifyPromotions':notifyPromotions, 'notifyApplications':notifyApplications, 'notificationForBooking':notificationForBooking, 'notifyConnect':notifyConnect, 'newGigNotifications':newGigNotification, 'phone':phone}}
+     $.post('/updateAUser', {'id':our_user_id, 'query':query}, res=>{
+      alert('We have updated your notification settings!');
+      document.getElementById('modal-wrapper-notification-settings').style.display = 'none';
+      document.getElementById('modal-wrapper-account-settings').style.display = 'block';
+    });
+  }
+
 }

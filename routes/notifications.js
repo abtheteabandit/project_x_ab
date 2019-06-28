@@ -443,11 +443,17 @@ router.post('/applicationNotification', (req, res)=>{
                     sendEmail(recUser.email, body, subject, cb=>{
                       if (recUser.hasOwnProperty('phone')){
                         if (recUser.hasOwnProperty('notifyApplications')){
-                           body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)'
-                          sendSMS(recUser.phone, body, cb2=>{
-                            res.status(200).send('We have emailed and texted '+recUser.username+', the owner of: '+ourGig.name+', for you!');
+                          if (recUser.notifyApplications){
+                            body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)'
+                            sendSMS(recUser.phone, body, cb2=>{
+                             res.status(200).send('We have emailed and texted '+recUser.username+', the owner of: '+ourGig.name+', for you!');
+                             db.close();
+                            });
+                          }
+                          else{
+                            res.status(200).send('We have emailed '+recUser.username+', the owner of: '+ourGig.name+', for you!');
                             db.close();
-                          });
+                          }
                         }
                         else{
                            body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
@@ -508,16 +514,23 @@ router.post('/promotionNotification', (req, res)=>{
                 db.close();
               }
               else{
-                var body = 'Hello ' +promoter.username+',\nYou have been asked to post something made by '+ asker.username+' on Banda. Login in to www.banda-inc.com and user the Banda "b" (top left corner) to navigate to your Home page, then click contacts (bottom right corner), then click on '+askerName+', then scroll to the bottom of the chat window and click view promotion. Posting takes very little time and really helps the community. Remember, a little kidness goes a long way! Thank you and keep Banding Together.\nSincerely,\nyour team at Banda.'
+                var body = 'Hello ' +promoter.username+',\nYou have been asked to post something made by '+ asker.username+' on Banda. Login in to www.banda-inc.com and use the Banda "b" (top left corner) to navigate to your Home page, then click contacts (bottom right corner), then click on '+askerName+', then scroll to the bottom of the chat window and click view promotion. Posting takes very little time and really helps the community. Remember, a little kidness goes a long way! Thank you and keep Banding Together.\nSincerely,\nyour team at Banda.'
                 var subject = 'You have been asked to promote something on Banda!';
                 sendEmail(promoter.email, body, subject, cb=>{
                   if (promoter.hasOwnProperty('phone')){
                     if (promoter.hasOwnProperty('notifyPromotions')){
-                       body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
-                      sendSMS(promoter.phone, body, cb2=>{
-                        res.status(200).send('We have emailed and texted '+promoter.username+' for you!');
-                        db.close();
-                      });
+                        if (promoter.notifyPromotions){
+                          body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
+                          sendSMS(promoter.phone, body, cb2=>{
+                           res.status(200).send('We have emailed and texted '+promoter.username+' for you!');
+                           db.close();
+                          });
+                        }
+                        else{
+                          res.status(200).send('We have emailed '+promoter.username+' for you!');
+                          db.close();
+                        }
+
                     }
                     else{
                        body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
@@ -575,16 +588,22 @@ router.post('/connectNotification', (req, res)=>{
                 db.close();
               }
               else{
-                var body = 'Hello ' +newFriend.username+',\nYou have been asked to connect by '+ asker.username+' on Banda. Login in to www.banda-inc.com and user the Banda "b" (top left corner) to navigate to your Home page, and a modal should appear. Remember, a new contact can mean a lot in this industry! Thank you and keep Banding Together.\nSincerely,\nyour team at Banda.'
+                var body = 'Hello ' +newFriend.username+',\nYou have been asked to connect by '+ asker.username+' on Banda. Login in to www.banda-inc.com and use the Banda "b" (top left corner) to navigate to your Home page, and a modal should appear. Remember, a new contact can mean a lot in this industry! Thank you and keep Banding Together.\nSincerely,\nyour team at Banda.'
                 var subject = 'You have been asked to connect on Banda!';
                 sendEmail(newFriend.email, body, subject, cb=>{
                   if (newFriend.hasOwnProperty('phone')){
-                    if (newFriend.hasOwnProperty('notifyPromotions')){
-                       body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
-                      sendSMS(newFriend.phone, body, cb2=>{
-                        res.status(200).send('We have emailed and texted '+newFriend.username+' for you!');
+                    if (newFriend.hasOwnProperty('notifyConnect')){
+                      if (newFriend.notifyConnect){
+                        body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';
+                       sendSMS(newFriend.phone, body, cb2=>{
+                         res.status(200).send('We have emailed and texted '+newFriend.username+' for you!');
+                         db.close();
+                       });
+                      }
+                      else{
+                        res.status(200).send('We have emailed '+newFriend.username+' for you!');
                         db.close();
-                      });
+                      }
                     }
                     else{
                        body+='\n(you can silence SMS notifications on the settings tab on your home page on Banda)';

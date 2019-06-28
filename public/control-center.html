@@ -536,28 +536,28 @@
         <h1 id="notification-settings-h1">notification settings</h1>
         <span onclick="document.getElementById('modal-wrapper-notification-settings').style.display='none'" id="notification-close" title="Close PopUp">&times;</span>
         <div id="notification-settings-grid">
-          <input type="tel" id="notification-settings-phone" value="1234567890" maxlength="10" />
+          <input type="number" id="notification-settings-phone" placeholder="phone number...no dashes or spaces (10 digits)" maxlength="11" minlength='11' />
           <label class="notification-settings-grid-item">Notify me of new events in my area
-            <input id="notify-new-events" type="checkbox" checked="checked">
-            <span class="checkmark"></span>
+            <input id="notify-new-events" type="checkbox" checked="checked" onchange='clickNotify("events")'>
+            <span class="checkmark" id='new-events-check'></span>
           </label>
           <label class="notification-settings-grid-item">Notify me when one of my bands gets booked
-            <input id="notify-bands-booked" type="checkbox" checked="checked">
-            <span class="checkmark"></span>
+            <input id="notify-bands-booked" type="checkbox" checked="checked" onchange='clickNotify("booked")'>
+            <span class="checkmark" id='booked-check'></span>
           </label>
           <label class="notification-settings-grid-item">Notify me when asked to promote
-            <input id="notify-promo-request" type="checkbox" checked="checked">
-            <span class="checkmark"></span>
+            <input id="notify-promo-request" type="checkbox" checked="checked" onchange='clickNotify("promote")'>
+            <span class="checkmark" id='promo-check'></span>
           </label>
           <label class="notification-settings-grid-item">Notify me when a band applies to one of my events
-            <input id="notify-new-applicant" type="checkbox" checked="checked">
-            <span class="checkmark"></span>
+            <input id="notify-new-applicant" type="checkbox" checked="checked" onchange='clickNotify("apply")'>
+            <span class="checkmark" id='apply-check'></span>
           </label>
           <label class="notification-settings-grid-item">Notify me when asked to connect
-            <input id="notify-new-contact" type="checkbox" checked="checked">
-            <span class="checkmark"></span>
+            <input id="notify-new-contact" type="checkbox" checked="checked" onchange='clickNotify("connect")'>
+            <span class="checkmark" id='contact-check'></span>
           </label>
-          <button id="save-notification-settings">save</button>
+          <button id="save-notification-settings" onclick='saveNotify()'>save</button>
           </div>
         </div>
       </div>
