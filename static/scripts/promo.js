@@ -109,10 +109,15 @@ function init(){
 
   console.log(JSON.stringify(parsedURL));
   if(parsedURL.hasOwnProperty('searchObject') && parsedURL.searchObject != null){
+    console.log("parse url has property!!!!!!!!!!!!")
     if(parsedURL.searchObject.isPromo == 'true'){
       userClickStart();
+      console.log(parseURL.searchObject)
+      if(parsedURL.searchObject.isInsta == true){
+        populateSelectSocialPageModal(parsedURL.searchObject.pages, true);
+      }
       if(parsedURL.searchObject.hasOwnProperty('pages')){
-        populateSelectSocialPageModal(parsedURL.searchObject.pages);
+        populateSelectSocialPageModal(parsedURL.searchObject.pages, false);
       }
     }
   }
@@ -348,6 +353,40 @@ function parseURL(url){
        return {searchObject: searchObject};
      }
 
+     if(queries[queries.length-1].split('=')[0] == 'isInsta' && queries[queries.length-1].split('=')[1] == 'true'){
+       console.log("this is an insta page")
+       var pageNumSplit = queries[queries.length-3].split('=');
+       var numPages = pageNumSplit[1];
+       var isPromoSplit = queries[queries.length-2].split('=');
+       var isPromo = isPromoSplit[1];
+       searchObject['numPages'] = numPages;
+       searchObject['isPromo'] = isPromo;
+       searchObject['isInsta'] = true
+       searchObject['pages'] = [];
+       let i = 0;
+       while(i<(2*numPages)){
+        console.log('looping a page');
+        var nameSplit = queries[i].split('=');
+        var idSplit = queries[i+1].split('=');
+        var page = {
+          'id': idSplit[1],
+          'name': nameSplit[1].replace('%20',' ')
+        };
+        searchObject['pages'].push(page);
+        i+=2;
+       }
+       console.log(searchObject)
+       return {
+        protocol: parser.protocol,
+        host: parser.host,
+        hostname: parser.hostname,
+        port: parser.port,
+        pathname: parser.pathname,
+        search: parser.search,
+        searchObject: searchObject,
+        hash: parser.hash
+      };
+     }
      var pageNumSplit = queries[queries.length-2].split('=');
      var numPages = pageNumSplit[1];
      var isPromoSplit = queries[queries.length-1].split('=');
@@ -696,25 +735,50 @@ function requestSupport(){
   });
 }
 
-function populateSelectSocialPageModal(data){
+function populateSelectSocialPageModal(data, isInsta){
   console.log(data);
-  var selector = document.getElementById("ssp-select");
-  jQuery(function($) {
-    $('#ssp-select').change(function () {
-      var optionSelected = $(this).find("option:selected");
-      var valueSelected  = optionSelected.val();
-      var textSelected   = optionSelected.text();
-      console.log("VALUE SELECTED IS: "+valueSelected);
-      console.log("TEXT SELECTED IS: "+textSelected);
+  if(isInsta){
+    console.log("this is an insta route request button!!!!!!!!!!")
+    var selector = document.getElementById("ssp-insta-select");
+    jQuery(function($) {
+      $('#ssp-insta-select').change(function () {
+        var optionSelected = $(this).find("option:selected");
+        var valueSelected  = optionSelected.val();
+        var textSelected   = optionSelected.text();
+        console.log("VALUE SELECTED IS: "+valueSelected);
+        console.log("TEXT SELECTED IS: "+textSelected);
+      });
     });
-  });
-  for(var index in data){
-    var page = document.createElement('option');
-    page.value = data[index].id;
-    page.innerHTML = data[index].name;
-    selector.append(page);
+    for(var index in data){
+      var page = document.createElement('option');
+      page.value = data[index].id;
+      page.innerHTML = data[index].name;
+      selector.append(page);
+    }
+    document.getElementById('ssp-submit').style.display = 'none';
+    document.getElementById('ssp-submit-inst').style.display = 'block'
+    document.getElementById('modal-wrapper-select-social-page-insta').style.display = 'block';
+  }else{
+    var selector = document.getElementById("ssp-select");
+    jQuery(function($) {
+      $('#ssp-select').change(function () {
+        var optionSelected = $(this).find("option:selected");
+        var valueSelected  = optionSelected.val();
+        var textSelected   = optionSelected.text();
+        console.log("VALUE SELECTED IS: "+valueSelected);
+        console.log("TEXT SELECTED IS: "+textSelected);
+      });
+    });
+    for(var index in data){
+      var page = document.createElement('option');
+      page.value = data[index].id;
+      page.innerHTML = data[index].name;
+      selector.append(page);
+    }
+    document.getElementById('ssp-submit').style.display = 'block';
+    document.getElementById('ssp-submit-inst').style.display = 'none'
+    document.getElementById('modal-wrapper-select-social-page').style.display = 'block';
   }
-  document.getElementById('modal-wrapper-select-social-page').style.display = 'block';
 }
 
 function selectMainFacebookPage(){
@@ -725,9 +789,28 @@ function selectMainFacebookPage(){
     var textSelected   = optionSelected.text(); // the page name
     console.log("VALUE SELECTED IS: "+valueSelected);
     console.log("TEXT SELECTED IS: "+textSelected);
+    console.log("this will post to the facebook route")
 
     //make post request to store the page token and page statistics
     $.post('http://localhost:1600/getFacebookPageTokens', {pageId: valueSelected, pageName: textSelected}, res=>{
+      alert(res);
+      document.getElementById("modal-wrapper-select-social-page").style.display = "none";
+    });
+  });
+}
+
+function selectMainInstagramPage(){
+  jQuery(function($) {
+    var optionSelected = $("#ssp-select").find("option:selected");
+    var valueSelected  = optionSelected.val(); // the page ID
+    var textSelected   = optionSelected.text(); // the page name
+    var instagramUsername = document.getElementById("instagramUsername").value;
+    console.log("VALUE SELECTED IS: "+valueSelected);
+    console.log("TEXT SELECTED IS: "+textSelected);
+
+    console.log("this will post request the insta route")
+    // //make post request to store the page token and page statistics
+    $.post('http://localhost:1600/storeInstData', {pageId: valueSelected, pageName: textSelected, username: instagramUsername}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-select-social-page").style.display = "none";
     });

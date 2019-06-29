@@ -57,15 +57,17 @@
      <h1 id="ssp-h1">select your main page from the dropdown below</h1>
      <select id="ssp-select"></select>
      <input id="ssp-submit" type="button" value="continue with selected page" onclick="selectMainFacebookPage()">
-     <input id="ssp-skip" type="button" value="skip..." onclick="document.getElementById('modal-wrapper-select-social-page').style.display = 'none';">
+     <input id="ssp-submit-inst" type="button" value="continue with selected page" onclick="selectMainInstagramPage()">
+     <input id="ssp-skip" type="button" value="Cancel" onclick="document.getElementById('modal-wrapper-select-social-page').style.display = 'none';">
    </div>
  </div>
  <div id="modal-wrapper-select-social-page-insta">
    <div id="ssp-insta-content" class="animate">
      <h1 id="ssp-insta-h1">select your main page from the dropdown below</h1>
      <select id="ssp-insta-select"></select>
+     <input type="text" placeholder="Instagram Username" id="instagramUsername" value="banda.inc">
      <input id="ssp-insta-submit" type="button" value="continue with selected page" onclick="selectMainInstagramPage()">
-     <input id="ssp-insta-skip" type="button" value="skip..." onclick="document.getElementById('modal-wrapper-select-social-page-insta').style.display = 'none';">
+     <input id="ssp-insta-skip" type="button" value="Cancel" onclick="document.getElementById('modal-wrapper-select-social-page-insta').style.display = 'none';">
    </div>
  </div>
  <div id="modal-wrapper-support" class="modal-support">
