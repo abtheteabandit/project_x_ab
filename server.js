@@ -426,7 +426,7 @@ function(req, token, tokenSecret, profile, done) {
 		}
 		database.connect(db => {
 			//store the access tokens
-			db.db('users').collection('users').update({'username':req.session.key}, {$push:{'twitter':{'access_token':token,
+			db.db('users').collection('users').update({'username':req.session.key}, {$set:{'twitter':{'access_token':token,
 																																																		'token_secret':tokenSecret,
 																																																		'retweets':retweets,
 																																																		'favorites':favorites,
@@ -529,7 +529,7 @@ axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_
 		database.connect(db => {
 
 		//store the access tokens and profile information
-		db.db('users').collection('users').updateOne({'username':req.session.key},{$push:{'facebook':{'accessToken': longToken,
+		db.db('users').collection('users').updateOne({'username':req.session.key},{$set:{'facebook':{'accessToken': longToken,
 																																																	'profile':profile,
 																																																	'date': date}}}
 				, (err4, res4)=>{
@@ -588,10 +588,10 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 				db.close();
 			}
 			console.log("-------------------------in the fucking callback------------------------------------------------")
-			console.log(obj.facebook[obj.facebook.length-1].profile)
-			console.log(obj.facebook[obj.facebook.length-1].accessToken)
+			console.log(obj.facebook.profile)
+			console.log(obj.facebook.accessToken)
 
-			axios.get('https://graph.facebook.com//v3.3/me/accounts' + '?access_token=' + obj.facebook[obj.facebook.length-1].accessToken)
+			axios.get('https://graph.facebook.com//v3.3/me/accounts' + '?access_token=' + obj.facebook.accessToken)
 				.then(function (response) {
 					console.log(response.data);
 					pageData = response.data
@@ -642,10 +642,10 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
-			console.log(obj.facebook[obj.facebook.length-1].profile)
-			console.log(obj.facebook[obj.facebook.length-1].accessToken)
+			console.log(obj.facebook.profile)
+			console.log(obj.facebook.accessToken)
 
-			let token = obj.facebook[obj.facebook.length-1].accessToken
+			let token = obj.facebook.accessToken
 			//get short term page token
 			axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
 				.then(function (response) {
@@ -676,8 +676,8 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 										//store all values from the facebook api in the database
 										database.connect(db => {
 											//store the access tokens and profile information
-											db.db('users').collection('users').updateOne({'username':req.session.key}, {$push:{'facebook':{
-																																																										'profile':obj.facebook[obj.facebook.length-1].profile,
+											db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'facebook':{
+																																																										'profile':obj.facebook.profile,
 																																																										'accessToken':token,
 																																																										'pageToken':pageToken,
 																																																										'followerCount':followerCount,
@@ -723,7 +723,7 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 })
 
 //make post on facebook using message parameter
-router.post("/makePostOnPage", function(req, res){
+router.post("/postOnFBPage", function(req, res){
 
 //connect to the db to check date of tokens
 database.connect(db => {
@@ -812,7 +812,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 						//set database path
 						var users = db.db('users').collection('users');
 						//store the access tokens and profile information
-						db.db('users').collection('users').updateOne({'username':req.session.key},{$push:{'instagram':{'accessToken': longToken,
+						db.db('users').collection('users').updateOne({'username':req.session.key},{$set:{'instagram':{'accessToken': longToken,
 																																																						'fbProfile':profile,
 																																																						'date': date}}}
 						, (err4, res4)=>{
@@ -912,7 +912,7 @@ router.get('/inst/token/successAuth', (req, res) => {
 			console.log(obj)
 			let token = ""
 			if(token.length != undefined){
-				token = obj.instagram[obj.instagram.length-1].accessToken
+				token = obj.instagram.accessToken
 			}
 			else{
 				token = obj.instagram.accessToken
@@ -975,8 +975,8 @@ router.post('/storeInstData', (req,res)=>{
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
-			console.log(obj.instagram[obj.instagram.length - 1].accessToken)
-			token = obj.instagram[obj.instagram.length - 1].accessToken
+			//console.log(obj.instagram[obj.instagram.length - 1].accessToken)
+			token = obj.instagram.accessToken
 			//query for the account id
 			axios.get("https://graph.facebook.com/v3.2/" + instaId + "?fields=instagram_business_account&access_token=" + token)
 				.then(function (response) {
