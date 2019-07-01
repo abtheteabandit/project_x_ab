@@ -812,6 +812,7 @@ function selectMainInstagramPage(){
     // //make post request to store the page token and page statistics
     $.post('http://localhost:1600/storeInstData', {pageId: valueSelected, pageName: textSelected, username: instagramUsername}, res=>{
       alert(res);
+      document.getElementById("modal-wrapper-select-social-page-insta").style.display = "none";
       document.getElementById("modal-wrapper-select-social-page").style.display = "none";
     });
   });
