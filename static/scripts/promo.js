@@ -116,7 +116,7 @@ function init(){
       if(parsedURL.searchObject.isInsta == true){
         populateSelectSocialPageModal(parsedURL.searchObject.pages, true);
       }
-      if(parsedURL.searchObject.hasOwnProperty('pages')){
+      if(parsedURL.searchObject.hasOwnProperty('pages') && !(parsedURL.searchObject.hasOwnProperty('isInsta'))){ //ensure isInsta isn't there, cuz i don't think we set it to false on facebook redirect
         populateSelectSocialPageModal(parsedURL.searchObject.pages, false);
       }
     }
