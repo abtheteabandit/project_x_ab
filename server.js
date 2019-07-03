@@ -747,7 +747,7 @@ database.connect(db => {
     else{
       //get the massage
       var {promo, coupon} = req.body;
-
+      
       //string concatination with handles, caption and coupon description nad our own Banda stuff
 
       const message = promo.caption;

@@ -3796,7 +3796,6 @@ function postPromo(button){
             $.post('/postOnFBPage', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
               alert(res2);
             });
-            alert('TWITTER WORKS');
 
           }
           else{
