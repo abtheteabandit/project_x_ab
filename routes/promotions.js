@@ -72,42 +72,92 @@ module.exports = router =>{
                             res.status(500).end();
                             db.close();
                           }
+                          var wantsTwitter = false;
+                          var twitterOk = false;
+                          var facebookOk = false;
+                          var wantsFB = false;
+                          var wantsInstagram = false;
                           if (ourCoupon){
                             //there is a coupon
                             console.log('We have a coupon with this promo: ' + promoID);
-                            /*
+
                             for (var m in medias){
                               var mediaOn = medias[m];
                               if (mediaOn=='twitter'){
-
+                                wantsTwitter=true;
+                                if (poster.hasOwnProperty('twitter')){
+                                  if (poster.twitter.hasOwnProperty('access_token')){
+                                    if (poster.twitter.hasOwnProperty('token_secret')){
+                                      if (!(poster.twitter.access_token == null || poster.twitter.token_secret==null)){
+                                        twitterOk=true;
+                                      }
+                                    }
+                                  }
+                                }
                               }
                               if (mediaOn=='facebook'){
-
-                              }
+                                var mediaOn = medias[m];
+                                  wantsFB=true;
+                                  if (poster.hasOwnProperty('facebook')){
+                                    if (poster.facebook.hasOwnProperty('access_token')){
+                                      if (poster.facebook.hasOwnProperty('token_secret')){
+                                        if (!(poster.facebook.access_token == null || poster.facebook.token_secret==null)){
+                                          facebookOk=true;
+                                        }
+                                      }
+                                    }
+                                  }
                               if (mediaOn=='instagram'){
+                                wantsInstagram=true;
 
                               }
                             }
-                            */
-                            //ed code, post this promotion to posters selected socials
                           }
+                          var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false}, 'coupon':ourCoupon, 'promo':ourPromo};
+                          res.status(200).json({'success':true, 'data':data});
+                          db.close();
+                        }
                           else{
                             //there is not a coupon
                             console.log('We do not have a coupon with this promo: ' + promoID);
-                            /*
+
                             for (var m in medias){
                               var mediaOn = medias[m];
                               if (mediaOn=='twitter'){
-
+                                wantsTwitter=true;s
+                                if (poster.hasOwnProperty('twitter')){
+                                  if (poster.twitter.hasOwnProperty('access_token')){
+                                    if (poster.twitter.hasOwnProperty('token_secret')){
+                                      if (poster.twitter.access_token == null || poster.twitter.token_secret==null){
+                                        twitterOk=true;
+                                      }
+                                    }
+                                  }
+                                }
                               }
                               if (mediaOn=='facebook'){
-
-                              }
-                              if (mediaOn=='instagram'){
-
+                                var mediaOn = medias[m];
+                                if (mediaOn=='twitter'){
+                                  wantsFB=true;
+                                  if (poster.hasOwnProperty('facebook')){
+                                    if (poster.facebook.hasOwnProperty('access_token')){
+                                      if (poster.facebook.hasOwnProperty('token_secret')){
+                                        if (poster.facebook.access_token == null || poster.facebook.token_secret==null){
+                                          facebookOk=true;
+                                        }
+                                      }
+                                    }
+                                  }
                               }
                             }
-                            */
+                              if (mediaOn=='instagram'){
+                                wantsInstagram=true;
+                              }
+                            }
+                            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false}, 'coupon':null, 'promo':ourPromo};
+                            res.status(200).json({'success':true, 'data':data});
+                            db.close();
+
                             //ed code, post this promotion to posters selected socials, post a combination of cuopon shit and promo shit
 
                           }

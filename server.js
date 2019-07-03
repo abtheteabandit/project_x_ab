@@ -741,34 +741,40 @@ database.connect(db => {
 		//if token is older than 60 days
 		if(currDate - dateSent >= 5184000){
 			//make the user refresh the token to: make more fluid
-			res.status(500).send("Token is expired, please reconnect facebook in promotions")
+			res.status(200).send("Hmmm...it seems your Facebook token is expired, please reconnect your Facebook in promotions.")
+      db.close();
 		}
+    else{
+      //get the massage
+      var {promo, coupon} = req.body;
 
-		//get the massage
-		const message = req.body.message
-		const pageToken = obj.facebook.pageToken
-		const pageId = obj.facebook.pageId
+      //string concatination with handles, caption and coupon description nad our own Banda stuff
 
-		//set the parameters
-		var options = {
-			url: 'https://graph.facebook.com/' + pageId + '/feed?message=' + message + '&access_token=' + pageToken,
-			method: 'POST'
-		};
+      const message = promo.caption;
+      const pageToken = obj.facebook.pageToken
+      const pageId = obj.facebook.pageId
 
-		function callback(error, response, body) {
-			if (!error && response.statusCode == 200) {
-					console.log(body);
-			}
-			//success case
-			console.log(body);
-			res.status(200).send('Success');
-		}
+      //set the parameters
+      var options = {
+        url: 'https://graph.facebook.com/' + pageId + '/feed?message=' + message + '&access_token=' + pageToken,
+        method: 'POST'
+      };
 
-		//make the post request
-		request(options, callback);
+      function callback(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(body);
+        }
+        //success case
+        console.log(body);
+        res.status(200).send('Success');
+      }
 
-		db.close();
-		})
+      //make the post request
+      request(options, callback);
+
+      db.close();
+    }
+  });
 	}, err => {
 			console.warn("Couldn't connect to database: " + err)
 			res.status(500).end()
@@ -989,7 +995,7 @@ router.post('/storeInstData', (req,res)=>{
 							console.log(response.data);
 							followerCount = response.data.business_discovery.followers_count
 							postCount = response.data.business_discovery.media_count
-							
+
 							//request instagram ofor insights
 							axios.get("https://graph.facebook.com/v3.3/" + instaBussinessAccount + "/insights?metric=impressions,reach,profile_views&period=day&access_token=" + token)
 								.then(function (response) {

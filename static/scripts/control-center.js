@@ -3699,7 +3699,8 @@ class ContactLink {
             if (res2.success){
               var now = new Date().toString();
               console.log('our promo is: ' + JSON.stringify(res2.data));
-              $.post('/messages', {'senderID':our_user_id, 'recieverID':id, 'body':'<button class="open-promo-btn" value='+username+'*;!'+valueSelected+' onclick="openPromotionModal(this)">view promotion</button>','timeStamp':now}, res3=>{
+              console.log('PROMO ID ABOUT TO SEND: ' + res2.data._id);
+              $.post('/messages', {'senderID':our_user_id, 'recieverID':id, 'body':'<button class="open-promo-btn" value='+username+'*;!'+res2.data._id+' onclick="openPromotionModal(this)">view promotion</button>','timeStamp':now}, res3=>{
                 alert('We have asked '+name+' to post your most recently created promotion! Feel free to message them as well to follow up.');
                 document.getElementById("modal-wrapper-select-promo").style.display = "none";
                 $.post('/promotionNotification', {'askerName':username, 'promoterName':name}, res3=>{
@@ -3754,7 +3755,7 @@ function openPromotionModal(button){
       var cleanSRC = ourPromo.imgURL.replace('www.banda-inc.com//', '');
       document.getElementById('promo-req-pic').src = cleanSRC;
       document.getElementById('promo-req-header').innerHTML = askerName;
-      document.getElementById('promo-req-accept').value=askerName+'*;!'+ourPromo.name;
+      document.getElementById('promo-req-accept').value=askerName+'*;!'+ourPromo._id;
 
     }
     else{
@@ -3771,7 +3772,7 @@ function postPromo(button){
   var val = button.value;
   var pieces = val.split('*;!');
   var promoter = pieces[0];
-  var promoName = pieces[1];
+  var promoID = pieces[1];
   var medias = [];
   console.log('PIECES IS: '+ JSON.stringify(pieces));
   if (postToInsta){
@@ -3784,9 +3785,50 @@ function postPromo(button){
   if (postToTwitter){
     medias.push('twitter');
   }
-  console.log('PROMOTER: ' + promoter+' poster: '+username + ' promoName: ' + promoName);
-  $.post('/cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoName':promoName}, res=>{
-    alert(res);
+  console.log('PROMOTER: ' + promoter+' poster: '+username + ' promoID: ' + promoID);
+  $.post('/cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoID':promoID}, res=>{
+    if (!(res==null)){
+      if (res.success){
+        console.log('THE PROMO CALLBAKC DATA: ' + JSON.stringify(res.data));
+        if (res.data.twitter.wanted){
+          if(res.data.twitter.ok){
+            //post to twitter, liekly move the rest of this shit into this thread
+            alert('TWITTER WORKS');
+
+          }
+          else{
+            alert('Sorry, it seems that you want to post this promotion to Twitter but have not signed into your Twitter account from Banda. Just click "Promotions" and click the Twitter icon on step one to sign in. Thank you!');
+          }
+        }
+        if (res.data.facebook.wanted){
+          if (res.data.facebook.ok){
+            //post to fb
+            alert('FACEBOOK WORKS');
+
+          }
+          else{
+            alert('Sorry, it seems that you want to post this promotion to Facebook but have not signed into your Facebook account from Banda. Just click "Promotions" and click the Facebook icon on step one to sign in. Thank you!');
+          }
+        }
+        if (res.data.instagram.wanted){
+          if (res.data.instagram.ok){
+            //post to insta (not yet possible)
+            alert('INSTA OK');
+          }
+          else{
+            alert('Instgram does not currently offer direct posting from other Websites. Just hit the downward arrow button to download this image and copy the compelete caption to your clipboard. Then you can simply post this directly to your Instagram. We ask that you do not edit the image or caption in anyway. Thank you!');
+          }
+        }
+      }
+      else{
+        alert(res.data);
+        return;
+      }
+    }
+    else{
+      alert('Hmmm... it seems something went wrong on our end, please refresh and try again. You may need to go to promotions and sign in to your Twitter and/or Facebook accounts. If this problem persits please let us know via the support tab (after clicking the Banda "b"/flat note)');
+      return;
+    }
     postToFB=false;
     postToInsta=false;
     postToTwitter=false;
