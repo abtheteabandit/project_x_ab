@@ -5214,10 +5214,10 @@ function addPullAccept(){
     if (postToFB){
       medias.push('facebook');
     }
-    if (postToInsta){
+    if (postToTwitter){
       medias.push('twitter');
     }
-    if (postToTwitter){
+    if (postToInsta){
       medias.push('instagram');
     }
     $.post('/pull', {'name':name, 'id':id, 'mode':mode, 'caption':caption, 'medias':medias}, res=>{

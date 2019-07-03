@@ -1414,6 +1414,7 @@ router.post('/pull', (req,res)=>{
           }
           else{
 
+
             // ourUser should contain tokens and such
             console.log('Our User in post to pull: ' + JSON.stringify(ourUser));
             var wantsTwitter = false;
@@ -1421,13 +1422,15 @@ router.post('/pull', (req,res)=>{
             var facebookOk = false;
             var wantsFB = false;
             var wantsInstagram = false;
-            medias.forEach(function(media){
+            for (var on in medias){
+              var media = medias[on]
+              console.log('MEDIA ON: ' + media)
               if (media=='twitter'){
                 wantsTwitter=true;
-                if (poster.hasOwnProperty('twitter')){
-                  if (poster.twitter.hasOwnProperty('access_token')){
-                    if (poster.twitter.hasOwnProperty('token_secret')){
-                      if (!(poster.twitter.access_token == null || poster.twitter.token_secret==null)){
+                if (ourUser.hasOwnProperty('twitter')){
+                  if (ourUser.twitter.hasOwnProperty('access_token')){
+                    if (ourUser.twitter.hasOwnProperty('token_secret')){
+                      if (!(ourUser.twitter.access_token == null || ourUser.twitter.token_secret==null)){
                         twitterOk=true;
                       }
                     }
@@ -1436,18 +1439,19 @@ router.post('/pull', (req,res)=>{
               }
               if (media=='facebook'){
                   wantsFB=true;
-                  if (poster.hasOwnProperty('facebook')){
-                    if (poster.facebook.hasOwnProperty('pageToken') && poster.facebook.hasOwnProperty('pageId')){
-                        if (poster.facebook.pageToken && poster.facebook.pageId){
-                          console.log('PAGE TOKE FOR FBBBBB: ' + poster.facebook.pageToken);
+                  if (ourUser.hasOwnProperty('facebook')){
+                    if (ourUser.facebook.hasOwnProperty('pageToken') && ourUser.facebook.hasOwnProperty('pageId')){
+                        if (ourUser.facebook.pageToken && ourUser.facebook.pageId){
+                          console.log('PAGE TOKE FOR FBBBBB: ' + ourUser.facebook.pageToken);
                           facebookOk=true;
                         }
                     }
                   }
+              }
               if (media=='instagram'){
                 wantsInstagram=true;
               }
-            });
+            }
             var fakePromo = {'handles':"", 'imgURL':imgURL, 'caption':postableCaption};
             var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false}, 'coupon':null, 'promo':fakePromo};
             res.status(200).json({'success':true, 'data':data});
