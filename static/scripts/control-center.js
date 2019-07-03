@@ -3793,6 +3793,9 @@ function postPromo(button){
         if (res.data.twitter.wanted){
           if(res.data.twitter.ok){
             //post to twitter, liekly move the rest of this shit into this thread
+            $.post('/postOnFBPage', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
+              alert(res2);
+            });
             alert('TWITTER WORKS');
 
           }
