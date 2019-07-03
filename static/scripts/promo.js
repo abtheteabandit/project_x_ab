@@ -28,7 +28,17 @@ class SearchResult {
     this.id = obj._id;
     this.name = obj.username;
     this.newDiv = document.createElement("div");
-    this.newDiv.style.backgroundImage = "url('/assets/Home/Art/12.jpeg')";
+    this.newDiv.style.backgroundImage = "url('/assets/Home/Art/12.jpeg')"
+    $.get('/picForUser', {'username':this.name}, res2=>{
+      console.log('PIC RES:  ' + JSON.stringify(res2))
+
+        if (res2=='None'){
+          this.newDiv.style.backgroundImage = "url('/assets/Promo/bandapromo1.2.png')";
+        }
+        else{
+          this.newDiv.style.backgroundImage="url("+res2+")";
+        }
+    });
     // overlay
     this.newOverlay = document.createElement("div");
     this.newOverlay.className = "result-overlay";
@@ -40,13 +50,33 @@ class SearchResult {
     // follower count
     this.followerCount = document.createElement("p");
     this.followers = 'unknown';
+    $.get('userSocialData',{'username':this.name}, res=>{
+      console.log('userSocialData' + JSON.stringify(res));
+      if (res.success){
+        this.followers = res.data.followers
+        this.followerCount.className = "follower-count-p";
+        this.followerCount.innerHTML = "followers: "+this.followers;
+        if (res.data.engagment != 0){
+          console.log('has eng of: ' + res.data.engagment);
+          this.engagement = res.data.engagment;
+          this.engagementScore.className = "user-engagement-p";
+          this.engagementScore.innerHTML = "engagement: "+this.engagement;
+        }
+        else{
+          this.engagement = "unknown";
+          this.engagementScore.className = "user-engagement-p";
+          this.engagementScore.innerHTML = "engagement: unkown";
+        }
+      }
+    });
+
     // figure out how many followers there are
     // TODO
     this.followerCount.className = "follower-count-p";
     this.followerCount.innerHTML = "followers: "+this.followers;
     // engage score
     this.engagementScore = document.createElement("p");
-    this.engagement = 'unknown';
+
     // figure out total user engagement
     // TODO
     this.engagementScore.className = "user-engagement-p";
@@ -59,6 +89,8 @@ class SearchResult {
     // frame
     this.newFrame = document.createElement("img");
     this.newFrame.className = "result-frame";
+
+    //
     this.newFrame.src = "/assets/Control-Center/redbox.png";
     this.newFrame.alt = "frame";
     // name

@@ -1500,17 +1500,28 @@ router.get('/userSocialData', (req,res)=>{
             var totalEngament = 0;
             var socialsEngUsed = 0;
             if (ourUser.hasOwnProperty('twitter')){
-              if (ourUser.twitter.hasOwnProperty('followers')){
-                totalFollowers+=ourUser.twitter.followers;
+              console.log('has wtitter')
+              if (ourUser.twitter.hasOwnProperty('follower_count')){
+                console.log('has fallowers twitter')
+                if (!(ourUser.twitter.followers ==null)){
+                  totalFollowers+=ourUser.twitter.followers;
+                }
+
               }
-              if (ourUser.twitter.hasOwnProperty('engagment')){
-                totalEngament+=ourUser.twitter.engagment;
-                socialsEngUsed+=1;
+              if (ourUser.twitter.hasOwnProperty('favorites')){
+                totalEngament+=ourUser.twitter.favorites;
+
+              }
+              if (ourUser.twitter.hasOwnProperty('retweets')){
+                totalEngament+=ourUser.twitter.retweets;
+              }
+              if (ourUser.twitter.hasOwnProperty('status_count')){
+                totalEngament+=ourUser.twitter.status_count;
               }
             }
             if (ourUser.hasOwnProperty('facebook')){
-              if (ourUser.facebook.hasOwnProperty('followers')){
-                totalFollowers+=ourUser.facebook.followers;
+              if (ourUser.facebook.hasOwnProperty('followerCount')){
+                totalFollowers+=ourUser.facebook.followerCount;
               }
               if (ourUser.facebook.hasOwnProperty('engagment')){
                 totalEngament+=ourUser.facebook.engagment;
@@ -1535,13 +1546,18 @@ router.get('/userSocialData', (req,res)=>{
                 socialsEngUsed+=1;
               }
             }
+            console.log('has fallowers: '+totalFollowers );
+
+            var eng = 0;
             if (socialsEngUsed==0){
               eng = 0;
             }
             else{
-              var eng = totalEngament/socialsEngUsed;
+             eng = totalEngament/socialsEngUsed;
             }
-            res.status(200).json({'success':true, 'data':{'pull':ourUser.pull, 'engament':eng, 'followers':totalFollowers}});
+            console.log('has eng: '+eng );
+
+            res.status(200).json({'success':true, 'data':{'pull':ourUser.pull, 'engagment':eng, 'followers':totalFollowers}});
             db.close();
           }
         }

@@ -12,7 +12,7 @@ module.exports = router =>{
     }
     else{
       var {username} = req.query;
-      
+
       database.connect(db=>{
         db.db('bands').collection('bands').find({'creator':username}).toArray(function(err1, bands){
           if (err1){
@@ -48,9 +48,11 @@ module.exports = router =>{
             }
             else{
               for (var b in bands){
+                console.log('got bands'+ JSON.stringify(bands[b]))
                 var band = bands[b];
                 imgURL = band.picture;
               }
+              
               res.status(200).send(imgURL);
               db.close();
             }
