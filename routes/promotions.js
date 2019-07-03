@@ -514,6 +514,7 @@ router.post('/user_socials', (req, res)=>{
     var {name, details, gigID, location, medias, promoID} = req.body;
     console.log('$$$*$*$*$*$*$*$*$*$*$ got promo ID: ' + promoID);
     var code = createPromoCode();
+    var link = 'https://www.banda-inc.com/socialSignUp?promoID='+promoID;
       database.connect(db=>{
         //store the promotion in the database
         db.db('promotions').collection('discounts').updateOne({'promoID':promoID},{$set:{
