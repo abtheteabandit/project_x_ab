@@ -681,7 +681,8 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 																																																										'accessToken':token,
 																																																										'pageToken':pageToken,
 																																																										'followerCount':followerCount,
-																																																										'totalConsumption':totalConsumption
+																																																										'totalConsumption':totalConsumption,
+																																																										'pageId': pageId
 																																																										}}}
 												, (err4, res4)=>{
 														if (err4){
