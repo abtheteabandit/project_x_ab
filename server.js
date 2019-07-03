@@ -767,7 +767,7 @@ database.connect(db => {
 
       //set the parameters
       var options = {
-        url: 'https://graph.facebook.com/' + pageId + '/feed?message=' + message + '&access_token=' + pageToken,
+        url: 'https://graph.facebook.com/' + pageId + '/feed?message=' + message + '&picture=' + imgURL + '&link=' + link + '&access_token=' + pageToken,
         method: 'POST'
       };
 
