@@ -794,6 +794,7 @@ database.connect(db => {
         url: 'https://graph.facebook.com/' + pageId + '/feed?message=' + message + '&access_token=' + pageToken,
         method: 'POST'
       };
+      console.log('OPTIONS URL: ' + options.url);
 
       function callback(error, response, body) {
         if (!error && response.statusCode == 200) {

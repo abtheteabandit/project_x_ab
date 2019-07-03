@@ -454,7 +454,10 @@ router.post('/user_socials', (req, res)=>{
       req.status(401).end();
     }
     else{
-      var {id, mode} = req.body;
+      var {theId} = req.body;
+      var pieces = theId.split('spacer');
+      var id = pieces[0];
+      var mode = pieces[1];
       database.connect(db=>{
         switch(mode){
           // adds 1 pull to a band, gig or user depending on what mode we recieved. That mode should be set in the route above
@@ -540,7 +543,7 @@ router.post('/user_socials', (req, res)=>{
                 db.close();
               }
               else{
-                db.db('users').collection('users').findOne({'username':req.session.key},(err5, ourUser)=>{
+                db.db('users').collection('users').findOne({'username':req.session.key}, (err5, ourUser)=>{
                   if (err5){
                     console.log('There was an error fidning users: ' + req.session.key + ' in db. Error: ' + err5);
                     res.status(200).send('Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits let us know by emailing banda.help.cusotmers@gmail.com');
@@ -1403,7 +1406,7 @@ router.post('/pull', (req,res)=>{
       res.status(401).end();
     }
     else{
-      var link = 'https://www.banda-inc.com/add_pull?mode='+mode+'&id='+id
+      var link = 'https://www.banda-inc.com/add_pull?theId='+id+'spacer'+mode;
       var postableCaption = caption + '\n You can help '+name+' by clicking on this link: \n'+link
       var imgURL = 'https://www.banda-inc.com/static/assets/Promo/bandapromo1.2.png';
       database.connect(db=>{
