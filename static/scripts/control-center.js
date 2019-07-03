@@ -3787,7 +3787,7 @@ function postPromo(button){
   }
   console.log('PROMOTER: ' + promoter+' poster: '+username + ' promoID: ' + promoID);
   $.post('/cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoID':promoID}, res=>{
-    if (!(res==null)){
+    if (!(res=="" || res==null)){
       if (res.success){
         console.log('THE PROMO CALLBAKC DATA: ' + JSON.stringify(res.data));
         if (res.data.twitter.wanted){
@@ -5221,11 +5221,47 @@ function addPullAccept(){
       medias.push('instagram');
     }
     $.post('/pull', {'name':name, 'id':id, 'mode':mode, 'caption':caption, 'medias':medias}, res=>{
-      if (res==""){
+      if (res=="" || res==null){
         alert('Hmmm...it seems something went wrong on our end, please refresh your page and try again. If this problem persists just click the Banda "b" top left and use our support tab to email our live support team. Thank you!');
       }
       else{
-        alert(res);
+        if (res.success){
+          console.log('THE PROMO CALLBAKC DATA: ' + JSON.stringify(res.data));
+          if (res.data.twitter.wanted){
+            if(res.data.twitter.ok){
+              //post to twitter, liekly move the rest of this shit into this thread
+              $.post('/postTweet', {'promo':res.data.promo, 'coupon':res.data.coupon}, res3=>{
+                alert(res3);
+              })
+            }
+            else{
+              alert('Sorry, it seems that you want to post this promotion to Twitter but have not signed into your Twitter account from Banda. Just click "Promotions" and click the Twitter icon on step one to sign in. Thank you!');
+            }
+          }
+          if (res.data.facebook.wanted){
+            if (res.data.facebook.ok){
+              $.post('/postOnFBPage', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
+                alert(res2);
+              });
+            }
+            else{
+              alert('Sorry, it seems that you want to post this promotion to Facebook but have not signed into your Facebook account from Banda. Just click "Promotions" and click the Facebook icon on step one to sign in. Thank you!');
+            }
+          }
+          if (res.data.instagram.wanted){
+            if (res.data.instagram.ok){
+              //post to insta (not yet possible)
+              alert('INSTA OK');
+            }
+            else{
+              alert('Instgram does not currently offer direct posting from other Websites. Just hit the downward arrow button to download this image and copy the compelete caption to your clipboard. Then you can simply post this directly to your Instagram. We ask that you do not edit the image or caption in anyway. Thank you!');
+            }
+          }
+        }
+        else{
+          alert(res.data);
+          return;
+        }
       }
     })
   }

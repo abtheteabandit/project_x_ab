@@ -1416,22 +1416,42 @@ router.post('/pull', (req,res)=>{
 
             // ourUser should contain tokens and such
             console.log('Our User in post to pull: ' + JSON.stringify(ourUser));
-
+            var wantsTwitter = false;
+            var twitterOk = false;
+            var facebookOk = false;
+            var wantsFB = false;
+            var wantsInstagram = false;
             medias.forEach(function(media){
               if (media=='twitter'){
-                //post to twitter
-                //Ed
-
+                wantsTwitter=true;
+                if (poster.hasOwnProperty('twitter')){
+                  if (poster.twitter.hasOwnProperty('access_token')){
+                    if (poster.twitter.hasOwnProperty('token_secret')){
+                      if (!(poster.twitter.access_token == null || poster.twitter.token_secret==null)){
+                        twitterOk=true;
+                      }
+                    }
+                  }
+                }
               }
               if (media=='facebook'){
-                //post to Facebook
-
-
+                  wantsFB=true;
+                  if (poster.hasOwnProperty('facebook')){
+                    if (poster.facebook.hasOwnProperty('pageToken') && poster.facebook.hasOwnProperty('pageId')){
+                        if (poster.facebook.pageToken && poster.facebook.pageId){
+                          console.log('PAGE TOKE FOR FBBBBB: ' + poster.facebook.pageToken);
+                          facebookOk=true;
+                        }
+                    }
+                  }
+              if (media=='instagram'){
+                wantsInstagram=true;
               }
             });
-
-            //move this inward later putting it here for testing purposes rn
-            res.status(200).send('Congratulations! We have posted this "Add Pull" to your selected social medias! ');
+            var fakePromo = {'handles':"", 'imgURL':imgURL, 'caption':postableCaption};
+            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false}, 'coupon':null, 'promo':fakePromo};
+            res.status(200).json({'success':true, 'data':data});
+            db.close();
           }
         });
       }, dbErr=>{
