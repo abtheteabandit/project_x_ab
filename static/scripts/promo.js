@@ -709,7 +709,7 @@ function sendContactRequest(recieverID, name){
   var now = new Date().toString();
   console.log('about to send contact request: sender id: ' + ourUser._id)
   console.log('reciever id is: ' + recieverID);
-  $.post('/messages', {'senderID':ourUser._id, 'recieverID':recieverID, 'body':'<button id="'+recieverID+'">'+ourUser.username+'"wants to connect with you."</button>', 'timeStamp':now}, res=>{
+  $.post('/messages', {'senderID':ourUser._id, 'recieverID':recieverID, 'body':'<button class="chat-wants-connect-btn" id="'+recieverID+'">'+ourUser.username+'wants to connect with you.</button>', 'timeStamp':now}, res=>{
     alert('We have sent your contact request to ' + name + ' check your contacts tab often to see if they have accepted, and been added to your contacts.');
     $.post('/connectNotification', {'askerID':ourUser._id, 'friendID':recieverID}, res2=>{
       if (res2){

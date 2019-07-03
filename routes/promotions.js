@@ -221,16 +221,21 @@ module.exports = router =>{
                 var senderHasAcceptor = false;
                 var acceptorHasSender = false;
                 //check for contacts
-                for (var con1 in acceptor.contacts){
-                  if (acceptor.contacts[con1]['name']==senderName){
-                    acceptorHasSender = true;
+                if(acceptor.hasOwnProperty('contacts')){
+                  for (var con1 in acceptor.contacts){
+                    if (acceptor.contacts[con1]['name']==senderName){
+                      acceptorHasSender = true;
+                    }
                   }
                 }
-                for (var con2 in sender.contacts){
-                  if (acceptor.contacts[con2]['name']==acceptorName){
-                    senderHasAcceptor = true;
+                if(sender.hasOwnProperty('contacts')){
+                  for (var con2 in sender.contacts){
+                    if (acceptor.contacts[con2]['name']==acceptorName){
+                      senderHasAcceptor = true;
+                    }
                   }
                 }
+
                 //if the two know eachother already
                 if (senderHasAcceptor && acceptorHasSender){
                   console.log('One of the two parties in add mutual contacts knows eachother.');
@@ -324,7 +329,7 @@ router.post('/promotion', (req, res)=>{
         }
         else{
           console.log('Set promotion ' +name+ ' for user: '+req.session.key);
-          res.status(200).json({data:res2, message:'Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "save". To begin running this promo simply go to you contacts and hit the promotion button next to a names. If they accept it will be autmatically posted to their social medias.'});
+          res.status(200).json({data:res2, message:'Congratulations, you have added this promotion to Banda! You can change what promotion you would like to use at anytime simply by changing the information here and clicking "save". To begin running this promo, simply go to you contacts and hit the promotion button next to a name. If they accept, it will be automatically posted to their social media pages.'});
         }
       });
     }, dbErr=>{
