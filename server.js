@@ -486,7 +486,23 @@ router.post('/postTweet', (req, res) =>{
 			})
 
 			//get and post the message data
-			let content = req.body.message
+      var {promo, coupon} = req.body;
+      var message = promo.caption;
+      var link=promo.imgURL;
+      if (coupon==null){
+        message= message+'\n'+promo.handles;
+      }
+      else{
+        message= message+'\n'+promo.handles;
+        message = message + '\n' + coupon.details;
+        if (coupon.hasOwnProperty('link')){
+          message= message + '\n'+coupon.link;
+        }
+      }
+      message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
+      //string concatination with handles, caption and coupon description nad our own Banda stuff
+
+      var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
 			T.post('statuses/update', { status: content }, function(err, data, response) {
 				console.log(data)
 				return res.status(200).send('Tweet posted!')
@@ -681,7 +697,8 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 																																																										'accessToken':token,
 																																																										'pageToken':pageToken,
 																																																										'followerCount':followerCount,
-																																																										'totalConsumption':totalConsumption
+																																																										'totalConsumption':totalConsumption,
+																																																										'pageId': pageId
 																																																										}}}
 												, (err4, res4)=>{
 														if (err4){
@@ -746,24 +763,27 @@ database.connect(db => {
 		}
     else{
       //get the massage
-      var link="";
+
       var {promo, coupon} = req.body;
       var message = promo.caption;
-
+      var link=promo.imgURL;
       if (coupon==null){
-        link=promo.handles;
+        message= message+'\n'+promo.handles;
       }
       else{
+        message= message+'\n'+promo.handles;
+        message = message + '\n' + coupon.details;
         if (coupon.hasOwnProperty('link')){
-          link=coupon.link;
+          message= message + '\n'+coupon.link;
         }
-        message = message + '\n'+message.handles;
       }
-      message = message + '\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow and music lovers band together!)'
+      message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
       //string concatination with handles, caption and coupon description nad our own Banda stuff
+
       var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
       const pageToken = obj.facebook.pageToken
       const pageId = obj.facebook.pageId
+      console.log('USER IS: ' + JSON.stringify(obj));
 
       //set the parameters
       var options = {
