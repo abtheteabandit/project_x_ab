@@ -3793,9 +3793,7 @@ function postPromo(button){
         if (res.data.twitter.wanted){
           if(res.data.twitter.ok){
             //post to twitter, liekly move the rest of this shit into this thread
-            $.post('/postOnFBPage', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
-              alert(res2);
-            });
+            alert('TWIITER WORKS')
 
           }
           else{
@@ -3804,8 +3802,9 @@ function postPromo(button){
         }
         if (res.data.facebook.wanted){
           if (res.data.facebook.ok){
-            //post to fb
-            alert('FACEBOOK WORKS');ß
+            $.post('/postOnFBPage', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
+              alert(res2);
+            });
           }
           else{
             alert('Sorry, it seems that you want to post this promotion to Facebook but have not signed into your Facebook account from Banda. Just click "Promotions" and click the Facebook icon on step one to sign in. Thank you!');

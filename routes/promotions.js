@@ -99,12 +99,11 @@ module.exports = router =>{
                                 var mediaOn = medias[m];
                                   wantsFB=true;
                                   if (poster.hasOwnProperty('facebook')){
-                                    if (poster.facebook.hasOwnProperty('access_token')){
-                                      if (poster.facebook.hasOwnProperty('token_secret')){
-                                        if (!(poster.facebook.access_token == null || poster.facebook.token_secret==null)){
+                                    if (poster.facebook.hasOwnProperty('pageToken') && poster.facebook.hasOwnProperty('pageId')){
+                                        if (poster.facebook.pageToken && poster.facebook.pageId){
+                                          console.log('PAGE TOKE FOR FBBBBB: ' + poster.facebook.pageToken);
                                           facebookOk=true;
                                         }
-                                      }
                                     }
                                   }
                               if (mediaOn=='instagram'){
