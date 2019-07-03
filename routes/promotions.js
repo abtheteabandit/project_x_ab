@@ -521,7 +521,7 @@ router.post('/user_socials', (req, res)=>{
           'details':details,
           'gigID':gigID,
           'code':code,
-          'promoID':promoID, 'link'link}}, {upsert:true}, (err2, res2)=>{
+          'promoID':promoID, 'link':link}}, {upsert:true}, (err2, res2)=>{
           if (err2){
             console.log('There was an error setting coupon: '+promoID+' for user: ' +req.session.key+' Error: ' + err2);
             res.status(500).end();
