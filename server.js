@@ -503,7 +503,7 @@ router.post('/postTweet', (req, res) =>{
       //string concatination with handles, caption and coupon description nad our own Banda stuff
 
       var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
-			T.post('statuses/update', { status: content }, function(err, data, response) {
+			T.post('statuses/update', { status: message }, function(err, data, response) {
 				console.log(data)
 				return res.status(200).send('Tweet posted!')
 			})
