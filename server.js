@@ -747,18 +747,17 @@ database.connect(db => {
 		}
     else{
       //get the massage
-      var link="";
+
       var {promo, coupon} = req.body;
       var message = promo.caption;
-
+      var link=promo.imgURL;
       if (coupon==null){
-        link=promo.handles;
+        message= message+'\n'+promo.handles;
       }
       else{
         if (coupon.hasOwnProperty('link')){
-          link=coupon.link;
+          message= message + '\n'+coupon.link;
         }
-        message = message + '\n'+message.handles;
       }
       message = message + '\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
       //string concatination with handles, caption and coupon description nad our own Banda stuff
