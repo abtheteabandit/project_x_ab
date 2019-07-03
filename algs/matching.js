@@ -514,117 +514,41 @@ module.exports = {
                       console.log('Our pull is: ' + ourPull);
                       // now we have ourUsers value set, moving on to looping through all users to find a match
                       allUsers.forEach(function(otherUser, i){
-                        db.db('promotions').collection('promotions').find({'creator':otherUser.username}).toArray((errOtherPromo, otherPromos)=>{
-                          if (errOtherPromo){
-                            console.log('There was an error find other user: '+otherUser.username+' Error: ' + errOtherPromo);
-                            errCB('Internal Server Error');
-                          }
-                          else{
-                            console.log('OTHER PROMOS IN MAIN LOOP for user wit username: ' + otherUser.username);
-                            if (otherPromos==null || otherPromos.length==0){
-                              console.log('THe other user: '+otherUser.username+' does not have any promos');
-                              if (otherUser.username==searchText){
-                                totalScore = 100000
+                              var totalScore = 0;
+                              var totalFollowers = 0;
+                              var totalEngageScore = 0;
+                              if (otherUser.hasOwnProperty('twitter')){
+                                var twitEng = 0;
+                                if (otherUser.twitter.follower_count){
+                                  console.log('user: ' + otherUser.username+ " has this many tiwtter follwoers: "+ otherUser.twitter.follower_count)
+                                  totalFollowers+=otherUser.twitter.follower_count
+                                }
+                                twitEng+=otherUser.twitter.retweets;
+                                twitEng+=otherUser.twitter.favorites;
+                                if (otherUser.twitter.status_count){
+                                  twitEng+=otherUser.twitter.status_count;
+                                }
+                                totalEngageScore+=twitEng
                               }
-                              else{
-                                if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
-                                  var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
-                                  var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
-                                  var totalDist = Math.sqrt(distY+distX);
-                                  totalScore = -totalDist;
+                              if (otherUser.hasOwnProperty('instagram')){
+
+                              }
+                              if (otherUser.hasOwnProperty('snapchat')){
+
+                              }
+                              if (otherUser.hasOwnProperty('facebook')){
+                                var fbEng = 0;
+                                if (otherUser.facebook.followerCount){
+                                  totalFollowers+=otherUser.facebook.followerCount
                                 }
                               }
-                              usersToScore.push([otherUser, totalScore]);
-                            }
-                            else{
-                              if (otherUser.hasOwnProperty('followers')){
-                                var otherUserPull = 0;
-                                if (otherUser.followers.hasOwnProperty('twitter')){
-                                  if (otherUser.engagement.hasOwnProperty('twitter')){
-                                    otherUserPull += otherUser.followers.twitter * otherUser.engagement.twitter ;
-                                  }
-                                  else{
-                                    otherUserPull += otherUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
-                                  }
-                                }
-                                if (otherUser.followers.hasOwnProperty('facebook')){
-                                  if (otherUser.engagement.hasOwnProperty('facebook')){
-                                    otherUserPull += otherUser.followers.facebook * otherUser.engagement.facebook ;
-                                  }
-                                  else{
-                                    otherUserPull += otherUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
-                                  }
-                                }
-                                if (otherUser.followers.hasOwnProperty('instagram')){
-                                  if (otherUser.engagement.hasOwnProperty('instagram')){
-                                    otherUserPull += otherUser.followers.instagram * otherUser.engagement.instagram ;
-                                  }
-                                  else{
-                                    otherUserPull += otherUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
-                                  }
-                                }
-
-                                // now we have the other users value set.
-                                var pullDiff = Math.abs(otherUserPull-ourPull);
-
-                                console.log('Our user pull is: ' + ourPull + ' Other user pull is: ' + otherUserPull);
-
-                                //setting up query parser
-                                var genresFromStr=[];
-                                var instsFromStr=[];
-                                var gigTypesFromStr=[];
-                                var vibesFromStr=[];
-                                var promoGenreMult = 5;
-                                var categories={"genres":[genreBank,genresFromStr,promoGenreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
-                                var catsAfterParse = parseQueryString(searchText, categories);
-                                console.log('Cats after parse in cross promo is: ' + JSON.stringify(catsAfterParse));
-
-                                var queryStrScore = 0;
-                                var numMatches = 0;
-
-                                //goes through a finds mathces from the query string to matches in the promotion of the user were currently evaluting
-                                for (var oPromo in otherPromos){
-                                  var otherPromotion = otherPromos[oPromo];
-                                  for (var key in catsAfterParse){
-                                    if (catsAfterParse.hasOwnProperty(key)){
-                                      var contents = cats[key];
-                                      var fromStr=contents[1];
-                                      var mult=contents[2];
-                                      for (var word in fromStr){
-                                        var cleanedDescription = otherPromotion.description.replace("," , " ");
-                                        cleanedDescription = cleanedDescription.toLowerCase();
-                                        cleanedDescription = cleanedDescription.replace("." , " ");
-                                        cleanedDescription = cleanedDescription.replace("!" , " ");
-                                        cleanedDescription = cleanedDescription.replace(";" , " ");
-                                        cleanedDescription = cleanedDescription.replace("?" , " ");
-                                        if (cleanedDescription.includes(fromStr[word])){
-                                          queryStrScore+=(1*mult);
-                                          numMatches+=1;
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                                //such that targeting zipcodes works
-                                const DEFAULT_TOTAL_DIST = 50;
-                                var totalDist = 0;
-                                console.log('IN CROSS promo: query string score is: ' + queryStrScore);
-                                if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
-                                  var distX = Math.abs(otherUser.lat-lat)*Math.abs(otherUser.lat-lat);
-                                  var distY = Math.abs(otherUser.lng-lng)*Math.abs(otherUser.lng-lng);
-                                  var totalDist = Math.sqrt(distY+distX);
-                                }
-                                else{
-                                  totalDist = DEFAULT_TOTAL_DIST;
-                                }
-                                var totalScore = queryStrScore - totalDist - pullDiff;
-                                if (searchText==otherUser.username){
-                                  totalScore=100000;
-                                }
-                                usersToScore.push([otherUser, totalScore]);
-                                console.log('Total dist is: ' + totalDist);
+                              var totalPull=0;
+                              if (totalEngageScore){
+                                totalPull = totalFollowers * totalEngageScore;
                               }
-                              else{
+                               totalPull = totalFollowers * DEFAULT_ENGAGE_SCORE;
+                              totalScore += totalPull
+                              console.log('Total pull for user: ' + otherUser.username+' is: ' + totalPull + ' and followers is : ' +totalFollowers);
                                 //this defines the case for adding a user who has no socials, we still want user connection, noPromoScore should be calibrated
 
                                 if (otherUser.hasOwnProperty('lat') && otherUser.hasOwnProperty('lng')){
@@ -635,14 +559,14 @@ module.exports = {
                                 }
 
                                 if (searchText==otherUser.username){
-                                  totalScore=100000;
+                                  console.log('SESRCHING FOR: ' + searchText);
+                                  totalScore+=100000;
                                 }
                                 console.log('About to push user: ' + otherUser.username + ' into the dictionary with score: ' + totalScore);
                                 usersToScore.push([otherUser, totalScore]);
-                              }
 
-                            }
-                          }
+
+
                           console.log(' IIIIIIIIII isssss: ' + i)
                             console.log('users to score: ' + JSON.stringify(usersToScore));
                           if (i>=allUsers.length-1){
@@ -650,7 +574,6 @@ module.exports = {
                             console.log('Got results they are: ' + JSON.stringify(results));
                             cbOK(results);
                           }
-                        });
                       });
 
                     }

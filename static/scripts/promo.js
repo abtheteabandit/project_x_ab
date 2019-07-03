@@ -724,7 +724,7 @@ function convertZip(mySearch){
       var lng = data.coord.lon;
       $.get('/search_promos', {'lat':lat, 'lng':lng, 'searchText':mySearch.text}, res3=>{
         fillResultsTable(res3['data']['overallMatchers']);
-        // console.log(JSON.stringify(res3['data']['overallMatchers']));
+         console.log(JSON.stringify(res3['data']['overallMatchers']));
       });
   });
 }
