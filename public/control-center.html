@@ -40,6 +40,7 @@
     <link rel="stylesheet" type="text/css" href="/css/testing/tooltiptest.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createPullModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/notificationSettingsModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/chat/chatButtons.css">
 
 
     <!-- jquery -->
@@ -65,10 +66,11 @@
   <body onload="init();">
 
     <div id="modal-wrapper-select-promo">
-      <div id="sp-content">
+      <div id="sp-content" class="animate">
         <h1 id="sp-h1">select your promo from the dropdown below</h1>
         <select id="sp-select"></select>
         <a id="sp-submit">continue with selected promo</a>
+        <a id="sp-cancel" onclick="document.getElementById('modal-wrapper-select-promo').style.display='none'; console.log(postToFB); console.log(postToInsta); console.log(postToTwitter);">cancel</a>
       </div>
     </div>
 

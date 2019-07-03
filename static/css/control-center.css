@@ -1571,13 +1571,6 @@ chat boxes
   cursor: pointer;
 }
 
-.open-promo-btn{
-  color: #56dff0;
-  background-color: rgba(0,0,0,0.7);
-  border-radius: 4px;
-  border: none;
-}
-
 @media(max-width: 1200px){
   .profile-header-text{
     font-size: 70pt;
