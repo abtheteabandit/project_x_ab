@@ -772,10 +772,14 @@ database.connect(db => {
       var message = promo.caption;
       var link=promo.imgURL;
       if (coupon==null){
-        message= message+'\n'+promo.handles;
+        if (!(promo.handles=="")){
+          message= message+'\n'+promo.handles;
+        }
       }
       else{
-        message= message+'\n'+promo.handles;
+        if (!(promo.handles=="")){
+          message= message+'\n'+promo.handles;
+        }
         message = message + '\n' + coupon.details;
         if (coupon.hasOwnProperty('link')){
           message= message + '\n'+coupon.link;
