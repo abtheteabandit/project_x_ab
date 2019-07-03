@@ -486,7 +486,23 @@ router.post('/postTweet', (req, res) =>{
 			})
 
 			//get and post the message data
-			let content = req.body.message
+      var {promo, coupon} = req.body;
+      var message = promo.caption;
+      var link=promo.imgURL;
+      if (coupon==null){
+        message= message+'\n'+promo.handles;
+      }
+      else{
+        message= message+'\n'+promo.handles;
+        message = message + '\n' + coupon.details;
+        if (coupon.hasOwnProperty('link')){
+          message= message + '\n'+coupon.link;
+        }
+      }
+      message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
+      //string concatination with handles, caption and coupon description nad our own Banda stuff
+
+      var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
 			T.post('statuses/update', { status: content }, function(err, data, response) {
 				console.log(data)
 				return res.status(200).send('Tweet posted!')
