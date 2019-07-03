@@ -679,8 +679,9 @@ function diff_minutes(dt2, dt1) {
     email: $("#reg_email").val(),
     password: $("#reg_password").val(),
     confirm_password: $("#reg_confirm").val()
+    phone : $('#reg_phone').val();
     };
-		if (content.username == "" || content.email == "" || content.password == "" || content.confirm_password == ""){
+		if (content.username == "" || content.email == "" || content.password == "" || content.confirm_password == "" || content.phone == ""){
 			alert('Sorry, you must fill out all the fields on this form to register');
 			return;
 		}

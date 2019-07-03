@@ -51,7 +51,7 @@ router.post('/register', (req, res) => {
 	}
 
 	//store values from the request
-	var {username, email, password, confirm_password} = req.body;
+	var {username, email, password, confirm_password, phone} = req.body;
 	console.log("GOT user name, email and passowrd they are: " + username + " " + email + " " + password + " " + confirm_password);
 
 //confirm password is the same
@@ -100,7 +100,7 @@ router.post('/register', (req, res) => {
 				res.status(200).send('Username or email already exists').end();
 			} else {
 				//if not, create a new user
-				users.insertOne({ email: email, username: username, password: password, contacts:[]}, (err, obj) => {
+				users.insertOne({ email: email, username: username, password: password, contacts:[], 'phone':phone}, (err, obj) => {
 					if (err) {
 						console.error(`Register request from ${req.ip} (for ${username}, ${email}, ${password}) returned error: ${err}`);
 						res.status(500).end();
