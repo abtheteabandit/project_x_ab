@@ -759,8 +759,9 @@ database.connect(db => {
         }
         message = message + '\n'+message.handles;
       }
-      message = message + '\n'+'(posted from https://www.banda-inc.com)'
+      message = message + '\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow and music lovers band together!)'
       //string concatination with handles, caption and coupon description nad our own Banda stuff
+
       const pageToken = obj.facebook.pageToken
       const pageId = obj.facebook.pageId
 
