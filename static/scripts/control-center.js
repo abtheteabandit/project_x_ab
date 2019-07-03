@@ -3793,7 +3793,10 @@ function postPromo(button){
         if (res.data.twitter.wanted){
           if(res.data.twitter.ok){
             //post to twitter, liekly move the rest of this shit into this thread
-            alert('TWITTER WORKS');
+            $.post('/postOnFBPage', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
+              alert(res2);
+            });
+
           }
           else{
             alert('Sorry, it seems that you want to post this promotion to Twitter but have not signed into your Twitter account from Banda. Just click "Promotions" and click the Twitter icon on step one to sign in. Thank you!');

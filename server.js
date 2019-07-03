@@ -746,11 +746,21 @@ database.connect(db => {
 		}
     else{
       //get the massage
+      var link="";
       var {promo, coupon} = req.body;
+      var message = promo.caption;
 
+      if (coupon==null){
+        link=promo.handles;
+      }
+      else{
+        if (coupon.hasOwnProperty('link')){
+          link=coupon.link;
+        }
+        message = message + '\n'+message.handles;
+      }
+      message = message + '\n'+'(posted from https://www.banda-inc.com)'
       //string concatination with handles, caption and coupon description nad our own Banda stuff
-
-      const message = promo.caption;
       const pageToken = obj.facebook.pageToken
       const pageId = obj.facebook.pageId
 
