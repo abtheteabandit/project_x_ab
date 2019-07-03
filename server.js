@@ -765,6 +765,7 @@ database.connect(db => {
       var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
       const pageToken = obj.facebook.pageToken
       const pageId = obj.facebook.pageId
+      console.log('USER IS: ' + JSON.stringify(obj));
 
       //set the parameters
       var options = {

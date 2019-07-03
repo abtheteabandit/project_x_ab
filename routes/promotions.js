@@ -99,8 +99,9 @@ module.exports = router =>{
                                 var mediaOn = medias[m];
                                   wantsFB=true;
                                   if (poster.hasOwnProperty('facebook')){
-                                    if (poster.facebook.hasOwnProperty('pageToken')){
-                                        if (poster.facebook.pageToken){
+                                    if (poster.facebook.hasOwnProperty('pageToken') && poster.facebook.hasOwnProperty('pageID')){
+                                        if (poster.facebook.pageToken && poster.facebook.pageID){
+                                          console.log('PAGE TOKE FOR FBBBBB: ' + poster.facebook.pageToken);
                                           facebookOk=true;
                                         }
                                     }
