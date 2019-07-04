@@ -484,32 +484,36 @@ module.exports = {
 
                       //pull is defined as the sum of followers for each platform * the engagement score on each platform
                       var ourPull = 0;
+                      var ourFollowers = 0;
+                      var ourEngagament = 0;
+                      if (ourUser.hasOwnProperty('twitter')){
+                        if (ourUser.twitter.hasOwnProperty('follower_count')){
+                          ourFollowers+=ourUser.twitter.follower_count;
+                        }
+                        if (ourUser.twitter.hasOwnProperty('retweets')){
+                          ourEngagament+=ourUser.twitter.rewtweets;
+                        }
+                        if (ourUser.twitter.hasOwnProperty('favorites')){
+                          ourEngagament+=ourUser.twitter.favorites;
+                        }
+                      }
+                      if (ourUser.hasOwnProperty('facebook')){
+                        if (ourUser.facebook.hasOwnProperty('followerCount')){
+                          ourFollowers+=ourUser.facebook.followerCount;
+                        }
+                        if (ourUser.facebook.hasOwnProperty('likes')){
+                          ourEngagament+=ourUser.facebook.likes;
+                        }
+                        if (ourUser.facebook.hasOwnProperty('comments')){
+                          ourEngagament+=ourUser.facebook.comments;
+                        }
+                      }
 
-                      if (ourUser.hasOwnProperty('followers') && ourUser.hasOwnProperty('engagement')){
-                        if (ourUser.followers.hasOwnProperty('twitter')){
-                          if (ourUser.engagement.hasOwnProperty('twitter')){
-                            ourPull += ourUser.followers.twitter * ourUser.engagement.twitter ;
-                          }
-                          else{
-                            ourPull += ourUser.followers.twitter * DEFAULT_ENGAGE_SCORE;
-                          }
-                        }
-                        if (ourUser.followers.hasOwnProperty('facebook')){
-                          if (ourUser.engagement.hasOwnProperty('facebook')){
-                            ourPull += ourUser.followers.facebook * ourUser.engagement.facebook ;
-                          }
-                          else{
-                            ourPull += ourUser.followers.facebook * DEFAULT_ENGAGE_SCORE;
-                          }
-                        }
-                        if (ourUser.followers.hasOwnProperty('instagram')){
-                          if (ourUser.engagement.hasOwnProperty('instagram')){
-                            ourPull += ourUser.followers.instagram * ourUser.engagement.instagram ;
-                          }
-                          else{
-                            ourPull += ourUser.followers.instagram * DEFAULT_ENGAGE_SCORE;
-                          }
-                        }
+                      if (ourEngagament==0){
+                        ourPull = ourFollowers * DEFAULT_ENGAGE_SCORE;
+                      }
+                      else{
+                        ourPull = ourFollowers * ourEngagament;
                       }
                       console.log('Our pull is: ' + ourPull);
                       // now we have ourUsers value set, moving on to looping through all users to find a match
