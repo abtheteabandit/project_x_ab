@@ -5283,7 +5283,7 @@ function downloadFromPromoRequest(){
   var imgURL = document.getElementById('promo-req-pic').src
   console.log('IMGURL:  ' + imgURL);
 
-  element.setAttribute('href', '/'+imgURL);
+  element.setAttribute('href', imgURL);
   element.setAttribute('download', 'promotionImage');
   document.body.appendChild(element);
 
