@@ -144,8 +144,9 @@ function init(){
     console.log("parse url has property!!!!!!!!!!!!")
     if(parsedURL.searchObject.isPromo == 'true'){
       userClickStart();
-      console.log(parseURL.searchObject)
+      console.log(parsedURL)
       if(parsedURL.searchObject.isInsta == true){
+        console.log("populating instagram modal")
         populateSelectSocialPageModal(parsedURL.searchObject.pages, true);
       }
       if(parsedURL.searchObject.hasOwnProperty('pages') && !(parsedURL.searchObject.hasOwnProperty('isInsta'))){ //ensure isInsta isn't there, cuz i don't think we set it to false on facebook redirect
@@ -438,6 +439,7 @@ function parseURL(url){
          'name': nameSplit[1].replace('%20',' ')
        };
        searchObject['pages'].push(page);
+       console.log(searchObject)
        i+=2;
      }
      return {
@@ -777,11 +779,13 @@ function populateSelectSocialPageModal(data, isInsta){
         var optionSelected = $(this).find("option:selected");
         var valueSelected  = optionSelected.val();
         var textSelected   = optionSelected.text();
+        console.log(optionSelected)
         console.log("VALUE SELECTED IS: "+valueSelected);
         console.log("TEXT SELECTED IS: "+textSelected);
       });
     });
     for(var index in data){
+      console.log(data)
       var page = document.createElement('option');
       page.value = data[index].id;
       page.innerHTML = data[index].name;
@@ -834,14 +838,16 @@ function selectMainFacebookPage(){
 function selectMainInstagramPage(){
   jQuery(function($) {
     var optionSelected = $("#ssp-select").find("option:selected");
+    console.log(optionSelected);
     var valueSelected  = optionSelected.val(); // the page ID
     var textSelected   = optionSelected.text(); // the page name
     var instagramUsername = document.getElementById("instagramUsername").value;
-    console.log("VALUE SELECTED IS: "+valueSelected);
-    console.log("TEXT SELECTED IS: "+textSelected);
+    console.log("VALUE SELECTED IS: " + valueSelected);
+    console.log("TEXT SELECTED IS: " + textSelected);
 
     console.log("this will post request the insta route")
     // //make post request to store the page token and page statistics
+    console.log(valueSelected +  " Is the page id");
     $.post('http://localhost:1600/storeInstData', {pageId: valueSelected, pageName: textSelected, username: instagramUsername}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-select-social-page-insta").style.display = "none";

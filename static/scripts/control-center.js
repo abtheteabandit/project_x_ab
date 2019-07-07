@@ -3742,6 +3742,10 @@ function openPromotionModal(button){
   postToFB=false;
   postToInsta=false;
   postToTwitter=false;
+  // disable 'active-social' class for the promotion modal social buttons
+  document.getElementById('promo-req-fb').className = "promo-req-social";
+  // document.getElementById('promo-req-insta').className = "promo-req-social";
+  document.getElementById('promo-req-twitter').className = "promo-req-social";
   var data = button.value;
   var pieces = data.split('*;!');
   var askerName = pieces[0];
@@ -5128,6 +5132,10 @@ function openAddPullModal(){
   postToInsta=false;
   postToTwitter=false;
   downloadedPromo=false;
+  // disable 'active-social' class for the add pull social buttons
+  document.getElementById('create-pull-fb').className = "create-pull-social";
+  // document.getElementById('create-pull-insta').className = "create-pull-social";
+  document.getElementById('create-pull-twitter').className = "create-pull-social";
   console.log("ADDDD PULLLLL");
   document.getElementById("create-pull-select").innerHTML='';
   $.get('/getBands', {'creator':username}, userBands=>{

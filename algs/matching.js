@@ -501,14 +501,27 @@ module.exports = {
                         if (ourUser.facebook.hasOwnProperty('followerCount')){
                           ourFollowers+=ourUser.facebook.followerCount;
                         }
-                        if (ourUser.facebook.hasOwnProperty('likes')){
-                          ourEngagament+=ourUser.facebook.likes;
-                        }
-                        if (ourUser.facebook.hasOwnProperty('comments')){
-                          ourEngagament+=ourUser.facebook.comments;
+                        if (ourUser.facebook.hasOwnProperty('totalConsumption')){
+                          ourEngagament+=ourUser.facebook.totalConsumption;
                         }
                       }
-
+                      if (ourUser.hasOwnProperty('instagram')){
+                        if (ourUser.facebook.hasOwnProperty('followerCount')){
+                          ourFollowers+=ourUser.instagram.followerCount;
+                        }
+                        if (ourUser.facebook.hasOwnProperty('websiteClicks')){
+                          let clicksArray = ourUser.facebook.websiteClicks.values
+                          for(let val in clicksArray){
+                            ourEngagament +=  val.value;
+                          }
+                        }
+                        if (ourUser.facebook.hasOwnProperty('reach')){
+                          let reachArray = ourUser.facebook.reach.values
+                          for(let val in reachArray){
+                            ourEngagament +=  val.value;
+                          }
+                        }
+                      }
                       if (ourEngagament==0){
                         ourPull = ourFollowers * DEFAULT_ENGAGE_SCORE;
                       }
