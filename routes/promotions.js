@@ -83,6 +83,7 @@ module.exports = router =>{
 
                             for (var m in medias){
                               var mediaOn = medias[m];
+                              console.log('MEDIA ON: ' + mediaOn)
                               if (mediaOn=='twitter'){
                                 wantsTwitter=true;
                                 if (poster.hasOwnProperty('twitter')){
@@ -112,7 +113,7 @@ module.exports = router =>{
                               }
                             }
                           }
-                          var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false}, 'coupon':ourCoupon, 'promo':ourPromo};
+                          var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':poster.twitter.access_token, 'secret_token':poster.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':poster.facebook.pageId, 'pageToken':poster.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':ourCoupon, 'promo':ourPromo};
                           res.status(200).json({'success':true, 'data':data});
                           db.close();
                         }
@@ -121,7 +122,9 @@ module.exports = router =>{
                             console.log('We do not have a coupon with this promo: ' + promoID);
 
                             for (var m in medias){
+
                               var mediaOn = medias[m];
+                              console.log('MEDIA ON: ' + mediaOn);
                               if (mediaOn=='twitter'){
                                 wantsTwitter=true;s
                                 if (poster.hasOwnProperty('twitter')){
@@ -136,18 +139,17 @@ module.exports = router =>{
                               }
                               if (mediaOn=='facebook'){
                                 var mediaOn = medias[m];
-                                if (mediaOn=='twitter'){
+
                                   wantsFB=true;
                                   if (poster.hasOwnProperty('facebook')){
-                                    if (poster.facebook.hasOwnProperty('access_token')){
-                                      if (poster.facebook.hasOwnProperty('token_secret')){
-                                        if (poster.facebook.access_token == null || poster.facebook.token_secret==null){
+                                    if (poster.facebook.hasOwnProperty('pageId')){
+                                      if (poster.facebook.hasOwnProperty('accessToken')){
+                                        if (!(poster.facebook.accessToken == null || poster.facebook.accessToken==null)){
                                           facebookOk=true;
                                         }
                                       }
                                     }
                                   }
-                              }
                             }
                               if (mediaOn=='instagram'){
                                 wantsInstagram=true;
@@ -1456,7 +1458,7 @@ router.post('/pull', (req,res)=>{
               }
             }
             var fakePromo = {'handles':"", 'imgURL':imgURL, 'caption':postableCaption};
-            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false}, 'coupon':null, 'promo':fakePromo};
+            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':ourUser.twitter.access_token, 'secret_token':ourUser.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':ourUser.facebook.pageId, 'pageToken':ourUser.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':null, 'promo':fakePromo};
             res.status(200).json({'success':true, 'data':data});
             db.close();
           }

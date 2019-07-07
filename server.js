@@ -540,7 +540,7 @@ router.post('/postPhotoTweet', function(req, res){
       var {promo, coupon} = req.body;
       var message = promo.caption;
 			var link=promo.imgURL;
-			
+
 			//store the media files twitter wants
 			var media = req.media;
 			var mediaData = req.mediaData;
@@ -831,12 +831,12 @@ database.connect(db => {
       var message = promo.caption;
       var link=promo.imgURL;
       if (coupon==null){
-        if (!(promo.handles=="")){
+        if (!(promo.handles==undefined)){
           message= message+'\n'+promo.handles;
         }
       }
       else{
-        if (!(promo.handles=="")){
+        if (!(promo.handles==undefined)){
           message= message+'\n'+promo.handles;
         }
         message = message + '\n' + coupon.details;
@@ -1001,12 +1001,12 @@ database.connect(db => {
       var message = promo.caption;
       var link=promo.imgURL;
       if (coupon==null){
-        if (!(promo.handles=="")){
+        if (!(promo.handles==undefined)){
           message= message+'\n'+promo.handles;
         }
       }
       else{
-        if (!(promo.handles=="")){
+        if (!(promo.handles==undefined)){
           message= message+'\n'+promo.handles;
         }
         message = message + '\n' + coupon.details;
@@ -1017,31 +1017,64 @@ database.connect(db => {
       message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
       //string concatination with handles, caption and coupon description nad our own Banda stuff
 
-      var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
-      const pageToken = obj.facebook.pageToken
-      const pageId = obj.facebook.pageId
-      console.log('USER IS: ' + JSON.stringify(obj));
+  //  var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
+      //testing imgURL
+      var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'http://localhost:1600/');
+      Jimp.read(imgURL, (err4, img)=>{
+        if (err4){
+          console.log(err4);
 
-      //set the parameters
-      var options = {
-        url: 'https://graph.facebook.com/' + pageId + '/photos?caption=' + message + '&source=' + imgURL+ '&access_token=' + pageToken,
-        method: 'POST'
-      };
-      console.log('OPTIONS URL: ' + options.url);
-
-      function callback(error, response, body) {
-        if (!error && response.statusCode == 200) {
-            console.log(body);
         }
-        //success case
-        console.log(body);
-        res.status(200).send('Success');
-      }
+        else{
+          console.log('IMG: ' + JSON.stringify(img));
+          var mime = img.getMIME();
+          console.log('mime:    ' + mime);
+          if (mime==undefined || mime==null || mime=='none'){
+            //data type not recognized error cb
+          }
+          else{
+            img.getBase64(mime, (err64, cb64)=>{
+              if (err64){
+                console.log('There was an error getting base64 encoding form image: ' + err64);
+              }
+              else{
+                console.log('cb for image cb64: ' + JSON.stringify(cb64));
+                console.log('  \n')
 
-      //make the post request
-      request(options, callback);
+                //console.log('buffer data: ' + buffer.data);
+                console.log('  \n')
+                const pageToken = obj.facebook.pageToken
+                const pageId = obj.facebook.pageId
+                //console.log('USER IS: ' + JSON.stringify(obj));
 
-      db.close();
+                //set the parameters
+                var options = {
+                  url: 'https://graph.facebook.com/' + pageId + '/photos?caption=' + message + '&source=' + cb64+ '&access_token=' + pageToken,
+                  method: 'POST'
+                };
+                console.log('OPTIONS URL: ' + options.url);
+
+                function callback(error, response, body) {
+                  if (!error && response.statusCode == 200) {
+                      console.log(body);
+                  }
+                  if (error){
+                    console.log('Error: ' + error);
+                  }
+                  //success case
+                  console.log(body);
+                  res.status(200).send('Success');
+                }
+
+                //make the post request
+                request(options, callback);
+                db.close();
+              }
+            })
+          }
+
+        }
+      });
     }
   });
 	}, err => {

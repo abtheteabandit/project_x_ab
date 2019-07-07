@@ -3807,8 +3807,61 @@ function postPromo(button){
         }
         if (res.data.facebook.wanted){
           if (res.data.facebook.ok){
-            $.post('/postOnFBPage', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
+            /*$.post('/postImageToFB', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
               alert(res2);
+            });
+            */
+            var cleanedSource=res.data.promo.imgURL.replace('www.banda-inc.com//','/');
+            console.log('cleaned source: ' + cleanedSource);
+            console.log('base64: ' + JSON.stringify(cleanedSource));
+            fetch(cleanedSource)
+            .then(res => res.blob())
+            .then(blob => {
+                console.log(blob)
+                var message = "";
+                console.log('PROMO: ' + JSON.stringify(res.data.promo));
+                console.log('COUPON: ' + JSON.stringify(res.data.coupon));
+                message = res.data.promo.caption;
+                if (res.data.coupon){
+                  message = message + '\n' + res.data.coupon.details;
+                  if (res.data.coupon.hasOwnProperty('link')){
+                    message = message+'\n\n Just click this link to sign up for your free coupon: \n'+res.data.coupon.link;
+                  }
+                  else{
+                    message = message + '\n' + res.data.promo.handles;
+                  }
+                }
+                else{
+                  message = message + '\n' + res.data.promo.handles;
+                }
+                message = message + '\n\n (Posted from https://www.banda-inc.com where Artists Rise, Venues Grow and Music Lovers Band Togther!)';
+                var fd = new FormData();
+                fd.append("access_token", res.data.facebook.pageToken);
+                fd.append("source", blob);
+                fd.append("message",message);
+                try {
+                  $.ajax({
+                    url:"https://graph.facebook.com/"+res.data.facebook.pageId+"/photos?access_token=" + res.data.facebook.pageToken,
+                    type:"POST",
+                data:fd,
+                processData:false,
+                contentType:false,
+                cache:false,
+                success:function(data){
+                    console.log("success " + JSON.stringify(data));
+                  },
+                  error:function(shr,status,data){
+                    console.log("error " + data + " Status " + shr.status);
+                    alert('Hmmm... it seems soemthing went wrong with posting this to your Facebook. Try going back to your "promotion" page and resigning into your Facebook. Thank you!');
+                  },
+                  complete:function(){
+                    alert('We have posted this promotion to your Facebook! Thank you for helping, '+promoter+'! Feel free to create a promotion and then ask him/her to post it using the "cross promote" button on the left of "'+promoter+'" in your contact list. Thank you and keep Banding Together!');
+                  }
+                });
+              }
+              catch(e) {
+                console.log('Ther was an error posting to facebook: '+e);
+              }
             });
           }
           else{
@@ -5248,8 +5301,38 @@ function addPullAccept(){
           }
           if (res.data.facebook.wanted){
             if (res.data.facebook.ok){
-              $.post('/postOnFBPage', {'promo':res.data.promo, 'coupon':res.data.coupon}, res2=>{
-                alert(res2);
+                fetch('/assets/Promo/bandapromo1.2.png')
+                .then(res => res.blob())
+                .then(blob => {
+                  console.log(blob)
+                  var fd = new FormData();
+                  fd.append("access_token", res.data.facebook.pageToken);
+                  fd.append("source", blob);
+                  fd.append("message",res.data.promo.caption);
+                  try {
+                    $.ajax({
+                      url:"https://graph.facebook.com/"+res.data.facebook.pageId+"/photos?access_token=" + res.data.facebook.pageToken,
+                      type:"POST",
+                      data:fd,
+                      processData:false,
+                      contentType:false,
+                      cache:false,
+                      success:function(data){
+                        console.log("success " + JSON.stringify(data));
+                      },
+                      error:function(shr,status,data){
+                        console.log("error " + data + " Status " + shr.status);
+                        alert('Hmmm... it seems soemthing went wrong with posting this to your Facebook. Try going back to your "promotion" page and resigning into your Facebook. Thank you!');
+                      },
+                      complete:function(){
+                        console.log("Posted to facebook");
+                        alert('We have posted this promotion to your Facebook! Thank you for helping, '+promoter+'! Feel free to create a promotion and then ask him/her to post it using the "cross promote" button on the left of "'+promoter+'" in your contact list. Thank you and keep Banding Together!');
+                      }
+                    });
+                  }
+                catch(e) {
+                  console.log(e);
+                }
               });
             }
             else{
