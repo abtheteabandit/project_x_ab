@@ -800,7 +800,8 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 		res.status(500).send()
 	});
 })
-
+//for image processing
+var Jimp = require('jimp');
 //make post on facebook using message parameter
 router.post("/postOnFBPage", function(req, res){
 
@@ -846,7 +847,20 @@ database.connect(db => {
       message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
       //string concatination with handles, caption and coupon description nad our own Banda stuff
 
-      var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
+      var imgURL = promo.imgURL.replace('https://www.banda-inc.com/', '');
+      // image processing
+      Jimp.read('./'+imgURL, (errImg, img)=>{
+        if (errImg){
+          console.log('There was an error reading image at url: ' + imgURL + ' Error: ' + errImg);
+          res.status(200).send('JIMP ERROR');
+          db.close();
+        }
+        else{
+          console.log('got image: ' + JSON.stringify(img));
+          res.status(200).send('JIMP worked');
+          db.close();
+        }
+      })
       const pageToken = obj.facebook.pageToken
       const pageId = obj.facebook.pageId
       console.log('USER IS: ' + JSON.stringify(obj));
