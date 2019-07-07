@@ -735,7 +735,6 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 					axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
 						.then(function (response) {
 							let pageToken = response.data.access_token
-							console.log("the long page token is " + pageToken)
 					 		//get the number of followers on a page
 							axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
 							.then(function (response) {
@@ -1122,7 +1121,8 @@ router.get('/getInstData', passport.authenticate('inst_data', { scope: [
 				'business_management',
 					'read_insights',
 						'pages_show_list',
-							'manage_pages']}))
+							'manage_pages',
+								'public_profile']}))
 
 //route for facebook oauth callback
 router.get('/inst/token/return',
@@ -1145,8 +1145,36 @@ router.get('/inst/token/failedAuth', (req, res) => {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
-			console.log(obj.instagram)
-
+			console.log(obj)
+			let token = ""
+			if(token.length != undefined){
+				token = obj.instagram.accessToken
+			}
+			else{
+				token = obj.instagram.accessToken
+			}
+			let xurl = 'http://localhost:1600/promo#?'
+			//store the access tokens and profile information
+			axios.get("https://graph.facebook.com/v3.2/me/accounts?access_token=" + token)
+				.then(function (response) {
+					const pages = response.data
+					console.log(pages.data.length + " is tthe length")
+					for(let i = 0; i < pages.data.length; i++){
+						console.log("page is below")
+						console.log(pages.data[i])
+						xurl += "page" + i + "=" + pages.data[i].name + "&id" + i + "=" + pages.data[i].id + "&"
+					}
+					xurl += "pageNum=" + pages.data.length + "&isPromo=true" + "&isInsta=true"
+					console.log(xurl + " is the url !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+					return res.redirect(xurl);
+				})
+				.catch(function (error) {
+					console.log(error);
+				})
+				.finally(function () {
+					// always executed
+					return res.redirect(xurl);
+				});
 		})
 	}, err => {
 		console.warn("Couldn't connect to database: " + err)
@@ -1217,9 +1245,7 @@ router.post('/storeInstData', (req,res)=>{
 	let instaBussinessAccount = ""
 	let instagramUsername = ""
 
-	//todo: quert for insta id and page token
-	console.log(req.body.pageId)
-	console.log(req.body.pageName)
+	//set query parameters
 	instaId = req.body.pageId
 	pageName = req.body.pageName
 	instagramUsername = req.body.username
@@ -1242,28 +1268,60 @@ router.post('/storeInstData', (req,res)=>{
 					console.log(response.data);
 					instaBussinessAccount = response.data.instagram_business_account.id
 
-					// //get follower count and media count
+					// // //get follower count and media count
 					axios.get("https://graph.facebook.com/v3.3/" + instaBussinessAccount + "?fields=business_discovery.username(" + instagramUsername + "){followers_count,media_count}&access_token=" + token)
 					  .then(function (response) {
 							console.log(response.data);
 							followerCount = response.data.business_discovery.followers_count
 							postCount = response.data.business_discovery.media_count
 
-							//request instagram ofor insights
-							axios.get("https://graph.facebook.com/v3.3/" + instaBussinessAccount + "/insights?metric=impressions,reach,profile_views&period=day&access_token=" + token)
+							// //request instagram ofor insights
+							axios.get("https://graph.facebook.com/v3.3/" + instaId + "/insights?metric=impressions,profile_views,website_clicks&period=day&access_token=" + token)
 								.then(function (response) {
 									console.log(response.data);
+									let impressions = response.data.data[0]
+									let profileViews = response.data.data[1]
+									let websiteClicks = response.data.data[2]
 
-									//todo: review metrics and criteria and determine what we want to store with the team
+									axios.get("https://graph.facebook.com/v3.3/" + instaId + "/insights?metric=reach&period=week&access_token=" + token)
+										.then(function (response) {
+											console.log(response.data);
+											let reach = response.data.data[0]
 
-									//get account mentions
-									// axios.post("https://graph.facebook.com/v3.3/" + instaId + "/tags&access_token=" + token)
-									// 	.then(function (response) {
-									// 		console.log(response.data);
-									// 	})
-									// 	.catch(function (error) {
-									// 		console.log(error);
-									// 	})
+											let instagramData = { impressions: impressions,
+													profileViews: profileViews,
+														websiteClicks: websiteClicks,
+															instaBussinessAccount: instaBussinessAccount,
+																followerCount: followerCount,
+																	postCount: postCount,
+																		token: token, 
+																			instaId: instaId,
+																				pageName: pageName,
+																					instagramUsername: instagramUsername,
+																						reach: reach }
+
+																						database.connect(db => {
+																							//store the access tokens and profile information
+																							db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{ 'instagram': instagramData }}
+																								, (err4, res4)=>{
+																										if (err4){
+																											res.status(500).end();
+																											db.close();
+																										}
+																										else{
+																											//success case
+																											db.close();
+																											res.status(200).send('Success');
+												
+																										}
+																							});
+																						}, err => {
+																							console.warn("Couldn't connect to database: " + err)
+																						});
+										})
+										.catch(function (error) {
+											console.log(error);
+										})
 
 								})
 								.catch(function (error) {
@@ -1285,35 +1343,6 @@ router.post('/storeInstData', (req,res)=>{
 	});
 
 	res.send("success")
-
-	//get page views
-	// axios.get("https://graph.facebook.com/v3.3/" + instaId + "/insights?metric=engagement,impressions,reach&access_token=" + pageToken)
-	// .then(function (response) {
-	// 	console.log(response.data);
-	// })
-	// .catch(function (error) {
-	// 	console.log(error);
-	// })
-	// //get mentions by others
-	// //GET /{ig-user-id}/mentions
-	// axios.post("https://graph.facebook.com/v3.3/" + instaId + "/mentions&access_token=" + pageToken)
-  //   .then(function (response) {
-  //     console.log(response.data);
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-	// 	})
-
-	// //get engagement, todo: fix paramters
-	// //GET graph.facebook.com/17841405822304914/insights?metric=impressions,reach,profile_views&period=year
-	// axios.get("https://graph.facebook.com/v3.3/" + instaId + "/insights?metric=engagement,impressions,reach&access_token=" + pageToken)
-	// 	.then(function (response) {
-	// 		console.log(response.data);
-	// 	})
-	// 	.catch(function (error) {
-	// 		console.log(error);
-	// 	})
-
 })
 
 
