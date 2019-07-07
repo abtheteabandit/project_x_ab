@@ -5322,9 +5322,11 @@ function addPullAccept(){
                       },
                       error:function(shr,status,data){
                         console.log("error " + data + " Status " + shr.status);
+                        alert('Hmmm... it seems soemthing went wrong with posting this to your Facebook. Try going back to your "promotion" page and resigning into your Facebook. Thank you!');
                       },
                       complete:function(){
                         console.log("Posted to facebook");
+                        alert('We have posted this promotion to your Facebook! Thank you for helping, '+promoter+'! Feel free to create a promotion and then ask him/her to post it using the "cross promote" button on the left of "'+promoter+'" in your contact list. Thank you and keep Banding Together!');
                       }
                     });
                   }
