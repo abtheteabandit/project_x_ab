@@ -552,8 +552,7 @@ router.post('/user_socials', (req, res)=>{
                     db.close();
                   }
                   else{
-                   var data = "http://localhost:1600/customerQRCode?promoID="+promoID+"&gigID="+gigID;  // for testing
-                  //  var data = 'https://banda-inc.com/customerQRCode?gigID='+gigID+'&code='+code
+                   var data = "https://banda-inc.com/customerQRCode?promoID="+promoID+"&gigID="+gigID; 
                     QRCODE.toDataURL(data, (err6, img)=>{
                       if (err6){
                         console.log('there was an error creating qr code for promo with ID: ' + promoID);
@@ -564,7 +563,6 @@ router.post('/user_socials', (req, res)=>{
                         console.log('IMG ******************;::::::::::::::::::::::::::: is ;::::' + img);
                         var now = new Date().toString();
                         var cleanNow = now.replace(" ", "_");
-                        var imgURL = 'http://localhost:1600/public/uploads/CouponQrs/'+code;
                         let transporter = nodeMailer.createTransport({
                             host: 'smtp.gmail.com', // go daddy email host port
                             port: 465, // could be 993
