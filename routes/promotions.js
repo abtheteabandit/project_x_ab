@@ -935,8 +935,23 @@ router.get('/aPromo', (req, res)=>{
               db.close();
             }
             else{
-                res.status(200).json({'success':true, 'data': ourPromo});
-                db.close();
+                db.db('promotions').collection('discounts').findOne({'promoID':promoID}, (err2, ourCoupon)=>{
+                  if (err2){
+                    res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
+                    db.close();
+                  }
+                  else{
+                    if (ourCoupon){
+                      res.status(200).json({'success':true, 'data': {'promo':ourPromo, 'coupon':ourCoupon}});
+                      db.close();
+                    }
+                    else{
+                      res.status(200).json({'success':true, 'data': {'promo':ourPromo, 'coupon':null}});
+                      db.close();
+                    }
+
+                  }
+                })
             }
         }
       });

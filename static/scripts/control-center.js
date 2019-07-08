@@ -3753,8 +3753,19 @@ function openPromotionModal(button){
   console.log(' CLICKED OPEN PROMO: ' + promoID +' '+ askerName);
   $.get('/aPromo', {'username':askerName, 'promoID':promoID}, res=>{
     if (res.success){
-      var ourPromo = res.data;
-      var our_cap = ourPromo.caption + '\n'+ourPromo.handles+'\n\nposted from www.banda-inc.com (where the music industry bands together)'
+      var ourPromo = res.data.promo;
+      var ourCoupon = res.data.coupon;
+      var our_cap = ourPromo.caption
+      if (!(ourPromo.handles == "")){
+        our_cap = our_cap + '\n'+ourPromo.handles
+      }
+      if (ourCoupon){
+        our_cap = our_cap + '\n'+ ourCoupon.details;
+        if (ourCoupon.hasOwnProperty('link')){
+          our_cap = our_cap + '\n' + ourCoupon.link
+        }
+      }
+      our_cap = our_cap+'\n\nposted from https://www.banda-inc.com (where Artists Rise, Venues grow, and Music-Lovers Band Together)'
       document.getElementById('promo-req-caption').innerHTML = our_cap;
       var cleanSRC = ourPromo.imgURL.replace('www.banda-inc.com//', '');
       document.getElementById('promo-req-pic').src = cleanSRC;
