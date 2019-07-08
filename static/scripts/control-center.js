@@ -4458,6 +4458,106 @@ function convertZipBand(myBand){
       sendBandToDB(lat,lng, myBand);
     });
 }
+function sendBandToDB(lat, lng, myBand){
+  var name = myBand['name'];
+  var zipcode = myBand['zipcode'];
+  var maxDist = myBand['maxDist'];
+  var price = myBand['price'];
+  var picture = myBand['picture'];
+  var audioSample = myBand['audioSample'];
+  var audioPic = myBand['audioPic'];
+  var description = myBand['description'];
+  var openDates = myBand['openDates'];
+  var loaderBand = document.getElementById("loader-new-band");
+  var qCategories = parseQueryString(description);
+  console.log('categories inc reate band is: ' + JSON.stringify(qCategories));
+  if(!($("#new-band-pic")[0].files || $("#new-band-pic")[0].files[0])){
+    alert('Please enter a valid .jpeg, or .png file for your profile picture.');
+    loaderBand.style.display = "none";
+    return;
+  }
+  else if($("#new-band-pic")[0].files[0].type != 'image/jpeg'){
+    if ($('#new-band-pic')[0].files[0].type != 'image/png'){
+      alert('Please enter a valid .jpeg, or .png file for your avatar picture.');
+      loaderBand.style.display = "none";
+      return;
+    }
+  }
+  if(!($("#new-band-clip-pic")[0].files || $("#new-band-clip-pic")[0].files[0])){
+    alert('Please enter a valid .jpeg, or .png file for your audio sample picture.');
+    loaderBand.style.display = "none";
+    return;
+  }
+  else if($("#new-band-clip-pic")[0].files[0].type != 'image/jpeg'){
+    if ($("#new-band-clip-pic")[0].files[0].type != 'image/png'){
+      alert('Please enter a valid .jpeg, or .png file for your audio sample picture.');
+      loaderBand.style.display = "none";
+      return;
+    }
+  }
+  if(!($("#new-band-clip")[0].files || $("#new-band-clip")[0].files[0])){
+    alert('Please enter a valid .wav, or .mp3 file for your soundbyte.');
+    loaderBand.style.display = "none";
+    return;
+  }
+  else if($("#new-band-clip")[0].files[0].type != 'audio/wav'){
+    if ($("#new-band-clip")[0].files[0].type != 'audio/mp3'){
+      alert('Please enter a valid .mp3, or .wav file for your soundbyte.');
+      loaderBand.style.display = "none";
+      return;
+    }
+  }
+  var image = $("#new-band-pic")[0].files[0];
+  var formdata = new FormData();
+  var bandAvatarPath = null;
+  var bandSoundPath = null;
+  var bandSamplePicPath = null;
+  formdata.append('image', image);
+  $.ajax({
+      url: '/uploadBandAvatar',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      'success':function(data){
+          bandAvatarPath=data;
+          var sound = $("#new-band-clip")[0].files[0];
+          formdata = new FormData();
+          formdata.append('soundByte', sound);
+          $.ajax({
+              url: '/uploadSoundByte',
+              data: formdata,
+              contentType: false,
+              processData: false,
+              type: 'POST',
+              'success':function(data){
+                  bandSoundPath=data;
+                  var samplePic = $('#new-band-clip-pic')[0].files[0];
+                  formdata = new FormData();
+                  formdata.append('audioPic', samplePic);
+                  $.ajax({
+                      url: '/uploadAudioPic',
+                      data: formdata,
+                      contentType: false,
+                      processData: false,
+                      type: 'POST',
+                      'success':function(data){
+                        bandSamplePicPath=data;
+                        var sample = {'audio':bandSoundPath, 'picture':bandSamplePicPath};
+                        $.post('/band', {'name':name, 'zipcode':zipcode, 'maxDist':maxDist, 'price':price, 'picture':bandAvatarPath, 'sample':sample,'description':description, 'openDates':openDates, 'categories':qCategories, 'lat':lat, 'lng':lng}, result=>{
+                          alert("Congratulations, you added " + name + ' to Banda! You can now search for events as, ' + name+ ' to start accelerating your music career! Refresh this page to see/edit your new act.');
+                          loaderBand.style.display = "none";
+                          document.getElementById("modal-wrapper-new-band").style.display = "none";
+                          document.location.reload();
+                        });
+                      }
+                  });
+
+              }
+          });
+      }
+  });
+}
 
 function convertZip(zipcode, cb){
   var success = false;
