@@ -1498,9 +1498,13 @@ router.get('/userSocialData', (req,res)=>{
 
           }
           else{
-            var totalFollowers = 0;
-            var totalEngament = 0;
-            var socialsEngUsed = 0;
+            var totalFollowers = 0.0;
+            var totalEngament = 0.0;
+
+            var twitterEng = false;
+            var fbEng = false;
+            var instaEng = false;
+            var snapEng = false;
 
             if (ourUser.hasOwnProperty('twitter')){
               console.log('has wtitter')
@@ -1513,13 +1517,19 @@ router.get('/userSocialData', (req,res)=>{
               }
               if (ourUser.twitter.hasOwnProperty('favorites')){
                 totalEngament+=ourUser.twitter.favorites;
-
+                twitterEng=true;
               }
               if (ourUser.twitter.hasOwnProperty('retweets')){
                 totalEngament+=ourUser.twitter.retweets;
+                twitterEng=true;
               }
               if (ourUser.twitter.hasOwnProperty('status_count')){
-                totalEngament+=ourUser.twitter.status_count;
+                if (ourUser.twitter.status_count==0){
+
+                }
+                else{
+                  totalEngament+=ourUser.twitter.status_count
+                }
               }
             }
             if (ourUser.hasOwnProperty('facebook')){
@@ -1528,6 +1538,7 @@ router.get('/userSocialData', (req,res)=>{
               }
               if (ourUser.facebook.hasOwnProperty('totalConsumption')){
                 totalFollowers+=ourUser.facebook.totalConsumption;
+                fbEng=true;
               }
             }
             if (ourUser.hasOwnProperty('instagram')){
@@ -1536,12 +1547,14 @@ router.get('/userSocialData', (req,res)=>{
               }
               if (ourUser.facebook.hasOwnProperty('websiteClicks')){
                 let clicksArray = ourUser.facebook.websiteClicks.values
+                instaEng=true;
                 for(let val in clicksArray){
                   totalEngament +=  val.value;
                 }
               }
               if (ourUser.facebook.hasOwnProperty('reach')){
                 let reachArray = ourUser.facebook.reach.values
+                instaEng=true;
                 for(let val in reachArray){
                   totalEngament +=  val.value;
                 }
@@ -1554,11 +1567,25 @@ router.get('/userSocialData', (req,res)=>{
               if (ourUser.snapchat.hasOwnProperty('engagment')){
                 totalEngament+=ourUser.snapchat.engagment;
                 socialsEngUsed+=1;
+                snapEng=true;
               }
             }
             console.log('has fallowers: '+totalFollowers );
             console.log('has totaleng: ' + totalEngament)
-            var eng = 0;
+            var eng = 0.0;
+            var socialsEngUsed = 0.0;
+            if (fbEng){
+              socialsEngUsed+=1;
+            }
+            if (instaEng){
+              socialsEngUsed+=1;
+            }
+            if (twitterEng){
+              socialsEngUsed+=1;
+            }
+            if (snapEng){
+              socialsEngUsed+=1;
+            }
             if (socialsEngUsed==0){
               eng = 0;
             }
