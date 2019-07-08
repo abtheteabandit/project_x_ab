@@ -336,7 +336,7 @@ function init(){
   getUserInfo(searchObject);
 
   document.getElementById('request-support-btn').addEventListener('click', function(){
-    var text = document.getElementById('support_text').value;
+    var text = document.getElementById("request-support-textarea").value;
     console.log("User has requested support, text is: ");
     console.log(text);
     if (text == "" || text == " " || text == null){
@@ -1701,20 +1701,7 @@ function loginToReg(){
 
 // support
 
-document.getElementById("request-support-btn").addEventListener('click', function(){
-  var text = document.getElementById('support_text').value;
-  console.log("User has requested support, text is: ");
-  console.log(text);
-  if (text == "" || text == " " || text == null){
-    alert('Please enter some text to send to us if you would like to receive help. Thank You!');
-    return;
-  }
-  $.post('/contact_support', {message: text}, res=>{
-    alert(res);
-    var modal = document.getElementById("modal-wrapper-support");
-    modal.style.display = "none";
-  });
-});
+
 
 function selectProfileOnMobile(selectA){
   var oldSelected = document.getElementsByClassName("mobile-profiles-list-a-active");
