@@ -2592,6 +2592,7 @@ function getUsername(){
     }
     console.log('USER ID: ' + id);
     userContacts = user['contacts'];
+    console.log('USER CONTACTS: ' + JSON.stringify(userContacts));
     $('#userNameHeader').html(user['username']);
     socket.on(user['_id'], (msg)=>{
       console.log('socket.on ////////////////');
@@ -2624,6 +2625,7 @@ function getUsername(){
           if(userContacts[contact].id == msg.recieverID){
             console.log("wow found a name");
             newName = userContacts[contact].name;
+            console.log('NEW NAME: ' + newName);
           }
         }
         $("#chat-div").chatbox("option", "boxManager").addMsg(newName, msg.body);
@@ -2653,7 +2655,7 @@ function getUsername(){
       }
     });
 
-    $.get('messages', {'recieverID':id}, result=>{
+    $.get('/messages', {'recieverID':id}, result=>{
       userMessages=result;
       console.log('USER MESSAGESSSS:        ' + JSON.stringify(userMessages));
       console.log('Testing this particular user    '+ JSON.stringify(userMessages['5ce31549fe16a01320ba8fcb']));
