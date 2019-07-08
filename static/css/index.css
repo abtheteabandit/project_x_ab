@@ -305,10 +305,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     opacity: 0.8;
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 
 /* Center the image and position the close button */
 .imgcontainer {
@@ -322,13 +318,9 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
     border-radius: 50%;
 }
 
-<<<<<<< HEAD
 
 #modal-wrapper-gig,
 #modal-wrapper-tos{
-=======
-#modal-wrapper-gig{
->>>>>>> master
   z-index: 5;
   display: none;
 }
@@ -360,7 +352,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
   overflow: auto;
   background-color: rgba(0,0,0,0.4);
 }
-<<<<<<< HEAD
 
 .modal-test-tos{
   display: block;
@@ -518,8 +509,6 @@ input[type=text], input[type=password], input[type=number], input[type=datetime-
 }
 
 
-=======
->>>>>>> master
 /* Modal Content Box */
 .modal-content {
   background-image: url("/assets/Home/modalbg.png");
@@ -1010,7 +999,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
 }
 
-<<<<<<< HEAD
 /*resizing the tos modal*/
 @media(max-width: 550px){
   #terms-of-service{
@@ -1081,8 +1069,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
 }
 
-=======
->>>>>>> master
 @media(max-width: 400px){
   .profile-header-text{
     font-size: 22pt;

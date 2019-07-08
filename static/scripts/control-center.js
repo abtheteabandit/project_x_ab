@@ -4922,12 +4922,8 @@ function prepareCardElement(){
   //https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect
   //https://stripe.com/docs/connect -> doc for connection
 
-<<<<<<< HEAD
-  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
-=======
   var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
   // var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
->>>>>>> master
 
   // Create an instance of Elements.
   var elements = stripe.elements();
@@ -5003,12 +4999,8 @@ function prepareCardElement(){
 
 function attemptBankSubmission(){
   document.getElementById('loader-new-bank').style.display = 'inline';
-<<<<<<< HEAD
-  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
-=======
   var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
   // var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
->>>>>>> master
   var firstName = document.getElementById("bank-form-first-name").value;
   var lastName = document.getElementById("bank-form-last-name").value;
   var dob = document.getElementById("bank-form-dob").value;
