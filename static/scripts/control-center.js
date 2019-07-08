@@ -2739,6 +2739,7 @@ function acceptNewCon(){
   console.log('ACCCCEPTED NEW CONTACT NAMES: ' + username + 'sender: ' + contactToAccept );
   $.post('/add_mutual_contact', {'acceptorName':username,'senderName':contactToAccept}, res=>{
     alert(res);
+    document.location.reload();
   });
 }
 function declineNewCon(){
@@ -4332,10 +4333,18 @@ function createContacts(contacts, yourUsername){
                                               sendMessage(msg,recipient);
                                           }});
             for(var message in userMessages[recipient]){
+              console.log(userMessages[recipient][message]);
               if(userMessages[recipient][message].body.includes("yothisisanewsignalfromthingtocreateabutton")){
                 // it's a link to an application!
                 var e = document.createElement('div');
-                var newStringB = contactLinkCallBack.name + ": ";
+                var newStringB = "";
+                if(userMessages[recipient][message].senderID == our_user_id){
+                  // this is a message we sent
+                  newStringB = username + ": ";
+                }else{
+                  // this is a message we recieved
+                  newStringB = contactLinkCallBack.name + ": ";
+                }
                 var newNameB = document.createElement("b");
                 newNameB.innerHTML = newStringB;
                 e.append(newNameB);
@@ -4358,7 +4367,14 @@ function createContacts(contacts, yourUsername){
                 $(".ui-chatbox-log").append(e);
               }else{
                 var e = document.createElement('div');
-                var newStringB = contactLinkCallBack.name + ": ";
+                var newStringB = "";
+                if(userMessages[recipient][message].senderID == our_user_id){
+                  // this is a message we sent
+                  newStringB = username + ": ";
+                }else{
+                  // this is a message we recieved
+                  newStringB = contactLinkCallBack.name + ": ";
+                }
                 var newNameB = document.createElement("b");
                 newNameB.innerHTML = newStringB;
                 e.append(newNameB);
