@@ -1523,20 +1523,27 @@ router.get('/userSocialData', (req,res)=>{
             }
             if (ourUser.hasOwnProperty('facebook')){
               if (ourUser.facebook.hasOwnProperty('followerCount')){
-                totalFollowers+=ourUser.facebook.followerCount;
+                ourFollowers+=ourUser.facebook.followerCount;
               }
-              if (ourUser.facebook.hasOwnProperty('engagment')){
-                totalEngament+=ourUser.facebook.engagment;
-                socialsEngUsed+=1;
+              if (ourUser.facebook.hasOwnProperty('totalConsumption')){
+                ourEngagament+=ourUser.facebook.totalConsumption;
               }
             }
             if (ourUser.hasOwnProperty('instagram')){
-              if (ourUser.instagram.hasOwnProperty('followers')){
-                totalFollowers+=ourUser.instagram.followers;
+              if (ourUser.facebook.hasOwnProperty('followerCount')){
+                ourFollowers+=ourUser.instagram.followerCount;
               }
-              if (ourUser.instagram.hasOwnProperty('engagment')){
-                totalEngament+=ourUser.instagram.engagment;
-                socialsEngUsed+=1;
+              if (ourUser.facebook.hasOwnProperty('websiteClicks')){
+                let clicksArray = ourUser.facebook.websiteClicks.values
+                for(let val in clicksArray){
+                  ourEngagament +=  val.value;
+                }
+              }
+              if (ourUser.facebook.hasOwnProperty('reach')){
+                let reachArray = ourUser.facebook.reach.values
+                for(let val in reachArray){
+                  ourEngagament +=  val.value;
+                }
               }
             }
             if (ourUser.hasOwnProperty('snapchat')){
