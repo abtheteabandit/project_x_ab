@@ -65,10 +65,12 @@ const database = require('../database.js'),
     if (!req.session.key){
       console.log('User tried to upload gig pic while not logged in');
       res.status(401).end();
+      return;
       }
       if (!req.file){
         console.log('No file sent');
         res.status(400).end();
+        return;
       }
       //if not a valid image
       if (!(req.file.mimetype=='image/jpeg' || req.file.mimetype=='image/png')){
@@ -85,10 +87,12 @@ const database = require('../database.js'),
       if(err2){
         console.log('Could not rename file, error: ' + err2);
         res.status(500).end();
+        return;
       }
       else{
         var finalName = fileName.replace('static', "");
         res.status(200).send(finalName);
+        return;
       }
 
     });
@@ -99,10 +103,12 @@ const database = require('../database.js'),
     if (!req.session.key){
       console.log('User tried to upload gig pic while not logged in');
       res.status(401).end();
+      return;
       }
       if (!req.file){
         console.log('No file sent');
         res.status(400).end();
+        return;
       }
       //if not a valid file type
       if (!(req.file.mimetype=='audio/mp3' || req.file.mimetype=='audio/wav')){
@@ -119,10 +125,12 @@ const database = require('../database.js'),
       if(err2){
         console.log('Could not rename file, error: ' + err2);
         res.status(500).end();
+        return;
       }
       else{
         var finalName = fileName.replace('static', "");
         res.status(200).send(finalName);
+        return;
       }
     });
   });
@@ -152,10 +160,12 @@ const database = require('../database.js'),
       if(err2){
         console.log('Could not rename file, error: ' + err2);
         res.status(500).end();
+        return;
       }
       else{
         var finalName = fileName.replace('static', "");
         res.status(200).send(finalName);
+        return;
       }
 
     });

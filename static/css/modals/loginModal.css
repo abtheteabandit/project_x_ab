@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 Login Popup Elements
 */
@@ -5,6 +6,11 @@ Login Popup Elements
 #modal-wrapper-login{
   z-index: 111;
   display: none;
+=======
+#modal-wrapper-login{
+  z-index: 101;
+  display:none;
+>>>>>>> master
   position: fixed;
   left: 0;
   top: 0;
@@ -14,19 +20,29 @@ Login Popup Elements
   background-color: rgba(0,0,0,0.4);
 }
 
+<<<<<<< HEAD
 #modal-login-id{
+=======
+#login-form{
+>>>>>>> master
   background-image: url("/assets/Home/modalbg.png");
   background-color: transparent;
   background-size: cover;
   background-clip: border-box;
   background-repeat: no-repeat;
   margin: 4% auto 15% auto;
+<<<<<<< HEAD
   width: 600px;
   height: 650px;
+=======
+  width: 500px;
+  height: 600px;
+>>>>>>> master
   padding-bottom: 80px;
   color: white;
 }
 
+<<<<<<< HEAD
 #login-register-text{
   background-color: #5317EB;
 }
@@ -56,6 +72,23 @@ Login Popup Elements
   display: grid;
   grid-template-columns: auto;
   text-align: center;
+=======
+#loginUsername{
+  margin-top: 100px;
+}
+
+.close-login {
+    position: absolute;
+    right: 25px;
+    top: 8px;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+}
+.close-login:hover,.close-login:focus {
+    alpha: 0.6;
+    cursor: pointer;
+>>>>>>> master
 }
 
 #login-modal-header{
@@ -71,6 +104,7 @@ Login Popup Elements
   margin-top:102px;
 }
 
+<<<<<<< HEAD
 @media(max-width: 600px){
   #modal-login-id{
     width: 400px;
@@ -82,6 +116,25 @@ Login Popup Elements
 
 @media(max-width: 400px){
   #modal-login-id{
+=======
+#login-register-text{
+  text-decoration:none;
+  float:right;
+  margin-right:34px;
+  margin-top:102px;
+}
+
+@media(max-width: 550px){
+  #login-modal-header{
+    font-size: 32pt;
+    padding-top: 60px;
+  }
+  #login-register-text{
+    font-size: 11pt;
+  }
+
+  #login-form{
+>>>>>>> master
     width: 300px;
   }
 }

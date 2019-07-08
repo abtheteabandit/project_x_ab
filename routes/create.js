@@ -28,7 +28,7 @@ router.post('/gig', (req, res) => {
   database.connect(db => {
     let gigs = db.db('gigs').collection('gigs');
     let confirmCode=createGigConfirmCode(name);
-    
+
     //insert a gig into the database
     gigs.insertOne({'name' : name, 'confirmed':false, 'creator' : creator, 'address': address, 'zipcode':zipcode, 'startTime':startTime, 'price': price, 'date' : date, 'day':day, 'endTime' : endTime, 'applications' : [], 'lat' : lat, 'lng':lng, 'categories' : categories, 'description':description, 'isFilled':false, 'bandFor' : "", 'confirmationCode':confirmCode, 'picture':picture}, (err, result) => {
       if (err){
@@ -41,7 +41,7 @@ router.post('/gig', (req, res) => {
         db.close();
       }
     });
-  }, 
+  },
   //catch any errors in the database
   err => {
     console.warn("Couldn't connect to database: " + err);
@@ -58,13 +58,15 @@ router.post('/band', (req, res) => {
   if(!req.session.key){
     console.log('Non logged in user tried to post a band');
     res.status(400).end();
+    return;
   }
 
   //if the request has no body
   if (!req.body) {
-		 res.status(400).send('No body sent').end();
+		 res.status(400).send('No body sent');
+     return;
   }
-  
+
   //variables set by the request
 	var {name, address, zipcode, maxDist, price, openDates, application, lat, lng, picture, categories, description, sample} = req.body;
   var creator=req.session.key;
@@ -80,10 +82,12 @@ router.post('/band', (req, res) => {
 				console.warn("Couldnt get insert band into database: " + err);
 				res.status(500).end();
         db.close();
+        return;
 			} else {
 				console.log("band inserted with cats as : " + JSON.stringify(categories));
 				res.status(200).send(result);
         db.close();
+        return;
 
 			}
 		});

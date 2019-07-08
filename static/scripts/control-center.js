@@ -3428,7 +3428,7 @@ function createBand(){
 
 }
 
-function sendBandToDB(lat, lng, myBand){
+function andToDB(lat, lng, myBand){
   var name = myBand['name'];
   var zipcode = myBand['zipcode'];
   var maxDist = myBand['maxDist'];
@@ -3558,11 +3558,15 @@ function cleanGigInput(){
   var price = $('#new-gig-pay').val();
   var description = $('#new-gig-description').val();
   var startDate = $('#new-gig-date').val();
+  startDate = startDate.replace('-', '/');
   var startTime = $('#new-gig-start-time').val();
   var endTime = $('#new-gig-end-time').val();
-  var date = new Date(startDate);
-  var day = date.getDay();
-  console.log("Date is: " + date + "day is : " + day);
+  var the_date = new Date(startDate);
+  var day = the_date.getDay();
+  console.log('START DATE: ' + startDate);
+  console.log('CLEAN: ')
+  console.log("Date is: " + the_date + "day is : " + day);
+
   //Replace this real endate soon:
   var endDate = endTime;
   ////////
@@ -3607,6 +3611,8 @@ function sendGigToDB(lat,lng, myNewGig) {
   var description = myNewGig['description'];
   var startTime = myNewGig['startTime'];
   var day = myNewGig['day'];
+  console.log('send pre switch: ')
+  console.log("Date is: " + startDate + "day is : " + day);
   switch (day){
     case 0:
     day = "Sunday";
@@ -3634,7 +3640,8 @@ function sendGigToDB(lat,lng, myNewGig) {
     return;
     break;
   }
-
+  console.log('send post switch: ')
+  console.log("Date is: " + startDate + "day is : " + day);
   //var picID = newGigPic;
   console.log("In send to db and global pic is : " + JSON.stringify(newGigPic));
   console.log(JSON.stringify(myNewGig));
@@ -4401,6 +4408,8 @@ function createContacts(contacts, yourUsername){
 }
 
 function convertZipGig(myGig){
+  console.log('CON ZIP: ')
+  console.log("Date is: " + myGig.startDate + "day is : " + myGig.day);
   var zipcode = myGig['zipcode'];
   if (!(zipcode.length==5)){
     alert('Please enter a valid zipcode.');
@@ -4913,7 +4922,12 @@ function prepareCardElement(){
   //https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect
   //https://stripe.com/docs/connect -> doc for connection
 
+<<<<<<< HEAD
   var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+=======
+  var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
+  // var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+>>>>>>> master
 
   // Create an instance of Elements.
   var elements = stripe.elements();
@@ -4989,7 +5003,12 @@ function prepareCardElement(){
 
 function attemptBankSubmission(){
   document.getElementById('loader-new-bank').style.display = 'inline';
+<<<<<<< HEAD
   var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+=======
+  var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
+  // var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+>>>>>>> master
   var firstName = document.getElementById("bank-form-first-name").value;
   var lastName = document.getElementById("bank-form-last-name").value;
   var dob = document.getElementById("bank-form-dob").value;

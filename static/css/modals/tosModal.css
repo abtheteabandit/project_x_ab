@@ -112,6 +112,10 @@
   margin-left: 178px;
   font-size: 10pt;
   color: rgba(86,223,240,1.0);
+<<<<<<< HEAD
+=======
+  opacity: 0;
+>>>>>>> master
 }
 
 .accept-tos:hover,
@@ -130,10 +134,13 @@
   opacity: 0.5;
 }
 
+<<<<<<< HEAD
 #tos-check{
   opacity: 0.5;
 }
 
+=======
+>>>>>>> master
 .decline-tos{
   background-color: rgba(0,0,0,0.8);
   color: rgba(86,223,240,1.0);
