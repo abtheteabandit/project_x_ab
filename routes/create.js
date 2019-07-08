@@ -77,7 +77,7 @@ router.post('/band', (req, res) => {
 	database.connect(db => {
     let bands = db.db('bands').collection('bands');
     //insert a band into the database
-		bands.insertOne({'name' : name, 'creator':creator, 'maxDist':maxDist, 'address': address, 'zipcode':zipcode, 'price': price, 'rating':null, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'description': description, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'interestedGigs':[], 'audioSamples':[sample], 'videoSample':[], 'picture': picture, 'noShows':0, 'showsUp':null}, (err, result) => {
+		bands.insertOne({'name' : name, 'creator':creator, 'maxDist':maxDist, 'address': address, 'zipcode':zipcode, 'price': price, 'rating':0, 'openDates':openDates, 'applicationText':application, 'lat' : lat, 'lng':lng, 'categories' : categories, 'description': description, 'appliedGigs':[], 'upcomingGigs':[], 'finishedGigs':[], 'interestedGigs':[], 'audioSamples':[sample], 'videoSample':[], 'picture': picture, 'noShows':0, 'showsUp':null, 'numRatings':0}, (err, result) => {
 			if (err){
 				console.warn("Couldnt get insert band into database: " + err);
 				res.status(500).end();

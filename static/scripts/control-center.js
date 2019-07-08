@@ -108,16 +108,17 @@ class OpenGig{
     this.gigDate.className = "open-gig-date";
     this.gigDate.name=gig._id;
     this.gigDate.type = "date";
-    this.gigDate.value = gig.date;
+    this.gigDate.value = gig.date.replace('/', '-');
+    console.log('gig date: ' + gig.date);
     this.gigDate.addEventListener('change', function(){
       console.log(this.value);
       var id = this.name;
       if (changingGigInfo.hasOwnProperty(id)){
-        changingGigInfo[id]['date']=this.value;
+        changingGigInfo[id]['date']=this.value.replace('-','/');
       }
       else{
         changingGigInfo[id]={};
-        changingGigInfo[id]['date']=this.value;
+        changingGigInfo[id]['date']=this.value.replace('-','/');
       }
     });
     // this.gigDate.value = gig.date;
@@ -187,7 +188,7 @@ class OpenGig{
 
     this.gigPL = document.createElement("h3");
     this.gigPL.id = "open-gig-pay-label";
-    this.gigPL.innerHTML = "Max Pay ($)";
+    this.gigPL.innerHTML = "Pay ($)";
     this.gigPay = document.createElement("input");
     this.gigPay.className = "max-pay-input";
     this.gigPay.name=gig._id;
