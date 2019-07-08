@@ -155,7 +155,7 @@ module.exports = router =>{
                                 wantsInstagram=true;
                               }
                             }
-                            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false}, 'coupon':null, 'promo':ourPromo};
+                            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':poster.twitter.access_token, 'secret_token':poster.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':poster.facebook.pageId, 'pageToken':poster.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':ourCoupon, 'promo':ourPromo};
                             res.status(200).json({'success':true, 'data':data});
                             db.close();
 
