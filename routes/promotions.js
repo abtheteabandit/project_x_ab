@@ -552,7 +552,7 @@ router.post('/user_socials', (req, res)=>{
                     db.close();
                   }
                   else{
-                   var data = "https://banda-inc.com/customerQRCode?promoID="+promoID+"&gigID="+gigID; 
+                   var data = "https://banda-inc.com/customerQRCode?promoID="+promoID+"&gigID="+gigID;
                     QRCODE.toDataURL(data, (err6, img)=>{
                       if (err6){
                         console.log('there was an error creating qr code for promo with ID: ' + promoID);
