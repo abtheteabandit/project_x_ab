@@ -126,11 +126,11 @@ module.exports = router =>{
                               var mediaOn = medias[m];
                               console.log('MEDIA ON: ' + mediaOn);
                               if (mediaOn=='twitter'){
-                                wantsTwitter=true;s
+                                wantsTwitter=true;
                                 if (poster.hasOwnProperty('twitter')){
                                   if (poster.twitter.hasOwnProperty('access_token')){
                                     if (poster.twitter.hasOwnProperty('token_secret')){
-                                      if (poster.twitter.access_token == null || poster.twitter.token_secret==null){
+                                      if (!(poster.twitter.access_token == null || poster.twitter.token_secret==null)){
                                         twitterOk=true;
                                       }
                                     }

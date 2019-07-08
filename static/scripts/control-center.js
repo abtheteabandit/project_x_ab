@@ -3796,10 +3796,41 @@ function postPromo(button){
         console.log('THE PROMO CALLBAKC DATA: ' + JSON.stringify(res.data));
         if (res.data.twitter.wanted){
           if(res.data.twitter.ok){
-            //post to twitter, liekly move the rest of this shit into this thread
-            $.post('/postTweet', {'promo':res.data.promo, 'coupon':res.data.coupon}, res3=>{
-              alert(res3);
-            })
+            var cleanedSource = res.data.promo.imgURL.replace('www.banda-inc.com//', '/');
+            console.log('cleanedsource: ' + cleanedSource)
+            fetch(cleanedSource)
+            .then(res2=>res2.blob())
+            .then(blob=>{
+              var blob2 = new Blob([blob], {type:'image/png'});
+              console.log(blob2)
+
+              let reader = new window.FileReader();
+              reader.onload = function(){
+                console.log(this.result)
+                //var base64 = ;
+                var fd2 = new FormData();
+                fd2.append("promo", JSON.stringify(res.data.promo));
+                fd2.append("coupon", JSON.stringify(res.data.coupon));
+                fd2.append("media_data", this.result);
+                try{
+                  $.ajax({
+                    url:'/postPhotoTweet',
+                    type:'POST',
+                    data:fd2,
+                    processData:false,
+                    contentType:false,
+                    cache:false,
+                    complete:function(){
+                      console.log("TWITTER POSTED");
+                    }
+                  });
+                }
+                catch(e){
+                  console.log('Error posting photo tweet: '+e);
+                }
+              };
+              reader.readAsDataURL(blob2)
+            });
           }
           else{
             alert('Sorry, it seems that you want to post this promotion to Twitter but have not signed into your Twitter account from Banda. Just click "Promotions" and click the Twitter icon on step one to sign in. Thank you!');
@@ -5290,10 +5321,37 @@ function addPullAccept(){
           console.log('THE PROMO CALLBAKC DATA: ' + JSON.stringify(res.data));
           if (res.data.twitter.wanted){
             if(res.data.twitter.ok){
-              //post to twitter, liekly move the rest of this shit into this thread
-              $.post('/postTweet', {'promo':res.data.promo, 'coupon':res.data.coupon}, res3=>{
-                alert(res3);
-              })
+
+              fetch('/assets/Promo/bandapromo1.2.png')
+              .then(res2=>res2.blob())
+              .then(blob=>{
+                let reader = new window.FileReader();
+                reader.onload = function(){
+                  console.log(this.result)
+                  //var base64 = ;
+                  var fd2 = new FormData();
+                  fd2.append("promo", JSON.stringify(res.data.promo));
+                  fd2.append("coupon", JSON.stringify(res.data.coupon));
+                  fd2.append("media_data", this.result);
+                  try{
+                    $.ajax({
+                      url:'/postPhotoTweet',
+                      type:'POST',
+                      data:fd2,
+                      processData:false,
+                      contentType:false,
+                      cache:false,
+                      complete:function(){
+                        console.log("TWITTER POSTED");
+                      }
+                    });
+                  }
+                  catch(e){
+                    console.log('Error posting photo tweet: '+e);
+                  }
+                };
+                reader.readAsDataURL(blob)
+              });
             }
             else{
               alert('Sorry, it seems that you want to post this promotion to Twitter but have not signed into your Twitter account from Banda. Just click "Promotions" and click the Twitter icon on step one to sign in. Thank you!');

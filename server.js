@@ -519,66 +519,93 @@ router.post('/postTweet', (req, res) =>{
 	});
 
 });
+const multiparty = require('multiparty');
 
 //post request to post a photo on twitter
 router.post('/postPhotoTweet', function(req, res){
-	//connect to the db
-	database.connect(db => {
-		//find the user in the db
-		db.db('users').collection('users').findOne({ 'username': req.session.key}, (err, obj) => {
-			//create an instance of the twitter api
-			T = new Twit({
-				consumer_key:         'vTzIdwGET3J1GVoytgt1maOqC',
-				consumer_secret:      'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
-				access_token:         obj.twitter.access_token,
-				access_token_secret:  obj.twitter.token_secret,
-				timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
-				//strictSSL:            true,     // optional - requires SSL certificates to be valid. todo: uncomment for production
-			})
-
-			//get and post the message data
-      var {promo, coupon} = req.body;
-      var message = promo.caption;
-			var link=promo.imgURL;
-
-			//store the media files twitter wants
-			var media = req.media;
-			var mediaData = req.mediaData;
-
-      if (coupon==null){
-        if (!(promo.handles=="")){
-          message= message+'\n'+promo.handles;
+  var form = new multiparty.Form();
+    form.parse(req, function(err1, fields, files){
+        if (err1){
+          console.log('error with multiparty: ' + err1);
+          res.status(500).end();
         }
-      }
-      else{
-        if (!(promo.handles=="")){
-          message= message+'\n'+promo.handles;
-        }
-        message = message + '\n' + coupon.details;
-        if (coupon.hasOwnProperty('link')){
-          message= message + '\n'+coupon.link;
-        }
-      }
-      message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
-      //string concatination with handles, caption and coupon description nad our own Banda stuff
+        else{
+          console.log('Fields: ' + JSON.stringify(fields));
+          console.log('PROMO: ' + JSON.stringify(JSON.parse(fields.promo[0])))
+          console.log('COUPOn: ' + JSON.stringify(JSON.parse(fields.coupon[0])))
+          //console.log('files:'  + JSON.stringify(files));
+          //connect to the db
+        	database.connect(db => {
+        		//find the user in the db
+        		db.db('users').collection('users').findOne({ 'username': req.session.key}, (err, obj) => {
+        			//create an instance of the twitter api
+        			T = new Twit({
+        				consumer_key:         'vTzIdwGET3J1GVoytgt1maOqC',
+        				consumer_secret:      'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
+        				access_token:         obj.twitter.access_token,
+        				access_token_secret:  obj.twitter.token_secret,
+        				timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
+        				//strictSSL:            true,     // optional - requires SSL certificates to be valid. todo: uncomment for production
+        			})
 
-			//post the image to the twitter account
-			T.post('media/upload', { media: media, media_data: mediaData }, function(err, data, response) {
-				console.log(data);
-				let mediaId = data.media_id; //store the photos media id to post as a tweet
+        			//get and post the message data
+              var promo = JSON.parse(fields.promo[0]);
+              var coupon = JSON.parse(fields.coupon[0]);
 
-				//post the tweet (message) and photo (mediaId) as a tweet
-				T.post('statuses/update', { status: message, media_ids: [mediaId] }, function(err, data, response) {
-					console.log(data)
-					return res.status(200).send('Tweet posted!')
-				})
-			})
-		})
-	}, err => {
-		//catch errors
-		console.warn("Couldn't connect to database: " + err)
-		res.status(500).end()
-	});
+              var message = promo.caption;
+        			var link=promo.imgURL;
+
+        			//store the media files twitter wants
+        			var media = fields.media_data[0];
+
+              media = media.replace('data:image/png;base64,', '');
+              media = media.replace('data:image/jpeg;base64,', '');
+              console.log('MEDIA IS: ' + media);
+        		//	var mediaData = req.mediaData;
+
+              if (coupon==null){
+                if (!(promo.handles=="")){
+                  message= message+'\n'+promo.handles;
+                }
+              }
+              else{
+                if (!(promo.handles=="")){
+                  message= message+'\n'+promo.handles;
+                }
+                message = message + '\n' + coupon.details;
+                if (coupon.hasOwnProperty('link')){
+                  message= message + '\n'+coupon.link;
+                }
+              }
+              message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
+              //string concatination with handles, caption and coupon description nad our own Banda stuff
+              console.log(media)
+        			//post the image to the twitter account
+        			T.post('media/upload', {'media_data': media}, function(err, data, response) {
+                if (err){
+                  console.log('There was an error with upladoing meida to Twitter: ' + err);
+                }
+        				console.log('Data from media/upload:' + JSON.stringify(data));
+        				let mediaId = data.media_id_string; //store the photos media id to post as a tweet
+                console.log("MEDIA ID: " + mediaId);
+
+        				//post the tweet (message) and photo (mediaId) as a tweet
+        				T.post('statuses/update', { status: message, media_ids: [mediaId] }, function(err, data, response) {
+                  if (err){
+                    console.log('There was an error psoting tweet error:' + err);
+                  }
+        					console.log(data)
+        					return res.status(200).send('Tweet posted!')
+        				})
+        			})
+        		})
+        	}, err => {
+        		//catch errors
+        		console.warn("Couldn't connect to database: " + err)
+        		res.status(500).end()
+        	});
+        }
+    });
 });
 
 
@@ -1341,7 +1368,7 @@ router.post('/storeInstData', (req,res)=>{
 															instaBussinessAccount: instaBussinessAccount,
 																followerCount: followerCount,
 																	postCount: postCount,
-																		token: token, 
+																		token: token,
 																			instaId: instaId,
 																				pageName: pageName,
 																					instagramUsername: instagramUsername,
@@ -1359,7 +1386,7 @@ router.post('/storeInstData', (req,res)=>{
 																											//success case
 																											db.close();
 																											res.status(200).send('Success');
-												
+
 																										}
 																							});
 																						}, err => {
