@@ -37,7 +37,7 @@ const express = require('express'),
       bodyParser = require('body-parser'),
 			cookieParser = require('cookie-parser');
 
-//social media signin
+//social media signin dependencies
 var   passport = require('passport');
 var   FacebookStrategy = require('passport-facebook').Strategy
 var   TwitterStrategy = require('passport-twitter').Strategy;
@@ -51,6 +51,7 @@ var TokenPassport = require('passport');
 var TwitterTokenStrategy = require('passport-twitter').Strategy;
 var Twit = require('twit')
 
+//express plugins
 var client = redis.createClient();
 var app = express();
 
@@ -138,11 +139,13 @@ router.post('/messages', (req, res)=>{
   if (!req.body) {
      console.log("No body recived for messaging");
      res.status(400).send('No body sent').end();
-  }
+	}
+	//store parameters
   var {senderID, recieverID, body, timeStamp} = req.body;
   console.log('made it into messagin on router and sender id was: ' + senderID);
   database.connect(db=>{
-    let messages = db.db('messages').collection('messages');
+		let messages = db.db('messages').collection('messages');
+		//place message in db
     messages.insertOne({'senderID':senderID, 'recieverID':recieverID, 'body':body, 'timeStamp': timeStamp}, (err2, result)=>{
       if (err2){
         consoel.log("There was an error adding the message from " + senderID + "Error was: " + err2);
@@ -150,6 +153,7 @@ router.post('/messages', (req, res)=>{
         db.close();
       }
       else{
+				//success case
         console.log("Message with body: "+ body +"was instered into db");
         console.log("Message with recID: "+ recieverID +"was instered into db");
         //io.emit('message, recID:'+recieverID+'', {'senderID':senderID, 'recieverID':recieverID, 'body':body, 'timeStamp': timeStamp});
@@ -177,8 +181,6 @@ passport.use('auth_facebook',new FacebookStrategy({
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
-	console.log("callback entered")
-	console.log(profile)
 	//store values from the intial request
 	let id = profile.id
 	let token = accessToken
@@ -193,10 +195,8 @@ function(req, accessToken, refreshToken, profile, cb) {
 				json: true
 		}, function (err, response, body) {
 				//store the needed values from the facebook api  call
-				console.log(body)
 				let email = body.email;
 				let username = body.name.replace(/\s+/g, '_')
-				console.log("username is  " + username)
 				//check for null values
 				if (!username) {
 					return res.status(400).send('Name not found')
@@ -218,7 +218,6 @@ function(req, accessToken, refreshToken, profile, cb) {
 						//if the user already exists
 						else if (obj) {
 							//sign the user in
-							console.log("the user already exists")
 							req.session.key = username;
 							req.session.cookie.expires = false
 							req.session.save()
@@ -261,6 +260,8 @@ passport.use('auth_twitter', new TwitterStrategy({
 },
 function(req, token, tokenSecret, profile, done) {
 	console.log(profile)
+
+	//store profile info
 	let username = profile.username
 	let email = profile.emails[0].value
 
@@ -382,6 +383,7 @@ passport.use("token_twitter", new TwitterTokenStrategy({
 },
 function(req, token, tokenSecret, profile, done) {
 	console.log(profile)
+	//store twitter api values
 	var username = profile.username
 	var email = profile.emails[0].value
 	var followers_count = profile.followers_count
@@ -409,7 +411,9 @@ function(req, token, tokenSecret, profile, done) {
 	var optionsT = { screen_name: screen_name, count: 200 };
   var retweets = 0
 	var favorites = 0
+	//make query
 	T.get('statuses/user_timeline', optionsT , function(err, data) {
+		//average twitter dataover 200 most recnt tweets
 		for (var i = 0; i < data.length ; i++) {
 			retweets += data[i].retweet_count
 			favorites += data[i].favorite_count
@@ -417,9 +421,11 @@ function(req, token, tokenSecret, profile, done) {
 		retweets /= data.length
 		favorites /= data.length
 
+		//multiply averages by total tweets
 		retweets = retweets*status_count
 		favorites = favorites*status_count
 
+		//if no tweets, intialize to 0
 		if(data.length == 0){
 			retweets = 0
 			favorites = 0
@@ -453,13 +459,11 @@ function(req, token, tokenSecret, profile, done) {
 
 //route for failed oauth callback for twitter
 router.get('/twitter/token/failedAuth', (req, res) => {
-	//todo: change to promotions route
 	return res.redirect('http://localhost:1600/promo#?isPromo=true');
 })
 
 //route for succesful oauth callback for twitter
 router.get('/twitter/token/successAuth', (req, res) => {
-	//todo: change to promotions route
 	return res.redirect('http://localhost:1600/promo#?isPromo=true');
 })
 
@@ -506,7 +510,8 @@ router.post('/postTweet', (req, res) =>{
       message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
       //string concatination with handles, caption and coupon description nad our own Banda stuff
 
-      var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
+			var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
+			//post the message as a tweet
 			T.post('statuses/update', { status: message }, function(err, data, response) {
 				console.log(data)
 				return res.status(200).send('Tweet posted!')
@@ -563,6 +568,7 @@ router.post('/postPhotoTweet', function(req, res){
               console.log('MEDIA IS: ' + media);
         		//	var mediaData = req.mediaData;
 
+						//format the message for the tweet
               if (coupon==null){
                 if (!(promo.handles=="")){
                   message= message+'\n'+promo.handles;
@@ -693,10 +699,7 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
-			console.log("-------------------------in the fucking callback------------------------------------------------")
-			console.log(obj.facebook.profile)
-			console.log(obj.facebook.accessToken)
-
+			//query for an access token
 			axios.get('https://graph.facebook.com//v3.3/me/accounts' + '?access_token=' + obj.facebook.accessToken)
 				.then(function (response) {
 					console.log(response.data);
@@ -707,9 +710,7 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 				})
 				.finally(function () {
 					// always executed
-					console.log("page data is below")
-					console.log(pageData.data)
-					console.log(pageData.data.length)
+					//redirect to the page selection modal
 					var xurl = 'http://localhost:1600/promo#?'
 					for(let i = 0; i < pageData.data.length; i++){
 						console.log("page is below")
@@ -748,8 +749,6 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
-			console.log(obj.facebook.profile)
-			console.log(obj.facebook.accessToken)
 
 			let token = obj.facebook.accessToken
 			//get short term page token
@@ -758,15 +757,18 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 					console.log(response.data);
 					let pageToken = response.data.access_token
 					console.log("the short term page token  is " + pageToken)
+
 					//get long term page token
 					axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
 						.then(function (response) {
 							let pageToken = response.data.access_token
+
 					 		//get the number of followers on a page
 							axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
 							.then(function (response) {
 								let followerCount = response.data.fan_count
 								console.log("the follower count is " + followerCount)
+
 								//get page consumption for the last 28 days
 					 			axios.get('https://graph.facebook.com/' + pageId + '/insights/page_consumptions' + '?access_token=' + pageToken)
 									.then(function (response) {
@@ -778,6 +780,7 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 											totalConsumption += values[i].value
 										}
 										console.log(totalConsumption  + " total consumption")
+
 										//store all values from the facebook api in the database
 										database.connect(db => {
 											//store the access tokens and profile information
@@ -827,8 +830,12 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 		res.status(500).send()
 	});
 })
+
+
 //for image processing
 var Jimp = require('jimp');
+
+
 //make post on facebook using message parameter
 router.post("/postOnFBPage", function(req, res){
 
@@ -923,9 +930,9 @@ database.connect(db => {
 
 //make facebook post wth link and message
 router.post("/postLinkOnFBPage", function(req,res){
+
 	//connect to the db to check date of tokens
 	database.connect(db => {
-	console.log("Got in database connect");
 	//find the user in the db
 	db.db('users').collection('users').findOne({ 'username': req.session.key}, (err, obj) => {
 		if (err) {
@@ -944,8 +951,7 @@ router.post("/postLinkOnFBPage", function(req,res){
 			db.close();
 		}
 		else{
-			//get the massage
-
+			//get the message and parameters
 			var {promo, coupon} = req.body;
 			var message = promo.caption;
 			//set the link to include in the post from the link
@@ -970,7 +976,6 @@ router.post("/postLinkOnFBPage", function(req,res){
 			var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
 			const pageToken = obj.facebook.pageToken
 			const pageId = obj.facebook.pageId
-			console.log('USER IS: ' + JSON.stringify(obj));
 
 			//set the parameters for message and link in post
 			var options = {
@@ -1022,11 +1027,12 @@ database.connect(db => {
       db.close();
 		}
     else{
-      //get the massage
 
+      //get the massage
       var {promo, coupon} = req.body;
       var message = promo.caption;
-      var link=promo.imgURL;
+			var link=promo.imgURL;
+			//format the message and cupoun
       if (coupon==null){
         if (!(promo.handles==undefined)){
           message= message+'\n'+promo.handles;
@@ -1044,9 +1050,9 @@ database.connect(db => {
       message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
       //string concatination with handles, caption and coupon description nad our own Banda stuff
 
-  //  var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'www.banda-inc.com/');
       //testing imgURL
-      var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'http://localhost:1600/');
+			var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'http://localhost:1600/');
+			//conver the impage
       Jimp.read(imgURL, (err4, img)=>{
         if (err4){
           console.log(err4);
@@ -1058,8 +1064,10 @@ database.connect(db => {
           console.log('mime:    ' + mime);
           if (mime==undefined || mime==null || mime=='none'){
             //data type not recognized error cb
-          }
+					}
+					//success case
           else{
+						//convert iamge to base 64
             img.getBase64(mime, (err64, cb64)=>{
               if (err64){
                 console.log('There was an error getting base64 encoding form image: ' + err64);
@@ -1068,13 +1076,14 @@ database.connect(db => {
                 console.log('cb for image cb64: ' + JSON.stringify(cb64));
                 console.log('  \n')
 
-                //console.log('buffer data: ' + buffer.data);
-                console.log('  \n')
+								//console.log('buffer data: ' + buffer.data);
+								console.log('  \n')
+								//store the needed tokens
                 const pageToken = obj.facebook.pageToken
                 const pageId = obj.facebook.pageId
                 //console.log('USER IS: ' + JSON.stringify(obj));
 
-                //set the parameters
+                //set the parameters and post the image to facebook
                 var options = {
                   url: 'https://graph.facebook.com/' + pageId + '/photos?caption=' + message + '&source=' + cb64+ '&access_token=' + pageToken,
                   method: 'POST'
@@ -1283,14 +1292,12 @@ router.get('/inst/token/successAuth', (req, res) => {
 			axios.get("https://graph.facebook.com/v3.2/me/accounts?access_token=" + token)
 				.then(function (response) {
 					const pages = response.data
-					console.log(pages.data.length + " is tthe length")
+					//create page modal url
 					for(let i = 0; i < pages.data.length; i++){
-						console.log("page is below")
-						console.log(pages.data[i])
 						xurl += "page" + i + "=" + pages.data[i].name + "&id" + i + "=" + pages.data[i].id + "&"
 					}
 					xurl += "pageNum=" + pages.data.length + "&isPromo=true" + "&isInsta=true"
-					console.log(xurl + " is the url !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+					//redirect to the page selection modal
 					return res.redirect(xurl);
 				})
 				.catch(function (error) {
@@ -1362,6 +1369,7 @@ router.post('/storeInstData', (req,res)=>{
 											console.log(response.data);
 											let reach = response.data.data[0]
 
+											//create the instagram data object
 											let instagramData = { impressions: impressions,
 													profileViews: profileViews,
 														websiteClicks: websiteClicks,
