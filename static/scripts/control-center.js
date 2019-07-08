@@ -2944,6 +2944,7 @@ function createWebPage(user){
 function init(){
   //loadBands(user);
 
+
   setupCarWithID('promo-sb-jcarousel');
   getUsername();
   $('#video-upload-button').click(function () {
@@ -4392,6 +4393,8 @@ function createContacts(contacts, yourUsername){
             }
         }
         console.log(contactLinkCallBack.contactLink.id);
+        var theChat = document.getElementById('chat-div');
+        theChat.scrollTop = theChat.scrollHeight;
       });
     });
   }
