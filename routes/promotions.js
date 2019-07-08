@@ -1501,6 +1501,7 @@ router.get('/userSocialData', (req,res)=>{
             var totalFollowers = 0;
             var totalEngament = 0;
             var socialsEngUsed = 0;
+
             if (ourUser.hasOwnProperty('twitter')){
               console.log('has wtitter')
               if (ourUser.twitter.hasOwnProperty('follower_count')){
@@ -1523,26 +1524,26 @@ router.get('/userSocialData', (req,res)=>{
             }
             if (ourUser.hasOwnProperty('facebook')){
               if (ourUser.facebook.hasOwnProperty('followerCount')){
-                ourFollowers+=ourUser.facebook.followerCount;
+                totalFollowers+=ourUser.facebook.followerCount;
               }
               if (ourUser.facebook.hasOwnProperty('totalConsumption')){
-                ourEngagament+=ourUser.facebook.totalConsumption;
+                totalFollowers+=ourUser.facebook.totalConsumption;
               }
             }
             if (ourUser.hasOwnProperty('instagram')){
               if (ourUser.facebook.hasOwnProperty('followerCount')){
-                ourFollowers+=ourUser.instagram.followerCount;
+                totalFollowers+=ourUser.instagram.followerCount;
               }
               if (ourUser.facebook.hasOwnProperty('websiteClicks')){
                 let clicksArray = ourUser.facebook.websiteClicks.values
                 for(let val in clicksArray){
-                  ourEngagament +=  val.value;
+                  totalEngament +=  val.value;
                 }
               }
               if (ourUser.facebook.hasOwnProperty('reach')){
                 let reachArray = ourUser.facebook.reach.values
                 for(let val in reachArray){
-                  ourEngagament +=  val.value;
+                  totalEngament +=  val.value;
                 }
               }
             }
@@ -1556,7 +1557,7 @@ router.get('/userSocialData', (req,res)=>{
               }
             }
             console.log('has fallowers: '+totalFollowers );
-
+            console.log('has totaleng: ' + totalEngament)
             var eng = 0;
             if (socialsEngUsed==0){
               eng = 0;
