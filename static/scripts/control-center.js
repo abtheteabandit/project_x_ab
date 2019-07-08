@@ -3802,6 +3802,9 @@ function postPromo(button){
   }
   console.log('PROMOTER: ' + promoter+' poster: '+username + ' promoID: ' + promoID);
   $.post('/cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoID':promoID}, res=>{
+    postToInsta=false
+    postToFB=false
+    postToTwitter=false;
     if (!(res=="" || res==null)){
       if (res.success){
         console.log('THE PROMO CALLBAKC DATA: ' + JSON.stringify(res.data));
@@ -3832,12 +3835,12 @@ function postPromo(button){
                     contentType:false,
                     cache:false,
                     complete:function(){
-                      console.log("TWITTER POSTED");
+                      alert('We have posted this promotion to your Twitter! Thank you for helping '+promoter+' grow. Feel free to create a promotion and ask '+promoter+' to post it by going to your contacts and clicking the cross promote button next to "'+promoter+'". Keep Banding Together!');
                     }
                   });
                 }
                 catch(e){
-                  console.log('Error posting photo tweet: '+e);
+                  alert('Hmm...it seems something went wrong trying to post this promotion to your Twitter. Please refresh the page and try again. If this problem persits we encourage you to contact our live support team by clicking the "Support" button on the raial menu (top left). Thank you!');
                 }
               };
               reader.readAsDataURL(blob2)
@@ -3897,7 +3900,7 @@ function postPromo(button){
                     alert('Hmmm... it seems soemthing went wrong with posting this to your Facebook. Try going back to your "promotion" page and resigning into your Facebook. Thank you!');
                   },
                   complete:function(){
-                    alert('We have posted this promotion to your Facebook! Thank you for helping, '+promoter+'! Feel free to create a promotion and then ask him/her to post it using the "cross promote" button on the left of "'+promoter+'" in your contact list. Thank you and keep Banding Together!');
+                    alert('We have posted this promotion to your Facebook! Thank you for helping '+promoter+'! Feel free to create a promotion and ask him/her to post it using the "cross promote" button on the left of "'+promoter+'" in your contact list. Thank you and keep Banding Together!');
                   }
                 });
               }
@@ -3913,7 +3916,7 @@ function postPromo(button){
         if (res.data.instagram.wanted){
           if (res.data.instagram.ok){
             //post to insta (not yet possible)
-            alert('INSTA OK');
+
           }
           else{
             alert('Instgram does not currently offer direct posting from other Websites. Just hit the downward arrow button to download this image and copy the compelete caption to your clipboard. Then you can simply post this directly to your Instagram. We ask that you do not edit the image or caption in anyway. Thank you!');
@@ -3929,9 +3932,8 @@ function postPromo(button){
       alert('Hmmm... it seems something went wrong on our end, please refresh and try again. You may need to go to promotions and sign in to your Twitter and/or Facebook accounts. If this problem persits please let us know via the support tab (after clicking the Banda "b"/flat note)');
       return;
     }
-    postToFB=false;
-    postToInsta=false;
-    postToTwitter=false;
+    alert('Thankyou for posting this promotion. If you want to help ' +promoter+' even more feel free to hit the download button to start manually posting this to other social medias/sites.\n Thank you, '+username);
+    document.getElementById('modal-wrapper-promo-request').style.display='none';
     return;
   });
 }
@@ -5324,6 +5326,9 @@ function addPullAccept(){
       medias.push('instagram');
     }
     $.post('/pull', {'name':name, 'id':id, 'mode':mode, 'caption':caption, 'medias':medias}, res=>{
+      postToInsta=false;
+      postToTwitter=false;
+      postToFB=false;
       if (res=="" || res==null){
         alert('Hmmm...it seems something went wrong on our end, please refresh your page and try again. If this problem persists just click the Banda "b" top left and use our support tab to email our live support team. Thank you!');
       }
@@ -5423,6 +5428,8 @@ function addPullAccept(){
           return;
         }
       }
+      alert('You can download this image and copy the text to your computer or phone by hitting the download button and begin posting it to your other social medias. Thank you!');
+      document.getElementById('modal-wrapper-create-pull').style.display = 'none';
     })
   }
 
