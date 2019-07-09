@@ -35,6 +35,13 @@ var isLoggedIn=false;
 // AB document stuff//
 function init(){
 
+  (function($) {
+    $(function() {
+      $('.deg0, .deg0Support, .deg30, .deg60, .deg90').toggleClass('open')
+    });
+  })(jQuery);
+
+
 
   document.getElementById('search_input').addEventListener('keyup', function(e){
     var keyCode = e.keyCode || e.which;
