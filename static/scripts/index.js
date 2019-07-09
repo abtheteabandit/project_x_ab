@@ -590,6 +590,7 @@ function diff_minutes(dt2, dt1) {
         mobileMenuIndexZero.href = "control-center";
         var mobileMenuTextZero = document.getElementById("mobileMenuTextZero");
         mobileMenuTextZero.innerHTML = "Home";
+        document.location.reload();
       }
       else{
 				alert(res);
