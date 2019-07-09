@@ -614,6 +614,7 @@ function diff_minutes(dt2, dt1) {
         menuIndexThree.addEventListener("click",function(){
           document.getElementById("modal-wrapper-support").style.display = "block";
         });
+
         var mobileMenuIndexThree = document.getElementById("mobile_sign_in_button");
         var mobileMenuTextThree = document.getElementById("mobile_register_text");
         mobileMenuTextThree.innerHTML = "Support";
@@ -621,6 +622,7 @@ function diff_minutes(dt2, dt1) {
         mobileMenuIndexThree.addEventListener("click",function(){
           document.getElementById("modal-wrapper-support").style.display = "block";
         });
+
 				document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
 				});
@@ -691,10 +693,11 @@ function diff_minutes(dt2, dt1) {
 			if (res == "Success"){
 				alert('Congratulations! You have signed up for Banda, ' + content.username);
 				document.getElementById("modal-wrapper-register").style.display = "none";
-				checkSession();
+				document.location.reload();
 			}
 			else{
 				alert(res);
+        document.location.reload();
 			}
 
     });
