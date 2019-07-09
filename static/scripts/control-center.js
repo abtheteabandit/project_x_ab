@@ -4500,7 +4500,7 @@ function sendBandToDB(lat, lng, myBand){
     loaderBand.style.display = "none";
     return;
   }
-  else if(($("#new-band-clip")[0].files[0].type != 'audio/wav') && $("#new-band-clip")[0].files[0].type != 'audio/mpeg') &&($("#new-band-clip")[0].files[0].type != 'audio/mp3')){
+  else if(($("#new-band-clip")[0].files[0].type != 'audio/wav') && ($("#new-band-clip")[0].files[0].type != 'audio/mpeg') && ($("#new-band-clip")[0].files[0].type != 'audio/mp3')){
       alert('Please enter a valid .mp3, or .wav file for your soundbyte.');
       loaderBand.style.display = "none";
       return;
