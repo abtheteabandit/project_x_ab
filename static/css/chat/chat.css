@@ -1,0 +1,186 @@
+#contacts-sidebar{
+  z-index: 99;
+  width: 300px;
+  right: 0;
+  height: 66%;
+  position: fixed;
+  background-color: rgba(0,0,0,0.3);
+  bottom: 6%;
+  display: none;
+  overflow: hidden;
+}
+#contacts-content{
+  z-index: 100;
+  width: 80%;
+  margin-left: 40px;
+  margin-top: 10px;
+  overflow: scroll;
+  height: 95%;
+  position: absolute;
+}
+#contacts-bg{
+  z-index: 99;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: rgba(0,0,0,0.9);
+}
+.contacts-divider{
+}
+.contacts-letter{
+  color: white;
+  display: inline-block;
+  margin-right: 20px;
+}
+.contacts-line{
+  height: 2px;
+  width: 160px;
+  background-color: white;
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 10px;
+}
+.contacts-div{
+
+}
+.cross-promo-btn{
+  cursor: pointer;
+  border: none;
+  display: inline;
+  width: 40px;
+  height: 20px;
+  background-image: url('/assets/Control-Center/crosspromo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+.contacts-link{
+  color: white;
+  font-family: Industry, sans-serif;
+  font-size: 18pt;
+  display: inline;
+}
+.contacts-link:hover{
+  color: #56dff0;
+  text-decoration: none;
+}
+/*
+chat boxes
+ */
+.ui-chatbox {
+    position: fixed;
+    bottom:0;
+    background:  #CCCCCC;
+    z-index: 109;
+    background-color: rgba(0,0,0,0.3);
+}
+
+#chat-div{
+  overflow: scroll;
+}
+
+.ui-chatbox-titlebar {
+    padding: 3px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.ui-chatbox-content {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+}
+
+.ui-chatbox-log {
+    padding: 3px;
+    height: 250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: rgba(0,0,0,0.9);
+}
+
+.ui-chatbox-input {
+    padding: 0px;
+    border-left: 2px solid rgba(86,223,240,0.5);
+    border-right: 2px solid rgba(86,223,240,0.5);
+    overflow: hidden;
+    height: 45px;
+    width: 300px;
+    background-color: transparent;
+}
+
+.ui-chatbox-input-box {
+    height: 45px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    resize: none;
+    margin-top: -2px;
+    font-size: 12pt;
+    padding-left: 20px;
+}
+
+.ui-chatbox-input-box::-webkit-scrollbar{
+  width: 4px;
+}
+
+.ui-chatbox-icon {
+    float: right;
+}
+
+.ui-chatbox-input-focus {
+    border-color: #6699FF;
+}
+
+.ui-chatbox-msg {
+    margin-top: 10px;
+    float: left;
+    clear: both;
+    /* Source: http://snipplr.com/view/10979/css-cross-browser-word-wrap */
+    white-space: pre-wrap;      /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -pre-wrap;     /* Opera <7 */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    word-wrap: break-word;      /* IE */
+    font-family: Industry, sans-serif;
+    margin-left: 15px;
+}
+
+.ui-widget-header{
+  height: 47px;
+  border-left: 2px solid rgba(86,223,240,0.5);
+  border-right: 2px solid rgba(86,223,240,0.5);
+  border-top: 2px solid rgba(86,223,240,0.5);
+  padding: 0;
+  color: white;
+  font-family: Industry, sans-serif;
+  background-color: rgba(0,0,0,0.9);
+}
+
+.ui-chatbox-icon{
+  color: white;
+}
+
+.ui-chatbox-icon:hover{
+  text-decoration: none;
+  color: #56dff0;
+}
+
+.ui-chatbox-log{
+  padding: 0;
+  background-color: rgba(0,0,0,0.9);
+  border-right: 2px solid rgba(86,223,240,0.5);
+  border-left: 2px solid rgba(86,223,240,0.5);
+  border-top: 2px dotted rgba(86,223,240,0.5);
+  color: white;
+}
+
+#chat_title{
+  font-size: 22pt;
+  margin-left: 15px;
+}
+
+#chat_closer{
+  font-size: 22pt;
+  margin-right: 15px;
+}

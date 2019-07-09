@@ -9,6 +9,7 @@ var userContacts = {};
 var userMessages={};
 var selectedMobileProfile = {};
 var otherProfileID = null;
+var our_user_id;
 class SampleCarousel{
   constructor(sampleCarCallback){
     this.carWrap = document.createElement("div");
@@ -874,6 +875,7 @@ function getUserInfo(searchObject){
      user = result;
      console.log('in get info and username is ' + user['username']);
       username = user['username'];
+      our_user_id = user['_id'];
      userContacts = user['contacts'];
      $.get('messages', {'recieverID':user._id}, result=>{
        userMessages=result;
@@ -1188,7 +1190,6 @@ function createContacts(contacts, yourUsername){
     }
 
     new ContactLink(name,id,contactLinkCallBack => {
-      console.log('Creating contact and id is: ' + id);
       contactLinkCallBack.contactLink.addEventListener("click",function(event, ui){
 
         // if(document.getElementById("select-gig-to-ad").style.visibility == "visible"){
@@ -1210,8 +1211,6 @@ function createContacts(contacts, yourUsername){
         else {
             document.getElementById("select-gig-to-ad").style.visibility = "visible";
             document.getElementById("selectDrop").idForRec = contactLinkCallBack.id;
-            console.log('Adding id to selectDrop pre in: ' + contactLinkCallBack.id);
-            console.log('Adding id to selectDRop: ' + document.getElementById("selectDrop").idForRec);
             var recipient = contactLinkCallBack.id;
             console.log('recipient id is '+recipient);
             box = $("#chat-div").chatbox({recID: contactLinkCallBack.id,
@@ -1223,10 +1222,18 @@ function createContacts(contacts, yourUsername){
                                               sendMessage(msg,recipient);
                                           }});
             for(var message in userMessages[recipient]){
+              console.log(userMessages[recipient][message]);
               if(userMessages[recipient][message].body.includes("yothisisanewsignalfromthingtocreateabutton")){
                 // it's a link to an application!
                 var e = document.createElement('div');
-                var newStringB = contactLinkCallBack.name + ": ";
+                var newStringB = "";
+                if(userMessages[recipient][message].senderID == our_user_id){
+                  // this is a message we sent
+                  newStringB = username + ": ";
+                }else{
+                  // this is a message we recieved
+                  newStringB = contactLinkCallBack.name + ": ";
+                }
                 var newNameB = document.createElement("b");
                 newNameB.innerHTML = newStringB;
                 e.append(newNameB);
@@ -1234,7 +1241,6 @@ function createContacts(contacts, yourUsername){
                 var partsArray = bodyString.split('-');
                 var theGigName = partsArray[1];
                 var theGigID = partsArray[2];
-                console.log("theGigID is: "+theGigID+" for "+theGigName);
                 // <a id="baldkjafdlksjfaldksjfalsdkjfads">Apply to my event: A booked gig YEET</a>
                 var newButton = document.createElement("a");
                 newButton.href = "#";
@@ -1250,7 +1256,14 @@ function createContacts(contacts, yourUsername){
                 $(".ui-chatbox-log").append(e);
               }else{
                 var e = document.createElement('div');
-                var newStringB = contactLinkCallBack.name + ": ";
+                var newStringB = "";
+                if(userMessages[recipient][message].senderID == our_user_id){
+                  // this is a message we sent
+                  newStringB = username + ": ";
+                }else{
+                  // this is a message we recieved
+                  newStringB = contactLinkCallBack.name + ": ";
+                }
                 var newNameB = document.createElement("b");
                 newNameB.innerHTML = newStringB;
                 e.append(newNameB);
@@ -1263,8 +1276,9 @@ function createContacts(contacts, yourUsername){
               }
             }
         }
-        console.log('CONACT LINK CALL BACK ***************' );
         console.log(contactLinkCallBack.contactLink.id);
+        var theChat = document.getElementById('chat-div');
+        theChat.scrollTop = theChat.scrollHeight;
       });
     });
   }
