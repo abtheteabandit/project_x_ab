@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <link rel="shortcut icon" type = "image/png" href = "/assets/Home/favicon.ico">
     <meta charset="utf-8">
     <title>Other Profile</title>
     <meta http-equiv="ScreenOrientation" content="autoRotate:disabled">
@@ -37,17 +38,17 @@
   <body onload="javascript:init();">
 
     <div id="modal-wrapper-support" class="modal-support">
-      <form class="modal-content-support animate">
+      <div class="modal-content-support animate">
         <span onclick="document.getElementById('modal-wrapper-support').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
         <div class="container">
           <h1 id="account-support-header">account support</h1>
           <p class="support-text">Having any issues or want to grow your following? Talk to our customer support team now!</p>
           <textarea id="request-support-textarea" data-gramm_editor="false" class="modal-textarea" placeholder='If you are having issues let us know when and where they are occuring and how we can help. If you are seeking promotion or an increase in followers let us know your goals so we can assist you..'></textarea>
-          <button id="request-support-btn" type="submit" onclick="requestSupport()">Make Request</button>
+          <button id="request-support-btn">Make Request</button>
           <p class="support-text-small">Alternatively, reach out to the team directly:</p>
           <p class="support-text-small">Max Schmitz (301-580-5601) Kousha Massoumi (414-331-3047)</p>
         </div>
-      </form>
+      </div>
 
     </div>
 
@@ -99,7 +100,7 @@
       </div>
       <div class='circle-container'>
         <a href='control-center' class='deg0'><p class="radialText">Home</p></a>
-        <a href='#' class='deg30'><p class="radialText">About</p></a>
+        <a href='about' class='deg30'><p class="radialText">About</p></a>
         <a href='index' class='deg60'><p class="radialText">Landing</p></a>
         <a class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
       </div>
@@ -177,7 +178,7 @@
       <div id="main-content-wrapper">
         <div class="img-price-grid">
           <div class="profile-img-container">
-            <img class="profile-img" id="profile-img" src="/assets/Home/Art/12.jpeg"/>
+            <img class="profile-img" id="profile-img"/>
             <img class="profile-img-frame" id="profile-img-frame" src = "/assets/Home/purplebox.png" />
           </div>
           <div class="profile-price-container">

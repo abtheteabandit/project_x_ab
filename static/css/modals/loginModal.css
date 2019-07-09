@@ -71,17 +71,23 @@ Login Popup Elements
   margin-top:102px;
 }
 
-@media(max-width: 600px){
-  #modal-login-id{
-    width: 400px;
-  }
-  #login-modal-header{
-    font-size: 28pt;
-  }
+#login-register-text{
+  text-decoration:none;
+  float:right;
+  margin-right:34px;
+  margin-top:102px;
 }
 
-@media(max-width: 400px){
-  #modal-login-id{
+@media(max-width: 550px){
+  #login-modal-header{
+    font-size: 32pt;
+    padding-top: 60px;
+  }
+  #login-register-text{
+    font-size: 11pt;
+  }
+
+  #login-form{
     width: 300px;
   }
 }

@@ -339,6 +339,14 @@ body elements
   color: white;
 }
 
+.result-p-visible{
+  font-size: 1vw;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+}
+
 .result-p-blurred{
   font-size: 1vw;
   color: transparent !important;

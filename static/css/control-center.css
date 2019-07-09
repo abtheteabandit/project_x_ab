@@ -130,9 +130,9 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
 
-  .open.deg30 { transform: rotate(27deg) translate(12.5em) rotate(-27deg); }
-  .open.deg60 { transform: rotate(50deg) translate(12.5em) rotate(-50deg); }
-  .open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);}
+.open.deg30 { transform: rotate(27deg) translate(12.5em) rotate(-27deg); }
+.open.deg60 { transform: rotate(50deg) translate(12.5em) rotate(-50deg); }
+.open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);}
 
 
 
@@ -968,7 +968,7 @@ chat boxes
     height: 250px;
     overflow-y: auto;
     overflow-x: hidden;
-    background: #FFFFFF;
+    background-color: rgba(0,0,0,0.9);
 }
 
 .ui-chatbox-input {
@@ -1026,6 +1026,7 @@ chat boxes
   padding: 0;
   color: white;
   font-family: Industry, sans-serif;
+  background-color: rgba(0,0,0,0.9);
 }
 
 .ui-chatbox-icon{
@@ -1039,7 +1040,7 @@ chat boxes
 
 .ui-chatbox-log{
   padding: 0;
-  background-color: transparent;
+  background-color: rgba(0,0,0,0.9);
   border-right: 2px solid rgba(86,223,240,0.5);
   border-left: 2px solid rgba(86,223,240,0.5);
   border-top: 2px dotted rgba(86,223,240,0.5);
@@ -1081,6 +1082,7 @@ chat boxes
   height: 100%;
   width: 100%;
   position: absolute;
+  background-color: rgba(0,0,0,0.9);
 }
 .contacts-divider{
 }
@@ -1927,6 +1929,7 @@ chat boxes
 
   .ui-widget-content{
     width: 100% !important;
+    background-color: rgba(0,0,0,0.9);
   }
 
   #chat-div{

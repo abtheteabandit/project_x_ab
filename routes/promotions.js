@@ -155,7 +155,7 @@ module.exports = router =>{
                                 wantsInstagram=true;
                               }
                             }
-                            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false}, 'coupon':null, 'promo':ourPromo};
+                            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':poster.twitter.access_token, 'secret_token':poster.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':poster.facebook.pageId, 'pageToken':poster.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':ourCoupon, 'promo':ourPromo};
                             res.status(200).json({'success':true, 'data':data});
                             db.close();
 
@@ -552,8 +552,7 @@ router.post('/user_socials', (req, res)=>{
                     db.close();
                   }
                   else{
-                   var data = "http://localhost:1600/customerQRCode?promoID="+promoID+"&gigID="+gigID;  // for testing
-                  //  var data = 'https://banda-inc.com/customerQRCode?gigID='+gigID+'&code='+code
+                   var data = "https://banda-inc.com/customerQRCode?promoID="+promoID+"&gigID="+gigID;
                     QRCODE.toDataURL(data, (err6, img)=>{
                       if (err6){
                         console.log('there was an error creating qr code for promo with ID: ' + promoID);
@@ -564,7 +563,6 @@ router.post('/user_socials', (req, res)=>{
                         console.log('IMG ******************;::::::::::::::::::::::::::: is ;::::' + img);
                         var now = new Date().toString();
                         var cleanNow = now.replace(" ", "_");
-                        var imgURL = 'http://localhost:1600/public/uploads/CouponQrs/'+code;
                         let transporter = nodeMailer.createTransport({
                             host: 'smtp.gmail.com', // go daddy email host port
                             port: 465, // could be 993
@@ -935,8 +933,23 @@ router.get('/aPromo', (req, res)=>{
               db.close();
             }
             else{
-                res.status(200).json({'success':true, 'data': ourPromo});
-                db.close();
+                db.db('promotions').collection('discounts').findOne({'promoID':promoID}, (err2, ourCoupon)=>{
+                  if (err2){
+                    res.status(200).json({'success':false, 'data':'Hmmm... there was an error on our end. Please refresh your page and try again. If this problem persits please let us know, via our support tab (from the banda "b")'});
+                    db.close();
+                  }
+                  else{
+                    if (ourCoupon){
+                      res.status(200).json({'success':true, 'data': {'promo':ourPromo, 'coupon':ourCoupon}});
+                      db.close();
+                    }
+                    else{
+                      res.status(200).json({'success':true, 'data': {'promo':ourPromo, 'coupon':null}});
+                      db.close();
+                    }
+
+                  }
+                })
             }
         }
       });

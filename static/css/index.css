@@ -109,6 +109,12 @@ h1, h2, h3, h4, h6, p, button, input, textarea{
 .deg0 { transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
+
+.deg0Support{
+  transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+
 .deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
   -moz-transition: all 0.5s ease-out;
   transition: all 0.5s ease-out; 		z-index: 2;}
@@ -126,6 +132,9 @@ h1, h2, h3, h4, h6, p, button, input, textarea{
 .fa-heart:hover {color:red;}
 
 .open.deg0 { transform: rotate(8deg) translate(11em) rotate(-8deg); }
+
+.open.deg0Support { transform: rotate(8deg) translate(10em) rotate(-8deg); }
+
 .open.deg30 { transform: rotate(28deg) translate(12em) rotate(-28deg); }
 .open.deg60 { transform: rotate(48deg) translate(13em) rotate(-48deg); }
 .open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);
@@ -672,39 +681,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
   background-color: transparent;
 }
 
-/*log out modal*/
-#modal-wrapper-logout{
-  z-index: 5;
-  display: none;
-}
-#logout-modal-header{
-  text-align:left;
-  padding-left: 20px;
-  font-size: 50pt;
-}
-#logout-text{
-  margin-top: 40px;
-  margin-bottom: 80px;
-}
-#logout-controls{
-  display: grid;
-  width: 80%;
-  margin-left: 10%;
-  grid-template-columns: auto auto;
-}
-.logout-btn{
-  background-color: rgba(0,0,0,0.8);
-  color: rgba(86,223,240,1.0);
-  border: 1px solid rgba(86,223,240,1.0);
-  border-radius: 10px;
-  width: 70%;
-  margin: 0 auto;
-  height: 32px;
-  opacity: 0.5;
-}
-.logout-btn:hover{
-  cursor: pointer;
-}
 
 /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#5969ff+0,ff0061+100 */
 /* background: #5969ff; /* Old browsers */
@@ -815,22 +791,16 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
 }
 @media(max-width: 900px){
-  .tos-controls i{
-    visibility: hidden;
-  }
   #menuBacking{
-
     height: 238px;
     width: 238px;
   }
 
   .circle-container a {
-
     width: 64px; height: 32px;
-
   }
-  #mainbtn img{
 
+  #mainbtn img{
     width: 37px;
     height: 97px;
   }
@@ -903,7 +873,6 @@ flip box containe;;;; got rid of it cuz im using flipp */
 
   #frontText, #backText{
     letter-spacing: normal;
-
   }
 
   #container{
@@ -1113,47 +1082,33 @@ flip box containe;;;; got rid of it cuz im using flipp */
   }
 }
 
-/*logout modal mobile*/
-@media(max-width: 550px){
-  /*log out modal*/
-  #modal-wrapper-logout{
-    z-index: 5;
-    display: none;
-  }
-  #logout-text{
-    margin-top: 15px;
-    margin-bottom: 20px;
-    font-size: 12pt;
-  }
-  #logout-controls{
-    display: grid;
-    width: 80%;
-    margin-left: 10%;
-    grid-template-columns: auto auto;
-  }
-  .logout-btn{
-    background-color: rgba(0,0,0,0.8);
-    color: rgba(86,223,240,1.0);
-    border: 1px solid rgba(86,223,240,1.0);
-    border-radius: 10px;
-    width: 90%;
-    margin: 0 auto;
-    height: 32px;
-    opacity: 0.5;
-  }
-  #logout-modal-header{
-    text-align:left;
-    padding-left: 20px;
-    font-size: 18pt;
-  }
-  .logout-btn:hover{
-    cursor: pointer;
-  }
-}
-
 @media(max-width: 500px){
   #frontText, #backText{
     font-size: 8pt;
+  }
+
+  .search{
+    width: 300px;
+    margin-left: -144px;
+  }
+  .options {
+    width: 138px;
+    margin: 0;
+    top: 71%;
+    left: -28%;
+  }
+
+  #barImg {
+    width: 300px;
+    height: 55px;
+  }
+
+  #search_input {
+    left: 88%;
+    width: 250px;
+    height: 42px;
+    padding-top: 0px;
+    font-size: 20px;
   }
 
   .search{

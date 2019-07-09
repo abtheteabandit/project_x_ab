@@ -500,13 +500,13 @@ function submit_promotion(){
     return;
   }
   if(!($("#promo-file")[0].files && $("#promo-file")[0].files[0])){
-    alert('Sorry, you must give your promotion a image or video to save it.');
+    alert('Sorry, you must give your promotion a image to save it.');
     return;
   }
   else{
     console.log('FILE IS: '+ JSON.stringify($("#promo-file")[0].files[0]));
-    if (!($("#promo-file")[0].files[0].type=='image/jpeg' || $("#promo-file")[0].files[0].type=='image/png' || $("#promo-file")[0].files[0].type=='video/mp4')){
-      alert('Sorry, the file you select must be a valid image ending with .jpeg or .png or a valid video ending with .mp4');
+    if (!($("#promo-file")[0].files[0].type=='image/jpeg' || $("#promo-file")[0].files[0].type=='image/png')){
+      alert('Sorry, the file you select must be a valid image ending with .jpeg or .png');
       return;
     }
   }

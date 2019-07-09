@@ -336,7 +336,7 @@ function init(){
   getUserInfo(searchObject);
 
   document.getElementById('request-support-btn').addEventListener('click', function(){
-    var text = document.getElementById('support_text').value;
+    var text = document.getElementById("request-support-textarea").value;
     console.log("User has requested support, text is: ");
     console.log(text);
     if (text == "" || text == " " || text == null){

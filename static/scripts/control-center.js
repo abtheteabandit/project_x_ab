@@ -108,16 +108,17 @@ class OpenGig{
     this.gigDate.className = "open-gig-date";
     this.gigDate.name=gig._id;
     this.gigDate.type = "date";
-    this.gigDate.value = gig.date;
+    this.gigDate.value = gig.date.replace('/', '-');
+    console.log('gig date: ' + gig.date);
     this.gigDate.addEventListener('change', function(){
       console.log(this.value);
       var id = this.name;
       if (changingGigInfo.hasOwnProperty(id)){
-        changingGigInfo[id]['date']=this.value;
+        changingGigInfo[id]['date']=this.value.replace('-','/');
       }
       else{
         changingGigInfo[id]={};
-        changingGigInfo[id]['date']=this.value;
+        changingGigInfo[id]['date']=this.value.replace('-','/');
       }
     });
     // this.gigDate.value = gig.date;
@@ -187,7 +188,7 @@ class OpenGig{
 
     this.gigPL = document.createElement("h3");
     this.gigPL.id = "open-gig-pay-label";
-    this.gigPL.innerHTML = "Max Pay ($)";
+    this.gigPL.innerHTML = "Pay ($)";
     this.gigPay = document.createElement("input");
     this.gigPay.className = "max-pay-input";
     this.gigPay.name=gig._id;
@@ -2592,6 +2593,7 @@ function getUsername(){
     }
     console.log('USER ID: ' + id);
     userContacts = user['contacts'];
+    console.log('USER CONTACTS: ' + JSON.stringify(userContacts));
     $('#userNameHeader').html(user['username']);
     socket.on(user['_id'], (msg)=>{
       console.log('socket.on ////////////////');
@@ -2624,6 +2626,7 @@ function getUsername(){
           if(userContacts[contact].id == msg.recieverID){
             console.log("wow found a name");
             newName = userContacts[contact].name;
+            console.log('NEW NAME: ' + newName);
           }
         }
         $("#chat-div").chatbox("option", "boxManager").addMsg(newName, msg.body);
@@ -2653,7 +2656,7 @@ function getUsername(){
       }
     });
 
-    $.get('messages', {'recieverID':id}, result=>{
+    $.get('/messages', {'recieverID':id}, result=>{
       userMessages=result;
       console.log('USER MESSAGESSSS:        ' + JSON.stringify(userMessages));
       console.log('Testing this particular user    '+ JSON.stringify(userMessages['5ce31549fe16a01320ba8fcb']));
@@ -2739,6 +2742,7 @@ function acceptNewCon(){
   console.log('ACCCCEPTED NEW CONTACT NAMES: ' + username + 'sender: ' + contactToAccept );
   $.post('/add_mutual_contact', {'acceptorName':username,'senderName':contactToAccept}, res=>{
     alert(res);
+    document.location.reload();
   });
 }
 function declineNewCon(){
@@ -2940,6 +2944,7 @@ function createWebPage(user){
 
 function init(){
   //loadBands(user);
+
 
   setupCarWithID('promo-sb-jcarousel');
   getUsername();
@@ -3424,7 +3429,7 @@ function createBand(){
 
 }
 
-function sendBandToDB(lat, lng, myBand){
+function andToDB(lat, lng, myBand){
   var name = myBand['name'];
   var zipcode = myBand['zipcode'];
   var maxDist = myBand['maxDist'];
@@ -3554,11 +3559,15 @@ function cleanGigInput(){
   var price = $('#new-gig-pay').val();
   var description = $('#new-gig-description').val();
   var startDate = $('#new-gig-date').val();
+  startDate = startDate.replace('-', '/');
   var startTime = $('#new-gig-start-time').val();
   var endTime = $('#new-gig-end-time').val();
-  var date = new Date(startDate);
-  var day = date.getDay();
-  console.log("Date is: " + date + "day is : " + day);
+  var the_date = new Date(startDate);
+  var day = the_date.getDay();
+  console.log('START DATE: ' + startDate);
+  console.log('CLEAN: ')
+  console.log("Date is: " + the_date + "day is : " + day);
+
   //Replace this real endate soon:
   var endDate = endTime;
   ////////
@@ -3603,6 +3612,8 @@ function sendGigToDB(lat,lng, myNewGig) {
   var description = myNewGig['description'];
   var startTime = myNewGig['startTime'];
   var day = myNewGig['day'];
+  console.log('send pre switch: ')
+  console.log("Date is: " + startDate + "day is : " + day);
   switch (day){
     case 0:
     day = "Sunday";
@@ -3630,7 +3641,8 @@ function sendGigToDB(lat,lng, myNewGig) {
     return;
     break;
   }
-
+  console.log('send post switch: ')
+  console.log("Date is: " + startDate + "day is : " + day);
   //var picID = newGigPic;
   console.log("In send to db and global pic is : " + JSON.stringify(newGigPic));
   console.log(JSON.stringify(myNewGig));
@@ -3753,8 +3765,19 @@ function openPromotionModal(button){
   console.log(' CLICKED OPEN PROMO: ' + promoID +' '+ askerName);
   $.get('/aPromo', {'username':askerName, 'promoID':promoID}, res=>{
     if (res.success){
-      var ourPromo = res.data;
-      var our_cap = ourPromo.caption + '\n'+ourPromo.handles+'\n\nposted from www.banda-inc.com (where the music industry bands together)'
+      var ourPromo = res.data.promo;
+      var ourCoupon = res.data.coupon;
+      var our_cap = ourPromo.caption
+      if (!(ourPromo.handles == "")){
+        our_cap = our_cap + '\n'+ourPromo.handles
+      }
+      if (ourCoupon){
+        our_cap = our_cap + '\n'+ ourCoupon.details;
+        if (ourCoupon.hasOwnProperty('link')){
+          our_cap = our_cap + '\n' + ourCoupon.link
+        }
+      }
+      our_cap = our_cap+'\n\nposted from https://www.banda-inc.com (where Artists Rise, Venues grow, and Music-Lovers Band Together)'
       document.getElementById('promo-req-caption').innerHTML = our_cap;
       var cleanSRC = ourPromo.imgURL.replace('www.banda-inc.com//', '');
       document.getElementById('promo-req-pic').src = cleanSRC;
@@ -3791,6 +3814,9 @@ function postPromo(button){
   }
   console.log('PROMOTER: ' + promoter+' poster: '+username + ' promoID: ' + promoID);
   $.post('/cross_promote', {'promoterName':promoter,'posterName':username, 'medias':medias, 'promoID':promoID}, res=>{
+    postToInsta=false
+    postToFB=false
+    postToTwitter=false;
     if (!(res=="" || res==null)){
       if (res.success){
         console.log('THE PROMO CALLBAKC DATA: ' + JSON.stringify(res.data));
@@ -3821,12 +3847,12 @@ function postPromo(button){
                     contentType:false,
                     cache:false,
                     complete:function(){
-                      console.log("TWITTER POSTED");
+                      alert('We have posted this promotion to your Twitter! Thank you for helping '+promoter+' grow. Feel free to create a promotion and ask '+promoter+' to post it by going to your contacts and clicking the cross promote button next to "'+promoter+'". Keep Banding Together!');
                     }
                   });
                 }
                 catch(e){
-                  console.log('Error posting photo tweet: '+e);
+                  alert('Hmm...it seems something went wrong trying to post this promotion to your Twitter. Please refresh the page and try again. If this problem persits we encourage you to contact our live support team by clicking the "Support" button on the raial menu (top left). Thank you!');
                 }
               };
               reader.readAsDataURL(blob2)
@@ -3886,7 +3912,7 @@ function postPromo(button){
                     alert('Hmmm... it seems soemthing went wrong with posting this to your Facebook. Try going back to your "promotion" page and resigning into your Facebook. Thank you!');
                   },
                   complete:function(){
-                    alert('We have posted this promotion to your Facebook! Thank you for helping, '+promoter+'! Feel free to create a promotion and then ask him/her to post it using the "cross promote" button on the left of "'+promoter+'" in your contact list. Thank you and keep Banding Together!');
+                    alert('We have posted this promotion to your Facebook! Thank you for helping '+promoter+'! Feel free to create a promotion and ask him/her to post it using the "cross promote" button on the left of "'+promoter+'" in your contact list. Thank you and keep Banding Together!');
                   }
                 });
               }
@@ -3902,7 +3928,7 @@ function postPromo(button){
         if (res.data.instagram.wanted){
           if (res.data.instagram.ok){
             //post to insta (not yet possible)
-            alert('INSTA OK');
+
           }
           else{
             alert('Instgram does not currently offer direct posting from other Websites. Just hit the downward arrow button to download this image and copy the compelete caption to your clipboard. Then you can simply post this directly to your Instagram. We ask that you do not edit the image or caption in anyway. Thank you!');
@@ -3918,9 +3944,8 @@ function postPromo(button){
       alert('Hmmm... it seems something went wrong on our end, please refresh and try again. You may need to go to promotions and sign in to your Twitter and/or Facebook accounts. If this problem persits please let us know via the support tab (after clicking the Banda "b"/flat note)');
       return;
     }
-    postToFB=false;
-    postToInsta=false;
-    postToTwitter=false;
+    alert('Thankyou for posting this promotion. If you want to help ' +promoter+' even more feel free to hit the download button to start manually posting this to other social medias/sites.\n Thank you, '+username);
+    document.getElementById('modal-wrapper-promo-request').style.display='none';
     return;
   });
 }
@@ -4321,10 +4346,18 @@ function createContacts(contacts, yourUsername){
                                               sendMessage(msg,recipient);
                                           }});
             for(var message in userMessages[recipient]){
+              console.log(userMessages[recipient][message]);
               if(userMessages[recipient][message].body.includes("yothisisanewsignalfromthingtocreateabutton")){
                 // it's a link to an application!
                 var e = document.createElement('div');
-                var newStringB = contactLinkCallBack.name + ": ";
+                var newStringB = "";
+                if(userMessages[recipient][message].senderID == our_user_id){
+                  // this is a message we sent
+                  newStringB = username + ": ";
+                }else{
+                  // this is a message we recieved
+                  newStringB = contactLinkCallBack.name + ": ";
+                }
                 var newNameB = document.createElement("b");
                 newNameB.innerHTML = newStringB;
                 e.append(newNameB);
@@ -4347,7 +4380,14 @@ function createContacts(contacts, yourUsername){
                 $(".ui-chatbox-log").append(e);
               }else{
                 var e = document.createElement('div');
-                var newStringB = contactLinkCallBack.name + ": ";
+                var newStringB = "";
+                if(userMessages[recipient][message].senderID == our_user_id){
+                  // this is a message we sent
+                  newStringB = username + ": ";
+                }else{
+                  // this is a message we recieved
+                  newStringB = contactLinkCallBack.name + ": ";
+                }
                 var newNameB = document.createElement("b");
                 newNameB.innerHTML = newStringB;
                 e.append(newNameB);
@@ -4361,12 +4401,16 @@ function createContacts(contacts, yourUsername){
             }
         }
         console.log(contactLinkCallBack.contactLink.id);
+        var theChat = document.getElementById('chat-div');
+        theChat.scrollTop = theChat.scrollHeight;
       });
     });
   }
 }
 
 function convertZipGig(myGig){
+  console.log('CON ZIP: ')
+  console.log("Date is: " + myGig.startDate + "day is : " + myGig.day);
   var zipcode = myGig['zipcode'];
   if (!(zipcode.length==5)){
     alert('Please enter a valid zipcode.');
@@ -4414,6 +4458,106 @@ function convertZipBand(myBand){
       var lng = data.coord.lon;
       sendBandToDB(lat,lng, myBand);
     });
+}
+function sendBandToDB(lat, lng, myBand){
+  var name = myBand['name'];
+  var zipcode = myBand['zipcode'];
+  var maxDist = myBand['maxDist'];
+  var price = myBand['price'];
+  var picture = myBand['picture'];
+  var audioSample = myBand['audioSample'];
+  var audioPic = myBand['audioPic'];
+  var description = myBand['description'];
+  var openDates = myBand['openDates'];
+  var loaderBand = document.getElementById("loader-new-band");
+  var qCategories = parseQueryString(description);
+  console.log('categories inc reate band is: ' + JSON.stringify(qCategories));
+  if(!($("#new-band-pic")[0].files || $("#new-band-pic")[0].files[0])){
+    alert('Please enter a valid .jpeg, or .png file for your profile picture.');
+    loaderBand.style.display = "none";
+    return;
+  }
+  else if($("#new-band-pic")[0].files[0].type != 'image/jpeg'){
+    if ($('#new-band-pic')[0].files[0].type != 'image/png'){
+      alert('Please enter a valid .jpeg, or .png file for your avatar picture.');
+      loaderBand.style.display = "none";
+      return;
+    }
+  }
+  if(!($("#new-band-clip-pic")[0].files || $("#new-band-clip-pic")[0].files[0])){
+    alert('Please enter a valid .jpeg, or .png file for your audio sample picture.');
+    loaderBand.style.display = "none";
+    return;
+  }
+  else if($("#new-band-clip-pic")[0].files[0].type != 'image/jpeg'){
+    if ($("#new-band-clip-pic")[0].files[0].type != 'image/png'){
+      alert('Please enter a valid .jpeg, or .png file for your audio sample picture.');
+      loaderBand.style.display = "none";
+      return;
+    }
+  }
+  if(!($("#new-band-clip")[0].files || $("#new-band-clip")[0].files[0])){
+    alert('Please enter a valid .wav, or .mp3 file for your soundbyte.');
+    loaderBand.style.display = "none";
+    return;
+  }
+  else if($("#new-band-clip")[0].files[0].type != 'audio/wav'){
+    if ($("#new-band-clip")[0].files[0].type != 'audio/mp3'){
+      alert('Please enter a valid .mp3, or .wav file for your soundbyte.');
+      loaderBand.style.display = "none";
+      return;
+    }
+  }
+  var image = $("#new-band-pic")[0].files[0];
+  var formdata = new FormData();
+  var bandAvatarPath = null;
+  var bandSoundPath = null;
+  var bandSamplePicPath = null;
+  formdata.append('image', image);
+  $.ajax({
+      url: '/uploadBandAvatar',
+      data: formdata,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      'success':function(data){
+          bandAvatarPath=data;
+          var sound = $("#new-band-clip")[0].files[0];
+          formdata = new FormData();
+          formdata.append('soundByte', sound);
+          $.ajax({
+              url: '/uploadSoundByte',
+              data: formdata,
+              contentType: false,
+              processData: false,
+              type: 'POST',
+              'success':function(data){
+                  bandSoundPath=data;
+                  var samplePic = $('#new-band-clip-pic')[0].files[0];
+                  formdata = new FormData();
+                  formdata.append('audioPic', samplePic);
+                  $.ajax({
+                      url: '/uploadAudioPic',
+                      data: formdata,
+                      contentType: false,
+                      processData: false,
+                      type: 'POST',
+                      'success':function(data){
+                        bandSamplePicPath=data;
+                        var sample = {'audio':bandSoundPath, 'picture':bandSamplePicPath};
+                        $.post('/band', {'name':name, 'zipcode':zipcode, 'maxDist':maxDist, 'price':price, 'picture':bandAvatarPath, 'sample':sample,'description':description, 'openDates':openDates, 'categories':qCategories, 'lat':lat, 'lng':lng}, result=>{
+                          alert("Congratulations, you added " + name + ' to Banda! You can now search for events as, ' + name+ ' to start accelerating your music career! Refresh this page to see/edit your new act.');
+                          loaderBand.style.display = "none";
+                          document.getElementById("modal-wrapper-new-band").style.display = "none";
+                          document.location.reload();
+                        });
+                      }
+                  });
+
+              }
+          });
+      }
+  });
 }
 
 function convertZip(zipcode, cb){
@@ -4879,7 +5023,8 @@ function prepareCardElement(){
   //https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect
   //https://stripe.com/docs/connect -> doc for connection
 
-  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+  var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
+  // var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
 
   // Create an instance of Elements.
   var elements = stripe.elements();
@@ -4955,7 +5100,8 @@ function prepareCardElement(){
 
 function attemptBankSubmission(){
   document.getElementById('loader-new-bank').style.display = 'inline';
-  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+  var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
+  // var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
   var firstName = document.getElementById("bank-form-first-name").value;
   var lastName = document.getElementById("bank-form-last-name").value;
   var dob = document.getElementById("bank-form-dob").value;
@@ -5313,6 +5459,9 @@ function addPullAccept(){
       medias.push('instagram');
     }
     $.post('/pull', {'name':name, 'id':id, 'mode':mode, 'caption':caption, 'medias':medias}, res=>{
+      postToInsta=false;
+      postToTwitter=false;
+      postToFB=false;
       if (res=="" || res==null){
         alert('Hmmm...it seems something went wrong on our end, please refresh your page and try again. If this problem persists just click the Banda "b" top left and use our support tab to email our live support team. Thank you!');
       }
@@ -5412,6 +5561,8 @@ function addPullAccept(){
           return;
         }
       }
+      alert('You can download this image and copy the text to your computer or phone by hitting the download button and begin posting it to your other social medias. Thank you!');
+      document.getElementById('modal-wrapper-create-pull').style.display = 'none';
     })
   }
 

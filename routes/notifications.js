@@ -146,12 +146,17 @@ module.exports = router=>{
   });
 
   function sendBandNewGigText(ourUser, theBand, theGig, cbOk, cbErr){
-    var cats = theGig.categories
-    if (cats.hasOwnProperty('genres')){
-      var genres = ""
-      for (var g in cats.genres){
-        var newG = cats.genres[g]+', '
-        genres += newG;
+
+    var genres = ""
+    if (theGig.hasOwnProperty('catagories')){
+      var cats = theGig.categories
+
+      if (cats.hasOwnProperty('genres')){
+
+        for (var g in cats.genres){
+          var newG = cats.genres[g]+', '
+          genres += newG;
+        }
       }
     }
     if (genres==""){

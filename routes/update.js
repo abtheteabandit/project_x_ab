@@ -96,11 +96,14 @@ module.exports = router => {
           }
           //store rating and num rating
           var rating = result['rating'];
-          var numRatings = result['numRatings'];
+          var numRatings = 0
+          if (result.hasOwnProperty('numRatings')){
+            numRatings = result['numRatings'];
+          }
           console.log('Num ratings: ' + numRatings);
           console.log('var rating =' + rating );
           //udpate values
-          if (numRatings==null || numRatings==0  ||numRatings=='0' || numRatings==""){
+          if (numRatings==null || numRatings==0 || numRatings=="null" || numRatings=='0' || numRatings=="" || numRatings==NaN || (!(numRatings>0))){
             numRatings=1;
             var timesShowed = 1;
             if (showedUp){

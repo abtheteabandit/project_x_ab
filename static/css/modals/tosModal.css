@@ -112,6 +112,7 @@
   margin-left: 178px;
   font-size: 10pt;
   color: rgba(86,223,240,1.0);
+  opacity: 0;
 }
 
 .accept-tos:hover,
