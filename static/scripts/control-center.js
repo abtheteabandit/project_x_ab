@@ -2526,8 +2526,8 @@ function presentConfirmBookingModal(bandName, bandID, gigID, theGig){
                 alert(res3);
               }
             }
-            document.location.reload();
-          })
+          });
+          document.location.reload();
 
         });
       }
@@ -3674,8 +3674,9 @@ function sendGigToDB(lat,lng, myNewGig) {
               alert('Congratulations, you have posted the event "' + name + '" to Banda! Band applications will be coming in soon. You can refresh the page to see/edit your event. Check/refresh your home page regularly to see new applicants. You can also search for bands as this event now and use our "Ask user to apply..." feature to allow an artist to apply directly to your event.');
               document.getElementById("modal-wrapper-new-gig").style.display = "none";
               $.post('/newGigNotification', {'creator':username}, res4=>{
-                document.location.reload();
+
               })
+              document.location.reload();
             });
       }
   });
