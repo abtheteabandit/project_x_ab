@@ -4,7 +4,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;
+  width: 500px;
   height: 230px;
   overflow: hidden;
   background-color: rgba(240,240,240,1.0);
@@ -69,13 +69,11 @@
 }
 
 .stripe-footer{
-  position: absolute;
-  bottom: 10px;
-  width: 93%;
   text-align: center;
   font-size: 8pt;
   color: black;
   opacity: 0.6;
+  margin-top: 55px;
 }
 
 #loader-new-card{
@@ -88,7 +86,7 @@
 @media(max-width: 550px){
   #modal-wrapper-credit{
     width: 100%;
-    height: 250px;
+    height: 270px;
     overflow: hidden;
   }
 }
