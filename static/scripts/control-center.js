@@ -4489,24 +4489,20 @@ function sendBandToDB(lat, lng, myBand){
     loaderBand.style.display = "none";
     return;
   }
-  else if($("#new-band-clip-pic")[0].files[0].type != 'image/jpeg'){
-    if ($("#new-band-clip-pic")[0].files[0].type != 'image/png'){
+  else if(($("#new-band-clip-pic")[0].files[0].type != 'image/jpeg') && ($("#new-band-clip-pic")[0].files[0].type != 'image/png')){
       alert('Please enter a valid .jpeg, or .png file for your audio sample picture.');
       loaderBand.style.display = "none";
       return;
-    }
   }
   if(!($("#new-band-clip")[0].files || $("#new-band-clip")[0].files[0])){
     alert('Please enter a valid .wav, or .mp3 file for your soundbyte.');
     loaderBand.style.display = "none";
     return;
   }
-  else if($("#new-band-clip")[0].files[0].type != 'audio/wav'){
-    if ($("#new-band-clip")[0].files[0].type != 'audio/mp3'){
+  else if(($("#new-band-clip")[0].files[0].type != 'audio/wav') && ($("#new-band-clip")[0].files[0].type != 'audio/mp3')){
       alert('Please enter a valid .mp3, or .wav file for your soundbyte.');
       loaderBand.style.display = "none";
       return;
-    }
   }
   var image = $("#new-band-pic")[0].files[0];
   var formdata = new FormData();
