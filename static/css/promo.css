@@ -522,7 +522,7 @@ body{
 
 #step-3-grid{
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: auto auto auto auto;
   width: 100%;
   text-align: center;
   margin: 0;
@@ -541,6 +541,12 @@ body{
 #step-3-controls{
   height: 100px;
   margin-top: 20px;
+}
+
+#step-3-search-btn{
+  color: #56dff0;
+  background-color: transparent;
+  border: none;
 }
 
 #step-3-back, #step-3-finish{
