@@ -4470,6 +4470,7 @@ function sendBandToDB(lat, lng, myBand){
   var description = myBand['description'];
   var openDates = myBand['openDates'];
   var loaderBand = document.getElementById("loader-new-band");
+  console.log('MUSIC TYPE: '+$("#new-band-clip")[0].files[0].type);
   var qCategories = parseQueryString(description);
   console.log('categories inc reate band is: ' + JSON.stringify(qCategories));
   if(!($("#new-band-pic")[0].files || $("#new-band-pic")[0].files[0])){
