@@ -27,6 +27,15 @@ Login Popup Elements
   color: white;
 }
 
+#login-modal-header, .close-login{
+  display: inline;
+}
+
+.close-login{
+  padding-left: 120px;
+  font-size: 40pt;
+}
+
 #login-register-text{
   background-color: #5317EB;
 }
@@ -71,23 +80,20 @@ Login Popup Elements
   margin-top:102px;
 }
 
-#login-register-text{
-  text-decoration:none;
-  float:right;
-  margin-right:34px;
-  margin-top:102px;
-}
-
-@media(max-width: 550px){
+@media(max-width: 650px){
   #login-modal-header{
-    font-size: 32pt;
+    font-size: 26pt;
     padding-top: 60px;
+  }
+  .close-login{
+    padding-left: 60px;
+    font-size: 26pt;
+    cursor: pointer;
   }
   #login-register-text{
     font-size: 11pt;
   }
-
-  #login-form{
+  #modal-login-id{
     width: 300px;
   }
 }
