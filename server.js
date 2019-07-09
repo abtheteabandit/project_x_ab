@@ -677,8 +677,7 @@ router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope:
 			'read_insights',
 				'pages_show_list',
 					'publish_pages',
-						'publish_to_groups',
-							'public_profile']}))
+						'public_profile']}))
 
 //route for facebook oauth callback
 router.get('/facebook/token/return',
@@ -1199,9 +1198,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 //route to get facebook access token
 router.get('/getInstData', passport.authenticate('inst_data', { scope: [
 	'instagram_basic',
-		'instagram_manage_comments',
 			'instagram_manage_insights',
-				'business_management',
 					'read_insights',
 						'pages_show_list',
 							'manage_pages',
