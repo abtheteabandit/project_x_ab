@@ -35,25 +35,12 @@
   background-clip: border-box;
   background-repeat: no-repeat;
   margin: 4% auto 15% auto;
-  width: 40%;
-  height: 80%;
+  width: 600px;
+  height: 700px;
   padding-bottom: 80px;
   color: white;
 }
 
-/* Modal Content Box */
-.modal-content {
-  background-image: url("/assets/Home/modalbg.png");
-  background-color: transparent;
-  background-size: contain;
-  background-clip: border-box;
-  background-repeat: no-repeat;
-  margin: 4% auto 15% auto;
-  width: 40%;
-  height: 80%;
-  padding-bottom: 80px;
-  color: white;
-}
 #request-support-btn{
   background-color: transparent;
   color: #56dff0;
@@ -106,40 +93,32 @@
   margin-left: 10%;
   resize: none;
 }
-@media(max-width: 1300px){
+
+@media(max-width: 800px){
   .modal-content-support{
-    width: 70%;
+    width: 500px;
+    height: 650px;
   }
-}
-@media(max-width: 800px ){
   #account-support-header{
-    font-size: 28pt;
+    font-size: 40pt;
   }
   .support-text{
     font-size: 16pt;
   }
 }
-@media(max-width: 550px){
-  #request-support-textarea{
-    height: 200px;
-  }
-}
+
 @media(max-width: 500px){
-  .modal-content-support{
-    overflow: scroll;
-    margin-top: 80px;
-    width: 90%;
-    margin-left: 5%;
-  }
-  .modal-content-support::-webkit-scrollbar{
-    width: 4px;
-  }
-}
-@media(max-width: 400px){
   #account-support-header{
-    font-size: 20pt;
+    font-size: 24pt;
   }
   .support-text{
     font-size: 12pt;
+  }
+  #request-support-textarea{
+    height: 200px;
+  }
+  .modal-content-support{
+    width: 300px;
+    height: 600px;
   }
 }
