@@ -1199,6 +1199,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 router.get('/getInstData', passport.authenticate('inst_data', { scope: [
 	'instagram_basic',
 			'instagram_manage_insights',
+				'business_management',
 					'read_insights',
 						'pages_show_list',
 							'manage_pages',
