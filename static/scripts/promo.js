@@ -725,7 +725,7 @@ function convertZip(mySearch){
       var lat = data.coord.lat;
       var lng = data.coord.lon;
       $.get('/search_promos', {'lat':lat, 'lng':lng, 'searchText':mySearch.text}, res3=>{
-        if (res3['data']['overallMatchers']==undefined || es3['data']['overallMatchers']==null){
+        if (res3['data']['overallMatchers']==undefined || res3['data']['overallMatchers']==null){
           alert('Sorry, you must create a promotion to search for promoters.');
           return;
         }

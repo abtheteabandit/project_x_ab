@@ -5530,7 +5530,7 @@ function addPullAccept(){
                       },
                       complete:function(){
                         console.log("Posted to facebook");
-                        alert('We have posted this promotion to your Facebook! Thank you for helping, '+promoter+'! Feel free to create a promotion and then ask him/her to post it using the "cross promote" button on the left of "'+promoter+'" in your contact list. Thank you and keep Banding Together!');
+                        alert('We have posted this promotion to your Facebook! Thank you and keep Banding Together!');
                       }
                     });
                   }
