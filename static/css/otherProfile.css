@@ -166,15 +166,23 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li{
 }
 
 /*AB EDIT*/
+
+.profile-rating-grid{
+  display: grid;
+  grid-template-columns: 240px auto;
+}
+
 #user-stars{
-  position: absolute;
-  margin-left: 65%;
-  margin-top: -6%;
-  width: 100%;
+  width: 240px;
 }
 
 #user-star-1, #user-star-2, #user-star-3, #user-star-4, #user-star-5{
   display: none;
+}
+
+.band-reliability{
+  color: white;
+  margin-top: 10px;
 }
 
 .band-stars{
@@ -674,14 +682,7 @@ profile img elements
   text-align: left;
 }
 
-.band-reliability{
-  display: block;
-  color: white;
-  font-size: 14pt;
-  position: absolute;
-  margin-left: 87%;
-  margin-top: -54px;
-}
+
 
 /*
  band samples stuff
@@ -1327,6 +1328,9 @@ margin-top: 100px;
   }
 }
 @media(max-width: 500px){
+  .profile-rating-grid{
+    grid-template-columns: auto;
+  }
   .share-event-title{
     padding-top: 100px;
     font-size: 25pt;
@@ -1379,6 +1383,7 @@ margin-top: 100px;
   }
   .img-price-grid{
     margin-left: -85%;
+    margin-top: 300px;
   }
   .profile-image-container{
     margin-left: -65%;
