@@ -100,9 +100,8 @@
 
 .tos-controls{
   display: grid;
-  grid-template-columns: 10px auto 10px auto;
+  grid-template-columns: auto auto;
   width: 95%;
-  height: px;
   margin-left: 2.5%;
   margin-top: 20px;
 }
@@ -128,10 +127,6 @@
   width: 70%;
   margin: 0 auto;
   height: 32px;
-  opacity: 0.5;
-}
-
-#tos-check{
   opacity: 0.5;
 }
 
