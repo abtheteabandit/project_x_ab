@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" href="/css/otherProfile.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
     <link rel="stylesheet" type="text/css" href="/css/chat/chatButtons.css">
+    <link rel="stylesheet" type="text/css" href="/css/chat/chat.css">
     <script type="text/javascript" src="/jquery/jquery.jcarousel.min.js"></script>
     <!-- socket io -->
     <script src="/socket.io/socket.io.js"></script>
@@ -108,14 +109,16 @@
       <div class="profile-header" id="profile-header">
         <p class="profile-header-text" id="profile-title"></p>
         <p class="profile-creator-text" id="profile-creator"></p>
-        <div id="user-stars">
-          <img class="star" id="user-star-1" src="/assets/Control-Center/star.png" style="display: none"/>
-          <img class="star" id="user-star-2" src="/assets/Control-Center/star.png" style="display: none"/>
-          <img class="star" id="user-star-3" src="/assets/Control-Center/star.png" style="display: none"/>
-          <img class="star" id="user-star-4" src="/assets/Control-Center/star.png" style="display: none"/>
-          <img class="star" id="user-star-5" src="/assets/Control-Center/star.png" style="display: none"/>
+        <div class="profile-rating-grid">
+          <div id="user-stars">
+            <img class="star" id="user-star-1" src="/assets/Control-Center/star.png" style="display: none"/>
+            <img class="star" id="user-star-2" src="/assets/Control-Center/star.png" style="display: none"/>
+            <img class="star" id="user-star-3" src="/assets/Control-Center/star.png" style="display: none"/>
+            <img class="star" id="user-star-4" src="/assets/Control-Center/star.png" style="display: none"/>
+            <img class="star" id="user-star-5" src="/assets/Control-Center/star.png" style="display: none"/>
+          </div>
+          <p class="band-reliability" id="reliability"></p>
         </div>
-        <p class="band-reliability" id="reliability"></p>
       </div>
       <div class="profiles-list">
         <ul id="profile-controls">
