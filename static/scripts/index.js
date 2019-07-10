@@ -88,8 +88,8 @@ function init(){
         samples.push(aSample);
       }
       if(container.width >= 600){
-        // rainTimer = setInterval(addDrop, 1600);
-      	// setInterval(animate, 40);
+        rainTimer = setInterval(addDrop, 1600);
+      	setInterval(animate, 40);
       }
     });
   }
@@ -447,7 +447,7 @@ function search_gigs() {
 		alert('Sorry. Please enter some text if you would like to perform a serach.')
 		return;
 	}
-  window.location.href='search_page?query="'+query+'&mode=findGigs&bandName="null"';
+  window.location.href='search_page?query='+query+'&mode=findGigs&bandName="null"';
 }
 
 
