@@ -19,6 +19,8 @@
  *
 *************************************************************************/
 
+// This is our offical v1.1 server file, not realted to the server.js file on our live D.O. instance
+
 // `express` is used to serve up webpages
 // `redis` is used to store user sessions
 // `mongodb` is used to store more heavy-duty objects
