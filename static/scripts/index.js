@@ -25,7 +25,7 @@ var rain = null,
 drops = [],
 rainTimer = null,
 maxDrops = 15;
-getLocation();
+//getLocation();
 setInterval(getCurrentEvents(), 1000*60*15);
 
 var categories = {};
