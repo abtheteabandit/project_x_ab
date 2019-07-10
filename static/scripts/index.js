@@ -35,11 +35,7 @@ var isLoggedIn=false;
 // AB document stuff//
 function init(){
 
-  (function($) {
-    $(function() {
-      $('.deg0, .deg0Support, .deg30, .deg60, .deg90').toggleClass('open')
-    });
-  })(jQuery);
+
 
 
 
@@ -53,6 +49,7 @@ function init(){
   });
 
 	var logged = checkSession();
+
 
   if (document.cookie.indexOf("visited") >= 0) {
 	   // don't show modal
@@ -91,8 +88,14 @@ function init(){
         rainTimer = setInterval(addDrop, 1600);
       	setInterval(animate, 40);
       }
+      (function($) {
+        $(function() {
+          $('.deg0, .deg0Support, .deg30, .deg60, .deg90').toggleClass('open')
+        });
+      })(jQuery);
     });
   }
+
 }
 
 jQuery(function($) {
