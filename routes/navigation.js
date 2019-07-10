@@ -40,4 +40,10 @@ module.exports = router => {
   router.get('/socialSignUp',(req,res)=>{
     res.render('socialSignUp.html');
   });
+  router.get('/eventMap', (req,res)=>{
+    res.render('eventMap.html');
+  });
+  router.get('/map', (req,res)=>{
+    res.redirect('/eventMap');
+  });
 }
