@@ -113,7 +113,15 @@ module.exports = router =>{
                               }
                             }
                           }
-                          var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':poster.twitter.access_token, 'secret_token':poster.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':poster.facebook.pageId, 'pageToken':poster.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':ourCoupon, 'promo':ourPromo};
+                          var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':null, 'promo':fakePromo};
+                          if (twitterOk){
+                            data.twitter['access_token']=poster.twitter.access_token;
+                            data.twitter['secret_token']=poster.twitter.token_secret;
+                          }
+                          if (facebookOk){
+                            data.facebook['pageId']=poster.facebook.pageId;
+                            data.facebook['pageToken']=poster.facebook.pageToken;
+                          }
                           res.status(200).json({'success':true, 'data':data});
                           db.close();
                         }
