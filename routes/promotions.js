@@ -1471,7 +1471,15 @@ router.post('/pull', (req,res)=>{
               }
             }
             var fakePromo = {'handles':"", 'imgURL':imgURL, 'caption':postableCaption};
-            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':ourUser.twitter.access_token, 'secret_token':ourUser.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':ourUser.facebook.pageId, 'pageToken':ourUser.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':null, 'promo':fakePromo};
+            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':null, 'promo':fakePromo};
+            if (twitterOk){
+              data.twitter['access_token']=ourUser.twitter.access_token;
+              data.twitter['secret_token']=ourUser.twitter.token_secret;
+            }
+            if (facebookOk){
+              data.facebook['pageId']=ourUser.facebook.pageId;
+              data.facebook['pageToken']=ourUser.facebook.pageToken;
+            }
             res.status(200).json({'success':true, 'data':data});
             db.close();
           }
