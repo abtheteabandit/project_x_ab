@@ -13,6 +13,11 @@ module.exports = router => {
       var {id, query} = req.body;
       var newvalues = query;
       console.log(JSON.stringify(newvalues));
+      if (newvalues.hasOwnProperty('$inc')){
+        console.log('has $inc');
+        var increase = parseInt(newvalues.$inc.attendies);
+        newvalues.$inc.attendies=increase
+      }
       //update the gigs based on id
       db.db('gigs').collection("gigs").updateOne({'_id':ObjectId(id)}, newvalues, result =>{
         console.log("updated gig " + id);

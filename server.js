@@ -133,7 +133,7 @@ require('./routes/support.js')(router, app) //for letting customers email us wit
 require('./routes/promotions.js')(router, app) //for letting users find contacts, create promos and post them
 require('./routes/media.js')(router, app) //for getting media based on username
 require('./routes/notifications.js')(router, app) // for real time notifications
-
+require('./routes/musicMap.js')(router, app) // for getting data for music map
 
 
 //for routing messaing and emiting the message:

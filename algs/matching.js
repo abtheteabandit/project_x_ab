@@ -601,6 +601,23 @@ module.exports = {
         }
       });
     }
+  },
+
+  findLiveEvents : function findLiveEvents(time, lat, lng, gigs, cb){
+    console.log('Got gigs in mathcing: ' + JSON.stringify(gigs))
+    var gigsToScore = [];
+    for (var g in gigs){
+      var gig = gigs[g];
+      console.log('gig nae on: ' + gig.name);
+      var dist = Math.sqrt((gig.lat-lat)*(gig.lat-lat)+(gig.lng-lng)*(gig.lng-lng));
+      var now = new Date().toString();
+      var timeDiff = diff_minutes(gig.date, now);
+      var totalScore = -timeDiff-dist;
+      gigsToScore.push([gig, totalScore]);
+    }
+    var sortedGigs = sortDict(gigsToScore);
+    cb(null, sortedGigs);
+
   }
 }
 
@@ -670,7 +687,7 @@ module.exports = {
     //for each open date
     for (var key in bandOpenDates){
       var bandDay = bandOpenDates[key][0];
-      //id the days dont match continue
+      //if the days dont match continue
       if (!(bandDay == gigDay)){
         continue;
       }

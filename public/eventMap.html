@@ -49,6 +49,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type = "image/png" href = "/assets/Home/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/modals/creditCardModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+    <script src="https://js.stripe.com/v3/"></script>
+
 
     <title>Banda, Inc.</title>
     <!-- Bootstrap -->
@@ -86,6 +90,42 @@
       <ul id='event-list'>
       </ul>
     </div>
+    <div id="modal-event" class="modal-support">
+      <div class="modal-content-support animate">
+        <span onclick="document.getElementById('modal-event').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
+        <div class="container">
+          <h1 id='map-event-name'></h1>
+          <p id='attendies-interested'></p>
+          <img src='' id='interested-img'></img>
+          <p id='map-event-description'></p>
+          <button id='interested-button' onclick='attendClicked()'>I Want To Attend!</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-wrapper-credit" class="modal-card">
+      <span onclick="document.getElementById('modal-wrapper-credit').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
+      <form id="payment-form">
+        <input type="hidden" name="gigID" id="payment-gigID"/>
+        <input type="hidden" name="bandID" id="payment-bandID"/>
+        <div class="form-row">
+          <label for="card-element">
+            Credit or debit card
+          </label>
+          <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+          </div>
+          <!-- Used to display form errors. -->
+          <div id="card-errors" role="alert"></div>
+        </div>
+        <button class="stripe-button-card" >Connect Payment Method</button>
+        <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
+          to guarantee swift and easy compensation of the artists that you book. We ask for your credit information one time upfront for convience and then you can post as many events as you would like. Banda does not store your credit-card information in anyway.</p>
+        <div id="loader-new-card" class="loader"></div>
+      </form>
+    </div>
+
+
   </body>
 
   <script src='/scripts/eventMap.js'></script>
