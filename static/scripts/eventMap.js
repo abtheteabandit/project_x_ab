@@ -68,13 +68,15 @@ function attendClicked(){
       console.log('Res: ' + JSON.stringify(res));
     }
 
-    //this will be moved in the if below
-    prepareCardElement();
-
-
+    //for testing
+    event_interesed.tickets=true;
     //
     if (event_interesed.hasOwnProperty('ticekts')){
       //if the gig is selling tickets: do stripe stuff
+      // open ticket modal with options to promote the tickets, reffered link gives the promoter money
+
+      prepareCardElement();
+
     }
   });
 
