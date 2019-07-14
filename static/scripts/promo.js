@@ -134,6 +134,8 @@ class SearchResult {
 function init(){
   setUpStepTwo();
   checkUserSocials();
+  // disable relevant buttons if they are already connected
+
   getGigs();
 
   var parsedURL =  parseURL(window.location.href);
@@ -660,6 +662,18 @@ function checkUserSocials(){
         hasSnap=true;
       }
       console.log('SOCIALS FRO USER IS (true means we already have their info for that social): ' + JSON.stringify(res.data));
+      if(hasTwitter){
+        document.getElementById('connect-twitter-button').href = "#";
+        document.getElementById('connect-twitter-button').className = 'deactivated-social-buttons';
+      }
+      if(hasFB){
+        document.getElementById('connect-fb-button').href = "#";
+        document.getElementById('connect-fb-button').className = 'deactivated-social-buttons';
+      }
+      if(hasInsta){
+        document.getElementById('connect-insta-button').href = "#";
+        document.getElementById('connect-insta-button').className = 'deactivated-social-buttons';
+      }
     }
     else{
       console.log('There was an error using this route');
