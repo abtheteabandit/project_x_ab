@@ -210,7 +210,7 @@ router.post('/messages', (req, res)=>{
 passport.use('auth_facebook',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-	callbackURL: '/facebook/return',
+	callbackURL: 'https://banda-inc.com/facebook/return',
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
@@ -504,7 +504,7 @@ router.get('/twitter/token/successAuth', (req, res) => {
 router.get('/token/twitter', passport.authenticate('token_twitter'))
 
 //callback route for twitter authenication
-router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: 'https://banda-inc.com/twitter/token/failedAuth', failureRedirect: 'https://banda-inc.com/twitter/token/successAuth'}))
+router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: 'https://banda-inc.com/twitter/token/failedAuth', failureRedirect: 'https://banda-inc.com//twitter/token/successAuth'}))
 
 //post request to post a tweet to twitter
 router.post('/postTweet', (req, res) =>{
