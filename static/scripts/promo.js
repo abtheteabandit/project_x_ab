@@ -846,7 +846,7 @@ function selectMainFacebookPage(){
     console.log("this will post to the facebook route")
 
     //make post request to store the page token and page statistics
-    $.post('http://localhost:1600/getFacebookPageTokens', {pageId: valueSelected, pageName: textSelected}, res=>{
+    $.post('https://banda-inc.com/getFacebookPageTokens', {pageId: valueSelected, pageName: textSelected}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-select-social-page").style.display = "none";
     });
@@ -866,7 +866,7 @@ function selectMainInstagramPage(){
     console.log("this will post request the insta route")
     // //make post request to store the page token and page statistics
     console.log(valueSelected +  " Is the page id");
-    $.post('http://localhost:1600/storeInstData', {pageId: valueSelected, pageName: textSelected, username: instagramUsername}, res=>{
+    $.post('https://banda-inc.com/storeInstData', {pageId: valueSelected, pageName: textSelected, username: instagramUsername}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-select-social-page-insta").style.display = "none";
       document.getElementById("modal-wrapper-select-social-page").style.display = "none";
