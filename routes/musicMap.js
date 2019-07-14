@@ -3,7 +3,7 @@ module.exports = router=>{
   const database = require('../database.js');
   const matching = require('../algs/matching.js');
   const stripe_private_key = process.env.STRIPE_SECRET_KEY || 'sk_test_t6hlsKu6iehEdJhV9KzITmxm00flbTdrG5';
-  const BANDA_TICKET_CUT = 0.8;
+  const BANDA_tickets_CUT = 0.8;
   const REFERER_CUT = 0.2;
 
   var passwordHash = require('password-hash')
@@ -58,7 +58,7 @@ module.exports = router=>{
     }
   });
 
-  // route for ticket sales
+  // route for tickets sales
   router.post('/buyTicket', (req,res)=>{
     if (!req.body){
       console.log('No body sent in buy tickets ');
@@ -74,8 +74,8 @@ module.exports = router=>{
       if (req.session.key){
         console.log('User is signed in.')
         signedIn=true;
+
       }
-      else{
         database.connect(db=>{
           db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err, gig)=>{
             if (err){
@@ -86,7 +86,13 @@ module.exports = router=>{
             else{
               if (gig.hasOwnProperty('tickets')){
                 console.log('Gig has tickets');
-                console.log('Ticket is: ' + JSON.stringify(gig.tickets));
+                console.log('tickets is: ' + JSON.stringify(gig.tickets));
+                if (gig.tickets.hasOwnProperty('users')){
+                  if (gig.tickets.users.hasOwnProperty(username) || gig.tickets.users.hasOwnProperty(req.session.key)){
+                    res.status(200).send('You have already purchased a ticket for this event.').end();
+                    db.close();
+                  }
+                }
                 if (signedIn){
                   db.db('users').collection('users').findOne({'username':req.session.key}, (err1, user)=>{
                     if (err1){
@@ -96,27 +102,53 @@ module.exports = router=>{
                     }
                     else{
                       if (referal){
-                        buyWithReferal(username, email, card_token, gig, referal, db, (ref_ok, ref_error)=>{
+                        buyWithReferal(req.session.key, user.email, card_token, gig, referal, db, (ref_ok, ref_error)=>{
                           if (card_error){
                             console.log('There was an error with card payment: ' + ref_error);
                             res.status(200).send(ref_error);
                             db.close();
                           }
                           else{
-                            // email ticket
+                            // email tickets
                           }
                         });
                       }
                       else{
                         //no refural
-                        chargeForTicket(username, email, card_token, gig, db, (card_ok, card_error)=>{
+                        chargeFortickets(req.session.key, user.email, card_token, gig, db, (card_ok, card_error)=>{
                           if (card_error){
                             console.log('There was an error with card payment: ' + card_error);
                             res.status(200).send(card_error);
                             db.close();
                           }
                           else{
-                            // email ticket
+                            var tickets = gig.tickets;
+                            if (tickets.hasOwnProperty('users')){
+                              tickets.users[username]=true;
+                            }
+                            else{
+                              tickets['users']={}
+                              tickets.users[username]=true;
+                            }
+
+                            db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, {$set:{'tickets':tickets}}, (updateGigErr, updateGigSucc)=>{
+                              if (updateGigErr){
+                                console.log('There was an error updating gig: ' + gigID + updateGigErr)
+                              }
+                              sendticketsInfo(user.email, req.session.key, gig, (cbErr4, cbOk4)=>{
+                                if(cbErr4){
+                                  console.log('Error with email: ' + cbErr4)
+                                  res.status(200).send('Hmmm...it seems there was an error emailing you ticket info.')
+                                  db.close();
+                                }
+                                else{
+                                  console.log('Error with email: ' + cbErr4)
+                                  res.status(200).send('Congratulations! You have been emailed your ticket info.')
+                                  db.close();
+                                }
+
+                              });
+                            });
                           }
                         });
                       }
@@ -126,17 +158,17 @@ module.exports = router=>{
                 else{
                   // user is not logged in so we sign them in or register them
                   signInOrRegUser(username, password, email, cbOk=>{
-                    //check is user has laready bought a ticket
+                    //check is user has laready bought a tickets
                     if (gig.tickets.hasOwnProperty('users')){
                       if (gig.tickets.users.hasOwnProperty(username)){
-                        res.status(200).send('Sorry, you already bought a ticket for this event. We will email you the ticket ifnormation again.');
-                        //email ticket info
-                        sendTicketInfo(email, username, gig, (emailError, emailOk)=>{
+                        res.status(200).send('Sorry, you already bought a tickets for this event. We will email you the tickets ifnormation again.');
+                        //email tickets info
+                        sendticketsInfo(email, username, gig, (emailError, emailOk)=>{
 
                         });
                       }
                       else{
-                        // user has not yet bought a ticket
+                        // user has not yet bought a tickets
                         if (referal){
                           buyWithReferal(username, email, card_token, gig, referal, db, (ref_ok, ref_error)=>{
                             if (card_error){
@@ -145,20 +177,39 @@ module.exports = router=>{
                               db.close();
                             }
                             else{
-                              // email ticket
+                              // email tickets
                             }
                           });
                         }
                         else{
                           //no refural
-                          chargeForTicket(username, email, card_token, gig, db, (card_ok, card_error)=>{
+                          chargeFortickets(username, user.email, card_token, gig, db, (card_ok, card_error)=>{
                             if (card_error){
                               console.log('There was an error with card payment: ' + card_error);
                               res.status(200).send(card_error);
                               db.close();
                             }
                             else{
-                              // email ticket
+                              var tickets = gig.tickets;
+                              tickets.users[username]=true;
+                              db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, {$set:{'tickets':tickets}}, (updateGigErr, updateGigSucc)=>{
+                                if (updateGigErr){
+                                  console.log('There was an error updating gig: ' + gigID + updateGigErr)
+                                }
+                                sendticketsInfo(user.email, username, gig, (cbErr4, cbOk4)=>{
+                                  if(cbErr4){
+                                    console.log('Error with email: ' + cbErr4)
+                                    res.status(200).send('Hmmm...it seems there was an error emailing you ticket info.')
+                                    db.close();
+                                  }
+                                  else{
+                                    console.log('Error with email: ' + cbErr4)
+                                    res.status(200).send('Congratulations! You have been emailed your ticket info.')
+                                    db.close();
+                                  }
+
+                                });
+                              });
                             }
                           });
                         }
@@ -167,20 +218,20 @@ module.exports = router=>{
                     else{
                       // no one has bought tickets
                       if (referal){
-                        buyWithReferal(username, email, card_token, gig, referal, db, (ref_ok, ref_error)=>{
+                        buyWithReferal(username, user.email, card_token, gig, referal, db, (ref_ok, ref_error)=>{
                           if (card_error){
                             console.log('There was an error with card payment: ' + ref_error);
                             res.status(200).send(ref_error);
                             db.close();
                           }
                           else{
-                            // email ticket
+                            // email tickets
                           }
                         });
                       }
                       else{
                         //no refural
-                        chargeForTicket(username, email, card_token, gig, db, (card_ok, card_error)=>{
+                        chargeFortickets(username, user.email, card_token, gig, db, (card_ok, card_error)=>{
                           if (card_error){
                             console.log('There was an error with card payment: ' + card_error);
                             res.status(200).send(card_error);
@@ -191,9 +242,21 @@ module.exports = router=>{
                             gig.tickets['users'][username]=true;
                             db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, {$set:{'tickets':gig.tickets}}, (updateErr, updateRes)=>{
                               if (updateErr){
-                                console.log('There was an error setting gig tickets with new user who just bought a ticket: ' + username + updateErr);
+                                console.log('There was an error setting gig tickets with new user who just bought a tickets: ' + username + updateErr);
                               }
-                              //send ticket email
+                              sendticketsInfo(user.email, username, gig, (cbErr4, cbOk4)=>{
+                                if(cbErr4){
+                                  console.log('Error with email: ' + cbErr4)
+                                  res.status(200).send('Hmmm...it seems there was an error emailing you ticket info.')
+                                  db.close();
+                                }
+                                else{
+                                  console.log('Error with email: ' + cbErr4)
+                                  res.status(200).send('Congratulations! You have been emailed your ticket info.')
+                                  db.close();
+                                }
+
+                              });
                             })
                           }
                         });
@@ -233,20 +296,20 @@ module.exports = router=>{
           console.log('There was an error connecting to mongo: ' + dbErr);
           res.status(500).end();
         });
-      }
+
     }
   });
 
-  // creates stripe customer and charge for ticket
-  function chargeForTicket(username, email, card_token, gig, db, cb){
+  // creates stripe customer and charge for tickets
+  function chargeFortickets(username, email, card_token, gig, db, cb){
     if(!username || !card_token || !gig || !db){
-      console.log('Missing a field in buy with referal');
+      console.log('Missing a field in charge for tickets');
       cb(null, 'Hmm... it seems something went wrong on our end procesing your payment. Please refesh the page and try again. If this problem persists please cotnact banda.help.customers@gmail.com for speak with our live, 24/7 customer support team.');
     }
     else{
       //store values from the request
       console.log('card token: ' + card_token);
-      var description = 'Ticket buyer with username:  ' + username;
+      var description = 'tickets buyer with username:  ' + username;
       console.log('CUSTOMER EMAIL: '+ email);
 
       //create a new stripe customer
@@ -271,7 +334,7 @@ module.exports = router=>{
                 cb(null, 'Hmmm...something wnet wrong on our end.');
               }
               console.log('Added user ' + username+ 'to stripe_customers woth cus_id: ' + cus_id);
-              db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'isCustomer':true}}, (err4, res4)=>{
+              db.db('users').collection('users').updateOne({'username':username}, {$set:{'isCustomer':true}}, (err4, res4)=>{
                 if (err4){
                   console.log('There was an error trying to set isCustomer to true: ' +err4);
                   cb(null, 'Hmmm...something wnet wrong on our end.');
@@ -311,7 +374,7 @@ module.exports = router=>{
             //valid
             //store values from the request
             console.log('card token: ' + card_token);
-            var description = 'Ticket buyer with username:  ' + username;
+            var description = 'tickets buyer with username:  ' + username;
             console.log('CUSTOMER EMAIL: '+ email);
 
             //create a new stripe customer
@@ -370,13 +433,13 @@ module.exports = router=>{
                                           var referer_account_id = referer_account.stripe_connected_account_id;
                                           var gig_account_id = gig_account.stripe_connected_account_id;
 
-                                          var banda_amount = MATH.trunc(gig.tickets.price*100*(BANDA_TICKET_CUT-REFERER_CUT));
+                                          var banda_amount = MATH.trunc(gig.tickets.price*100*(BANDA_tickets_CUT-REFERER_CUT));
                                           var referer_amount = MATH.trunc(gig.tickets.price*100*REFERER_CUT);
                                           var gig_amount = MATH.trunc(gig.tickets.price-referer_amount-banda_amount);
                                           var stripe_amount = MATH.trunc(gig.tickets.price*100*0.029+30);
 
                                           var card_src = stripe_customer.src_id;
-                                          var descript = 'Payment for ticket for event: ' +gig.name+' on ' +gig.date;
+                                          var descript = 'Payment for tickets for event: ' +gig.name+' on ' +gig.date;
                                           var tranferGroup = generate_transfer_group();
                                           //create the charge
                                           stripe.charges.create({
@@ -387,11 +450,11 @@ module.exports = router=>{
                                             tranferGroup: tranferGroup,
                                           }).then(function(charge) {
                                             //log the new charge in the database
-                                            var chageForDB={'charge_id':charge.id, 'amount':charge.amount, 'gigID':gigID, 'transfer':true, 'transfer_group':transfer_group};
+                                            var chageForDB={'charge_id':charge.id, 'amount':charge.amount, 'gigID':gig._id, 'transfer':true, 'transfer_group':transfer_group};
                                             db.db('users').collection('stripe_customers').updateOne({'username':req.session.key}, {$push:{'charges':chageForDB}}, (err8, res8)=>{
                                               if (err8){
-                                                console.log('There was an error updating stripe customer: ' + username + ' With charge for ticket.' + err8);
-                                              }                                              
+                                                console.log('There was an error updating stripe customer: ' + username + ' With charge for tickets.' + err8);
+                                              }
                                               stripe.transfers.create({
                                                 amount: gig_amount,
                                                 currency: "usd",
@@ -421,12 +484,12 @@ module.exports = router=>{
 
                                                   }).catch(function(stripe_error_3){
                                                     console.log('REFERER: There was an error transfering: ' + referer_amount + 'to '+ referal.username+' error: ' + stripe_error_3);
-                                                    cb(null, 'Hmmm...something went wrong on our end paying your referer. We will email you the ticket.');
+                                                    cb(null, 'Hmmm...something went wrong on our end paying your referer. We will email you the tickets.');
                                                   });
                                                 });
                                               }).catch(function(stripe_error_4){
                                                   console.log('GIG TRANSFER: There was an error transfering: ' + gig_amount + 'to '+ gig.creator+' error: ' + stripe_error_4);
-                                                  cb(null, 'Hmmm...something went wrong on our end tranfering your money to the gig. We will email you the ticket.');
+                                                  cb(null, 'Hmmm...something went wrong on our end tranfering your money to the gig. We will email you the tickets.');
                                                 });
                                             });
                                           }).catch(function(stripe_error2){
@@ -484,7 +547,7 @@ module.exports = router=>{
   }
 
   function chargeUser(username, gig, db, cb){
-    console.log('About to charge ' + username + ' for ticket to gig: ' + gig.name);
+    console.log('About to charge ' + username + ' for tickets to gig: ' + gig.name);
 
     //get the user that is to be charged
       db.db('users').collection('stripe_customers').findOne({'username':username}, (err9, stripe_customer)=>{
@@ -493,7 +556,7 @@ module.exports = router=>{
           cb(null, 'Hmmm...it seems we had trouble charging your card. Please refresh and try again. If this problem persists please contact banda.help.customers@gmail.com to speak with our live, 24/7 support team.');
           return;
         }
-        console.log('stripe_user is: ' + JSON.stringify(stripe_user));
+        console.log('stripe_user is: ' + JSON.stringify(stripe_customer));
         db.db('users').collection('stripe_users').findOne({'username':gig.creator}, (accountErr, stripe_account)=>{
           if (accountErr){
             console.log('THere was an error tryign to find stripe user: ' + username + ' '+ accountErr);
@@ -507,9 +570,9 @@ module.exports = router=>{
             }
             //set values for the charge
             var account = stripe_account.stripe_connected_account_id;
-            var total_amount = Math.trunc(gig.ticket.price*100);
+            var total_amount = Math.trunc(gig.tickets.price*100);
             var stripe_amount = (total_amount*0.029)+30;
-            var banda_amount = Math.trunc((gig.ticket.price*100)*BANDA_TICKET_CUT);
+            var banda_amount = Math.trunc((gig.tickets.price*100)*BANDA_tickets_CUT);
 
             console.log('Banda amoutn is: ' + banda_amount);
             console.log('Stripe amount is: ' + stripe_amount);
@@ -519,7 +582,7 @@ module.exports = router=>{
             console.log('dest_amount is: ' + dest_amount);
 
             var card_src = stripe_customer.src_id;
-            var descript = 'Payment for ticket for event: ' +gig.name+' on ' +gig.date;
+            var descript = 'Payment for tickets for event: ' +gig.name+' on ' +gig.date;
             //create the charge
             stripe.charges.create({
               amount: total_amount,
@@ -532,14 +595,15 @@ module.exports = router=>{
               },
             }).then(function(charge) {
               //log the new charge in the database
-              var chageForDB={'charge_id':charge.id, 'amount':charge.amount, 'gigID':gigID, 'transfer':true};
-              db.db('users').collection('stripe_customers').updateOne({'username':req.session.key}, {$push:{'charges':chageForDB}}, (err8, res8)=>{
+              var chageForDB={'charge_id':charge.id, 'amount':charge.amount, 'gigID':gig._id, 'transfer':true};
+              db.db('users').collection('stripe_customers').updateOne({'username':username}, {$push:{'charges':chageForDB}}, (err8, res8)=>{
                 if (err8){
-                  console.log('There was an error updating stripe customer: ' + username + ' With charge for ticket.' + err8);
-                  cb(null,'Hmmm...you have been chaged for this ticket however somehthign went wrong storing this charge in our database, ,eaning we may not be able to give you a refund. Please contact banda.help.customers@gmail.com to get this sorted out as quickly as possible.')
+                  console.log('There was an error updating stripe customer: ' + username + ' With charge for tickets.' + err8);
+                  cb(null,'Hmmm...you have been chaged for this tickets however somehthign went wrong storing this charge in our database, ,eaning we may not be able to give you a refund. Please contact banda.help.customers@gmail.com to get this sorted out as quickly as possible.')
                 }
                 else{
                   //success case for the charge
+                  console.log('CHARGE USER WORKED');
                   cb('Worked', null)
                 }
               });
@@ -644,7 +708,7 @@ module.exports = router=>{
     return code;
   }
 
-  function sendTicketInfo(emai, username, gig, cb){
+  function sendticketsInfo(email, username, gig, cb){
     let transporter = nodeMailer.createTransport({
         host: 'smtp.gmail.com', // go daddy email host port
         port: 465, // could be 993
@@ -655,10 +719,10 @@ module.exports = router=>{
         }
     });
     var mailOptions = {
-       from: OUR_ADDRESS, // our address
+       from: 'banda.confirmation@gmail.com', // our address
        to: email, // who we sending to
-       subject: "New Gig Added In Your Area!", // Subject line
-       text: body, // plain text body
+       subject: "tickets for "+gig.name+" on "+gig.date, // Subject line
+       text: 'Hello'+username+', \n You have purchased a tickets for the event ' + gig.name + ' on '+gig.date+' at ' +gig.location, // plain text body
        html: ""// html body
     };
 

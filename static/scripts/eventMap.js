@@ -4,6 +4,8 @@ console.log('Axript loaded');
 const pinSRC = '/assets/Home/banda_b.png';
 var event_interesed = null;
 var referal = null;
+var loggedIn = false;
+checkSession();
 getReferer();
 
 function initMap() {
@@ -32,6 +34,7 @@ function showPosition(position) {
   // The marker, positioned at Uluru
   var marker = new google.maps.Marker({position: myLoc, map: map});
   var now = new Date().toString();
+  checkSession();
   $.get('/map_events', {'time':now, 'lat':currLat, 'lng':currLng}, res=>{
     console.log('Current Events: ' + JSON.stringify(res.data));
     if(res.success){
@@ -77,12 +80,17 @@ function attendClicked(){
     }
 
     //for testing
-    event_interesed.tickets=true;
     //
     if (event_interesed.hasOwnProperty('tickets')){
+      console.log('logged in: ' +loggedIn);
       //if the gig is selling tickets: do stripe stuff
       // open ticket modal with options to promote the tickets, reffered link gives the promoter money
-
+      if (loggedIn){
+        document.getElementById('buy-ticket-username').hidden=true;
+        document.getElementById('buy-ticket-password').hidden=true;
+        document.getElementById('buy-ticket-email').hidden=true;
+        document.getElementById('buy-ticket-password-confirm').hidden=true;
+      }
       prepareCardElement();
 
     }
@@ -197,21 +205,58 @@ function prepareCardElement(){
 //   form.submit();
   }
 }
+
+/*
+<input id='buy-ticket-username' placeholder="username..."></input>
+<input id='buy-ticket-email' placeholder='email...'></input>
+<input id='buy-ticket-password' type='password'></input>
+<input id='buy-ticket-password-confirm' type='password'></input>
+*/
 function attemptCreditSubmission(token_id){
   //var creditNum = document.getElementById("card-elem").value;
   document.getElementById("loader-new-card").style.display = "inline";
   console.log();
   console.log('TOKEN ID for card is: ' + token_id);
-  // need to handle errors here too
-  $.post('/createStripeCustomer', {card_token:token_id, email:user_email},res=>{
-    alert(res);
-    document.getElementById("loader-new-card").style.display = "none";
-    document.getElementById("modal-wrapper-credit").style.display = 'none';
-    document.getElementById("modal-wrapper-new-gig").style.display = 'block';
-  });
-  //var card_number =
+  if (!loggedIn){
+    var username = document.getElementById('buy-ticket-username').value;
+    var password = document.getElementById('buy-ticket-password').value;
+    var email = document.getElementById('buy-ticket-email').value;
+    var confirm = document.getElementById('buy-ticket-password-confirm').value;
+    if (!email || email=='' || email == ' '){
+      alert('Sorry you must enter your email to buy tickets. You can also sign in or register for an account at https://banda.com/  (if you want to skip this).');
+      return;
+    }
+    if (!password || password=='' || password == ' '){
+      alert('Sorry you must enter your password to buy tickets. You can also sign in or register for an account at https://banda.com/  (if you want to skip this).');
+      return;
+    }
+    if (!confirm || confirm=='' || confirm == ' '){
+      alert('Sorry you must enter a confirm password to buy tickets. You can also sign in or register for an account at https://banda.com/  (if you want to skip this).');
+      return;
+    }
+    if (!username || username=='' || username == ' '){
+      alert('Sorry you must enter a username to buy tickets. You can also sign in or register for an account at https://banda.com/  (if you want to skip this).');
+      return;
+    }
+    if (confirm != password){
+      alert('Sorry, your confirm password and password did not match. Please try again. You can also sign in or register for an account at https://banda.com/  (if you want to skip this).')
+      return
+    }
+  }
 
-//  console.log(creditNum);
+  //gigID, username, email, passsord, card_token, referal
+  if (referal){
+
+  }
+  else{
+    $.post('/buyTicket', {'gigID':event_interesed._id, 'email':email, 'username':username, 'password':password, 'card_token':token_id}, res=>{
+      alert(JSON.stringify(res));
+      document.getElementById("loader-new-card").style.display = "none";
+      document.getElementById("modal-wrapper-credit").style.display = 'none';
+      document.getElementById("modal-wrapper-new-gig").style.display = 'block';
+    });
+  }
+
 }
 
 //useful fucntions
@@ -224,13 +269,7 @@ function parseURL(url){
    parser.href = url;
    // Convert query string to object
    queries = parser.search.replace(/^\?/, '').split('&');
-   // Collect search entry and add to search input
-   var textForSearchInput = queries[0];
-   textForSearchInput = decodeURI(textForSearchInput);
-   textForSearchInput = textForSearchInput.replace("query=","");
    // textForSearchInput = textForSearchInput.substring(1,textForSearchInput.length);
-   console.log("textForSearchInput: "+textForSearchInput);
-   document.getElementById("search_input").value = textForSearchInput;
    for( i = 0; i < queries.length; i++ ) {
        split = queries[i].split('=');
        searchObject[split[0]] = split[1];
@@ -267,4 +306,14 @@ function getReferer(){
 
 function posErr(err){
   console.log(err)
+  alert("Hmmm...it's taking too long to get your location. We are goign to try again after you click okay.");
+  getLocationAndShowPosition();
+}
+
+function checkSession(){
+  	$.get('/hasSession', {}, res=>{
+      if (res.success){
+        loggedIn = true;
+      }
+    });
 }
