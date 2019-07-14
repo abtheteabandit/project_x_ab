@@ -504,7 +504,7 @@ router.get('/twitter/token/successAuth', (req, res) => {
 router.get('/token/twitter', passport.authenticate('token_twitter'))
 
 //callback route for twitter authenication
-router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: '/twitter/token/failedAuth', failureRedirect: '/twitter/token/successAuth'}))
+router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: 'https://banda-inc.com/twitter/token/failedAuth', failureRedirect: 'https://banda-inc.com/twitter/token/successAuth'}))
 
 //post request to post a tweet to twitter
 router.post('/postTweet', (req, res) =>{
