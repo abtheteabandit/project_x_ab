@@ -199,16 +199,17 @@ router.get('/logout', (req, res) => {
 //check if a user is logged in
 router.get('/hasSession', (req, res) =>{
 	console.log("checking session")
-	if(req.session.key){
-		//if the user is logged in
-		console.log("is true")
-		res.status(200).json({ success: true }).end()
+	var session = false;
+	if (req.hasOwnProperty('session')){
+		if (req.session.hasOwnProperty('key')){
+			if(req.session.key){
+				//if the user is logged in
+				session=true;
+			}
+		}
 	}
-	else{
-		//if the user has no session
-		console.log("is false")
-		res.status(200).json({ success: false }).end()
-	}
-})
+	res.status(200).json({ success: session }).end()
+
+});
 
 } /* end module.exports */

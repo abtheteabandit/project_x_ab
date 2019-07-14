@@ -18,7 +18,7 @@ module.exports = router=>{
       res.status(401).json({'success':false, 'data':'Hmm...it seems soemthign went wrong on our end. Please refresh and try again or contact our support team at banda.customers.help@gmail.com'});
     }
     else{
-      var {time, lat, lng} = req.query;
+      var {time, lat, lng, searchText} = req.query;
       console.log('GOT QUERY: ' + lat);
       database.connect(db=>{
         db.db('gigs').collection('gigs').find({'isFilled':{$eq:true}}).toArray((err, gigs)=>{
@@ -33,7 +33,7 @@ module.exports = router=>{
 
                     console.log('There are no live streams currently.');
 
-                    matching.findLiveEvents(time, lat, lng, gigs, (errMatch, cbOk)=>{
+                    matching.findLiveEvents(time, lat, lng, gigs, searchText, (errMatch, cbOk)=>{
                       if (errMatch){
                         console.log('There was an error trying to get mathced gigs: ' + errMatch);
                         res.status(200).json({'success':false, 'data':'Hmmm...sorry went worng on our end'});

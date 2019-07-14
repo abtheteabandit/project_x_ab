@@ -5,6 +5,10 @@ const pinSRC = '/assets/Home/banda_b.png';
 var event_interesed = null;
 var referal = null;
 var loggedIn = false;
+var currLat=null;
+var currLng=null;
+var allMarkers=[];
+var map = null;
 checkSession();
 getReferer();
 
@@ -29,7 +33,7 @@ function showPosition(position) {
   console.log("curr Lat is: " + currLat);
 	console.log("curr lng is: " + currLng);
   var myLoc = {lat: currLat, lng: currLng};
-  var map = new google.maps.Map(
+   map = new google.maps.Map(
       document.getElementById('map'), {zoom: 7, center: myLoc});
   // The marker, positioned at Uluru
   var marker = new google.maps.Marker({position: myLoc, map: map});
@@ -41,7 +45,7 @@ function showPosition(position) {
       var features = []
       for (var e in res.data){
         var curr_event = res.data[e][0];
-        document.getElementById('event-list').innerHTML+='<li>'+curr_event.name+'</li>'
+        document.getElementById('event-list').innerHTML+='<li><div>'+curr_event.name+'<img src="'+curr_event.picture+'"><span>Description: '+curr_event.description+'</span></div></li>'
         var feature = {'event':curr_event, position: new google.maps.LatLng(curr_event.lat, curr_event.lng)};
         features.push(feature);
       }
@@ -56,16 +60,16 @@ function showPosition(position) {
 //this function should open the pin data modal
 var displayEventInfo = function(pin){
   console.log('CLICK')
-  console.log('PIn: ' + JSON.stringify(pin.data))
-   event_interesed = pin.data
+  console.log('PIn: ' + JSON.stringify(pin))
+   event_interesed = pin
 
   //displau event information
-  document.getElementById('map-event-name').innerHTML=pin.data.name;
-  if (pin.data.hasOwnProperty('attendies')){
-    document.getElementById('attendies-interested').innerHTML='People going: ' + pin.data.attendies;
+  document.getElementById('map-event-name').innerHTML=pin.name;
+  if (pin.hasOwnProperty('attendies')){
+    document.getElementById('attendies-interested').innerHTML='People going: ' + pin.attendies;
   }
-  document.getElementById('interested-img').src = pin.data.picture;
-  document.getElementById('map-event-description').innerHTML=pin.data.description;
+  document.getElementById('interested-img').src = pin.picture;
+  document.getElementById('map-event-description').innerHTML=pin.description;
   document.getElementById("modal-event").style.display='block'
 
 }
@@ -104,11 +108,15 @@ function displayMarkers(features, map){
         position: features[i].position,
         icon: pinSRC,
         animation:google.maps.Animation.DROP,
+        data:features[i].event,
         map: map,
-        data:features[i].event
     });
-    google.maps.event.addListener(marker, 'click', displayEventInfo(marker));
-
+    marker.addListener('click', function() {
+      map.setZoom(12);
+      map.setCenter(marker.getPosition());
+      displayEventInfo(this.data);
+    });;
+    allMarkers.push(marker);
   };
 }
 
@@ -120,6 +128,14 @@ var output = document.getElementById("demo");
 // Update the current slider value (each time you drag the slider handle)
 slider.oninput = function() {
   console.log('Slider value: ' + slider.value);
+  console.log('Hours from now: ' + slider.value);
+  if (slider.value % 24 ==0){
+    document.getElementById('timeDisplay').innerHTML='Days From Now: ' + (slider.value/24);
+  }
+  else{
+    document.getElementById('timeDisplay').innerHTML='Days From Now: ' + Math.trunc((slider.value/24));
+
+  }
 }
 
 //stripe card stuff
@@ -253,7 +269,6 @@ function attemptCreditSubmission(token_id){
       alert(JSON.stringify(res));
       document.getElementById("loader-new-card").style.display = "none";
       document.getElementById("modal-wrapper-credit").style.display = 'none';
-      document.getElementById("modal-wrapper-new-gig").style.display = 'block';
     });
   }
 
@@ -316,4 +331,45 @@ function checkSession(){
         loggedIn = true;
       }
     });
+}
+
+//search
+
+function performSearch(){
+  clearMarkers();
+  clearEvents();
+
+  //time stuff
+  var plusTime = slider.value;
+  var sText = document.getElementById('search-text').value;
+
+  $.get('/map_events', {'time':plusTime, 'lat':currLat, 'lng':currLng, 'searchText':sText}, res=>{
+    console.log('Current Events: ' + JSON.stringify(res.data));
+    if(res.success){
+      var features = []
+      for (var e in res.data){
+        var curr_event = res.data[e][0];
+        document.getElementById('event-list').innerHTML+='<li><div>'+curr_event.name+'<img src="'+curr_event.picture+'"><span>Description: '+curr_event.description+'</span></div></li>'
+        var feature = {'event':curr_event, position: new google.maps.LatLng(curr_event.lat, curr_event.lng)};
+        features.push(feature);
+      }
+      displayMarkers(features, map);
+    }
+    else{
+      alert(res.data);
+      return;
+    }
+  });
+
+}
+
+function clearMarkers(){
+  for (var m in allMarkers){
+    var mark = allMarkers[m];
+    mark.setMap(null);
+  }
+  allMarkers=[];
+}
+function clearEvents(){
+  document.getElementById('event-list').innerHTML=''
 }
