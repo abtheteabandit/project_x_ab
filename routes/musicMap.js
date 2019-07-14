@@ -131,6 +131,9 @@ module.exports = router=>{
                       if (gig.tickets.users.hasOwnProperty(username)){
                         res.status(200).send('Sorry, you already bought a ticket for this event. We will email you the ticket ifnormation again.');
                         //email ticket info
+                        sendTicketInfo(email, username, gig, (emailError, emailOk)=>{
+
+                        });
                       }
                       else{
                         // user has not yet bought a ticket
@@ -369,32 +372,62 @@ module.exports = router=>{
 
                                           var banda_amount = MATH.trunc(gig.tickets.price*100*(BANDA_TICKET_CUT-REFERER_CUT));
                                           var referer_amount = MATH.trunc(gig.tickets.price*100*REFERER_CUT);
+                                          var gig_amount = MATH.trunc(gig.tickets.price-referer_amount-banda_amount);
                                           var stripe_amount = MATH.trunc(gig.tickets.price*100*0.029+30);
 
                                           var card_src = stripe_customer.src_id;
                                           var descript = 'Payment for ticket for event: ' +gig.name+' on ' +gig.date;
+                                          var tranferGroup = generate_transfer_group();
                                           //create the charge
                                           stripe.charges.create({
-                                            amount: total_amount,
+                                            amount: (gig.tickets.price+stripe_amount),
                                             currency: "usd",
                                             customer: stripe_customer.stripe_id,
                                             description: descript,
-                                            transfer_data: {
-                                              amount:dest_amount,
-                                              destination: account,
-                                            },
+                                            tranferGroup: tranferGroup,
                                           }).then(function(charge) {
                                             //log the new charge in the database
-                                            var chageForDB={'charge_id':charge.id, 'amount':charge.amount, 'gigID':gigID, 'transfer':true};
+                                            var chageForDB={'charge_id':charge.id, 'amount':charge.amount, 'gigID':gigID, 'transfer':true, 'transfer_group':transfer_group};
                                             db.db('users').collection('stripe_customers').updateOne({'username':req.session.key}, {$push:{'charges':chageForDB}}, (err8, res8)=>{
                                               if (err8){
                                                 console.log('There was an error updating stripe customer: ' + username + ' With charge for ticket.' + err8);
-                                                cb(null,'Hmmm...you have been chaged for this ticket however somehthign went wrong storing this charge in our database, ,eaning we may not be able to give you a refund. Please contact banda.help.customers@gmail.com to get this sorted out as quickly as possible.')
-                                              }
-                                              else{
-                                                //success case for the charge
-                                                cb('Worked', null)
-                                              }
+                                              }                                              }
+                                              stripe.transfers.create({
+                                                amount: gig_amount,
+                                                currency: "usd",
+                                                destination: gig_account_id,
+                                                transfer_group: transfer_group,
+                                              }).then(function(transfer) {
+                                                console.log('Transfer: ' + JSON.stringify(transfer));
+                                                console.log('Transfered: ' + gig_amount+ ' to gig user with id: ' + gigID);
+
+                                                db.db('users').collection('stripe_users').updateOne({'username':gig.creator}, {$push:{'transfers':transfer}}, (update_stirpe_user_err, res30)=>{
+                                                  if (update_stirpe_user_err){
+                                                    console.log('There was an error updating transfer data for: ' + gig.creator + ' err: ' + update_stirpe_user_err)
+                                                  }
+                                                  stripe.transfers.create({
+                                                    amount: referer_amount,
+                                                    currency: "usd",
+                                                    destination: referer_account_id,
+                                                    transfer_group: transfer_group,
+                                                  }).then(function(transfer2) {
+                                                    db.db('users').collection('stripe_users').updateOne({'username':referal.username}, {$push:{'transfers':transfer2}}, (update_stirpe_user_err2, res31)=>{
+                                                      if (update_stirpe_user_err2){
+                                                        console.log('There was an error updating transfer data for: ' + referal.username + ' err: ' + update_stirpe_user_err2);
+                                                      }
+                                                      //transfered all money invloved
+                                                      cb('worked', null);
+                                                    });
+
+                                                  }).catch(function(stripe_error_3){
+                                                    console.log('REFERER: There was an error transfering: ' + referer_amount + 'to '+ referal.username+' error: ' + stripe_error_3);
+                                                    cb(null, 'Hmmm...something went wrong on our end paying your referer. We will email you the ticket.');
+                                                  });
+                                                });
+                                              }).catch(function(stripe_error_4){
+                                                  console.log('GIG TRANSFER: There was an error transfering: ' + gig_amount + 'to '+ gig.creator+' error: ' + stripe_error_4);
+                                                  cb(null, 'Hmmm...something went wrong on our end tranfering your money to the gig. We will email you the ticket.');
+                                                });
                                             });
                                           }).catch(function(stripe_error2){
                                             console.log('Stripe error for transfer: ' + stripe_error2);
@@ -597,6 +630,48 @@ module.exports = router=>{
   function hashPassword(password) {
   	password = passwordHash.generate(password);
   	return password;
+  }
+  function generate_transfer_group(){
+    var x = Math.random();
+    var y = Math.random();
+    var z = Math.random();
+    var code = Math.random(x).toString(36).replace('0.', '');
+    code += "Zk!ks31l"
+    code += Math.random(y).toString(36).replace('0.', '');
+    code +="swk0!ams;a_"
+    code += Math.random(z).toString(36).replace('0.', '');
+    console.log('Random Code: ' + code);
+    return code;
+  }
+
+  function sendTicketInfo(emai, username, gig, cb){
+    let transporter = nodeMailer.createTransport({
+        host: 'smtp.gmail.com', // go daddy email host port
+        port: 465, // could be 993
+        secure: true,
+        auth: {
+            user: 'banda.confirmation@gmail.com',
+            pass: 'N5gdakxq9!'
+        }
+    });
+    var mailOptions = {
+       from: OUR_ADDRESS, // our address
+       to: email, // who we sending to
+       subject: "New Gig Added In Your Area!", // Subject line
+       text: body, // plain text body
+       html: ""// html body
+    };
+
+    transporter.sendMail(mailOptions, (error5, info5) => {
+       if (error5) {
+          console.log('There was an error sending the email: ' + error5);
+          cb(error5, null);
+       }
+       else{
+         console.log('Message sent: ' + JSON.stringify(info5));
+         cb(null, info5);
+       }
+     });
   }
 
 }// end of module exports
