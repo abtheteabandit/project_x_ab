@@ -382,6 +382,7 @@ router.get('/facebook/failedAuth', (req, res) => {
 
 //route for succesful oauth callback for facebook
 router.get('/facebook/successAuth', (req, res) => {
+  console.log('req query: ' + JSON.stringify(req.query));
 	return res.redirect('https://www.banda-inc.com/index#');
 })
 
