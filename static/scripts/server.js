@@ -87,7 +87,7 @@ app.use(session({
 		client: client,
 		ttl: 100000
 	}),
-	saveUninitialized: false,
+	saveUninitialized: true,
 	resave: false,
 	// cookie: { secure: true, maxAge: 86400000 }
 }));
@@ -330,7 +330,7 @@ function(req, token, tokenSecret, profile, done) {
 				db.close();
 			} else {
 				//if not, create a new user
-				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
+				users.insertOne({ email: email, username: username, contacts:[], phone:''}, (err, obj) => {
 					//catch error
 					if (err) {
 						console.error(`Register request from ${req.ip} (for ${username}, ${email}) returned error: ${err}`);
@@ -351,7 +351,8 @@ function(req, token, tokenSecret, profile, done) {
 	}, err => {
 		console.warn("Couldn't connect to database: " + err)
 	});
-	done(null, null);
+	//done(null, null);
+	return cb(null, profile);
 }
 ));
 
@@ -389,11 +390,15 @@ router.get('/facebook/successAuth', (req, res) => {
 
 //route for failed oauth callback for twitter
 router.get('/twitter/failedAuth', (req, res) => {
+	req.session.cookie.expires = false
+	req.session.save()
 	return res.redirect('https://www.banda-inc.com/index#');
 })
 
 //route for succesful oauth callback for twitter
 router.get('/twitter/successAuth', (req, res) => {
+	req.session.cookie.expires = false
+	req.session.save()
 	return res.redirect('https://www.banda-inc.com/index');
 })
 
@@ -1349,6 +1354,7 @@ router.post('/storeInstData', (req,res)=>{
 	instaId = req.body.pageId
 	pageName = req.body.pageName
 	instagramUsername = req.body.username
+	console.log(req)
 
  database.connect(db => {
 		//set database path
@@ -1361,6 +1367,9 @@ router.post('/storeInstData', (req,res)=>{
 				db.close();
 			}
 			//console.log(obj.instagram[obj.instagram.length - 1].accessToken)
+			console.log(obj)
+			console.log(obj.instagram)
+			console.log(obj.instagram.accessToken)
 			token = obj.instagram.accessToken
 			//query for the account id
 			axios.get("https://graph.facebook.com/v3.2/" + instaId + "?fields=instagram_business_account&access_token=" + token)

@@ -750,6 +750,7 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 				db.close();
 			}
 
+			console.log(obj)
 			let token = obj.facebook.accessToken
 			//get short term page token
 			axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
@@ -1332,6 +1333,9 @@ router.post('/storeInstData', (req,res)=>{
 				db.close();
 			}
 			//console.log(obj.instagram[obj.instagram.length - 1].accessToken)
+			console.log(obj)
+			console.log(obj.instagram)
+			console.log(obj.instagram.accessToken)
 			token = obj.instagram.accessToken
 			//query for the account id
 			axios.get("https://graph.facebook.com/v3.2/" + instaId + "?fields=instagram_business_account&access_token=" + token)
