@@ -288,7 +288,7 @@ passport.use('auth_twitter', new TwitterStrategy({
 	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
 	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
 	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
-	callbackURL: "http://localhost:1600/auth/twitter/callback",
+	callbackURL: "https://banda-inc.com/auth/twitter/callback",
   passReqToCallback: true
 },
 function(req, token, tokenSecret, profile, done) {
@@ -370,29 +370,29 @@ router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/return',
-  passport.authenticate('auth_facebook', { failureRedirect: 'http://localhost:1600/facebook/successAuth' }),
+  passport.authenticate('auth_facebook', { failureRedirect: 'https://localhost:1600/facebook/successAuth' }),
   function(req, res) {
-    res.redirect('http://localhost:1600/facebook/failedAuth');
+    res.redirect('https://localhost:1600/facebook/failedAuth');
 	});
 
 //route for failed oauth callback for facebook
 router.get('/facebook/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index#');
+	return res.redirect('https://localhost:1600/index#');
 })
 
 //route for succesful oauth callback for facebook
 router.get('/facebook/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index#');
+	return res.redirect('https://banda-inc.com/index#');
 })
 
 //route for failed oauth callback for twitter
 router.get('/twitter/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index#');
+	return res.redirect('https://banda-inc.com/index#');
 })
 
 //route for succesful oauth callback for twitter
 router.get('/twitter/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	return res.redirect('https://banda-inc.com/index');
 })
 
 //authenticate twitter redirect url
@@ -411,7 +411,7 @@ passport.use("token_twitter", new TwitterTokenStrategy({
 	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
 	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
 	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
-	callbackURL: "http://localhost:1600/token/twitter/callback",
+	callbackURL: "https://banda-inc.com/token/twitter/callback",
   passReqToCallback: true
 },
 function(req, token, tokenSecret, profile, done) {
@@ -492,12 +492,12 @@ function(req, token, tokenSecret, profile, done) {
 
 //route for failed oauth callback for twitter
 router.get('/twitter/token/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/promo#?isPromo=true');
+	return res.redirect('https://banda-inc.com/promo#?isPromo=true');
 })
 
 //route for succesful oauth callback for twitter
 router.get('/twitter/token/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/promo#?isPromo=true');
+	return res.redirect('https://banda-inc.com/promo#?isPromo=true');
 })
 
 //authenticate twitter redirect url
@@ -654,8 +654,8 @@ router.post('/postPhotoTweet', function(req, res){
 passport.use('token_facebook',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-	callbackURL: 'http://localhost:1600/facebook/token/return',
-	//callbackURL: 'http://localhost:1600/facebook/return',
+	callbackURL: 'https://banda-inc.com/facebook/token/return',
+	//callbackURL: 'https://banda-inc.com/facebook/return',
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
@@ -714,9 +714,9 @@ router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/token/return',
-  passport.authenticate('token_facebook', { failureRedirect: 'http://localhost:1600/facebook/token/successAuth' }),
+  passport.authenticate('token_facebook', { failureRedirect: 'https://banda-inc.com/facebook/token/successAuth' }),
   function(req, res) {
-    res.redirect('http://localhost:1600/facebook/token/failedAuth');
+    res.redirect('https://banda-inc.com/facebook/token/failedAuth');
 	});
 
 //route for failed token callback for facebook
@@ -743,7 +743,7 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 				.finally(function () {
 					// always executed
 					//redirect to the page selection modal
-					var xurl = 'http://localhost:1600/promo#?'
+					var xurl = 'https://banda-inc.com/promo#?'
 					for(let i = 0; i < pageData.data.length; i++){
 						console.log("page is below")
 						console.log(pageData.data[i])
@@ -762,7 +762,7 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 
 //route for succesful token  callback for facebook
 router.get('/facebook/token/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/promo#');
+	return res.redirect('https://banda-inc.com/promo#');
 })
 
 //get the page access token for facebook based on selected page in modal
@@ -1070,7 +1070,7 @@ database.connect(db => {
       //string concatination with handles, caption and coupon description nad our own Banda stuff
 
       //testing imgURL
-			var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'http://localhost:1600/');
+			var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'https://banda-inc.com/');
 			//conver the impage
       Jimp.read(imgURL, (err4, img)=>{
         if (err4){
@@ -1142,7 +1142,7 @@ database.connect(db => {
 passport.use('inst_data',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-	callbackURL: 'http://localhost:1600/inst/token/return',
+	callbackURL: 'https://banda-inc.com/inst/token/return',
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
@@ -1226,10 +1226,10 @@ router.get('/getInstData', passport.authenticate('inst_data', { scope: [
 
 //route for facebook oauth callback
 router.get('/inst/token/return',
-  passport.authenticate('inst_data', { failureRedirect: 'http://localhost:1600/inst/token/failedAuth' }),
+  passport.authenticate('inst_data', { failureRedirect: 'https://banda-inc.com/inst/token/failedAuth' }),
   function(req, res) {
 		console.log("inst token callback")
-    res.redirect('http://localhost:1600/inst/token/successAuth');
+    res.redirect('https://banda-inc.com/inst/token/successAuth');
 	});
 
 //route for failed token callback for facebook
@@ -1253,7 +1253,7 @@ router.get('/inst/token/failedAuth', (req, res) => {
 			else{
 				token = obj.instagram.accessToken
 			}
-			let xurl = 'http://localhost:1600/promo#?'
+			let xurl = 'https://banda-inc.com/promo#?'
 			//store the access tokens and profile information
 			axios.get("https://graph.facebook.com/v3.2/me/accounts?access_token=" + token)
 				.then(function (response) {
@@ -1280,7 +1280,7 @@ router.get('/inst/token/failedAuth', (req, res) => {
 		console.warn("Couldn't connect to database: " + err)
 		res.status(500).send()
 	});
-	return res.redirect('http://localhost:1600/promo#');
+	return res.redirect('https://banda-inc.com/promo#');
 })
 
 //route for succesful token  callback for facebook
@@ -1304,7 +1304,7 @@ router.get('/inst/token/successAuth', (req, res) => {
 			else{
 				token = obj.instagram.accessToken
 			}
-			let xurl = 'http://localhost:1600/promo#?'
+			let xurl = 'https://banda-inc.com/promo#?'
 			//store the access tokens and profile information
 			axios.get("https://graph.facebook.com/v3.2/me/accounts?access_token=" + token)
 				.then(function (response) {
