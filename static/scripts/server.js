@@ -370,9 +370,9 @@ router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/return',
-  passport.authenticate('auth_facebook', { failureRedirect: 'https://banda-inc.com/facebook/successAuth' }),
+  passport.authenticate('auth_facebook', { failureRedirect: 'https://banda-inc.com/facebook/failedAuth' }),
   function(req, res) {
-    res.redirect('https://banda-inc.com/facebook/failedAuth');
+    res.redirect('https://banda-inc.com/facebook/successAuth');
 	});
 
 //route for failed oauth callback for facebook
@@ -399,7 +399,7 @@ router.get('/twitter/successAuth', (req, res) => {
 router.get('/auth/twitter', passport.authenticate('auth_twitter'))
 
 //callback route for twitter authenication
-router.get('/auth/twitter/callback', passport.authenticate('auth_twitter', {successRedirect: '/twitter/failedAuth', failureRedirect: '/twitter/successAuth'}))
+router.get('/auth/twitter/callback', passport.authenticate('auth_twitter', {successRedirect: '/twitter/successAuth', failureRedirect: '/twitter/failedAuth'}))
 
 
 
