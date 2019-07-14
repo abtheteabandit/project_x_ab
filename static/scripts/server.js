@@ -370,13 +370,14 @@ router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/return',
-  passport.authenticate('auth_facebook', { failureRedirect: 'https://www.banda-inc.com/facebook/successAuth' }),
+  passport.authenticate('auth_facebook', { failureRedirect: 'https://www.banda-inc.com/facebook/failedAuth' }),
   function(req, res) {
-    res.redirect('https://www.banda-inc.com/facebook/failedAuth');
+    res.redirect('https://www.banda-inc.com/facebook/successAuth');
 	});
 
 //route for failed oauth callback for facebook
 router.get('/facebook/failedAuth', (req, res) => {
+  console.log('req query: ' + JSON.stringify(req.query));
 	return res.redirect('https://www.banda-inc.com/index#');
 })
 
