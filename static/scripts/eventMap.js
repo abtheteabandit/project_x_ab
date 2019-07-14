@@ -1,18 +1,26 @@
+
+
 console.log('Axript loaded');
 const pinSRC = '/assets/Home/banda_b.png';
 var event_interesed = null;
+var referal = null;
+getReferer();
+
 function initMap() {
   getLocationAndShowPosition();
 }
 function getLocationAndShowPosition() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPositionAndEvents);
+    console.log('nav geo')
+    navigator.geolocation.getCurrentPosition(showPosition, posErr, {timeout:10000});
   } else {
     console.log("browser doesnt support geolocator api");
   }
 }
 
-function showPositionAndEvents(position) {
+
+function showPosition(position) {
+  console.log('In show')
 	console.log(position);
 	currLat=position["coords"]["latitude"];
 	currLng=position["coords"]["longitude"];
@@ -71,7 +79,7 @@ function attendClicked(){
     //for testing
     event_interesed.tickets=true;
     //
-    if (event_interesed.hasOwnProperty('ticekts')){
+    if (event_interesed.hasOwnProperty('tickets')){
       //if the gig is selling tickets: do stripe stuff
       // open ticket modal with options to promote the tickets, reffered link gives the promoter money
 
@@ -115,7 +123,7 @@ function prepareCardElement(){
   //https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect
   //https://stripe.com/docs/connect -> doc for connection
 
-//  var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
+  //var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
    var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
 
   // Create an instance of Elements.
@@ -141,7 +149,7 @@ function prepareCardElement(){
 
   // Create an instance of the card Element.
   var card = elements.create('card', {style: style});
-  console.log('got card: ' + card);
+
   // Add an instance of the card Element into the `card-element` <div>.
   card.mount('#card-element');
 
@@ -188,4 +196,75 @@ function prepareCardElement(){
    // Submit the form
 //   form.submit();
   }
+}
+function attemptCreditSubmission(token_id){
+  //var creditNum = document.getElementById("card-elem").value;
+  document.getElementById("loader-new-card").style.display = "inline";
+  console.log();
+  console.log('TOKEN ID for card is: ' + token_id);
+  // need to handle errors here too
+  $.post('/createStripeCustomer', {card_token:token_id, email:user_email},res=>{
+    alert(res);
+    document.getElementById("loader-new-card").style.display = "none";
+    document.getElementById("modal-wrapper-credit").style.display = 'none';
+    document.getElementById("modal-wrapper-new-gig").style.display = 'block';
+  });
+  //var card_number =
+
+//  console.log(creditNum);
+}
+
+//useful fucntions
+
+function parseURL(url){
+  var parser = document.createElement('a'),
+       searchObject = {},
+       queries, split, i;
+   // Let the browser do the work
+   parser.href = url;
+   // Convert query string to object
+   queries = parser.search.replace(/^\?/, '').split('&');
+   // Collect search entry and add to search input
+   var textForSearchInput = queries[0];
+   textForSearchInput = decodeURI(textForSearchInput);
+   textForSearchInput = textForSearchInput.replace("query=","");
+   // textForSearchInput = textForSearchInput.substring(1,textForSearchInput.length);
+   console.log("textForSearchInput: "+textForSearchInput);
+   document.getElementById("search_input").value = textForSearchInput;
+   for( i = 0; i < queries.length; i++ ) {
+       split = queries[i].split('=');
+       searchObject[split[0]] = split[1];
+   }
+   return {
+       protocol: parser.protocol,
+       host: parser.host,
+       hostname: parser.hostname,
+       port: parser.port,
+       pathname: parser.pathname,
+       search: parser.search,
+       searchObject: searchObject,
+       hash: parser.hash
+   };
+
+}
+
+
+function getReferer(){
+  var urlJSON = parseURL(window.location)
+  var searchObject = null;
+  if (urlJSON.hasOwnProperty('searchObject')){
+    searchObject = urlJSON.searchObject;
+
+    if (searchObject.hasOwnProperty('referal')){
+      var refData = searchObject.referal;
+      var refPieces = refData.split('spacerspacer')
+      var refUsername = refPieces[0];
+      var refCode = refPieces[1]
+      referal = {'username':refUsername, 'code':refCode};
+    }
+  }
+}
+
+function posErr(err){
+  console.log(err)
 }

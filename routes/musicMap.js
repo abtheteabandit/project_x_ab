@@ -391,7 +391,7 @@ module.exports = router=>{
                                             db.db('users').collection('stripe_customers').updateOne({'username':req.session.key}, {$push:{'charges':chageForDB}}, (err8, res8)=>{
                                               if (err8){
                                                 console.log('There was an error updating stripe customer: ' + username + ' With charge for ticket.' + err8);
-                                              }                                              }
+                                              }                                              
                                               stripe.transfers.create({
                                                 amount: gig_amount,
                                                 currency: "usd",
