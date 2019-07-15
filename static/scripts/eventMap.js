@@ -682,6 +682,7 @@ function clearEvents(){
 function getReferalCode(){
 
   $.post('/newReferer', {'gigID':event_interesed._id}, res=>{
+    document.getElementById('modal-referal').style.display='none';
     console.log('got res for new referer: ' + res);
     if (res.success){
       document.getElementById('bankHeader').innerHTML='Your referal link is: '+res.data.link;
