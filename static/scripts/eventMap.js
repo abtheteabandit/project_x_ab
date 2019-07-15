@@ -9,6 +9,7 @@ var currLat=null;
 var currLng=null;
 var allMarkers=[];
 var map = null;
+var ourUser=null;
 checkSession();
 getReferer();
 
@@ -521,6 +522,7 @@ function prepareCardElement(){
 <input id='buy-ticket-password-confirm' type='password'></input>
 */
 function attemptCreditSubmission(token_id){
+
   //var creditNum = document.getElementById("card-elem").value;
   document.getElementById("loader-new-card").style.display = "inline";
   console.log();
@@ -554,13 +556,21 @@ function attemptCreditSubmission(token_id){
 
   //gigID, username, email, passsord, card_token, referal
   if (referal){
-
+    $.post('/buyTicket', {'gigID':event_interesed._id, 'email':email, 'username':username, 'password':password, 'card_token':token_id, 'referal':referal}, res=>{
+      alert(res);
+      document.getElementById("loader-new-card").style.display = "none";
+      document.getElementById("modal-wrapper-credit").style.display = 'none';
+      document.getElementById('modal-event').style.display='none'
+      document.getElementById("modal-referal").style.display='block';
+    });
   }
   else{
     $.post('/buyTicket', {'gigID':event_interesed._id, 'email':email, 'username':username, 'password':password, 'card_token':token_id}, res=>{
-      alert(JSON.stringify(res));
+      alert(res);
       document.getElementById("loader-new-card").style.display = "none";
       document.getElementById("modal-wrapper-credit").style.display = 'none';
+      document.getElementById('modal-event').style.display='none'
+      document.getElementById("modal-referal").style.display='block';
     });
   }
 
@@ -621,6 +631,9 @@ function checkSession(){
   	$.get('/hasSession', {}, res=>{
       if (res.success){
         loggedIn = true;
+        $.get('/user', {}, res2=>{
+          ourUser = res2;
+        })
       }
     });
 }
@@ -664,4 +677,102 @@ function clearMarkers(){
 }
 function clearEvents(){
   document.getElementById('event-list').innerHTML=''
+}
+
+function getReferalCode(){
+
+  $.post('/newReferer', {'gigID':event_interesed._id}, res=>{
+    console.log('got res for new referer: ' + res);
+    if (res.success){
+      document.getElementById('bankHeader').innerHTML='Your referal link is: '+res.data.link;
+      $.get('/account_status', {'who':'is my account'}, res2=>{
+        console.log('GOt res for acct status: ' + res2);
+        if (res2==true || res2=='true'){
+          alert('Your referal link is: ' + res.data + '.\nPost this everywhere you can to start promoting this event and making money, see your email for details. Thank you.');
+        }
+        else{
+          prepareBankElement();
+        }
+      });
+    }
+    else{
+      $.get('/account_status', {'who':'is my account'}, res2=>{
+        console.log('GOt res for acct status: ' + res2);
+        if (res2==true || res2=='true'){
+          alert(res.data+'.\nSee your email for details. Thank you.');
+        }
+        else{
+          alert(res.data);
+          document.getElementById('bankHeader').innerHTML="We need your bank account to transfer you your cut of ticket sales!";
+          prepareBankElement();
+        }
+      });
+    }
+  })
+
+}
+
+//banking stuff
+
+function prepareBankElement(){
+  console.log('In prep bank element')
+  document.getElementById('modal-event').style.display='none'
+  document.getElementById('modal-wrapper-bank').style.display = 'block';
+  document.getElementById('modal-wrapper-bank').style.widthString='500px'
+  document.getElementById('modal-wrapper-bank').style.heightString='500px';
+  document.getElementById('modal-wrapper-bank').style.innerHeight='500px'
+  document.getElementById('modal-wrapper-bank').style.innerWidth='500px';
+  document.getElementById('modal-wrapper-bank').style.top=0;
+  console.log(document.getElementById('modal-wrapper-bank'));
+//  document.getElementById("bank-content").style.display='block';
+}
+
+function attemptBankSubmission(){
+  document.getElementById('loader-new-bank').style.display = 'inline';
+  //var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
+  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+  var firstName = document.getElementById("bank-form-first-name").value;
+  var lastName = document.getElementById("bank-form-last-name").value;
+  var dob = document.getElementById("bank-form-dob").value;
+  var routingNum = document.getElementById("bank-form-routing-number").value;
+  var acctNum = document.getElementById("bank-form-acct-num").value;
+  var holder = document.getElementById("bank-form-holder").value;
+
+  console.log("first name: "+firstName);
+  console.log("last name: "+lastName);
+  console.log("date of birth: "+dob);
+  console.log("routing: "+routingNum);
+  console.log("account: "+acctNum);
+  console.log("holder: "+holder);
+  //var {dateOfBrith, firstName, lastName, acct_number, routing_number, holder_name }
+  stripe.createToken('bank_account', {
+    country: 'US',
+    currency: 'usd',
+    routing_number: routingNum,
+    account_number: acctNum,
+    account_holder_name: holder,
+    account_holder_type: 'individual',
+  }).then(function(result_bank) {
+      console.log('Result from tokenazation of bank info: ' + JSON.stringify(result_bank));
+        if (result_bank.error){
+          console.log('There was an error converting bank info to a token. Stripe error: ' + result_bank.error.message);
+          alert('Sorry, that bank account is invalid. Please try again.')
+          document.getElementById('loader-new-bank').style.display = 'none';
+        }
+        else{
+          var accountToken = result_bank['token'];
+          $.post('/newConnectedAccount', {'firstName':firstName, 'lastName':lastName, 'dateOfBrith':dob, external_account_token:accountToken['id'] }, res=>{
+            if(res){
+              alert(res);
+              return;
+            }
+            else{
+                alert('Congratulations! You will recieve money in this account whenever someone buys tickets through your link. Note: when you earn more than $3,000 from your ticket referals, we may need addtional information to verify your identity. \nStart posting that link everywhere!');
+                document.getElementById('modal-wrapper-bank').style.display='none';
+                document.getElementById('modal-wrapper-new-band').style.display='block';
+                document.getElementById('loader-new-bank').style.display = 'none';
+            }
+          });
+        }
+      });
 }

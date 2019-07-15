@@ -65,17 +65,20 @@ module.exports = router=>{
       res.status(401).end();
     }
     else{
-      var {gigID, username, email, passsord, card_token, referal} = req.body;
+      var {gigID, username, email, password, card_token, referal} = req.body;
       var signedIn = false;
       if (!gigID){
         console.log('No body gigID in buy tickets ');
         res.status(401).end();
       }
-      if (req.session.key){
-        console.log('User is signed in.')
-        signedIn=true;
-
+      if (req.hasOwnProperty('session')){
+        if (req.session.key){
+          console.log('User is signed in.')
+          signedIn=true;
+          username=req.session.key
+        }
       }
+
         database.connect(db=>{
           db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err, gig)=>{
             if (err){
@@ -88,7 +91,7 @@ module.exports = router=>{
                 console.log('Gig has tickets');
                 console.log('tickets is: ' + JSON.stringify(gig.tickets));
                 if (gig.tickets.hasOwnProperty('users')){
-                  if (gig.tickets.users.hasOwnProperty(username) || gig.tickets.users.hasOwnProperty(req.session.key)){
+                  if (gig.tickets.users.hasOwnProperty(username)){
                     res.status(200).send('You have already purchased a ticket for this event.').end();
                     db.close();
                   }
@@ -157,7 +160,9 @@ module.exports = router=>{
                 }
                 else{
                   // user is not logged in so we sign them in or register them
-                  signInOrRegUser(username, password, email, cbOk=>{
+                  signInOrRegUser(username, password, email, db, cbOk=>{
+                    req.session.key=username;
+                    var user = cbOk
                     //check is user has laready bought a tickets
                     if (gig.tickets.hasOwnProperty('users')){
                       if (gig.tickets.users.hasOwnProperty(username)){
@@ -619,7 +624,7 @@ module.exports = router=>{
 
   // auth stuff
 
-  function signInOrRegUser(username, password, email, cbOk, cbErr){
+  function signInOrRegUser(username, password, email, db, cbOk, cbErr){
     if (!username) {
       return res.status(200).send('No username supplied')
     } else if (!password) {
@@ -650,7 +655,6 @@ module.exports = router=>{
       else if (obj) {
         if (obj.password==password){
           console.log('Logging in user: ' + username + ' cause passowrd matched.')
-          req.session.key = username;
           cbOk(obj);
         }
         else{
@@ -659,14 +663,13 @@ module.exports = router=>{
       }
       else {
         //if not, create a new user
-        db.db('users').collection('users').insertOne({ email: email, username: username, password: password, contacts:[], 'phone':phone}, (err4, obj1) => {
+        db.db('users').collection('users').insertOne({ email: email, username: username, password: password, contacts:[]}, (err4, obj1) => {
           if (err4) {
-            console.error(`Register request from ${req.ip} (for ${username}, ${email}, ${password}) returned error: ${err4}`);
+            console.error(`Register request (for ${username}, ${email}, ${password}) returned error: ${err4}`);
             cbErr('internal');
           }
           else {
-            req.session.key = username;
-            console.log('Req session key after inserting user for register is: ' + req.session.key);
+            console.log('Req session key after inserting user for register is: ' + username);
             var user = {'username':username, 'email':email, 'password':password};
             cbOk(user)
           }
@@ -736,6 +739,169 @@ module.exports = router=>{
          cb(null, info5);
        }
      });
+  }
+
+
+  router.post('/newReferer', (req,res)=>{
+    if (!req.session.key){
+      console.log('Not logged in from: ' + req.ip);
+      res.status(200).json({'success':false, 'data':'You must have bought a ticket or be signed in to become a referer'});
+    }
+    if (!req.body){
+      console.log('Not body in from: ' + req.ip);
+      res.status(403).end();
+    }
+    else{
+      var {gigID} = req.body;
+      database.connect(db=>{
+        db.db('gigs').collection('gigs').findOne({'_id':database.objectId(gigID)}, (err, gig)=>{
+          if (err){
+            console.log('There was an error trying to fidn gig with id: ' + gigID + " Error: " + err);
+            res.status(200).json({'success':false, 'data':'Hmmm...something went wrong on our end.'});
+            db.close();
+          }
+          else{
+            if (!gig.isFilled){
+              console.log('gig was not filled');
+              res.status(200).json({'success':false, 'data':'Sorry, this event has not setup ticket sales yet, try with a different event or checkback later.'});
+              db.close();
+            }
+            if (!gig.hasOwnProperty('tickets')){
+              console.log('gig has no ticket data');
+              res.status(200).json({'success':false, 'data':'Sorry, this event has not setup ticket sales yet, try with a different event or checkback later.'});
+              db.close();
+            }
+            else{
+              db.db('users').collection('users').findOne({'_id':req.session.key}, (err2, user)=>{
+                if (err2){
+                  console.log('There was an error trying to find user ' + req.session.key + " Error: " + err2);
+                  res.status(200).json({'success':false, 'data':'Hmmm...something went wrong on our end.'});
+                  db.close();
+                }
+                else{
+                  if (gig.tickets.hasOwnProperty('referers')){
+                    if (gig.tickets.referers.hasOwnProperty(req.session.key)){
+                      console.log('gig has no ticket data');
+                      sendReferealEmail(gig, user, gig.tickets.referers[req.session.key], cbEmail=>{
+                        res.status(200).json({'success':false, 'data':'Sorry, you are already a referer for this event. We will email you your referal information again.'});
+                        db.close();
+                      });
+                    }
+                    else{
+                      var tics = gig.tickets;
+                      var code = generateRefererCode();
+                      tics.referers[req.session.key]=code;
+                      db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, {$set:{'tickets':tics}}, (err3, res3)=>{
+                        if (err3){
+                          console.log('There was an error updating gig: ' + gigID + ' to hae referer with username: ' +req.session.key);
+                          res.status.json({success:false, 'data':'Hmmm...it seems we could not make you a referer for this event. Please try again or contact banda.help.customers@gmail.com to speak with our live 24/7 support team.'});
+                          db.close();
+                        }
+                        else{
+                          sendReferealEmail(gig, user, code, (cbErr, link)=>{
+                            if (cbErr){
+                              console.log('There was an error sending email to: ' + user.email);
+                              res.status.json({'success':false, 'data':'Hmmm...we could not email you your referal information. Please try again or contact banda.help.customers@gmail.com to speak with our live 24/7 support team.'});
+                              db.close();
+                            }
+                            else{
+                              console.log('All worked and link is: ' + link);
+                              res.status(200).json({'success':true, 'data':{'link':link}});
+                              db.close();
+                            }
+                          });
+                        }
+                      });
+                    }
+                  }
+                  else{
+                    var tics = gig.tickets;
+                    var code = generateRefererCode();
+                    tics['referers']={};
+                    tics.referers[req.session.key]=code;
+                    db.db('gigs').collection('gigs').updateOne({'_id':database.objectId(gigID)}, {$set:{'tickets':tics}}, (err3, res3)=>{
+                      if (err3){
+                        console.log('There was an error updating gig: ' + gigID + ' to hae referer with username: ' +req.session.key);
+                        res.status.json({success:false, 'data':'Hmmm...it seems we could not make you a referer for this event. Please try again or contact banda.help.customers@gmail.com to speak with our live 24/7 support team.'});
+                        db.close();
+                      }
+                      else{
+                        sendReferealEmail(gig, user, code, (cbErr, link)=>{
+                          if (cbErr){
+                            console.log('There was an error sending email to: ' + user.email);
+                            res.status.json({'success':false, 'data':'Hmmm...we could not email you your referal information. Please try again or contact banda.help.customers@gmail.com to speak with our live 24/7 support team.'});
+                            db.close();
+                          }
+                          else{
+                            console.log('All worked and link is: ' + link);
+                            res.status(200).json({'success':true, 'data':{'link':link}});
+                            db.close();
+                          }
+
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }
+          }
+        })
+      }, dbErr=>{
+        console.log('There was an error connecting to mongo error was: ' +dbErr);
+        res.status(500).end();
+        db.close();
+      })
+    }
+  });
+
+  function sendReferealEmail(gig, user, code, cb){
+    if (!gig || !user || !code){
+      cb(null,'Missing fields');
+    }
+    else{
+      let transporter = nodeMailer.createTransport({
+          host: 'smtp.gmail.com', // go daddy email host port
+          port: 465, // could be 993
+          secure: true,
+          auth: {
+              user: 'banda.confirmation@gmail.com',
+              pass: 'N5gdakxq9!'
+          }
+      });
+      var link = 'https://www.banda-inc.com/eventMap?referal='+user.username+'spacerspacer'+code+'spacerspacer'+gig._id;
+      var mailOptions = {
+         from: 'banda.confirmation@gmail.com', // our address
+         to: user.email, // who we sending to
+         subject: "Blow up "+gig.name+" on Banda and make easy money fast!", // Subject line
+         text: 'Hello '+username+', \n Nice move becoming a promoter for this event. We will automatically transfer '+gig.tickets.price*REFERER_CUT+' into your connected bank account everytime someone goes to this link:\n' + link + '\n and purchases a ticket for the event: '+gig.name+' on '+gig.date+' at ' +gig.location+'. Post this all over your social medias, tell friends about it, whatever you can do to sell tickets to this event puts people there and more money in your pocket. This will likely be the easiest money you have ever made. Good luck in your promotion efforts and get that cash my friend.\nSincerely,\nYour team at Banda.', // plain text body
+         html: ""// html body
+      };
+
+      transporter.sendMail(mailOptions, (error5, info5) => {
+         if (error5) {
+            console.log('There was an error sending the email: ' + error5);
+            cb(error5, null);
+         }
+         else{
+           console.log('Message sent: ' + JSON.stringify(info5));
+           cb(null, link);
+         }
+       });
+    }
+  }
+
+  function generateRefererCode(){
+    var q = Math.random(11)
+    var p = Math.random();
+    var x = Math.random(q);
+    var y = Math.random(p);
+    var code = Math.random(x).toString(36).replace('0.', '');
+    code += "B3k!dlfa"
+    code += Math.random(y).toString(36).replace('0.', '');
+    code +="swk0!ams;a_dasxsaxd"
+    console.log('Random Code: ' + code);
+    return code;
   }
 
 }// end of module exports
