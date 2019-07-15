@@ -242,7 +242,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 					//set database path
 					var users = db.db('users').collection('users');
 					//check to see if the user laready exists
-					users.find({email: email}).toArray((err, obj) => {
+					users.find({email: email}).toArray((err1, obj) => {
 						console.log(JSON.stringify(obj))
 						console.log("!!!!!!!!!!!!!!!!!!!!!")
 						console.log("!!!!!!!!!!!!!!!!!!!!!")
@@ -252,8 +252,8 @@ function(req, accessToken, refreshToken, profile, cb) {
 						console.log("!!!!!!!!!!!!!!!!!!!!!")
 						console.log("!!!!!!!!!!!!!!!!!!!!!")
 						//catch error
-						if (err) {
-							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+						if (err1) {
+							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err1}`)
 							db.close();
 						}
 
@@ -263,6 +263,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 							req.session.key = username;
 							req.session.cookie.expires = false
 							req.session.save()
+              cb(null, profile);
 							db.close();
 						} else {
 							//if not, create a new user
@@ -278,6 +279,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 									req.session.key = username;
 									req.session.cookie.expires = false
 									req.session.save()
+                  cb(null, profile);
 									db.close();
 								}
 							});
@@ -290,7 +292,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 	//done(null, profile);
 	// return cb(null, profile);
 	});
-	return cb(null, profile);
+
 }))
 
 //intialize twitter auth for passport
