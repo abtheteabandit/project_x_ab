@@ -207,6 +207,7 @@ router.post('/messages', (req, res)=>{
 /*Start of v1.1*/
 
 //instialize passport js for user login with facebook
+//instialize passport js for user login with facebook
 passport.use('auth_facebook',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
@@ -241,7 +242,15 @@ function(req, accessToken, refreshToken, profile, cb) {
 					//set database path
 					var users = db.db('users').collection('users');
 					//check to see if the user laready exists
-					users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
+					users.find({email: email}).toArray((err, obj) => {
+						console.log(JSON.stringify(obj))
+						console.log("!!!!!!!!!!!!!!!!!!!!!")
+						console.log("!!!!!!!!!!!!!!!!!!!!!")
+						console.log("!!!!!!!!!!!!!!!!!!!!!")
+						console.log("!!!!!!!!!!!!!!!!!!!!!" + obj.length + " is the object length!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+						console.log("!!!!!!!!!!!!!!!!!!!!!")
+						console.log("!!!!!!!!!!!!!!!!!!!!!")
+						console.log("!!!!!!!!!!!!!!!!!!!!!")
 						//catch error
 						if (err) {
 							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
@@ -249,7 +258,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 						}
 
 						//if the user already exists
-						else if (obj) {
+						else if (obj.length > 0) {
 							//sign the user in
 							req.session.key = username;
 							req.session.cookie.expires = false
@@ -273,15 +282,16 @@ function(req, accessToken, refreshToken, profile, cb) {
 								}
 							});
 						}
-					})
-				}, err => {
+					}), err => {
 					console.warn("Couldn't connect to database: " + err)
 					res.status(500).send()
-				});
+				};
 			});
 	//done(null, profile);
+	// return cb(null, profile);
+	});
 	return cb(null, profile);
-}));
+}))
 
 //intialize twitter auth for passport
 passport.use('auth_twitter', new TwitterStrategy({
@@ -319,7 +329,7 @@ function(req, token, tokenSecret, profile, done) {
 				db.close();
 			}
 			//if the user already exists
-			else if (obj) {
+			else if (obj.email == email) {
 				//sign the user in
 				console.log(username + " is the username")
 				req.session.key = username;
@@ -734,6 +744,7 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 		//set database path
 		db.db('users').collection('users').findOne({username: req.session.key}, (err, obj) => {
 			//catch error
+			console.log(JSON.stringify(obj))
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
