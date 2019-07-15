@@ -242,7 +242,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 					//set database path
 					var users = db.db('users').collection('users');
 					//check to see if the user laready exists
-					users.find({email: email}).toArray((err1, obj) => {
+					users.find($or:{{email: email}, {'username':username}}).toArray((err1, obj) => {
 						console.log(JSON.stringify(obj))
 						console.log("!!!!!!!!!!!!!!!!!!!!!")
 						console.log("!!!!!!!!!!!!!!!!!!!!!")
