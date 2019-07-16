@@ -220,6 +220,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 	let token = accessToken
 	let refresh = refreshToken
 
+	console.log(profile);
 	//create the url to request profile data
 	let url = "https://graph.facebook.com/v3.3/me?" + "fields=name,email&access_token=" + token;
 
@@ -230,6 +231,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 		}, function (err, response, body) {
 				//store the needed values from the facebook api  call
 				let email = body.email;
+				console.log(email + " IS THE EMAIL!!!!!!!!!!!!!!!!");
 				let username = body.name.replace(/\s+/g, '_')
 				//check for null values
 				if (!username) {
@@ -242,15 +244,8 @@ function(req, accessToken, refreshToken, profile, cb) {
 					//set database path
 					var users = db.db('users').collection('users');
 					//check to see if the user laready exists
-					users.find($or:{{email: email}, {'username':username}}).toArray((err1, obj) => {
+					users.find({email: email}).toArray((err1, obj) => {
 						console.log(JSON.stringify(obj))
-						console.log("!!!!!!!!!!!!!!!!!!!!!")
-						console.log("!!!!!!!!!!!!!!!!!!!!!")
-						console.log("!!!!!!!!!!!!!!!!!!!!!")
-						console.log("!!!!!!!!!!!!!!!!!!!!!" + obj.length + " is the object length!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-						console.log("!!!!!!!!!!!!!!!!!!!!!")
-						console.log("!!!!!!!!!!!!!!!!!!!!!")
-						console.log("!!!!!!!!!!!!!!!!!!!!!")
 						//catch error
 						if (err1) {
 							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err1}`)
@@ -263,8 +258,9 @@ function(req, accessToken, refreshToken, profile, cb) {
 							req.session.key = username;
 							req.session.cookie.expires = false
 							req.session.save()
-              cb(null, profile);
+
 							db.close();
+							cb(null, profile);
 						} else {
 							//if not, create a new user
 							users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
@@ -279,8 +275,8 @@ function(req, accessToken, refreshToken, profile, cb) {
 									req.session.key = username;
 									req.session.cookie.expires = false
 									req.session.save()
-                  cb(null, profile);
 									db.close();
+									cb(null, profile);
 								}
 							});
 						}
@@ -324,14 +320,14 @@ function(req, token, tokenSecret, profile, done) {
 		//set database path
 		var users = db.db('users').collection('users');
 		//check to see if the user laready exists
-		users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
+		users.find({email: email}).toArray((err, obj) => {
 			//catch error
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
 			//if the user already exists
-			else if (obj.email == email) {
+			else if (obj.length > 0) {
 				//sign the user in
 				console.log(username + " is the username")
 				req.session.key = username;
@@ -340,6 +336,7 @@ function(req, token, tokenSecret, profile, done) {
 				console.log(req.session)
 				console.log('Req session key after inserting user for register is: ' + req.session.key);
 				db.close();
+				return done(null, null);
 			} else {
 				//if not, create a new user
 				users.insertOne({ email: email, username: username, contacts:[], phone:''}, (err, obj) => {
@@ -356,6 +353,7 @@ function(req, token, tokenSecret, profile, done) {
 						console.log(req.session)
 						console.log('Req session key after inserting user for register is: ' + req.session.key);
 						db.close();
+						return done(null, null);
 					}
 				});
 			}
@@ -364,7 +362,7 @@ function(req, token, tokenSecret, profile, done) {
 		console.warn("Couldn't connect to database: " + err)
 	});
 	//done(null, null);
-	return cb(null, profile);
+	//return cb(null, profile);
 }
 ));
 
