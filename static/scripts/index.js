@@ -733,3 +733,10 @@ function diff_minutes(dt2, dt1) {
 		 console.log('Random Code: ' + code);
 		 return code;
 	 }
+
+//forgot password
+
+document.getElementById('forgot-password').addEventListener('click', function(){
+  console.log('Forgot my password')
+  
+})

@@ -211,4 +211,114 @@ router.get('/hasSession', (req, res) =>{
 	}
 })
 
+router.post('/forgotPassword', (req,res)=>{
+	if (req.session.key){
+		console.log('Already logged in!')
+		res.status(400).end()
+	}
+	if (!req.body){
+		console.log('no body')
+		res.status(400).end()
+	}
+	else{
+		var {username, email} = req.body
+		if (!username && !email){
+			console.log('no username and no email sent');
+		}
+		else{
+			database.connect(db=>{
+				db.db('users').collection('users').findOne($or:{{'username':username}, {'email':email}}, (err, user)=>{
+					if (err){
+						console.log('There was an error finding user: ' + username + err)
+						res.status(200).send('Hmmm...there was an issue finding this username or email. Please try again. If this problem persits please contact us at banda.help.customers@gmail.com')
+						db.close()
+					}
+					else{
+						var newPassword = generateRandomPassword();
+						var hashedPass = hashPassword(newPassword);
+						if (user){
+							db.db('users').collection('users').updateOne({'username':username}, {'password':hashedPass}, (err3, res3)=>{
+								if (err3){
+									console.log('There was an error reseting password in db for user: ' + username + err3);
+									res.status(200).send('Hmmm...there was an issue reseting your password. Please resfresh this page and try again. If this problem persits please contact us at banda.help.customers@gmail.com')
+									db.close();
+								}
+								else{
+									sendPasswordEmail(user, newPassword, (emailErr, ok)=>{
+										if (emailErr){
+											console.log('There was an error send eamil to user: ' + user.email + emailErr)
+											res.status(200).send('Hmmm...there was an issue sending the new password to your email. Please resfresh this page and try again. If this problem persits please contact us at banda.help.customers@gmail.com')
+											db.close()
+										}
+										else{
+											console.log('Sent email with new password: '+newPassword+' to: ' + user.email)
+											res.status(200).send('We have reset your password and sent the new password to your email. Just enter the new password with your username on the login modal.')
+											db.close()
+										}
+									});
+								}
+							})
+
+						}
+						else{
+							console.log('No user: ' + username +' '+email)
+							res.status(200).send('Sorry, we do not recognize this username or email. Please try again wit a different email or username. If this is incorrect please email us at banda.help.customers@gmail.com')
+							db.close();
+						}
+					}
+				});
+			}, dbErr=>{
+				console.log('Error connecting to mongo: ' + dbErr);
+				res.status(500).end();
+			})
+
+		}
+	}
+
+})
+
+function sendPasswordEmail(user, cb){
+	let transporter = nodeMailer.createTransport({
+			host: 'smtp.gmail.com', // go daddy email host port
+			port: 465, // could be 993
+			secure: true,
+			auth: {
+					user: 'banda.confirmation@gmail.com',
+					pass: 'N5gdakxq9!'
+			}
+	});
+	var body = 'Congratulations! Your band '+ourBand.name+' was just booked for the event '+ourGig.name+'. This event is scheduled for '+ ourGig.date+'. Login to www.banda-inc.com and click "home" to go your home page to see the event under '+ourBand.name+'. Thank you, good luck, and keep Banding Together! --- \n Sincerely,,\nyour team at Banda.';
+	var mailOptions = {
+		 from: 'banda.confirmation@gmail.com', // our address
+		 to: user.email, // who we sending to
+		 subject: "Reset Password For Banda", // Subject line
+		 text: 'Hello, '+user.username+',\nSorry your password was lost we have reset it to ', // plain text body
+		 html: ""// html body
+	};
+
+	transporter.sendMail(mailOptions, (error, info) => {
+		 if (error) {
+				console.log('There was an error sending the email: ' + error);
+				cb(error, null);
+		 }
+		 else{
+			 console.log('Message sent: ' + JSON.stringify(info));
+			 cb(null, info);
+		 }
+	 });
+
+}
+function generateRandomPassword(){
+	var q = Math.random(12)
+	var p = Math.random(20)
+	var x = Math.random(q);
+  var y = Math.random(q);
+  var code = Math.random(x).toString(36).replace('0.', '');
+  code += "p12aqwwzzw12urd"
+  code += Math.random(y).toString(36).replace('0.', '');
+  console.log('Random Code: ' + code);
+  return code;
+}
+
+
 } /* end module.exports */
