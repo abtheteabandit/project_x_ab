@@ -221,13 +221,13 @@ router.post('/forgotPassword', (req,res)=>{
 		res.status(400).end()
 	}
 	else{
-		var {username, email} = req.body
-		if (!username && !email){
+		var {username} = req.body
+		if (!username){
 			console.log('no username and no email sent');
 		}
 		else{
 			database.connect(db=>{
-				db.db('users').collection('users').findOne($or:{{'username':username}, {'email':email}}, (err, user)=>{
+				db.db('users').collection('users').findOne({'username':username}, (err, user)=>{
 					if (err){
 						console.log('There was an error finding user: ' + username + err)
 						res.status(200).send('Hmmm...there was an issue finding this username or email. Please try again. If this problem persits please contact us at banda.help.customers@gmail.com')
