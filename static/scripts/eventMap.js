@@ -363,7 +363,7 @@ var displayEventInfo = function(pin){
   }
   document.getElementById('interested-img').src = pin.picture;
   document.getElementById('map-event-description').innerHTML=pin.description;
-  document.getElementById("modal-event").style.display='block'
+  document.getElementById("modal-wrapper-event-on-map").style.display='block';
 
 }
 function attendClicked(){
@@ -560,7 +560,7 @@ function attemptCreditSubmission(token_id){
       alert(res);
       document.getElementById("loader-new-card").style.display = "none";
       document.getElementById("modal-wrapper-credit").style.display = 'none';
-      document.getElementById('modal-event').style.display='none'
+      document.getElementById('modal-wrapper-event-on-map').style.display='none'
       document.getElementById("modal-referal").style.display='block';
     });
   }
@@ -569,7 +569,7 @@ function attemptCreditSubmission(token_id){
       alert(res);
       document.getElementById("loader-new-card").style.display = "none";
       document.getElementById("modal-wrapper-credit").style.display = 'none';
-      document.getElementById('modal-event').style.display='none'
+      document.getElementById('modal-wrapper-event-on-map').style.display='none'
       document.getElementById("modal-referal").style.display='block';
     });
   }
@@ -717,7 +717,7 @@ function getReferalCode(){
 
 function prepareBankElement(){
   console.log('In prep bank element')
-  document.getElementById('modal-event').style.display='none'
+  document.getElementById('modal-wrapper-event-on-map').style.display='none'
   document.getElementById('modal-wrapper-bank').style.display = 'block';
   document.getElementById('modal-wrapper-bank').style.widthString='500px'
   document.getElementById('modal-wrapper-bank').style.heightString='500px';
