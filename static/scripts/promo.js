@@ -133,7 +133,7 @@ class SearchResult {
 
 function init(){
   setUpStepTwo();
-  checkUserSocials();
+  //checkUserSocials();
   // disable relevant buttons if they are already connected
 
   getGigs();

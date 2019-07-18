@@ -521,7 +521,7 @@ router.get('/twitter/token/successAuth', (req, res) => {
 router.get('/token/twitter', passport.authenticate('token_twitter'))
 
 //callback route for twitter authenication
-router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: 'https://www.banda-inc.com/twitter/token/failedAuth', failureRedirect: 'https://www.banda-inc.com//twitter/token/successAuth'}))
+router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: 'https://www.banda-inc.com/twitter/token/failedAuth', failureRedirect: 'https://www.banda-inc.com/twitter/token/successAuth'}))
 
 //post request to post a tweet to twitter
 router.post('/postTweet', (req, res) =>{
@@ -681,32 +681,33 @@ function(req, accessToken, refreshToken, profile, cb) {
 	let token = accessToken
 	let refresh = refreshToken
 
-axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
-	.then(function (response) {
+	axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
+		.then(function (response) {
 
-		// handle success
-		var longToken = response.data.access_token
-		const date = Math.floor(new Date() / 1000)
-		console.log(req.session.key + " owns the token " + longToken)
-		database.connect(db => {
+			// handle success
+			var longToken = response.data.access_token
+			const date = Math.floor(new Date() / 1000)
+			console.log(JSON.stringify(req.session))
+			console.log(req.session.key + " owns the token " + longToken)
+			database.connect(db => {
 
-		//store the access tokens and profile information
-		db.db('users').collection('users').updateOne({'username':req.session.key},{$set:{'facebook':{'accessToken': longToken,
-																																																	'profile':profile,
-																																																	'date': date}}}
-				, (err4, res4)=>{
-					if (err4){
-						res.status(500).end();
-						db.close();
-					}
-					else{
-						console.log("the token was stored YOU FUCKING FUCKS QQQQQQQQQQQQQQQ")
-						db.close();
-					}
+			//store the access tokens and profile information
+			db.db('users').collection('users').updateOne({'username':req.session.key},{$set:{'facebook':{'accessToken': longToken,
+																																																		'profile':profile,
+																																																		'date': date}}}
+					, (err4, res4)=>{
+						if (err4){
+							res.status(500).end();
+							db.close();
+						}
+						else{
+							db.close();
+							return cb(null, profile);
+						}
+			});
+		}, err => {
+			console.warn("Couldn't connect to database: " + err)
 		});
-	}, err => {
-		console.warn("Couldn't connect to database: " + err)
-	});
 
 	})
 	.catch(function (error) {
@@ -715,7 +716,6 @@ axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_
 	})
 	.finally(function () {
 		// always executed
-		return cb(null, profile);
 	});
 
 }));
@@ -790,7 +790,8 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 
 	console.log("the page id is " + pageId)
 	console.log("the page name is " + pageName)
-
+	console.log("the session is " + req.session.key)
+	console.log(JSON.stringify(req.session))
 	database.connect(db => {
 		//set database path
 		db.db('users').collection('users').findOne({username: req.session.key}, (err, obj) => {
@@ -799,81 +800,89 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
+			console.log('-----------------------------------------------------------------------------------------------------')
+			console.log(obj)
+			console.log('-----------------------------------------------------------------------------------------------------')
+			console.log(obj.facebook)
+			res.status(200).send('Success');
 
-			let token = obj.facebook.accessToken
-			//get short term page token
-			axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
-				.then(function (response) {
-					console.log(response.data);
-					let pageToken = response.data.access_token
-					console.log("the short term page token  is " + pageToken)
 
-					//get long term page token
-					axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
-						.then(function (response) {
-							let pageToken = response.data.access_token
+	// 		let token = obj.facebook.accessToken
+	// 		console.log("the token is " + token)
+	// 		//get short term page token
+	// 		axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
+	// 			.then(function (response) {
+	// 				console.log(response.data);
+	// 				let pageToken = response.data.access_token;
+	// 				console.log("the short term page token  is " + pageToken);
 
-					 		//get the number of followers on a page
-							axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
-							.then(function (response) {
-								let followerCount = response.data.fan_count
-								console.log("the follower count is " + followerCount)
+	// 				//get long term page token
+	// 				axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
+	// 					.then(function (response) {
+	// 						let pageToken = response.data.access_token
 
-								//get page consumption for the last 28 days
-					 			axios.get('https://graph.facebook.com/' + pageId + '/insights/page_consumptions' + '?access_token=' + pageToken)
-									.then(function (response) {
-										let values = response.data.data[2].values
-										console.log(values)
-										var totalConsumption = 0
-										for (let i = 0; i < values.length; i++){
-											console.log(values[i].value+ " is the v")
-											totalConsumption += values[i].value
-										}
-										console.log(totalConsumption  + " total consumption")
+	// 						console.log(pageToken + " is page token");
+	// 				 		//get the number of followers on a page
+	// 						axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
+	// 						.then(function (response) {
+	// 							let followerCount = response.data.fan_count
+	// 							console.log("the follower count is " + followerCount)
 
-										//store all values from the facebook api in the database
-										database.connect(db => {
-											//store the access tokens and profile information
-											db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'facebook':{
-																																																										'profile':obj.facebook.profile,
-																																																										'accessToken':token,
-																																																										'pageToken':pageToken,
-																																																										'followerCount':followerCount,
-																																																										'totalConsumption':totalConsumption,
-																																																										'pageId': pageId
-																																																										}}}
-												, (err4, res4)=>{
-														if (err4){
-															res.status(500).end();
-															db.close();
-														}
-														else{
-															//success case
-															db.close();
-															res.status(200).send('Success');
+	// 							//get page consumption for the last 28 days
+	// 				 			axios.get('https://graph.facebook.com/' + pageId + '/insights/page_consumptions' + '?access_token=' + pageToken)
+	// 								.then(function (response) {
+	// 									let values = response.data.data[2].values
+	// 									console.log(values)
+	// 									var totalConsumption = 0
+	// 									for (let i = 0; i < values.length; i++){
+	// 										console.log(values[i].value+ " is the v")
+	// 										totalConsumption += values[i].value
+	// 									}
+	// 									console.log(totalConsumption  + " total consumption")
+	// 									console.log(token +  " is the token before storage")
+	// 									//store all values from the facebook api in the database
+	// 									database.connect(db => {
+	// 										//store the access tokens and profile information
+	// 										db.db('users').collection('users').updateOne({'username':req.session.key}, {$set:{'facebook':{
+	// 																																																									'profile':obj.facebook.profile,
+	// 																																																									'accessToken':token,
+	// 																																																									'pageToken':pageToken,
+	// 																																																									'followerCount':followerCount,
+	// 																																																									'totalConsumption':totalConsumption,
+	// 																																																									'pageId': pageId
+	// 																																																									}}}
+	// 											, (err4, res4)=>{
+	// 													if (err4){
+	// 														res.status(500).end();
+	// 														db.close();
+	// 													}
+	// 													else{
+	// 														//success case
+	// 														db.close();
+	// 														res.status(200).send('Success');
 
-														}
-											});
-										}, err => {
-											console.warn("Couldn't connect to database: " + err)
-										});
+	// 													}
+	// 										});
+	// 									}, err => {
+	// 										console.warn("Couldn't connect to database: " + err)
+	// 									});
 
-					 			})
-					 			.catch(function (error) {
-					 				console.log(error);
-					 			})
-							})
-							.catch(function (error) {
-								console.log(error);
-							})
-						})
-						.catch(function (error) {
-							console.log(error);
-						});
-				})
-				.catch(function (error) {
-					console.log(error);
-				});
+	// 				 			})
+	// 				 			.catch(function (error) {
+	// 				 				console.log(error);
+	// 				 			})
+	// 						})
+	// 						.catch(function (error) {
+	// 							console.log(error);
+	// 						})
+	// 					})
+	// 					.catch(function (error) {
+	// 						console.log(error);
+	// 					});
+	// 			})
+	// 			.catch(function (error) {
+	// 				console.log(error);
+	// 			});
 		})
 	}, err => {
 		console.warn("Couldn't connect to database: " + err)
@@ -1171,6 +1180,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 	const date = Math.floor(new Date() / 1000)
 	console.log("the insta token is " + token)
 	console.log("the profile id " + profile_id)
+	console.log("the session name is " + req.session.key)
 
 	axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
 		.then(function (response) {
@@ -1253,6 +1263,7 @@ router.get('/inst/token/return',
 //route for failed token callback for facebook
 router.get('/inst/token/failedAuth', (req, res) => {
 	console.log("failuere reached")
+	console.log(req.session.key + " is the session key")
 	database.connect(db => {
 		//set database path
 		var users = db.db('users').collection('users');
@@ -1304,6 +1315,7 @@ router.get('/inst/token/failedAuth', (req, res) => {
 //route for succesful token  callback for facebook
 router.get('/inst/token/successAuth', (req, res) => {
 	console.log("success reached")
+	console.log(req.session.key + " is the session key")
 	database.connect(db => {
 		//set database path
 		var users = db.db('users').collection('users');
