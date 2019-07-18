@@ -212,9 +212,13 @@ router.get('/hasSession', (req, res) =>{
 })
 
 router.post('/forgotPassword', (req,res)=>{
-	if (req.session.key){
-		console.log('Already logged in!')
-		res.status(400).end()
+	if (req.hasOwnProperty('session')){
+		if (res.session.hasOwnProperty('key')){
+			if (req.session.key){
+				console.log('Already logged in!')
+				res.status(400).end()
+			}
+		}
 	}
 	if (!req.body){
 		console.log('no body')
@@ -237,7 +241,7 @@ router.post('/forgotPassword', (req,res)=>{
 						var newPassword = generateRandomPassword();
 						var hashedPass = hashPassword(newPassword);
 						if (user){
-							db.db('users').collection('users').updateOne({'username':username}, {'password':hashedPass}, (err3, res3)=>{
+							db.db('users').collection('users').updateOne({'username':username}, {$set:{'password':hashedPass}}, (err3, res3)=>{
 								if (err3){
 									console.log('There was an error reseting password in db for user: ' + username + err3);
 									res.status(200).send('Hmmm...there was an issue reseting your password. Please resfresh this page and try again. If this problem persits please contact us at banda.help.customers@gmail.com')
@@ -277,7 +281,7 @@ router.post('/forgotPassword', (req,res)=>{
 
 })
 
-function sendPasswordEmail(user, cb){
+function sendPasswordEmail(user, password, cb){
 	let transporter = nodeMailer.createTransport({
 			host: 'smtp.gmail.com', // go daddy email host port
 			port: 465, // could be 993
@@ -287,12 +291,11 @@ function sendPasswordEmail(user, cb){
 					pass: 'N5gdakxq9!'
 			}
 	});
-	var body = 'Congratulations! Your band '+ourBand.name+' was just booked for the event '+ourGig.name+'. This event is scheduled for '+ ourGig.date+'. Login to www.banda-inc.com and click "home" to go your home page to see the event under '+ourBand.name+'. Thank you, good luck, and keep Banding Together! --- \n Sincerely,,\nyour team at Banda.';
 	var mailOptions = {
 		 from: 'banda.confirmation@gmail.com', // our address
 		 to: user.email, // who we sending to
 		 subject: "Reset Password For Banda", // Subject line
-		 text: 'Hello, '+user.username+',\nSorry your password was lost we have reset it to ', // plain text body
+		 text: 'Hello, '+user.username+',\nSorry your password was lost we have reset it to:\n'+password+'\n Enter this password with your username on www.banda-inc.com in our login modal and you should be all good. Thank you.', // plain text body
 		 html: ""// html body
 	};
 

@@ -423,7 +423,7 @@ console.log("script was loaded int the htmllll!");
 //register goes here
 function loginHit(){
 	console.log("got into login hit");
-  document.getElementById('"modal-wrapper-login"').style.display='block';
+  document.getElementById('modal-wrapper-login').style.display='block';
 };
 function signInHit(){
 	console.log("got into signInHit");
@@ -736,7 +736,28 @@ function diff_minutes(dt2, dt1) {
 
 //forgot password
 
-document.getElementById('forgot-password').addEventListener('click', function(){
-  console.log('Forgot my password')
-  
-})
+function forgotPassword(){
+  console.log('Forgot password');
+  username = document.getElementById('loginUsername').value;
+  if (username=="" || username==" " || username==null || username==undefined ){
+    alert('Sorry, you must enter your username. If you have forgotten both please email banda.help.customers@gmail.com to speak with our live support team.')
+    return
+  }
+  else{
+    $.post('/forgotPassword', {'username':username}, res=>{
+      if (res){
+        if (res==''){
+          alert('Hmmm...something went wrong on our end. Please resfresh this page and try again. If this problem persists please email banda.help.customers@gmail.com to speak with our live support team.')
+        }
+        else{
+          alert(res)
+          return;
+        }
+      }
+      else{
+        alert('Hmmm...something went wrong on our end. Please resfresh this page and try again. If this problem persists please email banda.help.customers@gmail.com to speak with our live support team.')
+
+      }
+    })
+  }
+}
