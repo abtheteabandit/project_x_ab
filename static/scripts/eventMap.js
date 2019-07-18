@@ -363,7 +363,7 @@ var displayEventInfo = function(pin){
   }
   document.getElementById('interested-img').src = pin.picture;
   document.getElementById('map-event-description').innerHTML=pin.description;
-  document.getElementById("modal-event").style.display='block'
+  document.getElementById("modal-wrapper-event-on-map").style.display='block';
 
 }
 function attendClicked(){
@@ -560,8 +560,8 @@ function attemptCreditSubmission(token_id){
       alert(res);
       document.getElementById("loader-new-card").style.display = "none";
       document.getElementById("modal-wrapper-credit").style.display = 'none';
-      document.getElementById('modal-event').style.display='none'
-      document.getElementById("modal-referal").style.display='block';
+      document.getElementById('modal-wrapper-event-on-map').style.display='none'
+      document.getElementById("modal-wrapper-referral").style.display='block';
     });
   }
   else{
@@ -569,8 +569,8 @@ function attemptCreditSubmission(token_id){
       alert(res);
       document.getElementById("loader-new-card").style.display = "none";
       document.getElementById("modal-wrapper-credit").style.display = 'none';
-      document.getElementById('modal-event').style.display='none'
-      document.getElementById("modal-referal").style.display='block';
+      document.getElementById('modal-wrapper-event-on-map').style.display='none'
+      document.getElementById("modal-wrapper-referral").style.display='block';
     });
   }
 
@@ -682,7 +682,7 @@ function clearEvents(){
 function getReferalCode(){
 
   $.post('/newReferer', {'gigID':event_interesed._id}, res=>{
-    document.getElementById('modal-referal').style.display='none';
+    document.getElementById('modal-wrapper-referral').style.display='none';
     console.log('got res for new referer: ' + res);
     if (res.success){
       document.getElementById('bankHeader').innerHTML='Your referal link is: '+res.data.link;
@@ -717,7 +717,7 @@ function getReferalCode(){
 
 function prepareBankElement(){
   console.log('In prep bank element')
-  document.getElementById('modal-event').style.display='none'
+  document.getElementById('modal-wrapper-event-on-map').style.display='none'
   document.getElementById('modal-wrapper-bank').style.display = 'block';
   document.getElementById('modal-wrapper-bank').style.widthString='500px'
   document.getElementById('modal-wrapper-bank').style.heightString='500px';
