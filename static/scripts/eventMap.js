@@ -561,7 +561,7 @@ function attemptCreditSubmission(token_id){
       document.getElementById("loader-new-card").style.display = "none";
       document.getElementById("modal-wrapper-credit").style.display = 'none';
       document.getElementById('modal-wrapper-event-on-map').style.display='none'
-      document.getElementById("modal-referal").style.display='block';
+      document.getElementById("modal-wrapper-referral").style.display='block';
     });
   }
   else{
@@ -570,7 +570,7 @@ function attemptCreditSubmission(token_id){
       document.getElementById("loader-new-card").style.display = "none";
       document.getElementById("modal-wrapper-credit").style.display = 'none';
       document.getElementById('modal-wrapper-event-on-map').style.display='none'
-      document.getElementById("modal-referal").style.display='block';
+      document.getElementById("modal-wrapper-referral").style.display='block';
     });
   }
 
@@ -682,7 +682,7 @@ function clearEvents(){
 function getReferalCode(){
 
   $.post('/newReferer', {'gigID':event_interesed._id}, res=>{
-    document.getElementById('modal-referal').style.display='none';
+    document.getElementById('modal-wrapper-referral').style.display='none';
     console.log('got res for new referer: ' + res);
     if (res.success){
       document.getElementById('bankHeader').innerHTML='Your referal link is: '+res.data.link;
