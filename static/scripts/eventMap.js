@@ -777,3 +777,78 @@ function attemptBankSubmission(){
         }
       });
 }
+
+//social media stuff
+
+function openAddPullModal(){
+  postToFB=false;
+  postToInsta=false;
+  postToTwitter=false;
+  downloadedPromo=false;
+  document.getElementById('create-pull-pic').src=event_interesed.picture;
+  // disable 'active-social' class for the add pull social buttons
+  document.getElementById('create-pull-fb').className = "create-pull-social";
+  // document.getElementById('create-pull-insta').className = "create-pull-social";
+  document.getElementById('create-pull-twitter').className = "create-pull-social";
+  console.log("ADDDD PULLLLL");
+  document.getElementById('modal-wrapper-create-pull').style.display = 'block';
+  document.getElementById('create-pull-boiler').innerHTML = '(posted from www.banda-inc.com)'
+
+  //console.log('bands on pull: ' + JSON.stringify(user.bands))
+  //var link = 'www.banda-inc.com/add_pull?'
+  // need add_pull modal
+  //document.getElementById('modal-wrapper-promo-request').style.display='block';
+  //document.getElementById("promo-req-header").innerHTML = 'Add Pull'
+  //document.getElementById("promo-req-subheader").innerHTML = 'let your fans show their support'
+  //document.getElementById("promo-req-caption").innerHTML = 'Click on this link to show your support! Every click increases my "pull" on Banda (where music is made).'
+}
+
+function toggleActiveSocial(elem){
+  elem.classList.toggle('active-social');
+  switch(elem.value){
+    case 'twitter':
+    if(postToTwitter){
+      postToTwitter=false;
+    }
+    else{
+      postToTwitter=true;
+    }
+    break;
+    case 'fb':
+    if(postToFB){
+      postToFB=false;
+    }
+    else{
+      postToFB=true;
+    }
+    break;
+    case 'insta':
+    if(postToInsta){
+      postToInsta=false;
+    }
+    else{
+      postToInsta=true;
+    }
+    break;
+    default:
+    break;
+  }
+  console.log('POST FB: '+ postToFB + 'post TWAT: ' + postToTwitter)
+}
+
+function downloadFromCreatePull(){
+  downloadedPromo=true;
+  console.log('downloadFromCreatePull');
+  var element = document.createElement('a');
+  element.setAttribute('href', '/assets/Promo/bandapromo1.2.png');
+  element.setAttribute('download', 'bandapromo1.2.png');
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+  var toCopy = document.getElementById('create-pull-boiler')
+  toCopy.select();
+  document.execCommand("copy");
+  alert("You have downloaded the Banda pull picture to your deivce and copied the supplied link/caption. Post these two things wherever you can to increase your pull! Just load in the image from your downloads folder and paste the link. (We recomend Snapchat and Instagram). Let the world know your a Banda recognized aritst / event owner and Band Together!");
+}

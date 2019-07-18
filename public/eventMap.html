@@ -54,6 +54,8 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/creditCardModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/bankModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/createPullModal.css">
+
 
 
 
@@ -211,6 +213,32 @@
         </div>
         <div id="loader-new-bank" class="loader"></div>
         <img alt="stripe"src="/assets/Control-Center/stripelogo.png" class="stripe-logo" />
+      </div>
+    </div>
+
+    <div id="modal-wrapper-create-pull">
+      <div id="create-pull-content" class="animate">
+        <h1 id="create-pull-header">Spread Referral Link</h1>
+        <input type="button" value="" id="close-create-pull" onclick="document.getElementById('modal-wrapper-create-pull').style.display = 'none';"/>
+        <div id="create-pull-grid">
+          <div id="create-pull-pic-div">
+            <img id="create-pull-pic" src="/assets/Promo/bandapromo1.2.png"/>
+            <img id="create-pull-frame" src="/assets/Home/pinkbox.png"/>
+          </div>
+          <textarea id="create-pull-caption" placeholder='Add you caption here...You know your followers/friends better than we do, so provide some text that will encourage them to support you by clicking the link.'></textarea>
+          <textarea id="create-pull-boiler" readonly>www.banda-inc.com</textarea>
+        </div>
+        <p id="create-pull-select-p"></p>
+
+        <p id="create-pull-p">This is an automated posting system for your referral link. We have preloaded  the event picture and your link. You can add your own caption to increase clicks, post from here or download the image and link to post manually. The people that see this, the more people that click your link, the more peole that but tickets, the more money you make!</p>
+        <p id="create-pull-social-text">post to</p>
+        <div id="create-pull-social-grid">
+          <input class="create-pull-social" type="button" value="fb" id="create-pull-fb" onclick="toggleActiveSocial(this);"/>
+          <!-- <input class="create-pull-social" type="button" value="insta" id="create-pull-insta" onclick="toggleActiveSocial(this);"/> -->
+          <input class="create-pull-social" type="button" value="twitter" id="create-pull-twitter" onclick="toggleActiveSocial(this);"/>
+          <i id="create-pull-dl" onclick="downloadFromCreatePull()" class="fas fa-arrow-circle-down"></i>
+        </div>
+        <button value="accept" id="create-pull-accept" onclick='addPullAccept()'>accept</button>
       </div>
     </div>
 

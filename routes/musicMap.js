@@ -805,9 +805,16 @@ module.exports = router=>{
                               db.close();
                             }
                             else{
-                              console.log('All worked and link is: ' + link);
-                              res.status(200).json({'success':true, 'data':{'link':link}});
-                              db.close();
+                              db.db('promotions').collection('promotions').insertOne({'creator':req.session.key, 'name':link, 'imgURL':gig.picture, 'caption':'I just bought a ticket to '+gig.name+' on Banda. Check it out\n '+link+'\n!', 'location':gig.location, 'handles':link, 'mode':'referal', 'medias':['snapchat','facebook','twitter', 'instagram']}, (promoErr, promoRes)=>{
+                                if (promoErr){
+                                  console.log('There was an error adding promo for referal:  ' + link + ' to db. ' + promoErr);
+                                }
+                                else{
+                                  console.log('All worked and link is: ' + link);
+                                  res.status(200).json({'success':true, 'data':{'link':link}});
+                                  db.close();
+                                }
+                              });
                             }
                           });
                         }
