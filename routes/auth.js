@@ -213,7 +213,7 @@ router.get('/hasSession', (req, res) =>{
 
 router.post('/forgotPassword', (req,res)=>{
 	if (req.hasOwnProperty('session')){
-		if (res.session.hasOwnProperty('key')){
+		if (req.session.hasOwnProperty('key')){
 			if (req.session.key){
 				console.log('Already logged in!')
 				res.status(400).end()
