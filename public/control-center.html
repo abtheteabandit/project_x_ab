@@ -540,6 +540,7 @@
         <span onclick="document.getElementById('modal-wrapper-notification-settings').style.display='none'" id="notification-close" title="Close PopUp">&times;</span>
         <div id="notification-settings-grid">
           <input type="number" id="notification-settings-phone" placeholder="phone number...no dashes or spaces (10 digits)" maxlength="11" minlength='11' />
+          <input type='email' id='notification-settings-email' placeholder='enter email here...'/>
           <label class="notification-settings-grid-item">Notify me of new events in my area
             <input id="notify-new-events" type="checkbox" checked="checked" onchange='clickNotify("events")'>
             <span class="checkmark" id='new-events-check'></span>

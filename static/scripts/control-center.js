@@ -5639,6 +5639,10 @@ function prepareNotificationModal(){
   document.getElementById('modal-wrapper-notification-settings').style.display = 'block';
   if (!(ourPhone=="")){
     document.getElementById('notification-settings-phone').value=ourPhone;
+    
+  }
+  if (!(user_email=='banda.customers.help@gmail.com')){
+    document.getElementById('notification-settings-phone').value=user_email;
   }
 }
 
@@ -5692,6 +5696,11 @@ function clickNotify(mode){
 }
 function saveNotify(){
   var phone = document.getElementById('notification-settings-phone').value;
+  var email = document.getElementById('notification-settings-email').value;
+  if (!email.includes('@')){
+    alert('Sorry you must enter a valid email.')
+    return
+  }
   phone=phone.replace('-','');
   phone=phone.replace(' ','');
   phone=phone.replace('/','');
@@ -5700,7 +5709,7 @@ function saveNotify(){
     return;
   }
   else{
-    var query={$set:{'notifyPromotions':notifyPromotions, 'notifyApplications':notifyApplications, 'notificationForBooking':notificationForBooking, 'notifyConnect':notifyConnect, 'newGigNotifications':newGigNotification, 'phone':phone}}
+    var query={$set:{'notifyPromotions':notifyPromotions, 'notifyApplications':notifyApplications, 'notificationForBooking':notificationForBooking, 'notifyConnect':notifyConnect, 'newGigNotifications':newGigNotification, 'phone':phone, 'email':email}}
      $.post('/updateAUser', {'id':our_user_id, 'query':query}, res=>{
       alert('We have updated your notification settings!');
       document.getElementById('modal-wrapper-notification-settings').style.display = 'none';

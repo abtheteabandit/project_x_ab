@@ -57,6 +57,15 @@
   margin-bottom: 20px;
 }
 
+#notification-settings-email{
+  text-align: center;
+  background-color: rgba(0,0,0,0.7);
+  border: none;
+  border-radius: 10px;
+  height: 60px;
+  color: white;
+  margin-bottom: 20px;
+}
 /* The container */
 .notification-settings-grid-item {
   display: block;
