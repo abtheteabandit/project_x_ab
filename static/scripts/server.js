@@ -304,7 +304,19 @@ function(req, token, tokenSecret, profile, done) {
 
 	//store profile info
 	let username = profile.username
-	let email = profile.emails[0].value
+  let email = null
+  if (profile.hasOwnProperty('emails')){
+    if (profile.emails.length>0){
+      let email = profile.emails[0].value
+    }
+    else{
+      email = 'banda.help.cusomters@gmail.com'
+    }
+  }
+  else{
+     email = 'banda.help.cusomters@gmail.com'
+  }
+
 
 	//check for null values
 	if (!username) {
@@ -320,7 +332,7 @@ function(req, token, tokenSecret, profile, done) {
 		//set database path
 		var users = db.db('users').collection('users');
 		//check to see if the user laready exists
-		users.find({email: email}).toArray((err, obj) => {
+		users.find({username: username}).toArray((err, obj) => {
 			//catch error
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
@@ -335,11 +347,11 @@ function(req, token, tokenSecret, profile, done) {
 				req.session.save()
 				console.log(req.session)
 				console.log('Req session key after inserting user for register is: ' + req.session.key);
-				db.close();
 				return done(null, null);
+        db.close();
 			} else {
 				//if not, create a new user
-				users.insertOne({ email: email, username: username, contacts:[], phone:''}, (err, obj) => {
+				users.updateOne({'email':email},{ $set:{email: email, username: username, contacts:[], phone:''}}, {upsert:true},(err, obj) => {
 					//catch error
 					if (err) {
 						console.error(`Register request from ${req.ip} (for ${username}, ${email}) returned error: ${err}`);
@@ -352,8 +364,11 @@ function(req, token, tokenSecret, profile, done) {
 						req.session.save()
 						console.log(req.session)
 						console.log('Req session key after inserting user for register is: ' + req.session.key);
+            console.log()
+            console.log('TWITTER CRETAED USER: ')
+            console.log(email)
+            return done(null, null);
 						db.close();
-						return done(null, null);
 					}
 				});
 			}
