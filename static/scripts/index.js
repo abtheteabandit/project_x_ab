@@ -406,7 +406,13 @@ function RandImg(){
 
 (function($) {
 	$(function() {
-		$('#login_button').click(loginHit);
+    if (logged){
+      document.getElementById('logout-wrapper-modal').style.diplay='block'
+    }
+    else{
+      $('#login_button').click(loginHit);
+    }
+
 		$('#sign_in_button').click(signInHit);
 	});
 })(jQuery);
@@ -636,9 +642,11 @@ function diff_minutes(dt2, dt1) {
 
 				document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
+          document.getElementById("modal-wrapper-login").style.display="none";
 				});
         document.getElementById('mobile_login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
+          document.getElementById("modal-wrapper-login").style.display="none";
 				});
 				return true;
 			}else{
