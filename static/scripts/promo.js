@@ -845,10 +845,6 @@ function selectMainFacebookPage(){
     console.log("TEXT SELECTED IS: "+textSelected);
     console.log("this will post to the facebook route")
 
-        //
-        //    $.post('https://www.banda-inc.com/getFacebookPageTokens', {pageId: valueSelected, pageName: textSelected}, res=>{
-
-
     //make post request to store the page token and page statistics
     $.post('https://www.banda-inc.com/getFBPageToken', {pageId: valueSelected, pageName: textSelected}, res=>{
       alert(res);
@@ -866,7 +862,10 @@ function selectMainInstagramPage(){
     var instagramUsername = document.getElementById("instagramUsername").value;
     console.log("VALUE SELECTED IS: " + valueSelected);
     console.log("TEXT SELECTED IS: " + textSelected);
-
+    if(instagramUsername == ''){
+      alert("Please enter your instagram username!")
+      return;
+    }
     console.log("this will post request the insta route")
     // //make post request to store the page token and page statistics
     console.log(valueSelected +  " Is the page id");
