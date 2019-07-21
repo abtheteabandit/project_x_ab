@@ -26,7 +26,6 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <!-- External CSS -->
-    <link rel="stylesheet" type="text/css" href="/css/control-center.css">
 
 
     <title>Music Map</title>
@@ -44,6 +43,26 @@
   <body>
     <div class="body-bg">
     </div>
+    <div class="mobile-menu">
+       <button id = "mobile-menu-button"><img src="/assets/Home/banda_b.png" /></button>
+       <ul id = "mobile-menu-ul" class="mobile-active">
+         <li><a href='control-center'><p class="radialText">Home</p></a></li>
+         <li><a href='about'><p class="radialText">About</p></a></li>
+         <li><a href='index'><p class="radialText">Landing</p></a></li>
+         <li><a href='#' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a></li>
+       </ul>
+   </div>
+   <div id="container">
+     <img id="menuBacking" src="/assets/Home/menu.png" />
+     <div id="corner"><a href="#"><i id="mainbtn"><img src="/assets/Home/banda_b.png" /></i></a>
+     </div>
+   </div>
+   <div class='circle-container'>
+     <a href='control-center' class='deg0' id="home_button"><p class="radialText">Home</p></a>
+     <a href='about' class='deg30'><p class="radialText">About</p></a>
+     <a href='index' class='deg60'><p class="radialText">Landing</p></a>
+     <a href='#' class='deg90' onclick="document.getElementById('modal-wrapper-support').style.display='block'"><p class="radialText">Support</p></a>
+   </div>
     <!-- modals -->
     <div id="modal-wrapper-event-on-map">
       <div id="modal-content-event-on-map" class="animate">
@@ -187,17 +206,26 @@
     </div>
     <!-- body content -->
     <div class="body-content">
-      <h1 id="music-map-title">Music Map</h1>
+      <div class="search">
+        <div name="search_form">
+          <input type="text" id='search_input' name="search_text">
+        </div>
+        <div class="options">
+          <button class="options-buttons" onclick="search_musicians()">bands</button>
+          <img src="/assets/Home/dot.png" class="options-dot" />
+          <button class="options-buttons" onclick="search_gigs()">events</button>
+          <!-- <button class="btn btn-sm" id="b3" onclick="document.getElementById('modal-wrapper-gig').style.display='block'">Post a Gig</button> -->
+        </div>
+      </div>
       <div class="slidecontainer">
-        <label id='timeDisplay'>Now</label>
-        <input type="range" min="1" max="1000" value="1" class="slider" id="myRange">
+        <label id='timeDisplay'>Days From Now: 0</label><br>
+        <div id="slide-grid">
+          <p class="slide-p">now</p>
+          <input type="range" min="1" max="1000" value="1" class="slider" id="myRange">
+          <p class="slide-p">future</p>
+        </div>
       </div>
       <div id="map"></div>
-      <div>
-        <label>Search Bar</label>
-        <input id='search-text' placeholder='genres, venue types, instruments...etc'></input>
-        <button id='search-button' onclick='performSearch()'>Search</button>
-      </div>
       <div id='event-container-div'>
         <ul id='event-list'>
         </ul>
@@ -205,6 +233,13 @@
     </div>
 
   </body>
+  <script>
+   $(document).ready(function(){
+     $('#mobile-menu-button').click(function(){
+       $('#mobile-menu-ul').toggleClass('mobile-active')
+     })
+   })
+  </script>
 
   <script src='/scripts/eventMap.js'></script>
   <script async defer

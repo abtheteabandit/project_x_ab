@@ -1,3 +1,159 @@
+@font-face { font-family: Industry; src: url('/assets/Industry.otf'); }
+h1, h2, h3, h4, h5, h6, p, button, input, textarea, li, label, a{
+  font-family: Industry, sans-serif !important;
+}
+/* Radial Menu */
+
+.radialText{
+  color: white;
+}
+
+.radialText:hover{
+  color: rgba(86,223,240,1.0);
+}
+
+#container{
+  z-index: 4;
+}
+
+#menuBacking{
+  z-index: 4;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  height: 288px;
+  width: 288px;
+}
+
+#menu_circle_svg{
+  z-index: 1;
+  position: absolute;
+  left: -48px;
+  top: -48px;
+  color: rgba(0,0,0,0.0);
+}
+
+#mainbtn {
+  position:absolute;
+  top:30px;
+  left:60px;
+  z-index:5;
+}
+
+#mainbtn img{
+  position: absolute;
+  top:0px;
+  left:0px;
+  width: 57px;
+  height: 147px;
+}
+
+.circle-container {
+  position: absolute;
+  top:-50px;
+  left:-47px;
+  width: 100px;
+  height: 100px;
+  z-index:5;
+}
+.circle-container a {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  width: 64px; height: 32px;
+  margin:50px;
+  z-index: 5;
+}
+
+.circle-container i { display: block; width: 100px; }
+.deg0 { transform: rotate(-25deg) translate(11em) rotate(-0deg);   -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg30 { transform: rotate(-25deg) translate(12em) rotate(-30deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg60 { transform: rotate(-25deg) translate(13em) rotate(-60deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+.deg90 { transform: rotate(-25deg) translate(13em) rotate(-90deg);  -webkit-transition: all 0.5s ease-out;
+  -moz-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out; 		z-index: 2;}
+
+.open.deg0 { transform: rotate(8deg) translate(11.5em) rotate(-8deg); }
+.open.deg30 { transform: rotate(27deg) translate(12.5em) rotate(-27deg); }
+.open.deg60 { transform: rotate(50deg) translate(12.5em) rotate(-50deg); }
+.open.deg90 { transform: rotate(80deg) translate(13em) rotate(-80deg);}
+
+/* Minh Stuff */
+.mobile-menu{
+  color: red;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+  display: none;
+
+}
+.mobile-menu img{
+  height: 100%;
+}
+.mobile-menu button{
+  position: relative;
+  width: 100px;
+  height: 60px;
+  font-size: 20px;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  background: black;
+}
+
+#mobile-menu-button{
+  background-color: transparent;
+}
+
+.mobile-menu ul{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  background: #ccc;
+  transform-origin: top;
+  transition: 0.5s;
+  transform: perspective(1000px) rotateX(-90deg);
+}
+.mobile-menu ul.mobile-active{
+  transform: perspective(1000px) rotateX(0deg);
+
+}
+.mobile-menu ul li{
+  list-style: none;
+  padding: 0px;
+}
+.mobile-menu ul li a{
+  color: white;
+  display:  block;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  background: #262626;
+  border-bottom: 1px solid rgb(0, 0, 0, 0.2);
+}
+.mobile-menu ul li a:hover{
+  background: red;
+}
+
+/* Add Zoom Animation */
+.animate {
+    animation: zoom 0.6s
+}
+
+@keyframes zoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+}
+
 .body-bg{
   position: fixed;
   top: 0;
@@ -8,8 +164,51 @@
   width: 100%;
   height: 100%;
 }
+
+
+@media(max-width: 1000px){
+  #menuBacking{
+    height: 198px;
+    width: 198px;
+  }
+  #mainbtn img{
+    width: 37px;
+    height: 90px;
+  }
+  .circle-container a{
+    margin: 20px;
+    font-size: 13px;
+  }
+}
+
+@media(max-width: 700px){
+  #menuBacking{
+    height: 188px;
+    width: 188px;
+  }
+  #mainbtn img{
+    position: fixed;
+    left: 25px;
+    top: 25px;
+    width: 27px;
+    height: 60px;
+    z-index: 15;
+  }
+}
+
+@media(max-width: 600px){
+  #container, .circle-container{
+    display: none;
+  }
+  .mobile-menu{
+    display: block;
+  }
+}
+
+/* page-specific styles*/
+
 .body-content{
-  z-index: 3;
+  z-index: 2;
   width: 100%;
   height: 100%;
   padding: 0;
@@ -19,16 +218,70 @@
   text-align: center;
 }
 
-#music-map-title{
+.search{
+  width: 740px;
+  margin: 0 auto;
+  margin-top: 60px;
+}
+
+.options{
+  cursor: pointer;
+  float: right;
+  margin-right: 44px;
+  margin-top: 0px;
+}
+
+.options-buttons{
+  background-color: transparent;
+  border: none;
   color: white;
-  margin-top: 50px;
+}
+
+.options-buttons:hover{
+  color: rgba(86,223,240,1.0);
+}
+
+#dot{
+  max-height: 1px;
+  max-width: 1px;
+}
+
+/*
+Search Bar elements
+*/
+
+#search_input{
+  background-image: url("/assets/Home/searchbar.png");
+  color: white;
+  font-size: 32pt;
+  padding-left: 20px;
+  padding-right: 100px;
+  border: none;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-color: transparent;
+  width: 740px;
+  height: 130px;
 }
 
 #timeDisplay{
   color: white;
 }
 
+#slide-grid{
+  display: grid;
+  grid-template-columns: 50px 900px 50px;
+  width: 1000px;
+  margin: 0 auto;
+}
+
+.slide-p{
+  color: white;
+}
+
 .slidecontainer {
+  margin-top: 60px;
   width: 100%; /* Width of the outside container */
 }
 
@@ -36,13 +289,14 @@
 .slider {
   -webkit-appearance: none;  /* Override default CSS styles */
   appearance: none;
-  width: 100%; /* Full-width */
+  width: 900px;
   height: 25px; /* Specified height */
-  background: #d3d3d3; /* Grey background */
+  background: rgba(0,0,0,0.8);
   outline: none; /* Remove outline */
   opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
+  border-radius:  12.5px;
 }
 
 /* Mouse-over effects */
@@ -56,7 +310,10 @@
   appearance: none;
   width: 25px; /* Set a specific slider handle width */
   height: 25px; /* Slider handle height */
-  background: #4CAF50; /* Green background */
+  border-radius: 12.5px;
+  /* background: #4CAF50; */
+  background-image: url('/assets/EventMap/slider-dot.png');
+  background-size: contain;
   cursor: pointer; /* Cursor on hover */
 }
 
@@ -68,7 +325,25 @@
 }
 
 #map {
- width: 100%;
- height: 400px;
+ width: 1000px;
+ height: 500px;
+ margin: 0 auto;
  background-color: grey;
+}
+
+.event-li-grid{
+  background-color: rgba(0,0,0,0.7);
+  border-radius: 25px;
+  display: grid;
+  width: 1000px;
+  grid-template-columns: 300px 200px 500px;
+  color: white;
+  margin: 0 auto;
+  margin-top: 50px;
+  align-items: center;
+}
+
+.event-li-image{
+  height: 200px;
+  width: 200px;
 }
