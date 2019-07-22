@@ -1,7 +1,7 @@
 
 
 console.log('Axript loaded');
-const pinSRC = '/assets/Home/banda_b.png';
+const pinSRC = '/assets/EventMap/banda-map-pin-sm.png';
 var event_interesed = null;
 var referal = null;
 var loggedIn = false;
