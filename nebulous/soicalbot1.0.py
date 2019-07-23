@@ -5,8 +5,26 @@ from pyfiglet import Figlet
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+#for working with node
 import sys
+#for logging
 import logging
+#for creating picutre paths
+import random
+import string
+
+#for extracting text out of pngs
+from PIL import Image, ImageEnhance, ImageFilter
+import PIL.Image
+from pytesseract import image_to_string
+import pytesseract
+
+#for json
+import json
+
+logging.basicConfig(filename='wechat.log',level=logging.INFO)
+logging.info('Hello')
+
 
 #Twitter
 def printHax():
@@ -444,8 +462,9 @@ class FacebookBot:
         self.friendNetworkHelper(bot)
 
 
-
-
+    def postToFB(promo):
+        logging.info('GOt into post to fb with promo', promo)
+        
 
 
 #instagram
@@ -672,4 +691,44 @@ def realStart():
 custom_fig = Figlet(font='5lineoblique')
 logging.info(custom_fig.renderText('I\nA m\nS o c i a l\nBot))
 logging.info('\n')
-realStart()
+#realStart()
+
+def bandaStart():
+    mode = sys.argv[1]
+    media = sys.argv[2]
+    username = sys.argv[3]
+    password = sys.argv[4]
+
+    if (not mode or not media or not username or not password):
+        print('Error: Did not supply mode or media or password or username.')
+        sys.stdout.flush()
+        return
+    else:
+    if (mode=='post'):
+        promo = sys.argv[5]
+        if (not promo):
+            print('Error: promo')
+            sys.stdout.flush()
+            return
+        else:
+            if (media=='facebook'):
+                logging.info('got in to media facebook and mode post.')
+                logging.info(username)
+                logging.info(password)
+                logging.info(promo)
+                banda_bot = FacebookBot(username, password)
+                time.sleep(2)
+                banda_bot.login()
+                time.sleep(3)
+                banda_bot.postToFB(promo)
+
+            else:
+                print('Error: unsuported media: ', media)
+                sys.stdout.flush()
+                return
+    else:
+        print('Error: unsuported mode: ', mode)
+        sys.stdout.flush()
+        return
+
+bandaStart()

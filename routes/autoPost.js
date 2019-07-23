@@ -1,7 +1,6 @@
 module.exports = router =>{
   const database = require('../database.js');
-  const chrome = require('selenium-webdriver/chrome');
-  const {Builder, By, Key, until} = require('selenium-webdriver');
+  const spawn = require("child_process").spawn;
 
   router.post('/autoSocial', (req, res)=>{
     if (!req.session.key){
@@ -28,13 +27,17 @@ module.exports = router =>{
             }
             else{
               console.log('USER: ' + JSON.stringify(user))
-              if (!user.hasOwnProperty('permissions')){
+              if (!user.hasOwnProperty('facebook')){
                 console.log('User ' + req.session.key + ' has not given us explicit permission so we will not post.');
                 res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + mode + '. Please enable posting to '+mode+' so Banda can post this for you!');
                 db.close();
               }
               else{
-                if (!user.permissions.hasOwnProperty(mode)){
+                var permission = ''
+                if (mode=='post'){
+                  permission = 'post_permission'
+                }
+                if (!user.facebook.hasOwnProperty(permission)){
                   console.log('User ' + req.session.key + ' has not given us explicit permission so we will not post.');
                   res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + mode + '. Please enable posting to '+mode+' so Banda can post this for you!');
                   db.close();
@@ -43,17 +46,17 @@ module.exports = router =>{
                   //user has given us permisson to post to the specifed mode so we will proceed and post
                   console.log('GOT INTO DRIVER')
 
-                   postToFacebook(username, password, cb=>{
-
+                   postToFacebook(username, password, promo, cb=>{
+                     if (cb.includes('Error')){
+                       console.log('THere was a python error posting to faceboom for user: ' + username + cb)
+                       res.status(200).send('Hmmm...there was an error on our end. Please refresh and try again.')
+                       db.close();
+                     }
+                     else{
+                       res.status(200).send('We have posted this promotion to your facebook.')
+                       db.close();
+                     }
                    });
-
-
-
-
-
-
-
-                  //res.status(200).send('Success')
                 }
               }
             }
@@ -67,55 +70,13 @@ module.exports = router =>{
     }
   })
 
-  async function postToFacebook(username, password, cb){
-    const screen = {
-      width: 640,
-      height: 480
-    };
-    try{
-      var options = new chrome.Options();
-      options.setUserPreferences({'profile.default_content_setting_values.notifications': 2});
-      let driver = new Builder()
-          .forBrowser('chrome')
-          .setChromeOptions(options)
-          .build();
-          //new chrome.Options().headless().windowSize(screen)
-        await driver.get('https://facebook.com')
-        var email = driver.findElement(By.name('email'))
-        var passwordField = driver.findElement(By.name('pass'))
-        console.log('found email')
-      //  console.log(email)
-        //console.log(password)
-        email.clear()
-        passwordField.clear()
-        await email.sendKeys(username);
-        await passwordField.sendKeys(password);
-        await passwordField.sendKeys(Key.RETURN)
-        console.log('return')
-        console.log('waitng...')
-        setTimeout(async function() {
-          console.log('First wait over')
-          await driver.findElement(By.tagName('body')).sendKeys(Key.ESCAPE)
-          driver.findElements(By.tagName('div')).then(tas=>{
-            
-            for (t in tas){
-              if (tas[t]){
-                if (tas[t].getText().includes("what's on your mind")){
-                  tas[t].click()
-                }
-              }
-            }
-          })
-        }, 3000)
+  function postToFacebook(username, password, promo, cb){
+    console.log('spawing python')
+    var pythonProcess = spawn('python',["./nebulous/socialbot1.0.py", 'post','facebook',username, password, promo]);
 
-
-
-    }
-    catch(e){
-      console.log('there was an error loggin into fb: ' + e)
-      cb('Error')
-    }
-
+    pythonProcess.stdout.on('data', function(data){
+          var str = data.toString();
+          cb(str);
+        });
   }
-
 } //end of exports
