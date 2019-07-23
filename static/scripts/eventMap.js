@@ -366,6 +366,11 @@ var displayEventInfo = function(pin){
   document.getElementById("modal-wrapper-event-on-map").style.display='block'
 
 }
+function referralClicked(){
+  document.getElementById('modal-wrapper-referral').style.display = 'block';
+  document.getElementById('modal-wrapper-event-on-map').style.display = 'none';
+}
+
 function attendClicked(){
   //this is called when user clicks i want to go
   console.log('User wants to go');
@@ -434,7 +439,7 @@ slider.oninput = function() {
 //stripe card stuff
 
 function prepareCardElement(){
-  document.getElementById('modal-wrapper-credit').style.display='block';
+  document.getElementById('modal-wrapper-credit-tickets').style.display='block';
   //STRIPE SECTION:
   //https://dashboard.stripe.com/test/dashboard -> dashboard
   //https://simpleprogrammer.com/stripe-connect-ultimate-guide/ -> tutorial for connect

@@ -21,3 +21,25 @@
   padding-bottom: 80px;
   color: white;
 }
+
+#referer-header{
+  margin-top: 50px;
+  font-size: 28pt;
+}
+#referer-description{
+  font-size: 18pt;
+}
+
+#referer-span{
+  font-family: Industry;
+  font-size: 18pt;
+}
+
+#get-referral-code-btn{
+  color: #56dff0;
+  font-size: 32pt;
+  display: block;
+  background-color: transparent;
+  border: none;
+  float: right;
+}

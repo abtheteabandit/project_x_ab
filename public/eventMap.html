@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://js.stripe.com/v3/"></script>
     <link rel="shortcut icon" type = "image/png" href = "/assets/Home/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/css/modals/creditCardModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
-    <link rel="stylesheet" type="text/css" href="/css/modals/bankModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/createPullModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/eventModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/referralModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/creditTicketsModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/bankReferralModal.css">
     <link rel="stylesheet" type="text/css" href="/css/eventMap.css">
 
 
@@ -68,27 +68,56 @@
       <div id="modal-content-event-on-map" class="animate">
         <span onclick="document.getElementById('modal-wrapper-event-on-map').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
         <div class="container">
-          <h1 id='map-event-name'></h1>
-          <p id='attendies-interested'></p>
-          <img src='' id='interested-img'></img>
-          <p id='map-event-description'></p>
+          <h1 id='map-event-name'>a name for an event goes here</h1>
+
+          <div class="event-on-map-grid">
+            <div>
+              <img src='/assets/Home/Art/5.jpeg' id='interested-img'></img>
+              <img id="interested-img-frame" src = "/assets/Home/orangebox.png" />
+            </div>
+            <div>
+              <p id='attendies-interested'>0 people attending this event</p>
+            </div>
+            <div>
+              <img src='/assets/Home/Art/7.jpeg' id='interested-band-img'></img>
+              <div id="interested-band-nameplate">
+                <p id="interested-band-name">the man band of the land the man band of the</p>
+              </div>
+              <img id="interested-band-img-frame" src = "/assets/Home/pinkbox.png" />
+            </div>
+          </div>
+
+          <p id='map-event-description'>a description for this event goes here lorem ipsum issa biaaslk sdk s bita dslkj eeh djd dkk fos x skdlj fast brown fox goes into the</p>
+          <button id='want-to-refer-button' onclick='referralClicked()'>Refer this event...</button>
           <button id='interested-button' onclick='attendClicked()'>I Want To Attend!</button>
         </div>
       </div>
     </div>
 
-    <div id="modal-wrapper-credit" class="modal-card">
-      <span onclick="document.getElementById('modal-wrapper-credit').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
+    <div id="modal-wrapper-credit-tickets" class="modal-card">
+      <span onclick="document.getElementById('modal-wrapper-credit-tickets').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
       <form id="payment-form">
         <input type="hidden" name="gigID" id="payment-gigID"/>
         <input type="hidden" name="bandID" id="payment-bandID"/>
-        <input id='buy-ticket-username' placeholder="username..."></input>
-        <input id='buy-ticket-email' placeholder='email...'></input>
-        <input id='buy-ticket-password' type='password'></input>
-        <input id='buy-ticket-password-confirm' type='password'></input>
+        <label class="ticket-form-label" for="buy-ticket-username">
+          banda username
+        </label>
+        <input class="credit-tickets-input" id='buy-ticket-username' placeholder="username..."></input>
+        <label class="ticket-form-label" for="buy-ticket-email">
+          email
+        </label>
+        <input class="credit-tickets-input" id='buy-ticket-email' placeholder='email...'></input>
+        <label class="ticket-form-label" for="buy-ticket-password">
+          password
+        </label>
+        <input class="credit-tickets-input" id='buy-ticket-password' type='password'></input>
+        <label class="ticket-form-label" for="buy-ticket-password-confirm">
+          confirm password
+        </label>
+        <input class="credit-tickets-input" id='buy-ticket-password-confirm' type='password'></input>
         <div class="form-row">
-          <label for="card-element">
-            Credit or debit card
+          <label class="ticket-form-label" for="card-element">
+            credit or debit card
           </label>
           <div id="card-element">
             <!-- A Stripe Element will be inserted here. -->
@@ -109,15 +138,15 @@
         <div class="container">
           <h4 id='referer-header'>Promote this event, Make money</h4>
           <p id='referer-description'>Recieve a referer code/link to post and distribute. If someone uses this code you will recieve: </p>
-          <span>If you would like to make easy money and get people to go to this event, just add you bank account (so we can transfer you money everytime someone uses your referal code)</span>
-          <button onclick='getReferalCode()'>Get my referal code!</button>
+          <span id="referer-span">If you would like to make easy money and get people to go to this event, just add you bank account (so we can transfer you money everytime someone uses your referal code)</span>
+          <button id="get-referral-code-btn" onclick='getReferalCode()'>Get my referal code!</button>
         </div>
       </div>
     </div>
 
-    <div id="modal-wrapper-bank">
+    <div id="modal-wrapper-bank-referral">
       <div id="bank-content">
-        <span onclick="document.getElementById('modal-wrapper-bank').style.display='none'" class="close-bank" title="Close PopUp">&times;</span>
+        <span onclick="document.getElementById('modal-wrapper-bank-referral').style.display='none'" class="close-bank" title="Close PopUp">&times;</span>
         <span id='bankHeader'></span>
         <div id="bank-grid">
           <div class="grid-item">
