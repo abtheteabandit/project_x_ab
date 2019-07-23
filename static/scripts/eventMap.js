@@ -338,7 +338,7 @@ function showPosition(position) {
       var features = []
       for (var e in res.data){
         var curr_event = res.data[e][0];
-        document.getElementById('event-list').innerHTML+='<li class="event-li-grid"><span>'+curr_event.name+'</span><img class="event-li-image" src="'+curr_event.picture+'"><span>Description: '+curr_event.description+'</span></div></li>'
+        document.getElementById('event-list').innerHTML+='<li class="event-li-grid"><span>'+curr_event.name+'</span><img class="event-li-image" src="'+curr_event.picture+'"><span class="event-li-grid-item">Description: '+curr_event.description+'</span></div></li>'
         var feature = {'event':curr_event, position: new google.maps.LatLng(curr_event.lat, curr_event.lng)};
         features.push(feature);
       }
@@ -659,7 +659,7 @@ function performSearch(){
       var features = []
       for (var e in res.data){
         var curr_event = res.data[e][0];
-        document.getElementById('event-list').innerHTML+='<li class="event-li-grid"><span>'+curr_event.name+'</span><img class="event-li-image" src="'+curr_event.picture+'"><span>Description: '+curr_event.description+'</span></div></li>'
+        document.getElementById('event-list').innerHTML+='<li class="event-li-grid"><span>'+curr_event.name+'</span><img class="event-li-image" src="'+curr_event.picture+'"><span class="event-li-grid-item">Description: '+curr_event.description+'</span></div></li>'
         var feature = {'event':curr_event, position: new google.maps.LatLng(curr_event.lat, curr_event.lng)};
         features.push(feature);
       }

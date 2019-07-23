@@ -265,7 +265,7 @@ Search Bar elements
   height: 130px;
 }
 
-/* search and options responsiveness */ 
+/* search and options responsiveness */
 
 @media(max-width: 1220px){
   .search{
@@ -437,6 +437,10 @@ Search Bar elements
   }
 }
 
+#event-list{
+  padding: 0px;
+}
+
 .event-li-grid{
   background-color: rgba(0,0,0,0.7);
   border-radius: 25px;
@@ -452,4 +456,38 @@ Search Bar elements
 .event-li-image{
   height: 200px;
   width: 200px;
+}
+
+@media(max-width: 1050px){
+  .event-li-grid{
+    width: 700px;
+    grid-template-columns: 200px 200px 300px;
+  }
+}
+@media(max-width: 750px){
+  .event-li-grid{
+    width: 500px;
+    grid-template-columns: 300px 200px;
+  }
+  .event-li-grid-item:last-of-type{
+    width: 500px;
+  }
+}
+@media(max-width: 550px){
+  .event-li-grid{
+    width: 400px;
+    grid-template-columns: 200px 200px;
+  }
+  .event-li-grid-item:last-of-type{
+    width: 400px;
+  }
+}
+@media(max-width: 450px){
+  .event-li-grid{
+    width: 300px;
+    grid-template-columns: 100px 200px;
+  }
+  .event-li-grid-item:last-of-type{
+    width: 300px;
+  }
 }
