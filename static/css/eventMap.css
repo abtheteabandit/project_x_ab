@@ -174,10 +174,24 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li, label, a{
   #mainbtn img{
     width: 37px;
     height: 90px;
+    top: -12px;
+    left: -25px;
   }
   .circle-container a{
     margin: 20px;
     font-size: 13px;
+  }
+  .open.deg0{
+    transform: rotate(16deg) translate(10.5em) rotate(-16deg);
+  }
+  .open.deg30{
+    transform: rotate(32deg) translate(11.5em) rotate(-32deg);
+  }
+  .open.deg60{
+    transform: rotate(52deg) translate(11.75em) rotate(-52deg);
+  }
+  .open.deg90{
+    transform: rotate(72deg) translate(12.5em) rotate(-72deg);
   }
 }
 
@@ -193,6 +207,18 @@ h1, h2, h3, h4, h5, h6, p, button, input, textarea, li, label, a{
     width: 27px;
     height: 60px;
     z-index: 15;
+  }
+  .open.deg0{
+    transform: rotate(16deg) translate(9.5em) rotate(-16deg);
+  }
+  .open.deg30{
+    transform: rotate(32deg) translate(10.5em) rotate(-32deg);
+  }
+  .open.deg60{
+    transform: rotate(52deg) translate(10.75em) rotate(-52deg);
+  }
+  .open.deg90{
+    transform: rotate(72deg) translate(11.5em) rotate(-72deg);
   }
 }
 
