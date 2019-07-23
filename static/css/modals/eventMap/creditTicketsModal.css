@@ -105,9 +105,11 @@
 }
 
 @media(max-width: 550px){
-  #modal-wrapper-credit{
+  #modal-wrapper-credit-tickets{
     width: 100%;
-    height: 270px;
-    overflow: hidden;
+    height: 560px;
+  }
+  .credit-tickets-input{
+    width: 75%;
   }
 }
