@@ -265,6 +265,59 @@ Search Bar elements
   height: 130px;
 }
 
+@media(max-width: 1220px){
+  .search{
+    margin-right: 100px;
+  }
+}
+@media(max-width: 1080px){
+  .search{
+    margin-right: 30px;
+  }
+}
+@media(max-width: 1000px){
+  .search{
+    width: 500px;
+    margin: 0 auto;
+    margin-top: 60px;
+  }
+  #search_input{
+    width: 500px;
+    height: 88px;
+    font-size: 22pt;
+    padding-right: 62px;
+  }
+}
+@media(max-width: 800px){
+  .search{
+    margin-right: 30px;
+  }
+}
+@media(max-width: 700px){
+  .search{
+    margin: 0 auto;
+    margin-top: 150px;
+  }
+}
+@media(max-width: 500px){
+  .search{
+    width: 300px;
+    margin: 0 auto;
+    margin-top: 100px;
+  }
+  #search_input{
+    width: 300px;
+    height: 53px;
+    font-size: 18pt;
+    padding-right: 34px;
+  }
+  .options{
+    margin: 0 auto;
+    float: none;
+  }
+}
+
+
 #timeDisplay{
   color: white;
 }
