@@ -265,6 +265,8 @@ Search Bar elements
   height: 130px;
 }
 
+/* search and options responsiveness */ 
+
 @media(max-width: 1220px){
   .search{
     margin-right: 100px;
@@ -382,6 +384,57 @@ Search Bar elements
  height: 500px;
  margin: 0 auto;
  background-color: grey;
+}
+
+/* slider and map responsiveness */
+
+@media(max-width: 1050px){
+  #slide-grid{
+    grid-template-columns: 50px 600px 50px;
+    width: 700px;
+  }
+  .slider{
+    width: 600px;
+  }
+  #map{
+    width: 700px;
+  }
+}
+@media(max-width: 750px){
+  #slide-grid{
+    grid-template-columns: 50px 400px 50px;
+    width: 500px;
+  }
+  .slider{
+    width: 400px;
+  }
+  #map{
+    width: 500px;
+  }
+}
+@media(max-width: 550px){
+  #slide-grid{
+    grid-template-columns: 50px 300px 50px;
+    width: 400px;
+  }
+  .slider{
+    width: 300px;
+  }
+  #map{
+    width: 400px;
+  }
+}
+@media(max-width: 450px){
+  #slide-grid{
+    grid-template-columns: 50px 200px 50px;
+    width: 300px;
+  }
+  .slider{
+    width: 200px;
+  }
+  #map{
+    width: 300px;
+  }
 }
 
 .event-li-grid{
