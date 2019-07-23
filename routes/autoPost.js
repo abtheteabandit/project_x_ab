@@ -72,7 +72,7 @@ module.exports = router =>{
 
   function postToFacebook(username, password, promo, cb){
     console.log('spawing python')
-    var pythonProcess = spawn('python',["./nebulous/socialbot1.0.py", 'post','facebook',username, password, promo]);
+    var pythonProcess = spawn('python',["../nebulous/socialbot.py", 'post','facebook',username, password, promo]);
 
     pythonProcess.stdout.on('data', function(data){
           var str = data.toString();
