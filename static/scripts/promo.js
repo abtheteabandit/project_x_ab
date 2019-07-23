@@ -137,6 +137,8 @@ function init(){
   // disable relevant buttons if they are already connected
 
   getGigs();
+  document.getElementById('modal-wrapper-tos').style.visibility = "hidden";
+  document.getElementById("modal-facebook-login-banda-modal-post").style.visibility = "hidden";
 
   var parsedURL =  parseURL(window.location.href);
   console.log("parsed url is below")
@@ -849,6 +851,7 @@ function selectMainFacebookPage(){
     $.post('https://www.banda-inc.com/getFBPageToken', {pageId: valueSelected, pageName: textSelected}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-select-social-page").style.display = "none";
+      document.getElementById('modal-wrapper-tos').style.visibility = "visible";
     });
   });
 }
@@ -876,3 +879,12 @@ function selectMainInstagramPage(){
     });
   });
 }
+
+function postFacebookLoginSubmit(){
+  //boothe look here for post
+  const facebookUsername = $("#facebookPostingEmail").val();
+  const facebookPassword = $("#facebookPostingPassword").val();
+  const requestObject = {"post_permission":true, "data_permission" :true, "username":facebookUsername, "password": facebookPassword };
+  // todo: post the request object to the  server, hash the  password and store it
+}
+//document.getElementById("modal-facebook-login-banda-modal-post").style.visibility
