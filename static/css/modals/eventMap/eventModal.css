@@ -7,6 +7,7 @@
   height: 100%;
   z-index: 110;
   background-color: rgba(0,0,0,0.4);
+  overflow: scroll;
 }
 
 #modal-content-event-on-map{
@@ -83,4 +84,53 @@
   background-color: transparent;
   color: #56dff0;
   font-size: 22pt;
+}
+
+@media(max-width: 850px){
+  #modal-content-event-on-map{
+    width: 600px;
+  }
+  .event-on-map-grid{
+    width: 500px;
+    margin: 0 auto;
+    grid-template-columns: 200px 100px 200px;
+  }
+  #attendies-interested{
+    font-size: 16pt;
+    text-align: center;
+  }
+}
+@media(max-width: 650px){
+  #modal-content-event-on-map{
+    width: 400px;
+    height: 1000px;
+  }
+  #map-event-name{
+    font-size: 32pt;
+    padding-top: 10px;
+  }
+  .event-on-map-grid{
+    width: 200px;
+    height: 500px;
+    margin: 0 auto;
+    grid-template-columns: 200px;
+    grid-template-rows: 200px 100px 200px;
+  }
+  #attendies-interested{
+    height: 100px;
+    font-size: 20pt;
+  }
+  #map-event-description{
+    margin-top: 20px;
+  }
+  #interested-button, #want-to-refer-button{
+    display: block;
+    float: none;
+    margin: 0 auto;
+  }
+}
+@media(max-width: 450px){
+  #modal-content-event-on-map{
+    width: 300px;
+  }
 }
