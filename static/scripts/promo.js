@@ -137,8 +137,10 @@ function init(){
   // disable relevant buttons if they are already connected
 
   getGigs();
-  document.getElementById('modal-wrapper-tos').style.visibility = "hidden";
-  document.getElementById("modal-facebook-login-banda-modal-post").style.visibility = "hidden";
+  document.getElementById('modal-facebook-login-banda-modal-post').style.display = 'block';
+  var register = document.getElementById("modal-wrapper-tos");
+	register.style.display = "block";
+  // document.getElementById("modal-facebook-login-banda-modal-post").style.visibility = "hidden";
 
   var parsedURL =  parseURL(window.location.href);
   console.log("parsed url is below")
