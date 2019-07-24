@@ -163,7 +163,9 @@ class FacebookBot:
     def __init__(self, username, password):
         self.username=username
         self.password=password
-        self.bot = webdriver.Firefox();
+        browser_profile = webdriver.FirefoxProfile()
+        browser_profile.set_preference("dom.webnotifications.enabled", False)
+        self.bot = webdriver.Firefox(browser_profile);
 
     def login(self):
         bot = self.bot
@@ -462,9 +464,26 @@ class FacebookBot:
         self.friendNetworkHelper(bot)
 
 
-    def postToFB(promo):
-        logging.info('GOt into post to fb with promo', promo)
-        
+    def postToFB(self, promo):
+        bot = self.bot
+        divs = bot.find_elements_by_tag_name('div')
+        for d in divs:
+            try:
+                print(d.text)
+                if ("What's on your mind" in d.text):
+                    d.click()
+                    time.sleep(1)
+                    d.send_keys(promo)
+                    for span in bot.find_elements_by_tag_name('span'):
+                        if ('Share' in span.text):
+                            span.click()
+            except Exception as ex:
+                continue
+
+
+
+
+
 
 
 #instagram
@@ -689,46 +708,50 @@ def realStart():
 
 
 custom_fig = Figlet(font='5lineoblique')
-logging.info(custom_fig.renderText('I\nA m\nS o c i a l\nBot))
+logging.info(custom_fig.renderText('I\nA m\nS o c i a l\nBot'))
 logging.info('\n')
 #realStart()
 
 def bandaStart():
-    mode = sys.argv[1]
-    media = sys.argv[2]
-    username = sys.argv[3]
-    password = sys.argv[4]
-
+    #mode = sys.argv[1]
+    #media = sys.argv[2]
+    #username = sys.argv[3]
+    #password = sys.argv[4]
+    username = '4146904606'
+    password = 'N5gdakxq9!'
+    media = 'facebook'
+    mode = 'post'
     if (not mode or not media or not username or not password):
         print('Error: Did not supply mode or media or password or username.')
         sys.stdout.flush()
         return
     else:
-    if (mode=='post'):
-        promo = sys.argv[5]
-        if (not promo):
-            print('Error: promo')
-            sys.stdout.flush()
-            return
-        else:
-            if (media=='facebook'):
-                logging.info('got in to media facebook and mode post.')
-                logging.info(username)
-                logging.info(password)
-                logging.info(promo)
-                banda_bot = FacebookBot(username, password)
-                time.sleep(2)
-                banda_bot.login()
-                time.sleep(3)
-                banda_bot.postToFB(promo)
-
-            else:
-                print('Error: unsuported media: ', media)
+        if (mode=='post'):
+            #promo = sys.argv[5]
+            promo = 'Hello World'
+            if (not promo):
+                print('Error: promo')
                 sys.stdout.flush()
                 return
-    else:
-        print('Error: unsuported mode: ', mode)
-        sys.stdout.flush()
-        return
+            else:
+                if (media=='facebook'):
+                    logging.info('got in to media facebook and mode post.')
+                    logging.info(username)
+                    logging.info(password)
+                    logging.info(promo)
+                    banda_bot = FacebookBot(username, password)
+                    time.sleep(2)
+                    banda_bot.login()
+                    time.sleep(3)
+                    banda_bot.postToFB(promo)
+
+                else:
+                    print('Error: unsuported media: ', media)
+                    sys.stdout.flush()
+                    return
+        else:
+            print('Error: unsuported mode: ', mode)
+            sys.stdout.flush()
+            return
 
 bandaStart()
