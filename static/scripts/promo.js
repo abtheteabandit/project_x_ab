@@ -138,8 +138,7 @@ function init(){
 
   getGigs();
   document.getElementById('modal-facebook-login-banda-modal-post').style.display = 'block';
-  var register = document.getElementById("modal-wrapper-tos");
-	register.style.display = "block";
+  document.getElementById("modal-wrapper-tos").style.display = "block";
   // document.getElementById("modal-facebook-login-banda-modal-post").style.visibility = "hidden";
 
   var parsedURL =  parseURL(window.location.href);
@@ -163,6 +162,26 @@ function init(){
 
 
 }
+
+jQuery(function($) {
+    $('#terms-of-service').on('scroll', function() {
+        if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+					var acceptBtn = document.getElementById("accept-tos");
+					acceptBtn.style.opacity = 1.0;
+					acceptBtn.disabled = false;
+        }else{
+					var acceptBtn = document.getElementById("accept-tos");
+					acceptBtn.style.opacity = 0.5;
+					acceptBtn.disabled = true;
+				}
+    });
+    $('#scroll-to-bottom-btn').on('click',function(){
+      var tos = $('#terms-of-service');
+      $(tos).scrollTop(999999);
+      console.log("terms of service scroll click");
+    });
+});
+
 function getGigs(){
   $.get('/user', {'query':'nada'}, res=>{
     if (res==""){
