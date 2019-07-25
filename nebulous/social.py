@@ -22,6 +22,9 @@ import pytesseract
 #for json
 import json
 
+import request
+
+
 logging.basicConfig(filename='wechat.log',level=logging.INFO)
 logging.info('Hello')
 
@@ -465,21 +468,47 @@ class FacebookBot:
 
 
     def postToFB(self, promo):
+        time.sleep(4)
         bot = self.bot
-        divs = bot.find_elements_by_tag_name('div')
-        for d in divs:
-            try:
-                print(d.text)
-                if ("What's on your mind" in d.text):
-                    d.click()
-                    time.sleep(1)
-                    d.send_keys(promo)
-                    for span in bot.find_elements_by_tag_name('span'):
-                        if ('Share' in span.text):
-                            span.click()
-            except Exception as ex:
-                continue
+        #post_box = bot.find_element_by_class_name("_3nd0")
+        #post_box.click()
 
+        try:
+
+            div2 = bot.find_element_by_class_name('_3eny')
+            print(div2)
+            div2.click()
+        except Exception as ex3:
+            print(ex3)
+        try:
+            div = bot.find_element_by_class_name('_4bl9')
+            #div = bot.find_element_by_css_selector('._3nd0')
+            print(div)
+            div.click()
+        except Exception as ex3:
+            print(ex3)
+        try:
+            div3 = bot.find_element_by_class_name('clearfix ._ikh')
+            print(div3)
+            div3.click()
+            time.sleep(2)
+            div5 = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[2]/div/div/div/div/div/div/div[2]/div')
+            div5.send_keys(promo)
+            uploader = bot.find_element_by_name('composer_photo[]')
+            print(uploader)
+            uploader.send_keys('./static/assets/Promo/bandapromo1.2.png')
+
+            #button = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[2]/div[3]/div[2]/div/div/button')
+            #button.click()
+        except Exception as ex3:
+            print(ex3)
+        #post_box=bot.find_element_by_css_selector("._5rp7")
+        #post_box.click()
+        #post_box.send_keys("Testing using Name not ID.Selenium is easy.")
+        #sleep(2)
+        #post_it=driver.find_element_by_xpath("/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[2]/div[3]/div[2]/div/div/button")
+        #post_it.click()
+        #print "Posted..."
 
 
 
