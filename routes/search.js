@@ -257,10 +257,6 @@ router.get('/aBand', (req, res)=>{
   if (!req.query) {
      res.status(400).send('No body sent').end();
   }
-  if (!req.session.key){
-    res.status(401).send('No body sent').end();
-    console.log('user tried to apply without being logged in');
-  }
 
   var {id}=req.query;
   console.log('Id :' + id);
