@@ -497,7 +497,7 @@ class FacebookBot:
             uploader = bot.find_element_by_name('composer_photo[]')
             print(uploader)
             uploader.send_keys('./static/assets/Promo/bandapromo1.2.png')
-
+            
             #button = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[2]/div[3]/div[2]/div/div/button')
             #button.click()
         except Exception as ex3:
