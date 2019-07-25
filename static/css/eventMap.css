@@ -463,7 +463,7 @@ Search Bar elements
   }
 }
 
-#event-list{
+/* #event-list{
   padding: 0px;
 }
 
@@ -516,4 +516,4 @@ Search Bar elements
   .event-li-grid-item:last-of-type{
     width: 300px;
   }
-}
+} */
