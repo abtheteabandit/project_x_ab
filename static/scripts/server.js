@@ -211,7 +211,8 @@ router.post('/messages', (req, res)=>{
 passport.use('auth_facebook',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-	callbackURL: 'https://www.banda-inc.com/facebook/return',
+	//callbackURL: 'https://www.banda-inc.com/facebook/return',
+	callbackURL: '/facebook/return',
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
@@ -296,7 +297,8 @@ passport.use('auth_twitter', new TwitterStrategy({
 	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
 	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
 	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
-	callbackURL: "https://www.banda-inc.com/auth/twitter/callback",
+	//callbackURL: "https://www.banda-inc.com/auth/twitter/callback",
+	callbackURL: "/auth/twitter/callback",
   passReqToCallback: true
 },
 function(req, token, tokenSecret, profile, done) {
@@ -443,7 +445,8 @@ passport.use("token_twitter", new TwitterTokenStrategy({
 	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
 	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
 	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
-	callbackURL: "https://www.banda-inc.com/token/twitter/callback",
+	// callbackURL: "https://www.banda-inc.com/token/twitter/callback",
+	callbackURL: "/token/twitter/callback",
   passReqToCallback: true
 },
 function(req, token, tokenSecret, profile, done) {
@@ -746,9 +749,9 @@ router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/token/return',
-  passport.authenticate('token_facebook', { failureRedirect: 'https://www.banda-inc.com/facebook/token/successAuth' }),
+  passport.authenticate('token_facebook', { failureRedirect: '/facebook/token/successAuth' }),
   function(req, res) {
-    res.redirect('https://www.banda-inc.com/facebook/token/failedAuth');
+    res.redirect('/facebook/token/failedAuth');
 	});
 
 //route for failed token callback for facebook
