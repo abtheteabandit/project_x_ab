@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/referralModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/creditTicketsModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/bankReferralModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/components/eventMap/eventListItem.css">
     <link rel="stylesheet" type="text/css" href="/css/eventMap.css">
 
 
@@ -99,22 +100,22 @@
       <form id="payment-form">
         <input type="hidden" name="gigID" id="payment-gigID"/>
         <input type="hidden" name="bandID" id="payment-bandID"/>
-        <label class="ticket-form-label" for="buy-ticket-username">
+        <label id="buy-ticket-username-l" class="ticket-form-label" for="buy-ticket-username">
           banda username
         </label>
-        <input class="credit-tickets-input" id='buy-ticket-username' placeholder="username..."></input>
-        <label class="ticket-form-label" for="buy-ticket-email">
+        <input type="text" class="credit-tickets-input" id='buy-ticket-username' placeholder="username..."></input>
+        <label id="buy-ticket-email-l" class="ticket-form-label" for="buy-ticket-email">
           email
         </label>
-        <input class="credit-tickets-input" id='buy-ticket-email' placeholder='email...'></input>
-        <label class="ticket-form-label" for="buy-ticket-password">
+        <input type="email" class="credit-tickets-input" id='buy-ticket-email' placeholder='email...'></input>
+        <label id="buy-ticket-password-l" class="ticket-form-label" for="buy-ticket-password">
           password
         </label>
-        <input class="credit-tickets-input" id='buy-ticket-password' type='password'></input>
-        <label class="ticket-form-label" for="buy-ticket-password-confirm">
+        <input type="password" class="credit-tickets-input" id='buy-ticket-password'></input>
+        <label id="buy-ticket-confirm-l" class="ticket-form-label" for="buy-ticket-password-confirm">
           confirm password
         </label>
-        <input class="credit-tickets-input" id='buy-ticket-password-confirm' type='password'></input>
+        <input type="password" class="credit-tickets-input" id='buy-ticket-password-confirm'></input>
         <div class="form-row">
           <label class="ticket-form-label" for="card-element">
             credit or debit card
@@ -256,9 +257,10 @@
       </div>
       <div id="map"></div>
       <div id='event-container-div'>
-        <ul id='event-list'>
-        </ul>
+        <div id='event-list'>
+        </div>
       </div>
+
     </div>
 
   </body>

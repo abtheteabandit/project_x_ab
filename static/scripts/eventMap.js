@@ -1,5 +1,3 @@
-
-
 console.log('Axript loaded');
 const pinSRC = '/assets/EventMap/banda-map-pin-sm.png';
 var event_interesed = null;
@@ -12,6 +10,114 @@ var map = null;
 var ourUser=null;
 checkSession();
 getReferer();
+
+class EventListItem{
+  constructor(obj, cb){
+    this.eventContainer = document.createElement('div');
+    this.eventContainer.className = 'event-container';
+
+    this.eventPicDiv = document.createElement('div');
+    this.eventPic = document.createElement('img');
+    this.eventPic.className = "event-li-event-pic";
+    this.eventPic.src = obj.picture;
+    this.eventFrame = document.createElement('img');
+    this.eventFrame.className = "event-li-event-frame";
+    this.eventFrame.src = "/assets/Home/orangebox.png";
+    this.eventNameplate = document.createElement('div');
+    this.eventNameplate.className = "event-li-event-nameplate";
+    this.eventName = document.createElement('p');
+    this.eventName.innerHTML = obj.name;
+
+    this.bandPicDiv = document.createElement('div');
+    this.bandPic = document.createElement('img');
+    this.bandPic.className = "event-li-band-pic";
+    this.bandPic.src = "/assets/Home/Art/6.jpeg";
+    this.bandFrame = document.createElement('img');
+    this.bandFrame.className = "event-li-band-frame";
+    this.bandFrame.src = "/assets/Home/purplebox.png";
+    this.bandNameplate = document.createElement('div');
+    this.bandNameplate.className = "event-li-band-nameplate";
+    this.bandName = document.createElement('p');
+    this.bandName.innerHTML = "band name";
+
+    this.eventInfoDiv = document.createElement('div');
+    this.eventDescP = document.createElement('p');
+    this.eventDescP.className = "event-li-p";
+    this.eventDescP.innerHTML = obj.description;
+    this.eventAddressP = document.createElement('p');
+    this.eventAddressP.className = "event-li-p";
+    this.eventAddressP.innerHTML = obj.address;
+    this.eventDateP = document.createElement('p');
+    this.eventDateP.className = "event-li-p";
+    this.eventDateP.innerHTML = obj.startTime + "-" + obj.endTime + " " + obj.day + " " + obj.date;
+    this.btnDiv = document.createElement('div');
+    this.ticketBtn = document.createElement('input');
+    this.ticketBtn.type = 'button';
+    this.ticketBtn.value = "buy tickets";
+    this.ticketBtn.className = "event-li-btn";
+    this.referBtn = document.createElement('input');
+    this.referBtn.type = 'button';
+    this.referBtn.value = "become referee";
+    this.referBtn.className = "event-li-btn";
+
+    getBandInfo(obj.bandFor, res=>{
+      this.band = res;
+      console.log(JSON.stringify(res));
+      this.bandName.innerHTML = this.band.name;
+      this.bandPic.src = this.band.picture;
+
+      this.eventNameplate.append(this.eventName);
+      this.eventPicDiv.append(this.eventPic);
+      this.eventPicDiv.append(this.eventNameplate);
+      this.eventPicDiv.append(this.eventFrame);
+
+      this.bandNameplate.append(this.bandName);
+      this.bandPicDiv.append(this.bandPic);
+      this.bandPicDiv.append(this.bandNameplate);
+      this.bandPicDiv.append(this.bandFrame);
+
+      this.eventInfoDiv.append(this.eventDescP);
+      this.eventInfoDiv.append(this.eventAddressP);
+      this.eventInfoDiv.append(this.eventDateP);
+      this.btnDiv.append(this.ticketBtn);
+      this.btnDiv.append(this.referBtn);
+      this.eventInfoDiv.append(this.btnDiv);
+
+      this.eventContainer.append(this.eventPicDiv);
+      this.eventContainer.append(this.bandPicDiv);
+      this.eventContainer.append(this.eventInfoDiv);
+
+      this.btnDiv.ticketBtn = this.ticketBtn;
+      this.btnDiv.referBtn = this.referBtn;
+      this.btnDiv.gig = obj;
+      this.AddEventListeners(this.btnDiv);
+      cb(this);
+    });
+  }
+  AddEventListeners(obj){
+    if(obj.hasOwnProperty('ticketBtn')){
+      obj.ticketBtn.addEventListener("click",function(){
+        event_interesed = obj.gig;
+        attendClicked();
+      });
+    }
+    if(obj.hasOwnProperty('referBtn')){
+      obj.referBtn.addEventListener("click",function(){
+        event_interesed = obj.gig;
+        referralClicked();
+      });
+    }
+  }
+}
+
+function getBandInfo(bandID, cb){
+  console.log('////////////////////');
+  console.log(bandID);
+  $.get('/aBand', {'id':bandID}, result=>{
+    console.log('Got result from get a band here it is : ' + JSON.stringify(result));
+    cb(result);
+  });
+}
 
 function initMap() {
   getLocationAndShowPosition();
@@ -335,10 +441,14 @@ function showPosition(position) {
   $.get('/map_events', {'time':now, 'lat':currLat, 'lng':currLng}, res=>{
     console.log('Current Events: ' + JSON.stringify(res.data));
     if(res.success){
-      var features = []
+      var features = [];
+      var eventList = document.getElementById('event-list');
       for (var e in res.data){
         var curr_event = res.data[e][0];
-        document.getElementById('event-list').innerHTML+='<li class="event-li-grid"><span>'+curr_event.name+'</span><img class="event-li-image" src="'+curr_event.picture+'"><span class="event-li-grid-item">Description: '+curr_event.description+'</span></div></li>'
+        console.log(JSON.stringify(curr_event));
+        var eventItem = new EventListItem(curr_event, cb => {
+          eventList.append(cb.eventContainer);
+        });
         var feature = {'event':curr_event, position: new google.maps.LatLng(curr_event.lat, curr_event.lng)};
         features.push(feature);
       }
@@ -389,9 +499,14 @@ function attendClicked(){
       // open ticket modal with options to promote the tickets, reffered link gives the promoter money
       if (loggedIn){
         document.getElementById('buy-ticket-username').hidden=true;
+        document.getElementById("buy-ticket-username-l").style.display = 'none';
         document.getElementById('buy-ticket-password').hidden=true;
+        document.getElementById("buy-ticket-password-l").style.display = 'none';
         document.getElementById('buy-ticket-email').hidden=true;
+        document.getElementById("buy-ticket-email-l").style.display = 'none';
         document.getElementById('buy-ticket-password-confirm').hidden=true;
+        document.getElementById("buy-ticket-confirm-l").style.display = 'none';
+
       }
       prepareCardElement();
 
@@ -723,13 +838,13 @@ function getReferalCode(){
 function prepareBankElement(){
   console.log('In prep bank element')
   document.getElementById('modal-wrapper-event-on-map').style.display='none'
-  document.getElementById('modal-wrapper-bank').style.display = 'block';
-  document.getElementById('modal-wrapper-bank').style.widthString='500px'
-  document.getElementById('modal-wrapper-bank').style.heightString='500px';
-  document.getElementById('modal-wrapper-bank').style.innerHeight='500px'
-  document.getElementById('modal-wrapper-bank').style.innerWidth='500px';
-  document.getElementById('modal-wrapper-bank').style.top=0;
-  console.log(document.getElementById('modal-wrapper-bank'));
+  document.getElementById('modal-wrapper-bank-referral').style.display = 'block';
+  document.getElementById('modal-wrapper-bank-referral').style.widthString='500px'
+  document.getElementById('modal-wrapper-bank-referral').style.heightString='500px';
+  document.getElementById('modal-wrapper-bank-referral').style.innerHeight='500px'
+  document.getElementById('modal-wrapper-bank-referral').style.innerWidth='500px';
+  document.getElementById('modal-wrapper-bank-referral').style.top=0;
+  console.log(document.getElementById('modal-wrapper-bank-referral'));
 //  document.getElementById("bank-content").style.display='block';
 }
 
@@ -774,7 +889,7 @@ function attemptBankSubmission(){
             }
             else{
                 alert('Congratulations! You will recieve money in this account whenever someone buys tickets through your link. Note: when you earn more than $3,000 from your ticket referals, we may need addtional information to verify your identity. \nStart posting that link everywhere!');
-                document.getElementById('modal-wrapper-bank').style.display='none';
+                document.getElementById('modal-wrapper-bank-referral').style.display='none';
                 document.getElementById('modal-wrapper-new-band').style.display='block';
                 document.getElementById('loader-new-bank').style.display = 'none';
             }

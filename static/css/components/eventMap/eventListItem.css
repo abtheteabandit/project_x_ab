@@ -1,0 +1,39 @@
+.event-container{
+  color: white;
+  display: grid;
+  width: 1000px;
+  height: 200px;
+  align-items: center;
+  margin: 0 auto;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  grid-template-columns: 220px 220px 560px;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.event-li-event-pic, .event-li-event-frame, .event-li-band-pic, .event-li-band-frame{
+  position: absolute;
+  height: 200px;
+  width: 200px;
+  margin-top: -100px;
+  margin-left: -100px;
+}
+
+.event-li-event-nameplate, .event-li-band-nameplate{
+  position: absolute;
+  height: 50px;
+  width: 200px;
+  padding: 0px 5px;
+  margin-top: 50px;
+  margin-left: 10px;
+  text-align: center;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.event-li-btn{
+  background-color: transparent;
+  border: 1px solid #56dff0;
+  border-radius: 6px;
+  color: #56dff0;
+  margin: 0px 10px;
+}
