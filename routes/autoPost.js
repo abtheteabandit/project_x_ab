@@ -12,7 +12,7 @@ module.exports = router =>{
       res.status(401).end()
     }
     else{
-      var {mode, username, password, promo} = req.body;
+      var {mode, username, password, promo, coupon} = req.body;
       if (!mode || !username || !password || !promo){
         console.log('missing fields for  auto post.')
         res.status(401).end()
@@ -44,10 +44,31 @@ module.exports = router =>{
                 }
                 else{
                   //user has given us permisson to post to the specifed mode so we will proceed and post
-                  console.log('GOT INTO DRIVER')
 
-                   postToFacebook(username, password, promo, cb=>{
-                     if (cb.includes('Error')){
+                  console.log('GOT INTO DRIVER')
+                  var message = promo.caption;
+            			var link=promo.imgURL;
+            			//format the message and cupoun
+                  if (coupon==null){
+                    if (!(promo.handles==undefined)){
+                      message= message+'\n'+promo.handles;
+                    }
+                  }
+                  else{
+                    if (!(promo.handles==undefined)){
+                      message= message+'\n'+promo.handles;
+                    }
+                    message = message + '\n' + coupon.details;
+                    if (coupon.hasOwnProperty('link')){
+                      message= message + '\n'+coupon.link;
+                    }
+                  }
+                  //testing
+                  imgPath = '/Users/Bothe/Desktop/project_x_ab/static/assets/Promo/bandaLogo.png';
+                  message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
+
+                   postToFacebook(username, password, message, imgPath, cb=>{
+                     if (cb.includes('error')){
                        console.log('THere was a python error posting to faceboom for user: ' + username + cb)
                        res.status(200).send('Hmmm...there was an error on our end. Please refresh and try again.')
                        db.close();
@@ -70,12 +91,13 @@ module.exports = router =>{
     }
   })
 
-  function postToFacebook(username, password, promo, cb){
+  function postToFacebook(username, password, message, imgPath, cb){
     console.log('spawing python')
-    var pythonProcess = spawn('python',["./nebulous/social.py", 'post','facebook', username, password, promo]);
+    var pythonProcess = spawn('python',["./nebulous/social.py", 'post','facebook', username, password, message, imgPath]);
     console.log(pythonProcess)
     pythonProcess.stdout.on('data', function(data){
           var str = data.toString();
+          console.log("DATA FROM PY: " + str)
           cb(str);
         });
   }

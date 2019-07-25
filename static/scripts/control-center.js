@@ -3869,6 +3869,8 @@ function postPromo(button){
               alert(res2);
             });
             */
+            $.post('/autoPost')
+            /*
             var cleanedSource=res.data.promo.imgURL.replace('www.banda-inc.com//','/');
             console.log('cleaned source: ' + cleanedSource);
             console.log('base64: ' + JSON.stringify(cleanedSource));
@@ -3920,7 +3922,7 @@ function postPromo(button){
               catch(e) {
                 console.log('Ther was an error posting to facebook: '+e);
               }
-            });
+            });*/
           }
           else{
             alert('Sorry, it seems that you want to post this promotion to Facebook but have not signed into your Facebook account from Banda. Just click "Promotions" and click the Facebook icon on step one to sign in. Thank you!');
@@ -5639,7 +5641,7 @@ function prepareNotificationModal(){
   document.getElementById('modal-wrapper-notification-settings').style.display = 'block';
   if (!(ourPhone=="")){
     document.getElementById('notification-settings-phone').value=ourPhone;
-    
+
   }
   if (!(user_email=='banda.customers.help@gmail.com')){
     document.getElementById('notification-settings-phone').value=user_email;

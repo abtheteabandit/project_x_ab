@@ -171,17 +171,21 @@ class FacebookBot:
         self.bot = webdriver.Firefox(browser_profile);
 
     def login(self):
-        bot = self.bot
-        bot.get('https://facebook.com/')
-        time.sleep(3)
-        email = bot.find_element_by_name('email')
-        password = bot.find_element_by_name('pass')
-        email.clear()
-        password.clear()
-        email.send_keys(self.username);
-        password.send_keys(self.password);
-        password.send_keys(Keys.RETURN)
-        time.sleep(3)
+        try:
+            bot = self.bot
+            bot.get('https://facebook.com/')
+            time.sleep(3)
+            email = bot.find_element_by_name('email')
+            password = bot.find_element_by_name('pass')
+            email.clear()
+            password.clear()
+            email.send_keys(self.username);
+            password.send_keys(self.password);
+            password.send_keys(Keys.RETURN)
+            time.sleep(3)
+        except Exception as ex:
+            print('error')
+            print(ex)
 
     def followPages(self, search):
         printHax()
@@ -467,7 +471,7 @@ class FacebookBot:
         self.friendNetworkHelper(bot)
 
 
-    def postToFB(self, promo):
+    def postToFB(self, promo, imgPath):
         time.sleep(4)
         bot = self.bot
         #post_box = bot.find_element_by_class_name("_3nd0")
@@ -494,14 +498,23 @@ class FacebookBot:
             time.sleep(2)
             div5 = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[2]/div/div/div/div/div/div/div[2]/div')
             div5.send_keys(promo)
+            time.sleep(1)
             uploader = bot.find_element_by_name('composer_photo[]')
             print(uploader)
-            uploader.send_keys('./static/assets/Promo/bandapromo1.2.png')
-            
-            #button = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[2]/div[3]/div[2]/div/div/button')
-            #button.click()
+
+            # must be full path
+            print('Image path: ')
+            print(imgPath)
+            uploader.send_keys('/Users/Bothe/Desktop/project_x_ab/static/assets/Promo/bandaLogo.png')
+            time.sleep(1)
+            button = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div[2]/div/div/span/button')
+            button.click()
+            print('success')
+            sys.stdout.flush()
         except Exception as ex3:
+            print('error')
             print(ex3)
+            sys.stdout.flush()
         #post_box=bot.find_element_by_css_selector("._5rp7")
         #post_box.click()
         #post_box.send_keys("Testing using Name not ID.Selenium is easy.")
@@ -742,22 +755,19 @@ logging.info('\n')
 #realStart()
 
 def bandaStart():
-    #mode = sys.argv[1]
-    #media = sys.argv[2]
-    #username = sys.argv[3]
-    #password = sys.argv[4]
-    username = '4146904606'
-    password = 'N5gdakxq9!'
-    media = 'facebook'
-    mode = 'post'
+    mode = sys.argv[1]
+    media = sys.argv[2]
+    username = sys.argv[3]
+    password = sys.argv[4]
+
     if (not mode or not media or not username or not password):
         print('Error: Did not supply mode or media or password or username.')
         sys.stdout.flush()
         return
     else:
         if (mode=='post'):
-            #promo = sys.argv[5]
-            promo = 'Hello World'
+            promo = sys.argv[5]
+            imgPath = sys.argv[6]
             if (not promo):
                 print('Error: promo')
                 sys.stdout.flush()
@@ -772,7 +782,7 @@ def bandaStart():
                     time.sleep(2)
                     banda_bot.login()
                     time.sleep(3)
-                    banda_bot.postToFB(promo)
+                    banda_bot.postToFB(promo, imgPath)
 
                 else:
                     print('Error: unsuported media: ', media)
