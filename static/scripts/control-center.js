@@ -3869,7 +3869,9 @@ function postPromo(button){
               alert(res2);
             });
             */
-            $.post('/autoPost')
+            $.post('/autoPost', {'mode':'post', 'media':'facebook','promo':res.data.promo, 'coupon':res.data.coupon}, res4=>{
+              alert('We');
+            })
             /*
             var cleanedSource=res.data.promo.imgURL.replace('www.banda-inc.com//','/');
             console.log('cleaned source: ' + cleanedSource);
