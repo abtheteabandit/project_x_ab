@@ -12,8 +12,8 @@ module.exports = router =>{
       res.status(401).end()
     }
     else{
-      var {mode, promo, coupon} = req.body;
-      if (!mode || !promo){
+      var {mode, promo, coupon, media} = req.body;
+      if (!mode || !promo || !media){
         console.log('missing fields for  auto post.')
         res.status(401).end()
       }
@@ -29,7 +29,7 @@ module.exports = router =>{
               console.log('USER: ' + JSON.stringify(user))
               if (!user.hasOwnProperty('facebook')){
                 console.log('User ' + req.session.key + ' has not given us explicit permission so we will not post.');
-                res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + mode + '. Please enable posting to '+mode+' so Banda can post this for you!');
+                res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + media + '. Please enable posting to '+mode+' so Banda can post this for you!');
                 db.close();
               }
               else{
@@ -37,47 +37,59 @@ module.exports = router =>{
                 if (mode=='post'){
                   permission = 'post_permission'
                 }
-                if (!user.facebook.hasOwnProperty(permission)){
+                if (!user.facebook.hasOwnProperty('permissions')){
                   console.log('User ' + req.session.key + ' has not given us explicit permission so we will not post.');
-                  res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + mode + '. Please enable posting to '+mode+' so Banda can post this for you!');
+                  res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + media + '. Please enable posting to '+mode+' so Banda can post this for you!');
                   db.close();
                 }
                 else{
-                  //user has given us permisson to post to the specifed mode so we will proceed and post
 
-                  console.log('GOT INTO DRIVER')
-                  var message = promo.caption;
-            			var link=promo.imgURL;
-            			//format the message and cupoun
-                  if (coupon==null){
-                    if (!(promo.handles==undefined)){
-                      message= message+'\n'+promo.handles;
-                    }
+                  if (!user.facebook.permissions.hasOwnProperty(permission)){
+                    console.log('User ' + req.session.key + ' has not given us explicit permission so we will not post.');
+                    res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + media + '. Please enable posting to '+mode+' so Banda can post this for you!');
+                    db.close();
                   }
                   else{
-                    if (!(promo.handles==undefined)){
-                      message= message+'\n'+promo.handles;
+                    if (!user.facebook.permissions[permission]){
+                      console.log('User ' + req.session.key + ' has not given us explicit permission so we will not post.');
+                      res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + media + '. Please enable posting to '+mode+' so Banda can post this for you!');
+                      db.close();
                     }
-                    message = message + '\n' + coupon.details;
-                    if (coupon.hasOwnProperty('link')){
-                      message= message + '\n'+coupon.link;
+                    else{
+                      console.log('GOT INTO DRIVER')
+                      var message = promo.caption;
+                			//format the message and cupoun
+                      if (coupon==null){
+                        if (!(promo.handles==undefined)){
+                          message= message+'\n'+promo.handles;
+                        }
+                      }
+                      else{
+                        if (!(promo.handles==undefined)){
+                          message= message+'\n'+promo.handles;
+                        }
+                        message = message + '\n' + coupon.details;
+                        if (coupon.hasOwnProperty('link')){
+                          message= message + '\n'+coupon.link;
+                        }
+                      }
+                      //testing
+                      imgPath = '/Users/Bothe/Desktop/project_x_ab/static/assets/Promo/bandaLogo.png';
+                      message = message + '\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
+
+                       postToFacebook(user.facebook.username, user.facebook.password, message, imgPath, cb=>{
+                         if (cb.includes('error')){
+                           console.log('THere was a python error posting to faceboom for user: ' + username + cb)
+                           res.status(200).send('Hmmm...there was an error on our end. Please refresh and try again.')
+                           db.close();
+                         }
+                         else{
+                           res.status(200).send('We have posted this promotion to your facebook.')
+                           db.close();
+                         }
+                       });
                     }
                   }
-                  //testing
-                  imgPath = '/Users/Bothe/Desktop/project_x_ab/static/assets/Promo/bandaLogo.png';
-                  message = message + '\n\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
-
-                   postToFacebook(user.facebook.username, user.facebook.password, message, imgPath, cb=>{
-                     if (cb.includes('error')){
-                       console.log('THere was a python error posting to faceboom for user: ' + username + cb)
-                       res.status(200).send('Hmmm...there was an error on our end. Please refresh and try again.')
-                       db.close();
-                     }
-                     else{
-                       res.status(200).send('We have posted this promotion to your facebook.')
-                       db.close();
-                     }
-                   });
                 }
               }
             }

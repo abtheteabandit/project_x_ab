@@ -190,22 +190,63 @@ module.exports = router => {
     }
     else{
       var {id, query} = req.body;
-      database.connect(db=>{
-        //udpate based on if
-        db.db('users').collection('users').updateOne({'_id':ObjectId(id)}, query, (err2,result)=>{
-          if(err2){
-            console.log('Error updating user with:' +id +' :' + err2)
-          }
-        //  console.log('Result is: ' + JSON.stringify(result));
-          console.log('Updated user with id: ' + id );
-          res.status(200).end()
-          db.close();
+      if (!id || !query){
+        console.log('Missing feilds');
+        res.status(400).end();
+      }
+      else{
+        console.log('ID: ' + id)
+        database.connect(db=>{
+          //udpate based on if
+          db.db('users').collection('users').updateOne({'_id':ObjectId(id)}, query, (err2,result)=>{
+            if(err2){
+              console.log('Error updating user with:' +id +' :' + err2)
+            }
+          //  console.log('Result is: ' + JSON.stringify(result));
+            console.log('Updated user with id: ' + id );
+            res.status(200).end()
+            db.close();
+          });
+        }, err=>{
+          console.log('There was an error connecting to mongo here is error: ' + err);
+          res.status(500).end();
         });
-      }, err=>{
-        console.log('There was an error connecting to mongo here is error: ' + err);
-        res.status(500).end();
-      });
+      }
+    }
+  });
 
+  router.post('/updateMe', (req, res)=>{
+    if (!req.body){
+      console.log('No body sent!');
+      res.status(400).end();
+    }
+    if (!req.session.key){
+      console.log('None logged in user tried to update a user');
+      res.status(403).end();
+    }
+    else{
+      var {query} = req.body;
+      if (!query){
+        console.log('Missing feilds');
+        res.status(400).end();
+      }
+      else{
+        database.connect(db=>{
+          //udpate based on if
+          db.db('users').collection('users').updateOne({'username':req.session.key}, query, (err2,result)=>{
+            if(err2){
+              console.log('Error updating user with:' +req.session.key +' :' + err2)
+            }
+          //  console.log('Result is: ' + JSON.stringify(result));
+            console.log('Updated user:'+req.session.ke );
+            res.status(200).end()
+            db.close();
+          });
+        }, err=>{
+          console.log('There was an error connecting to mongo here is error: ' + err);
+          res.status(500).end();
+        });
+      }
     }
   });
 

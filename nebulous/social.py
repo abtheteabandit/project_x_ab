@@ -505,7 +505,7 @@ class FacebookBot:
             # must be full path
             print('Image path: ')
             print(imgPath)
-            uploader.send_keys('/Users/Bothe/Desktop/project_x_ab/static/assets/Promo/bandaLogo.png')
+            uploader.send_keys(imgPath)
             time.sleep(1)
             button = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div[2]/div/div/span/button')
             button.click()

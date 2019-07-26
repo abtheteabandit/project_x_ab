@@ -909,7 +909,7 @@ function postFacebookLoginSubmit(){
   const facebookUsername = $("#facebookPostingEmail").val();
   const facebookPassword = $("#facebookPostingPassword").val();
   const requestObject = {"post_permission":true, "data_permission" :true, "username":facebookUsername, "password": facebookPassword };
-  $.post('/updateAUser', {'query':{'facebook':{'permissions':{'post_permission':true}, 'username':facebookUsername, 'password':facebookPassword}}}, res=>{
+  $.post('/updateMe', {'query':{$set:{'facebook':{'permissions':{'post_permission':true}, 'username':facebookUsername, 'password':facebookPassword}}}}, res=>{
     alert('You can now post to your Facebook within Banda!')
     document.getElementById('modal-facebook-login-banda-modal-post').hidden=true
     document.getElementById('modal-facebook-login-banda-modal-post').style.display='none';

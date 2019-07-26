@@ -100,11 +100,8 @@ module.exports = router =>{
                                 var mediaOn = medias[m];
                                   wantsFB=true;
                                   if (poster.hasOwnProperty('facebook')){
-                                    if (poster.facebook.hasOwnProperty('pageToken') && poster.facebook.hasOwnProperty('pageId')){
-                                        if (poster.facebook.pageToken && poster.facebook.pageId){
-                                          console.log('PAGE TOKE FOR FBBBBB: ' + poster.facebook.pageToken);
-                                          facebookOk=true;
-                                        }
+                                    if (poster.facebook.hasOwnProperty('permissions')){
+                                        facebookOk=true;
                                     }
                                   }
                               if (mediaOn=='instagram'){
@@ -117,10 +114,6 @@ module.exports = router =>{
                           if (twitterOk){
                             data.twitter['access_token']=poster.twitter.access_token;
                             data.twitter['secret_token']=poster.twitter.token_secret;
-                          }
-                          if (facebookOk){
-                            data.facebook['pageId']=poster.facebook.pageId;
-                            data.facebook['pageToken']=poster.facebook.pageToken;
                           }
                           res.status(200).json({'success':true, 'data':data});
                           db.close();
@@ -150,20 +143,22 @@ module.exports = router =>{
 
                                   wantsFB=true;
                                   if (poster.hasOwnProperty('facebook')){
-                                    if (poster.facebook.hasOwnProperty('pageId')){
-                                      if (poster.facebook.hasOwnProperty('accessToken')){
-                                        if (!(poster.facebook.accessToken == null || poster.facebook.accessToken==null)){
+                                    if (poster.facebook.hasOwnProperty('permissions')){
+                                      if (poster.facebook.permissions.hasOwnProperty('post_permission')){
                                           facebookOk=true;
-                                        }
                                       }
                                     }
                                   }
-                            }
+                              }
                               if (mediaOn=='instagram'){
                                 wantsInstagram=true;
                               }
+                              var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':ourCoupon, 'promo':ourPromo};
+                              if (wantsTwitter && twitterOk){
+                                data.twitter['access_token']=poster.twitter.access_token;
+                                data.twitter['secret_token']=poster.twitter.token_secret
+                              }
                             }
-                            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':poster.twitter.access_token, 'secret_token':poster.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':poster.facebook.pageId, 'pageToken':poster.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':ourCoupon, 'promo':ourPromo};
                             res.status(200).json({'success':true, 'data':data});
                             db.close();
 
