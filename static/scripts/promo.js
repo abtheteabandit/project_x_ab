@@ -1,4 +1,5 @@
 // Globals
+
 var createCouponState = false;
 //user has logged in to these socials
 var hasSnap = false;
@@ -20,6 +21,7 @@ var the_promo_ID = "";
 //if the user has made gigS
 var hasGigs = false;
 var ourUser = {};
+
 
 
 class SearchResult {
@@ -903,9 +905,26 @@ function selectMainInstagramPage(){
 
 function postFacebookLoginSubmit(){
   //boothe look here for post
+  console.log('submit ')
   const facebookUsername = $("#facebookPostingEmail").val();
   const facebookPassword = $("#facebookPostingPassword").val();
   const requestObject = {"post_permission":true, "data_permission" :true, "username":facebookUsername, "password": facebookPassword };
+  $.post('/updateAUser', {'query':{'facebook':{'permissions':{'post_permission':true}, 'username':facebookUsername, 'password':facebookPassword}}}, res=>{
+    alert('You can now post to your Facebook within Banda!')
+    document.getElementById('modal-facebook-login-banda-modal-post').hidden=true
+    document.getElementById('modal-facebook-login-banda-modal-post').style.display='none';
+  })
   // todo: post the request object to the  server, hash the  password and store it
 }
 //document.getElementById("modal-facebook-login-banda-modal-post").style.visibility
+
+function displayTOS(){
+  document.getElementById("modal-wrapper-tos").hidden=false
+  document.getElementById("modal-wrapper-tos").style.display = 'block';
+}
+
+function acceptedFBTos(){
+  document.getElementById('modal-wrapper-tos').style.display='none';
+  document.getElementById('modal-facebook-login-banda-modal-post').hidden=false
+  document.getElementById('modal-facebook-login-banda-modal-post').style.display='block';
+}
