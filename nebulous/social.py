@@ -505,8 +505,9 @@ class FacebookBot:
             # must be full path
             print('Image path: ')
             print(imgPath)
-            uploader.send_keys(imgPath)
-            time.sleep(1)
+            #
+            uploader.send_keys('/Users/bothe/Desktop/project_x_ab/static/uploads/PromoPics/'+imgPath)
+            time.sleep(3)
             button = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div[2]/div/div/span/button')
             button.click()
             print('success')
@@ -794,3 +795,7 @@ def bandaStart():
             return
 
 bandaStart()
+#booth = FacebookBot('4146904606', 'N5gdakxq9!')
+#booth.login()
+#time.sleep(4)
+#booth.postToFB('TEST 2332', 'cdcdcdc')

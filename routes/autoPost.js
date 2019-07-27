@@ -74,16 +74,23 @@ module.exports = router =>{
                         }
                       }
                       //testing
-                      imgPath = '/Users/Bothe/Desktop/project_x_ab/static/assets/Promo/bandaLogo.png';
+                      console.log('SRC: ' + promo.imgURL);
+                      var url = promo.imgURL.replace('www.banda-inc.com//', '')
+                      url = url.replace('uploads/PromoPics/', '')
+                      console.log('url: ' + url);
+                    //  url = 'Users/Bothe/Desktop/project_x_ab/static/assets/Promo/bandaLogo.png';
                       message = message + '\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
 
-                       postToFacebook(user.facebook.username, user.facebook.password, message, imgPath, cb=>{
+                       postToFacebook(user.facebook.username, user.facebook.password, message, url, cb=>{
                          if (cb.includes('error')){
-                           console.log('THere was a python error posting to faceboom for user: ' + username + cb)
+                           console.log('THere was a python error posting to faceboom for user: ' + user.facebook.username + cb)
                            res.status(200).send('Hmmm...there was an error on our end. Please refresh and try again.')
                            db.close();
                          }
                          else{
+                           console.log('*****')
+                           console.log('\n')
+                           console.log('DATA FROM PY: ' + cb)
                            res.status(200).send('We have posted this promotion to your facebook.')
                            db.close();
                          }
