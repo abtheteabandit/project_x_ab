@@ -4,6 +4,7 @@ import pyfiglet
 from pyfiglet import Figlet
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 import time
 #for working with node
 import sys
@@ -166,9 +167,11 @@ class FacebookBot:
     def __init__(self, username, password):
         self.username=username
         self.password=password
+        options = Options()
+        options.headless = True
         browser_profile = webdriver.FirefoxProfile()
         browser_profile.set_preference("dom.webnotifications.enabled", False)
-        self.bot = webdriver.Firefox(browser_profile);
+        self.bot = webdriver.Firefox(browser_profile, options=options);
 
     def login(self):
         try:
