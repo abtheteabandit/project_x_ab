@@ -928,3 +928,9 @@ function acceptedFBTos(){
   document.getElementById('modal-facebook-login-banda-modal-post').hidden=false
   document.getElementById('modal-facebook-login-banda-modal-post').style.display='block';
 }
+function declineFB(){
+  document.getElementById('modal-wrapper-tos').style.display='none'
+  $.post('/updateMe', {'query':{$set:{'facebook':{'permissions':{'post_permission':false}}}}}, res=>{
+    alert('We have disabled automatic posting for your Facebook.')
+  });
+}

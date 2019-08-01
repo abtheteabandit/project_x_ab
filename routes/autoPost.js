@@ -50,9 +50,9 @@ module.exports = router =>{
                     db.close();
                   }
                   else{
-                    if (!user.facebook.permissions[permission]){
+                    if ((!user.facebook.permissions[permission]) || user.facebook.permissions.post_permission=='false'){
                       console.log('User ' + req.session.key + ' has not given us explicit permission so we will not post.');
-                      res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + media + '. Please enable posting to '+mode+' so Banda can post this for you!');
+                      res.status(200).send('Sorry, it seems you have not given us permission to post on your ' + media + '. Please enable posting to '+media+' so Banda can post this for you!');
                       db.close();
                     }
                     else{

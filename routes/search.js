@@ -300,13 +300,15 @@ router.get('/aUser', (req, res)=>{
     var {id} = req.query;
     database.connect(db=>{
       //get teh single user from the database
-      db.db('users').collection('users').findOne({'_id':database.objectId(id)},{'password':0, 'username':1}, (err2, result2)=>{
+      db.db('users').collection('users').findOne({'_id':database.objectId(id)}, (err2, result2)=>{
         if(err2){
           console.log('There was an error getting user: ' + id + 'out of mongo, error: ' + err2);
           res.status(500).end();
         }
         else{
           console.log('Got a user : ' + JSON.stringify(result));
+          result2.password=null
+          result2.facebook=null
           res.status(200).send(result2);
         }
       })

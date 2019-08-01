@@ -459,7 +459,7 @@ module.exports = {
           errCB('Internal Server Error');
         }
         else{
-          db.db('promotions').collection('promotions').find({'creator':ourUsername}).toArray((errPromo, promos)=>{
+          db.db('promotions').collection('promotions').find({'creator':ourUsername}, {'password':0, 'facebook':0}).toArray((errPromo, promos)=>{
             if (errPromo){
               console.log('There waz an error finding promos for creator: ' + ourUsername + 'Error: ' + errPromo);
               errCB('Internal Server Error');
@@ -474,7 +474,7 @@ module.exports = {
 
                   //find all other users to cross promote with
                   var usersToScore = [];
-                  db.db('users').collection('users').find().toArray((err2, allUsers)=>{
+                  db.db('users').collection('users').find({}, {'password':0}).toArray((err2, allUsers)=>{
                     if (err2){
                       console.log('There was an error finding all users: ' + err2);
                       errCB('Internal Server Error');
@@ -580,6 +580,8 @@ module.exports = {
                                   totalScore+=100000;
                                 }
                                 console.log('About to push user: ' + otherUser.username + ' into the dictionary with score: ' + totalScore);
+                                otherUser['facebook']=null
+                                otherUser['password']=null
                                 usersToScore.push([otherUser, totalScore]);
 
 
