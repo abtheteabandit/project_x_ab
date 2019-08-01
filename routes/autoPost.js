@@ -59,18 +59,28 @@ module.exports = router =>{
                       console.log('GOT INTO DRIVER')
                       var message = promo.caption;
                 			//format the message and cupoun
+                      console.log('mess cap: ' + message)
                       if (coupon==null){
                         if (!(promo.handles==undefined)){
                           message= message+'\n'+promo.handles;
+                          console.log('coupon null handles: ' + message)
                         }
                       }
                       else{
+                        console.log('coupon not null: ' + message)
                         if (!(promo.handles==undefined)){
                           message= message+'\n'+promo.handles;
+                          console.log('coupon not null handles: ' + message)
                         }
-                        message = message + '\n' + coupon.details;
+                        if (coupon.hasOwnProperty('details')){
+                          if (coupon.details == null || coupon.details == "" || coupon.details == " " ){
+                            message = message +'\n'+coupon.details;
+                          }
+                        }
+
                         if (coupon.hasOwnProperty('link')){
                           message= message + '\n'+coupon.link;
+                          console.log('coupon not null link: ' + message)
                         }
                       }
                       //testing
@@ -80,7 +90,7 @@ module.exports = router =>{
                       console.log('url: ' + url);
                     //  url = 'Users/Bothe/Desktop/project_x_ab/static/assets/Promo/bandaLogo.png';
                       message = message + '\n'+'(posted from https://www.banda-inc.com where artists rise, venues grow, and music-lovers band together!)'
-
+                      console.log('Final message: ' + message)
                        postToFacebook(user.facebook.username, user.facebook.password, message, url, cb=>{
                          if (cb.includes('error')){
                            console.log('THere was a python error posting to faceboom for user: ' + user.facebook.username + cb)

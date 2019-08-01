@@ -12,7 +12,7 @@ import logging
 #for creating picutre paths
 import random
 import string
-
+import os
 #for extracting text out of pngs
 from PIL import Image, ImageEnhance, ImageFilter
 import PIL.Image
@@ -496,19 +496,22 @@ class FacebookBot:
             print(div3)
             div3.click()
             time.sleep(2)
-            div5 = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[2]/div/div/div/div/div/div/div[2]/div')
-            div5.send_keys(promo)
-            time.sleep(1)
             uploader = bot.find_element_by_name('composer_photo[]')
             print(uploader)
-
+            curr_path = os.getcwd()
+            print('Current path')
+            print(curr_path)
             # must be full path
             print('Image path: ')
             print(imgPath)
             #
-            uploader.send_keys('/Users/bothe/Desktop/project_x_ab/static/uploads/PromoPics/'+imgPath)
-            time.sleep(3)
-            button = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div[2]/div/div/span/button')
+            uploader.send_keys(curr_path+'/static/uploads/PromoPics/'+imgPath)
+            #uploader.send_keys('/Users/Bothe/Desktop/untitled folder/meme.jpg')
+            time.sleep(5)
+            div5 = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div/div[1]/div[1]/div[2]/div/div/div/div/div/div/div[2]/div')
+            div5.send_keys(promo)
+            time.sleep(1)
+            button = bot.find_element_by_xpath('/html/body/div[1]/div[3]/div[1]/div/div[2]/div[2]/div[1]/div[2]/div/div[3]/div/div/div[2]/div[1]/div/div/div/div[2]/div/div[1]/div[2]/div[3]/div[2]/span/button')
             button.click()
             print('success')
             sys.stdout.flush()
