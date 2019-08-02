@@ -219,6 +219,61 @@ router.get('/bandsForDrops', (req, res)=>{
   });
 });
 
+router.get('/localRadio', (req,res)=>{
+  if (!req.query){
+    console.log('No query set.')
+    res.status(200).json({'success':false, 'data':'no query sent'});
+  }
+  else{
+    var {lat, lng} = req.query;
+    database.connect(db=>{
+      db.db('bands').collection('bands').find().toArray((err, bands)=>{
+        if (err){
+          console.log('There was an error fidning bands: ' + err);
+          res.status(200).json({'success':false, 'data':'mongo error'});
+          db.close();
+        }
+        else{
+          if (!bands){
+            console.log('There was no bands: ');
+            res.status(200).json({'success':false, 'data':'no bands'});
+            db.close();
+          }
+          else{
+            var bandsToScore = [];
+            for (var b in bands){
+              var band = bands[b];
+              var bLat = band.lat;
+              var bLng = band.lng;
+              var distX = (bLat-lat)*(bLat-lat)
+              var distY = (bLng-lng)*(bLng-lng)
+              var totalDist = Math.sqrt(distY+distX)
+              var score = -totalDist;
+              bandsToScore.push({'song':band.audioSamples[0], 'pic':band.picture}, score);
+            }
+            var sortedBands = sortDict(bandsToScore);
+            console.log('GOt bands: ' + JSON.stringify(sortedBands));
+            res.status(200).json({'success':true, 'data':sortedBands});
+            db.close();
+          }
+        }
+      })
+    }, dbErr=>{
+      console.log('THere was an error connecting to mongo: ' + dbErr);
+      res.status(200).json({'success':false, 'data':'mongo error'})
+    })
+  }
+})
+
+//for sorting based on score
+function sortDict(dict){
+  console.log('DICT in sort dict: ' + JSON.stringify(dict));
+   dict.sort(function(first, second) {
+     return second[1]-first[1];
+   });
+   return dict;
+}
+//
 //get request for a specific gig
 router.get('/aGig', (req, res)=>{
   if (!req.query) {

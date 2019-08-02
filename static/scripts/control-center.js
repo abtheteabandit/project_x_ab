@@ -5710,3 +5710,40 @@ function saveNotify(){
   }
 
 }
+
+//localized_radio
+var songOn = 0;
+var samples = [];
+function getRadioSongs(){
+  $.get('/localRadio', res=>{
+    if (res.success){
+      console.log('AUDIO SAMPLES DATA: ' + JSON.stringify(res.data));
+      samples = res.data
+      var controller = document.getElementById('localized_radio');
+      console.log('CONTROL: ' + controller);
+      console.log('AUDIO: ' + res.data[0].song.audio);
+      controller.innerHTML = '<source src="'+res.data[0].song.audio+'" type="audio/wav" /><img src='+res.data[0].song.picture+'/>'
+      //            <source src="/assets/Control-Center/Steal_Flowers.wav" type="audio/wav">
+
+     }
+    else{
+
+    }
+  })
+}
+getRadioSongs();
+
+function skipSong(){
+  if (songOn>=samples.length-1){
+    songOn=0
+  }
+  else{
+    songOn += 1;
+  }
+  console.log('SKIPPING SONG')
+  var song = samples[songOn];
+  var controller = document.getElementById('localized_radio');
+  console.log('CONTROL: ' + controller);
+  console.log('AUDIO: ' + song.song.audio);
+  controller.innerHTML = '<source src="'+song.song.audio+'" type="audio/wav" /><img src='+song.song.picture+'/>'
+}

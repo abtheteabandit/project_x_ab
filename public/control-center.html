@@ -474,7 +474,7 @@
         <img alt="stripe"src="/assets/Control-Center/stripelogo.png" class="stripe-logo" />
       </div>
     </div>
-    
+
     <div id="modal-wrapper-current-band">
       <form id="current-band-form" class="animate" enctype="multipart/form-data" method="post" action="#">
         <div>
@@ -616,6 +616,7 @@
       </div>
 
       <div class="bottom-bar" id="bottom-bar-mobile">
+
         <img id="ticker-img" src="/assets/Control-Center/bottom-bar.png" alt="ticker" />
         <!-- Minh's Edit -->
          <div class="container">
@@ -646,6 +647,13 @@
          <!-- Minh end -->
          <button href="#" id="select-gig-to-ad" onclick="document.getElementById('modal-wrapper-link-application').style.display='block'">Ask user to apply to event...</button>
         <button href="#" id="contacts-button">contacts</button>
+        <div id='radio_div'>
+          <audio controls id='localized_radio' >
+
+            <!--<source src="/assets/Control-Center/Steal_Flowers.wav" type="audio/mp3">-->
+          </audio>
+          <button id='skip_song' onclick='skipSong()'>skip</button>
+        </div>
       </div>
 
       <div id="contacts-sidebar">
