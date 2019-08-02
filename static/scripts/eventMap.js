@@ -979,3 +979,65 @@ function downloadFromCreatePull(){
   document.execCommand("copy");
   alert("You have downloaded the Banda pull picture to your deivce and copied the supplied link/caption. Post these two things wherever you can to increase your pull! Just load in the image from your downloads folder and paste the link. (We recomend Snapchat and Instagram). Let the world know your a Banda recognized aritst / event owner and Band Together!");
 }
+
+function searchForBands(){
+  clearMarkers();
+  clearEvents();
+  console.log('SEARCHING FOR BANDS')
+  //time stuff
+  var plusTime = slider.value;
+  var sText = document.getElementById('search_input').value;
+
+  $.get('/map_events_bands', {'time':plusTime, 'lat':currLat, 'lng':currLng, 'searchText':sText}, res=>{
+    console.log('Current Events: ' + JSON.stringify(res.data));
+    if(res.success){
+      var features = []
+      for (var e in res.data){
+        var curr_event = res.data[e];
+        if (!(checkTime(curr_event.date))){
+          console.log('skipping: ' + curr_event.name + ' because chckTime')
+          continue;
+        }
+        var eventList = document.getElementById('event-list');
+        eventList.innerHTML=''
+        var eventItem = new EventListItem(curr_event, cb => {
+          eventList.append(cb.eventContainer);
+        });
+          var feature = {'event':curr_event, position: new google.maps.LatLng(curr_event.lat, curr_event.lng)};
+        features.push(feature);
+      }
+      displayMarkers(features, map);
+    }
+    else{
+      alert(res.data);
+      return;
+    }
+  });
+}
+
+function checkTime(gigDate){
+  var now = new Date().toString();
+  console.log('NOW: ' + now + ' other date: ' + gigDate);
+  if (0<=diff_minutes(gigDate, now)){
+    console.log('Check time is true becassue diff mins was pos')
+    return true
+  }
+  else{
+    console.log('Check time is false becassue diff mins was neg')
+    return false
+  }
+
+}
+function diff_minutes(dt2Str, dt1Str) {
+  //create new dates
+  var dt1 = new Date(dt1Str);
+  var dt2 = new Date(dt2Str);
+  console.log("in diff mins on alg page and dt2 is : " + dt2 + "and dt1 is : " + dt1);
+
+  //calculate the differences
+  var diff = (dt2.getTime() - dt1.getTime()) / 1000;
+  console.log("diff is : " + diff);
+  diff /= 60;
+  console.log("diff is : " + diff);
+  return Math.round(diff);
+ }

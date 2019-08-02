@@ -857,7 +857,6 @@ module.exports = router=>{
       }, dbErr=>{
         console.log('There was an error connecting to mongo error was: ' +dbErr);
         res.status(500).end();
-        db.close();
       })
     }
   });
@@ -910,5 +909,86 @@ module.exports = router=>{
     console.log('Random Code: ' + code);
     return code;
   }
+
+  router.get('/map_events_bands', (req,res)=>{
+    if (!req.query){
+      console.log('No query sent in map_events_bands')
+      res.status(200).json({'success':false, 'data':'Sorry, it seems you did not enter a search text. Please refresh and try again.'})
+    }
+    else{
+      var {time, lat, lng, searchText} = req.query;
+      database.connect(db=>{
+        db.db('bands').collection('bands').find().toArray((err, bands)=>{
+          if (err){
+            console.log('There was error fidning all bands' + err);
+            res.status(200).json({'success':false, 'data':'Hmmmm.... something went wrong on our end. Please refresh adn try again.'})
+            db.close();
+          }
+          else{
+            var sText = searchText.toLowerCase()
+            console.log('stext: ' + sText)
+            var allGigs=[];
+            var ourBand = null
+            for (var b in bands){
+              if ((bands[b].name.toLowerCase()==sText) && (bands[b].upcomingGigs.length>0)){
+                ourBand = bands[b]
+              }
+            }
+            if (!ourBand){
+              console.log('No band with name: ' + sText);
+              res.status(200).json({'success':false, 'data':'Hmmm...it seems that '+searchText+' did not return any results.'}).end();
+              db.close();
+            }
+            else{
+              for (var g in ourBand.upcomingGigs){
+                var gig = ourBand.upcomingGigs[g];
+                if (gig.hasOwnProperty('canceled')){
+                  if (gig.canceled==true || gig.canceled=='true'){
+
+                  }
+                  else{
+                    allGigs.push(gig);
+                  }
+                }
+                else{
+                  allGigs.push(gig);
+                }
+              }
+              if (allGigs.length<=0){
+                console.log(' band with name: ' + sText + ' has no gigs');
+                res.status(200).json({'success':false, 'data':'Hmmm...it seems that the band'+searchText+' does not have any upcoming events.'}).end();
+                db.close();
+              }
+              else{
+                var allMapEvents=[];
+                allGigs.forEach(function(theGig, i){
+                  db.db('gigs').collection('gigs').findOne({'_id':database.objectId(theGig.gigID)}, (err4, res4)=>{
+                    if (err4){
+                      console.log('There was an error finding gig: ' + theGig.gigID+err4);
+                      res.status(200).json({'success':false, 'data':'Hmmm...it seems there was an issue on our end. Please refresh and try again. If this problem perists please contact our support team by clickign the support button on the Banda "b".'});
+                      db.close();
+                    }
+                    else{
+                      console.log('Pushing event: ' + res4.name + ' into allEvents')
+                      allMapEvents.push(res4);
+                      if (allGigs.length-1<=i){
+                        console.log('I is: ' + i + ' and gig length is: ' + allGigs.length + ' so we will retrun now.');
+                        res.status(200).json({'success':true, 'data':allMapEvents}).end();
+                        db.close();
+                      }
+                    }
+                  })
+                })
+              }
+
+            }
+          }
+        })
+      }, dbErr=>{
+        console.log('There was an error connecting to mongo error was: ' +dbErr);
+        res.status(500).end();
+      })
+    }
+  })
 
 }// end of module exports
