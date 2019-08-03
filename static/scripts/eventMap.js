@@ -752,6 +752,9 @@ function getReferer(){
       var refCode = refPieces[1]
       referal = {'username':refUsername, 'code':refCode};
     }
+    if (searchObject.hasOwnProperty('search')){
+      document.getElementById('search_input').value=searchObject.search;
+    }
   }
 }
 

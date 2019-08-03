@@ -733,3 +733,10 @@ function diff_minutes(dt2, dt1) {
 		 console.log('Random Code: ' + code);
 		 return code;
 	 }
+
+// music map
+
+function goMap(){
+  var searchStr = document.getElementById('search_input').value
+  window.location='/eventMap?search='+searchStr;
+}
