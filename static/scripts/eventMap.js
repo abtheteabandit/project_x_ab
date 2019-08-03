@@ -53,9 +53,16 @@ class EventListItem{
     this.btnDiv = document.createElement('div');
     this.ticketBtn = document.createElement('input');
     this.ticketBtn.type = 'button';
-    this.ticketBtn.value = "buy tickets";
+    if (obj.hasOwnProperty('tickets')){
+      this.ticketBtn.value = "buy tickets";
+    }
+    else{
+      this.ticketBtn.value = "interested"
+    }
+
     /*this.ticketBtn.onclick = function(){
       console.log(this)
+
     }*/
     this.ticketBtn.className = "event-li-btn";
     this.referBtn = document.createElement('input');
@@ -513,6 +520,10 @@ function attendClicked(){
       }
       prepareCardElement();
 
+
+    }
+    else{
+      alert('We have added you to this event.')
     }
   });
 
