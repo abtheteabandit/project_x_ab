@@ -91,7 +91,7 @@ function parseURL(url){
    console.log("textForSearchInput: "+textForSearchInput);
    document.getElementById("search_input").value = textForSearchInput;
    for( i = 0; i < queries.length; i++ ) {
-       split = queries[i].splitsoci('=');
+       split = queries[i].split('=');
        searchObject[split[0]] = split[1];
    }
    return {
