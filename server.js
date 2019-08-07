@@ -133,7 +133,7 @@ require('./routes/support.js')(router, app) //for letting customers email us wit
 require('./routes/promotions.js')(router, app) //for letting users find contacts, create promos and post them
 require('./routes/media.js')(router, app) //for getting media based on username
 require('./routes/notifications.js')(router, app) // for real time notifications
-require ('./routes/autoPost.js')(router, app) // for auto posting to sites with explicit user permission
+//require ('./routes/autoPost.js')(router, app) // for auto posting to sites with explicit user permission
 
 
 
@@ -688,7 +688,7 @@ router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope:
 		'user_posts',
 			'read_insights',
 				'pages_show_list',
-					'publish_pages',
+					//'publish_pages',
 						'public_profile']}))
 
 //route for facebook oauth callback
