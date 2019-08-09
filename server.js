@@ -679,7 +679,7 @@ router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope:
 		'user_posts',
 			'read_insights',
 				'pages_show_list',
-					'publish_pages',
+					//'publish_pages',
 						'public_profile']}))
 
 //route for facebook oauth callback
