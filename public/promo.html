@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/selectSocialPageInstaModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/tosModal.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/loginModal.css">
-
+    <link rel="stylesheet" type="text/css" href="/css/modals/promo/facebookLoginModal.css">
     <!-- Font Awesome --> <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <!-- Ajax -->  <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
@@ -122,16 +122,14 @@
         <!-- <a onclick="linkInstagram()" href="#" class = "social-buttons"><i class="fab fa-instagram"></i></a> -->
         <a id="connect-insta-button" href="https://banda-inc.com/getInstData" class = "social-buttons"><i class="fab fa-instagram"></i></a>
       </div>
-      <div id="modal-facebook-login-banda-modal-post" hidden=true>
-        <div id="modal-wrapper-login-post">
-          <div class="animate" id="modal-login-id">
-            <h1 id="login-modal-header">Facebook Login</h1>
-            <span onclick="document.getElementById('modal-wrapper-login').style.display='none'" class="close-login" title="Close PopUp">&times;</span>
-            <div class="container">
-              <input class="modal-input" type="text" placeholder="Enter Username" name="uname" id="facebookPostingEmail">
-              <input class="modal-input" type="password" placeholder="Enter Password" name="psw" id='facebookPostingPassword'>
-              <button id="login-with-fb-btn-post" onclick="postFacebookLoginSubmit()" >Connect Facebook</button>
-            </div>
+      <div id="modal-wrapper-social-login">
+        <div id="modal-content-social-login" class="animate">
+          <h1 id="social-login-modal-header">Facebook Login</h1>
+          <span onclick="document.getElementById('modal-wrapper-social-login').style.display='none'" id="close-social-login" title="Close PopUp"></span>
+          <div id="social-login-grid">
+            <input type="text" placeholder="Enter Username" name="uname" id="facebookPostingEmail">
+            <input type="password" placeholder="Enter Password" name="psw" id='facebookPostingPassword'>
+            <button id="login-with-fb-btn-post" onclick="postFacebookLoginSubmit()">Connect Facebook</button>
           </div>
         </div>
       </div>

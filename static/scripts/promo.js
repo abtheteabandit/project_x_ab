@@ -139,9 +139,9 @@ function init(){
   // disable relevant buttons if they are already connected
 
   getGigs();
-  document.getElementById('modal-facebook-login-banda-modal-post').style.display = 'block';
+  document.getElementById('modal-wrapper-social-login').style.display = 'block';
   document.getElementById("modal-wrapper-tos").style.display = "block";
-  // document.getElementById("modal-facebook-login-banda-modal-post").style.visibility = "hidden";
+  // document.getElementById("modal-wrapper-social-login").style.visibility = "hidden";
 
   var parsedURL =  parseURL(window.location.href);
   console.log("parsed url is below")
@@ -874,7 +874,7 @@ function selectMainFacebookPage(){
     $.post('https://www.banda-inc.com/getFBPageToken', {pageId: valueSelected, pageName: textSelected}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-select-social-page").style.display = "none";
-      document.getElementById('modal-wrapper-tos').style.visibility = "visible";
+      document.getElementById('modal-wrapper-tos').style.display = "block";
     });
   });
 }
@@ -911,22 +911,19 @@ function postFacebookLoginSubmit(){
   const requestObject = {"post_permission":true, "data_permission" :true, "username":facebookUsername, "password": facebookPassword };
   $.post('/updateMe', {'query':{$set:{'facebook':{'permissions':{'post_permission':true}, 'username':facebookUsername, 'password':facebookPassword}}}}, res=>{
     alert('You can now post to your Facebook within Banda!')
-    document.getElementById('modal-facebook-login-banda-modal-post').hidden=true
-    document.getElementById('modal-facebook-login-banda-modal-post').style.display='none';
+    document.getElementById('modal-wrapper-social-login').style.display='none';
   })
   // todo: post the request object to the  server, hash the  password and store it
 }
-//document.getElementById("modal-facebook-login-banda-modal-post").style.visibility
+//document.getElementById("modal-wrapper-social-login").style.visibility
 
 function displayTOS(){
-  document.getElementById("modal-wrapper-tos").hidden=false
   document.getElementById("modal-wrapper-tos").style.display = 'block';
 }
 
 function acceptedFBTos(){
   document.getElementById('modal-wrapper-tos').style.display='none';
-  document.getElementById('modal-facebook-login-banda-modal-post').hidden=false
-  document.getElementById('modal-facebook-login-banda-modal-post').style.display='block';
+  document.getElementById('modal-wrapper-social-login').style.display='block';
 }
 function declineFB(){
   document.getElementById('modal-wrapper-tos').style.display='none'

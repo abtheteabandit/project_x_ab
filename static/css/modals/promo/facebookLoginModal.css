@@ -1,0 +1,131 @@
+/* base all adjustments to modal styling off of this file !*/
+
+#modal-wrapper-social-login{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#modal-content-social-login{
+  background-image: url("/assets/Control-Center/promo-req-bg.png");
+  background-color: transparent;
+  background-size: cover;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 802px;
+  height: 564px;
+  padding-bottom: 80px;
+  color: white;
+  /* z-index for modal content not working; modal overlapped by radial menu*/
+}
+
+#social-login-modal-header{
+  display: inline-block;
+  display:
+}
+
+#close-social-login{
+  cursor: pointer;
+  display: inline;
+  background-image: url('/assets/Control-Center/pretty-close.png');
+  background-size: contain;
+  background-color: transparent;
+  border: none;
+  height: 44px;
+  width: 44px;
+  float: right;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+
+#social-login-modal-header{
+  text-align:center;
+  font-size: 50pt;
+  padding-left: 60px;
+}
+
+#social-login-grid{
+  display: grid;
+  width: 500px;
+  grid-template-columns: 500px;
+  margin: 0 auto;
+  margin-top: 100px;
+}
+
+#social-login-grid input{
+  display: block;
+  background-color: #333d44;
+  border: none;
+  border-radius: 10px;
+  height: 60px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 480px;
+  font-size: 18pt;
+  margin: 0 auto;
+  margin-bottom: 40px;
+}
+
+#social-login-grid button{
+  background-color: transparent;
+  font-size: 32pt;
+  text-align: center;
+  border: none;
+  color: #56dff0;
+}
+
+@media(max-width: 1000px){
+  #modal-content-social-login{
+    width: 500px;
+  }
+  #social-login-modal-header{
+    font-size: 30pt;
+    padding-top: 14px;
+  }
+  #social-login-grid input{
+    height: 50px;
+    font-size: 16pt;
+    margin-bottom: 30px;
+    width: 400px;
+  }
+  #social-login-grid button{
+    font-size: 28pt;
+  }
+
+}
+
+@media(max-width: 550px){
+  #modal-content-social-login{
+    margin-top: 115px;
+    width: 300px;
+  }
+  #social-login-grid{
+    width: 300px;
+    grid-template-columns: 300px;
+    margin-top: 60px;
+  }
+  #social-login-modal-header{
+    font-size: 24pt;
+    padding-left: 0px;
+    padding-top: 12px;
+  }
+  #social-login-grid input{
+    height: 40px;
+    font-size: 14pt;
+    margin-bottom: 20px;
+    width: 260px;
+  }
+  #social-login-grid button{
+    font-size: 22pt;
+  }
+  #close-social-login{
+    height: 32px;
+    width: 32px;
+  }
+}
