@@ -139,8 +139,8 @@ function init(){
   // disable relevant buttons if they are already connected
 
   getGigs();
-  document.getElementById('modal-wrapper-social-login').style.display = 'block';
-  document.getElementById("modal-wrapper-tos").style.display = "block";
+  //document.getElementById('modal-wrapper-social-login').style.display = 'block';
+  //document.getElementById("modal-wrapper-tos").style.display = "block";
   // document.getElementById("modal-wrapper-social-login").style.visibility = "hidden";
 
   var parsedURL =  parseURL(window.location.href);
@@ -918,7 +918,9 @@ function postFacebookLoginSubmit(){
 //document.getElementById("modal-wrapper-social-login").style.visibility
 
 function displayTOS(){
+  console.log('CLiekd tos')
   document.getElementById("modal-wrapper-tos").style.display = 'block';
+  document.getElementById("modal-wrapper-tos").hidden = false;
 }
 
 function acceptedFBTos(){
