@@ -266,7 +266,7 @@ router.post('/forgotPassword', (req,res)=>{
 
 						}
 						else{
-							console.log('No user: ' + username +' '+email)
+							console.log('No user: ' + username)
 							res.status(200).send('Sorry, we do not recognize this username or email. Please try again wit a different email or username. If this is incorrect please email us at banda.help.customers@gmail.com')
 							db.close();
 						}
