@@ -228,6 +228,7 @@ router.post('/forgotPassword', (req,res)=>{
 		var {username} = req.body
 		if (!username){
 			console.log('no username and no email sent');
+			res.status(200).send("Sorry, you must provide your username. If you have forgotten both please contact banda.help.customers@gmail.com.")
 		}
 		else{
 			database.connect(db=>{
@@ -282,35 +283,40 @@ router.post('/forgotPassword', (req,res)=>{
 })
 
 function sendPasswordEmail(user, password, cb){
-	let transporter = nodeMailer.createTransport({
-			host: 'smtp.gmail.com', // go daddy email host port
-			port: 465, // could be 993
-			secure: true,
-			auth: {
-					user: 'banda.confirmation@gmail.com',
-					pass: 'N5gdakxq9!'
-			}
-	});
-	var mailOptions = {
-		 from: 'banda.confirmation@gmail.com', // our address
-		 to: user.email, // who we sending to
-		 subject: "Reset Password For Banda", // Subject line
-		 text: 'Hello, '+user.username+',\nSorry your password was lost we have reset it to:\n'+password+'\n Enter this password with your username on www.banda-inc.com in our login modal and you should be all good. Thank you.', // plain text body
-		 html: ""// html body
-	};
+	if (!user.hasOwnProperty('email')){
+		cb('Sorry, it seems your account does not have an email associated with it. Please sign up for a new account or contact our support team.');
+	}
+	else{
+		let transporter = nodeMailer.createTransport({
+				host: 'smtp.gmail.com', // go daddy email host port
+				port: 465, // could be 993
+				secure: true,
+				auth: {
+						user: 'banda.confirmation@gmail.com',
+						pass: 'N5gdakxq9!'
+				}
+		});
+		var mailOptions = {
+			 from: 'banda.confirmation@gmail.com', // our address
+			 to: user.email, // who we sending to
+			 subject: "Reset Password For Banda", // Subject line
+			 text: 'Hello, '+user.username+',\nSorry your password was lost we have reset it to:\n'+password+'\n Enter this password with your username on www.banda-inc.com in our login modal and you should be all good. Thank you.', // plain text body
+			 html: ""// html body
+		};
 
-	transporter.sendMail(mailOptions, (error, info) => {
-		 if (error) {
-				console.log('There was an error sending the email: ' + error);
-				cb(error, null);
-		 }
-		 else{
-			 console.log('Message sent: ' + JSON.stringify(info));
-			 cb(null, info);
-		 }
-	 });
-
+		transporter.sendMail(mailOptions, (error, info) => {
+			 if (error) {
+					console.log('There was an error sending the email: ' + error);
+					cb(error, null);
+			 }
+			 else{
+				 console.log('Message sent: ' + JSON.stringify(info));
+				 cb(null, info);
+			 }
+		 });
+	}
 }
+
 function generateRandomPassword(){
 	var q = Math.random(12)
 	var p = Math.random(20)
