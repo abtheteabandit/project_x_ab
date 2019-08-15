@@ -10,8 +10,9 @@ module.exports = router => {
     
 
     //todo: figure out get query parameters, express orders, order history/refunds and confirm batchId system
-    
-    //post request for creating a new merch on the marketplace
+    //beats, designs,  tickets or merch
+
+    //post request for creating a new merch on the marketplace: tested and working
     router.post('/market/createMerch', (req, res) => {
         //if the user is not signed in
         if(!req.session.key){
@@ -22,17 +23,37 @@ module.exports = router => {
         
           //if the request has no body
           if (!req.body) {
-                 res.status(400).send('No body sent');
+             res.status(400).send('No body sent');
              return;
           }
     
         //store values from the request
         var {bandFor, gigFor, color, type, supplierCost, userCut, bandaCut, price, imgSrc, description} = req.body;
-        
+        //check for null values
+        if (!bandFor) {
+            return res.status(200).send('No band supplied');
+        } else if(!color){
+            return res.status(200).send('No color supplied');
+        } else if(!type){
+            return res.status(200).send('No type supplied');
+        } else if(!supplierCost){
+            return res.status(200).send('No sup cost supplied');
+        } else if(!userCut){
+            return res.status(200).send('No not user cost supplied');
+        } else if(!bandaCut){
+            return res.status(200).send('No banda cut supplied');
+        } else if(!price){
+            return res.status(200).send('No price supplied');
+        } else if(!imgSrc){
+            return res.status(200).send('No img supplied');
+        } else if(!description){
+            return res.status(200).send('No description supplied');
+        }
+        console.log(req.body)
         //connect to the db
         database.connect(db => {
             console.log("Got in database connect");
-            const batchID = createBatchID(type, color, price, creator, bandFor, gigFor);
+            const batchID = createBatchID(type, color, price, req.session.key, bandFor, gigFor);
             //place the song in the db
             let market = db.db('marketplace').collection('merch');
             market.insertOne({ 'creator': req.session.key, 'bandFor': bandFor, 'gigFor': gigFor, 'color': color, 'type': type, 'supplierCost': supplierCost, 'userCut': userCut, 'bandaCut':bandaCut, 'price': price, 'preOrders': [], 'batchID': batchID, 'expressOrders':[], 'imgSrc': imgSrc, 'rating': 0, 'description': description}, (err, obj) => {
@@ -327,7 +348,7 @@ module.exports = router => {
 
     })
 
-    //post request to upload a beat
+    //post request to upload a beat: tested and working
     router.post('/market/uploadBeat', (req, res) =>{
         //if the user is not signed in
         if(!req.session.key){
@@ -340,10 +361,24 @@ module.exports = router => {
         if (!req.body) {
             res.status(400).send('No body sent');
             return;
-        }
+        }   
+
+        console.log(req.body)
     
         //store values from the request
-        var {songSrc, imgSrc, creator, price, songName, description} = req.body;
+        var {songSrc, imgSrc, price, songName, description} = req.body;
+        //check for null values
+        if (!songSrc) {
+            return res.status(200).send('No song file supplied');
+        } else if(!imgSrc){
+            return res.status(200).send('No image supplied');
+        } else if(!price){
+            return res.status(200).send('No price supplied');
+        } else if(!songName){
+            return res.status(200).send('No name supplied supplied');
+        } else if(!description){
+            return res.status(200).send('No description supplied');
+        } 
 
         //connect to the db
         database.connect(db => {
@@ -351,17 +386,17 @@ module.exports = router => {
             //instance of db for beats
             var beats = db.db('marketplace').collection('beats');
             //check to see if the user laready exists
-            users.findOne({songName:songName, creator:req.session.key}, (err, obj) => {
+            beats.findOne({songName:songName, creator:req.session.key}, (err, obj) => {
                 if (err) {
                     console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
                     db.close();
                 } else if (obj) {
-                    console.log('That username or email already exists sending that info back.')
+                    console.log('song already exists')
                     res.status(200).send('This song already exists').end();
                 } else {
                     //if not, create a new beat
-                    beats.insertOne({songSrc: songSrc, imgSrc: imgSrc, creator: creator, price: price, owner: req.session.key, songName: songName, description: description, rating:0}, (err, obj) => {
+                    beats.insertOne({songSrc: songSrc, imgSrc: imgSrc, creator: req.session.key, price: price, owner: req.session.key, songName: songName, description: description, rating:0}, (err, obj) => {
                         if (err) {
                             console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
                             res.status(500).end()

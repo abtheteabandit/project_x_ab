@@ -46,4 +46,9 @@ module.exports = router => {
   router.get('/map', (req,res)=>{
     res.redirect('/eventMap');
   });
+
+  //test code for testing marketplace
+  router.get('/market', (req,res)=>{
+    res.render('markettest.html');
+  })
 }
