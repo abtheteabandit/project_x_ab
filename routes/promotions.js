@@ -384,6 +384,9 @@ router.get('/search_promos', (req, res)=>{
                 }
               }, okCB=>{
                 console.log('Got in ok CB');
+                if (okCB.length>20){
+                  okCB=okCB.slice(0,21)
+                }
                 res.status(200).json({success: true, data:okCB});
                 db.close();
               });
