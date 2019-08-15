@@ -3,12 +3,16 @@ module.exports = router => {
     database = require('../database.js');
     stripe_private_key = process.env.STRIPE_SECRET_KEY || 'sk_test_t6hlsKu6iehEdJhV9KzITmxm00flbTdrG5';
     var stripe = require('stripe')(stripe_private_key);
+    const orderid = require('order-id')('mysecret');
     const BANDA_CUT = 0.05;
+    const BATCH_LIMIT = 100; //this value can and will change
     const OUR_ADDRESS = "banda.confirmation@gmail.com";
     
+
+    //todo: figure out get query parameters, express orders, order history/refunds and confirm batchId system
     
-    //post request for creating a new song on the marketplace
-    router.post('/market/createMusic', (req, res) => {
+    //post request for creating a new merch on the marketplace
+    router.post('/market/createMerch', (req, res) => {
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
@@ -23,14 +27,15 @@ module.exports = router => {
           }
     
         //store values from the request
-        var {mediaType, song, price, description, zipcode, picture, genre, songName, band} = req.body;
+        var {bandFor, gigFor, color, type, supplierCost, userCut, bandaCut, price, imgSrc, description} = req.body;
         
         //connect to the db
         database.connect(db => {
             console.log("Got in database connect");
+            const batchID = createBatchID(type, color, price, creator, bandFor, gigFor);
             //place the song in the db
-            let market = db.db('market').collection('songs');
-            market.insertOne({ 'owner': req.session.key, 'songName': songName, 'band': band, 'mediaType': mediaType, 'song': song, 'genre': genre, 'price': price, 'zipcode': zipcode, 'description': description, 'picture': picture, 'date': new Date(), 'numDownloads': 0}, (err, obj) => {
+            let market = db.db('marketplace').collection('merch');
+            market.insertOne({ 'creator': req.session.key, 'bandFor': bandFor, 'gigFor': gigFor, 'color': color, 'type': type, 'supplierCost': supplierCost, 'userCut': userCut, 'bandaCut':bandaCut, 'price': price, 'preOrders': [], 'batchID': batchID, 'expressOrders':[], 'imgSrc': imgSrc, 'rating': 0, 'description': description}, (err, obj) => {
                 if (err) {
                     console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
@@ -43,8 +48,8 @@ module.exports = router => {
         });
     });
     
-    //post request for creating a new design on the marketplace
-    router.post('/market/createDesign', (req, res) => {
+    //post request for placing a preorder for merch with a batchID
+    router.post('/market/preorder', (req, res)=>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
@@ -59,14 +64,70 @@ module.exports = router => {
           }
     
         //store values from the request
-        var {mediaType, designFile, price, description, zipcode, picture, designName, band} = req.body;
-        
-        //connect to the db
+        var {price, address, date, size, batchID} = req.body;
+        const id = orderid.generate()
+        //update preorders array
         database.connect(db => {
             console.log("Got in database connect");
-            //place the song in the db
-            let market = db.db('market').collection('designs');
-            market.insertOne({ 'owner': req.session.key, 'designName': designName,'band': band,  'mediaType': mediaType, 'designFile':designFile, 'price': price, 'zipcode': zipcode, 'description': description, 'picture': picture, 'date': new Date(), 'numDownloads': 0}, (err, obj) => {
+            //add the order to the preorders
+            let market = db.db('marketplace').collection('merch');
+            market.update({"batchID":batchID},{$push:{ "preorders": {'price':price, 'address':address, 'date':date, 'size':size, 'orderId':id} }}, (err, obj) => {
+                if (err) {
+                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                    res.status(500).end()
+                } 
+
+                //update the batch collection
+                let batches = db.db('marketplace').collection('batches');
+                batches.update({"color": color, "type": type},{ $push: { "orders": {batchID:batchID}} }, (err, obj) => { 
+                    if (err) {
+                        console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                        res.status(500).end()
+                    } 
+                    //fill orders if size exceeds limit
+                    batches.find( { preorders: {$size: {$gt:BATCH_LIMIT} } }, (err,obj)=>{
+                        fillOrders(obj);
+                    });
+                    res.status(200).send('Success').end();	
+                }) 
+            })
+        }, err => {
+            console.warn("Couldn't connect to database: " + err)
+            res.status(500).end()
+        });
+
+        
+    })
+
+    //post request for placing an express order for merch with a batchID
+    router.post('/market/expressOrder', (req,res)=>{
+        //if the user is not signed in
+        if(!req.session.key){
+            console.log('Non logged in user tried to post a band');
+            res.status(400).end();
+            return;
+          }
+        
+          //if the request has no body
+          if (!req.body) {
+                 res.status(400).send('No body sent');
+             return;
+          }
+    
+        //store values from the request
+        var {price, address, date, size, merchId} = req.body;
+        const orderId = orderid.generate()
+        //update preorders array
+        database.connect(db => {
+            console.log("Got in database connect");
+
+            //todo: perform purchase api call here
+
+
+
+            //add the order to the preorders
+            let market = db.db('marketplace').collection('pastOrders');
+            market.insertOne({'price':price, 'address':address, 'date':date, 'size':size, 'merchId': merchId, 'orderId': orderId}, (err, obj) => {
                 if (err) {
                     console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
@@ -78,9 +139,9 @@ module.exports = router => {
             res.status(500).end()
         });
     })
-    
-    //post request for creating a new beat
-    router.post('/market/createBeat', (req, res) => {
+
+    //post request to request returning an item 
+    router.post('/market/submitReturn', (req, res)=>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
@@ -90,37 +151,59 @@ module.exports = router => {
         
           //if the request has no body
           if (!req.body) {
-                 res.status(400).send('No body sent');
-             return;
+            res.status(400).send('No body sent');
+            return;
           }
     
         //store values from the request
-        var {mediaType, beat, price, description, zipcode, picture, genre, beatName, band} = req.body;
-        
-        //connect to the db
+        var {orderId} = req.body;
+        //update preorders array
         database.connect(db => {
             console.log("Got in database connect");
-            //place the song in the db
-            let market = db.db('market').collection('beats');
-            market.insertOne({ 'owner': req.session.key, 'beatName': beatName, 'mediaType': mediaType, 'band': band, 'beat': beat, 'genre': genre, 'price': price, 'zipcode': zipcode, 'description': description, 'picture': picture, 'date': new Date(), 'numDownloads': 0}, (err, obj) => {
+
+            //todo: perform purchase api call here
+            let pastOrders = db.db('marketplace').collection('pastOrders');
+            pastOrders.findOne({orderId: orderId}, (err, obj) => {
+                //failure case
                 if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
+                    db.close();
                 } 
-                res.status(200).send('Success').end();	
+                //if the order is found
+                else if (obj) {
+                    console.log('That username or email already exists sending that info back.')
+                    //add order to pending return
+                    let pendingReturns = db.db('marketplace').collection('pendingReturns');
+                    pendingReturns.insertOne({obj}, (err, obj2) => {
+                        if (err) {
+                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                            res.status(500).end()
+                        } 
+
+                        //remove the order from past orders
+                        pastOrders.remove({obj}, (err, obj3) =>{
+                            if (err) {
+                                console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                                res.status(500).end()
+                            } 
+                            res.status(200).send('These will be instructions on how to submit a return and how you will get fully refunded!').end();
+                        })	
+                    })
+                } 
+                //if the order is not found
+                else {
+                    res.status(200).send('Order not found').end();
+                }
             })
         }, err => {
             console.warn("Couldn't connect to database: " + err)
             res.status(500).end()
         });
     })
-    
-    
-    
-    
-    
-    //get music by owner
-    router.post('/market/getMusicByOwner', (req, res) =>{
+
+    //post request for fullfilling a return
+    router.post('/market/successfulReturn', (req,res)=>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
@@ -128,1151 +211,406 @@ module.exports = router => {
             return;
           }
         
-          //if the request has no body
-          if (!req.body) {
-                 res.status(400).send('No body sent');
-             return;
-          }
-    
-        //store values from the request
-        var {owner} = req.body;
-        
-        //connect to the db
-        database.connect(db => {
-            console.log("Got in database connect");
-            //place the song in the db
-            let market = db.db('market').collection('songs');
-            db.db('market').collection('songs').findOne({ 'owner': owner}, (err, obj) => {
-                console.log("Got in find one");
-                console.log(JSON.stringify(obj));
-                if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                    res.status(500).end()
-                } 
-                db.close();
-                res.send(obj.data);
-                return;       
-            })
-        }, err => {
-            console.warn("Couldn't connect to database: " + err)
-            res.status(500).end()
-        });
-    })
-    
-    //get music by band
-    router.post('/market/getMusicByBand', (req, res) =>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-          }
-        
-          //if the request has no body
-          if (!req.body) {
-                 res.status(400).send('No body sent');
-             return;
-          }
-    
-        //store values from the request
-        var {band} = req.body;
-        
-        //connect to the db
-        database.connect(db => {
-            console.log("Got in database connect");
-            //get the song from the db
-            let market = db.db('market').collection('songs');
-            db.db('market').collection('songs').findOne({ 'band': band}, (err, obj) => {
-                if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                    res.status(500).end()
-                } 
-                db.close();
-                res.send(obj.data);
-                return;       
-            })
-        }, err => {
-            console.warn("Couldn't connect to database: " + err)
-            res.status(500).end()
-        });
-    })
-    
-    //get music by name
-    router.post('/market/getMusicByName', (req, res) =>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-          }
-        
-          //if the request has no body
-          if (!req.body) {
-                 res.status(400).send('No body sent');
-             return;
-          }
-    
-        //store values from the request
-        var {songName} = req.body;
-        
-        //connect to the db
-        database.connect(db => {
-            console.log("Got in database connect");
-            //place the song in the db
-            let market = db.db('market').collection('songs');
-            db.db('users').collection('users').findOne({ 'songName': songName}, (err, obj) => {
-                console.log("Got in find one");
-                console.log(JSON.stringify(obj));
-                if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                    res.status(500).end()
-                } 
-                db.close();
-                res.send(obj.data);
-                return;       
-            })
-        }, err => {
-            console.warn("Couldn't connect to database: " + err)
-            res.status(500).end()
-        });
-    })
-    
-    
-    
-    
-    
-    //get beat by band
-    router.post('/market/getBeatByBand', (req, res) =>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-      //if the request has no body
-      if (!req.body) {
-             res.status(400).send('No body sent');
-         return;
-      }
-    
-        //store values from the request
-        var {band} = req.body;
-    
-        //connect to the db
-        database.connect(db => {
-            //place the song in the db
-            let market = db.db('market').collection('beats');
-            market.findOne({ 'band': band}, (err, obj) => {
-                if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                    res.status(500).end()
-                } 
-                db.close();
-                res.send(obj.data);
-                return;       
-            })
-        }, err => {
-            console.warn("Couldn't connect to database: " + err)
-            res.status(500).end()
-        });
-    })
-    
-    //get beat by name
-    router.post('/market/getBeatByName', (req, res) =>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
         //if the request has no body
         if (!req.body) {
-                res.status(400).send('No body sent');
+            res.status(400).send('No body sent');
             return;
         }
-    
-        //store values from the request
-        var {beatName} = req.body;
-    
-        //connect to the db
+
+        var {orderId} = req.body;
+        //update preorders array
         database.connect(db => {
-            //place the song in the db
-            let market = db.db('market').collection('beats');
-            market.findOne({'beatName': beatName}, (err, obj) => {
+            console.log("Got in database connect");
+
+            //todo: perform purchase api call here
+            let pendingReturns = db.db('marketplace').collection('pendingReturns');
+            let pastOrders = db.db('marketplace').collection('pastOrders');
+            pendingReturns.findOne({orderId: orderId}, (err, obj) => {
+                //failure case
                 if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
+                    db.close();
                 } 
-                db.close();
-                res.send(obj.data);
-                return;       
+                //if the order is found
+                else if (obj) {
+                    console.log('That username or email already exists sending that info back.')
+                    //add order to pending return
+                    obj.returned = true;
+                    pastOrders.insertOne({obj}, (err, obj2) => {
+                        if (err) {
+                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                            res.status(500).end()
+                        } 
+
+                        //remove the order from past orders
+                        pendingReturns.remove({orderId: obj.orderId}, (err, obj3) =>{
+                            if (err) {
+                                console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                                res.status(500).end()
+                            } 
+                            res.status(200).send('These will be instructions on how to submit a return and how you will get fully refunded!').end();
+                        })	
+                    })
+                } 
+                //if the order is not found
+                else {
+                    res.status(200).send('Order not found').end();
+                }
             })
         }, err => {
             console.warn("Couldn't connect to database: " + err)
             res.status(500).end()
         });
+
     })
-    
-    //get beat by owner
-    router.post('/market/getBeatByOwner', (req, res) =>{
-    //if the user is not signed in
-    if(!req.session.key){
-        console.log('Non logged in user tried to post a band');
-        res.status(400).end();
-        return;
-      }
-    
-      //if the request has no body
-      if (!req.body) {
-             res.status(400).send('No body sent');
-         return;
-      }
-    
-    //store values from the request
-    var {owner} = req.body;
-    
-    //connect to the db
-    database.connect(db => {
-        //place the song in the db
-        let market = db.db('market').collection('beats');
-        market.findOne({ 'owner': owner}, (err, obj) => {
-            if (err) {
-                console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                res.status(500).end()
-            } 
-            db.close();
-            res.send(obj.data);
-            return;       
-        })
-    }, err => {
-        console.warn("Couldn't connect to database: " + err)
-        res.status(500).end()
-    });
-    })
-    
-    
-    
-    
-    
-    //get design by name
-    router.post('/market/getDesignByName', (req, res) =>{
+
+    //post request of the return is not made
+    router.post('/market/failedReturn', (req,res)=>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
             res.status(400).end();
             return;
-        }
-    
-      //if the request has no body
-      if (!req.body) {
-             res.status(400).send('No body sent');
-         return;
-      }
-    
-        //store values from the request
-        var {designName} = req.body;
-    
-        //connect to the db
-        database.connect(db => {
-            //place the song in the db
-            let market = db.db('market').collection('designs');
-            market.findOne({ 'designName': designName }, (err, obj) => {
-                if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                    res.status(500).end()
-                } 
-                db.close();
-                res.send(obj.data);
-                return;       
-            })
-        }, err => {
-            console.warn("Couldn't connect to database: " + err)
-            res.status(500).end()
-        });
-    })
-    
-    //get design by band
-    router.post('/market/getDesignByBand', (req, res) =>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-      //if the request has no body
-      if (!req.body) {
-             res.status(400).send('No body sent');
-         return;
-      }
-    
-        //store values from the request
-        var {band} = req.body;
-    
-        //connect to the db
-        database.connect(db => {
-            //place the song in the db
-            let market = db.db('market').collection('designs');
-            market.findOne({ 'band': band}, (err, obj) => {
-                if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                    res.status(500).end()
-                } 
-                db.close();
-                res.send(obj.data);
-                return;       
-            })
-        }, err => {
-            console.warn("Couldn't connect to database: " + err)
-            res.status(500).end()
-        });
-    })
-    
-    //get design by owner
-    router.post('/market/getDesignByOwner', (req, res) =>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-      //if the request has no body
-      if (!req.body) {
-             res.status(400).send('No body sent');
-         return;
-      }
-    
-        //store values from the request
-        var {owner} = req.body;
-    
-        //connect to the db
-        database.connect(db => {
-            //place the song in the db
-            let market = db.db('market').collection('designs');
-            market.findOne({ 'owner': owner}, (err, obj) => {
-                if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                    res.status(500).end()
-                } 
-                db.close();
-                res.send(obj.data);
-                return;       
-            })
-        }, err => {
-            console.warn("Couldn't connect to database: " + err)
-            res.status(500).end()
-        });
-    })
-    
-    
-    
-    
-    //transfer owner of design with stripe integeration
-    router.post('/market/changeOwnerOfDesign', (req, res)=>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
+          }
+        
         //if the request has no body
         if (!req.body) {
-                res.status(400).send('No body sent');
+            res.status(400).send('No body sent');
+            return;
+        }
+
+        var {orderId} = req.body;
+        //update preorders array
+        database.connect(db => {
+            console.log("Got in database connect");
+
+            let pendingReturns = db.db('marketplace').collection('pendingReturns');
+            let pastOrders = db.db('marketplace').collection('pastOrders');
+            pendingReturns.findOne({orderId: orderId}, (err, obj) => {
+                //failure case
+                if (err) {
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+                    res.status(500).end()
+                    db.close();
+                } 
+                //if the order is found
+                else if (obj) {
+                    console.log('That username or email already exists sending that info back.')
+                    //add order to pending return
+                    obj.returned = false;
+                    pastOrders.insertOne({obj}, (err, obj2) => {
+                        if (err) {
+                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                            res.status(500).end()
+                        } 
+
+                        //remove the order from past orders
+                        pendingReturns.remove({orderId: obj.orderId}, (err, obj3) =>{
+                            if (err) {
+                                console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                                res.status(500).end()
+                            } 
+                            res.status(200).send('These will be instructions on how to submit a return and how you will get fully refunded!').end();
+                        })	
+                    })
+                } 
+                //if the order is not found
+                else {
+                    res.status(200).send('Order not found').end();
+                }
+            })
+        }, err => {
+            console.warn("Couldn't connect to database: " + err)
+            res.status(500).end()
+        });
+
+    })
+
+    //post request to upload a beat
+    router.post('/market/uploadBeat', (req, res) =>{
+        //if the user is not signed in
+        if(!req.session.key){
+            console.log('Non logged in user tried to post a band');
+            res.status(400).end();
+            return;
+        }
+        
+        //if the request has no body
+        if (!req.body) {
+            res.status(400).send('No body sent');
             return;
         }
     
-        //store the parameters
-        const newOwner = req.session.key;
-        const {oldOwner, band, designName} = req.body;
-    
+        //store values from the request
+        var {songSrc, imgSrc, creator, price, songName, description} = req.body;
+
         //connect to the db
         database.connect(db => {
-            //place the song in the db
-            let market = db.db('market').collection('designs');
-            market.findOne({ 'owner': oldOwner, 'band': band, 'designName': designName}).toArray((err, result)=>{
+            console.log("Got in database connect");
+            //instance of db for beats
+            var beats = db.db('marketplace').collection('beats');
+            //check to see if the user laready exists
+            users.findOne({songName:songName, creator:req.session.key}, (err, obj) => {
                 if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
-                } 
-                const price = result[0].price;
-                const marketID = result[0]._id;
-    
-                console.log("Gig with id: "+ gigID + 'is not filled');
-                var newValues = {$set: {'owner':req.session.key}};
-    
-                //transfer ownership and charge the user
-                market.updateOne({'_id':marketID}, newValues, (err2, result)=>{
-                    if (err2){
-                        console.log('There was an error tryign to append set gig stuff, error was: ' + err2);
-                        res.status(500).end();
-                        db.close();
-    
-                    }
-                    else{
-                        //charge the user if the owner is changed
-                        console.log('got gig set with the band' + bandID);
-                        console.log(JSON.stringify(result));
-                        chargeUser(req, price, marketID, (ourError)=>{
-                        if(ourError){
-                            console.log('We had an error chraging customer: ' + ourError);
-                        }
+                    db.close();
+                } else if (obj) {
+                    console.log('That username or email already exists sending that info back.')
+                    res.status(200).send('This song already exists').end();
+                } else {
+                    //if not, create a new beat
+                    beats.insertOne({songSrc: songSrc, imgSrc: imgSrc, creator: creator, price: price, owner: req.session.key, songName: songName, description: description, rating:0}, (err, obj) => {
+                        if (err) {
+                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                            res.status(500).end()
+                        } 
                         res.status(200).send('Success').end();	
-                        });
-                    }
-                });
-    
-                
+                    })
+                }
             })
         }, err => {
             console.warn("Couldn't connect to database: " + err)
             res.status(500).end()
         });
-       
+
     })
-    
-    //transfer owner of song with stripe integration
-    router.post('/market/changeOwnerOfSong', (req,res)=>{
+
+    //post request to exchange rights of beats
+    router.post('/market/exchangeBeat', (req,res) => {
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
             res.status(400).end();
             return;
         }
-    
+        
         //if the request has no body
         if (!req.body) {
-                res.status(400).send('No body sent');
+            res.status(400).send('No body sent');
             return;
         }
     
-        //store the parameters
-        const newOwner = req.session.key;
-        const {oldOwner, band, songName} = req.body;
-    
+        //store values from the request
+        var {creator, songName} = req.body;
+
         //connect to the db
         database.connect(db => {
-            //place the song in the db
-            let market = db.db('market').collection('songs');
-            market.findOne({ 'owner': oldOwner, 'band': band, 'songName': songName}).toArray((err, result)=>{
+            console.log("Got in database connect");
+            //instance of db for beats
+            var beats = db.db('marketplace').collection('beats');
+            //check to see if the user laready exists
+            users.findOne({'songName':songName, 'creator':req.session.key}, (err, obj) => {
                 if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
-                } 
-                const oldBeatOwner = result[0].owner;
-                const price = result[0].price;
-                const marketID = result[0]._id;
-    
-                console.log("Gig with id: "+ gigID + 'is not filled');
-                var newValues = {$set: {'owner':req.session.key}};
-    
-                //transfer ownership and charge the user
-                market.updateOne({'_id':marketID}, newValues, (err2, result)=>{
-                    if (err2){
-                        console.log('There was an error tryign to append set gig stuff, error was: ' + err2);
-                        res.status(500).end();
-                        db.close();
-    
-                    }
-                    else{
-                        //charge the user if the owner is changed
-                        console.log('got gig set with the band' + bandID);
-                        console.log(JSON.stringify(result));
-                        chargeUser(req, price, marketID, (ourError)=>{
-                        if(ourError){
-                            console.log('We had an error chraging customer: ' + ourError);
-                        }
+                    db.close();
+                } else if (obj) {
+                    console.log('That username or email already exists sending that info back.')
+                    res.status(200).send('This song does not exist').end();
+                } else {
+                    //todo: run a stripe charge here
+                    beats.updateOne({'songName':req.session.key, 'creator': creator}, {$set:{'owner':req.session.key}}, (err, obj) => {
+                        if (err) {
+                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                            res.status(500).end()
+                        } 
                         res.status(200).send('Success').end();	
-                        });
-                    }
-                });
-    
-                
+                    })
+                }
             })
         }, err => {
             console.warn("Couldn't connect to database: " + err)
             res.status(500).end()
         });
-    
+
     })
-    
-    //transfer owner of beat with stripe integration
-    router.post('/market/changeOwnerOfBeat', (req, res) =>{
+
+    //get request to  get all merchandise in merch collection
+    router.get('/market/getAllMerch', (req,res) =>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
             res.status(400).end();
             return;
         }
-    
+        
         //if the request has no body
         if (!req.body) {
-                res.status(400).send('No body sent');
+            res.status(400).send('No body sent');
             return;
         }
-    
-        //store the parameters
-        const newOwner = req.session.key;
-        const {oldOwner, band, beatName} = req.body;
-    
+
         //connect to the db
         database.connect(db => {
-            //place the song in the db
-            let market = db.db('market').collection('beats');
-            market.findOne({ 'owner': oldOwner, 'band': band, 'beatName': beatName}).toArray((err, result)=>{
+            console.log("Got in database connect");
+            //instance of db for beats
+            var merch = db.db('marketplace').collection('merch');
+            //check to see if the user laready exists
+            merch.find({}, (err, obj) => {
                 if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
+                    db.close();
                 } 
-                const oldBeatOwner = result[0].owner;
-                const price = result[0].price;
-                const marketID = result[0]._id;
-    
-                console.log("Gig with id: "+ gigID + 'is not filled');
-                var newValues = {$set: {'owner':req.session.key}};
-    
-                //transfer ownership and charge the user
-                market.updateOne({'_id':marketID}, newValues, (err2, result)=>{
-                    if (err2){
-                        console.log('There was an error tryign to append set gig stuff, error was: ' + err2);
-                        res.status(500).end();
-                        db.close();
-    
-                    }
-                    else{
-                        //charge the user if the owner is changed
-                        console.log('got gig set with the band' + bandID);
-                        console.log(JSON.stringify(result));
-                        chargeUser(req, price, marketID, (ourError)=>{
-                        if(ourError){
-                            console.log('We had an error chraging customer: ' + ourError);
-                        }
-                        res.status(200).send('Success').end();	
-                        });
-                    }
-                });
-    
-                
+                res.status(200).send(obj).end();	
             })
         }, err => {
             console.warn("Couldn't connect to database: " + err)
             res.status(500).end()
         });
     })
-    
-    
-    
-    //creates a new merch item (merchType determinese type  of merch)
-    //valid types of merch are: hoody, hat, sweatpant, tshirt, longSleeveShirt, sticker, poster
-    router.post('/market/createMerch', (req,res)=>{
+
+    //get merch by type
+    router.post('market/getMerchByType', (req,res) =>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
             res.status(400).end();
             return;
         }
-    
+        
         //if the request has no body
         if (!req.body) {
-                res.status(400).send('No body sent');
+            res.status(400).send('No body sent');
             return;
         }
-    
-        //store the parameters
-        const {band, design, text, description, price, merchType, picture, zipcode, color} = req.body;
-        
+
+        var type = req.body.type;
         //connect to the db
         database.connect(db => {
             console.log("Got in database connect");
-            //place the song in the db
-            let market = db.db('market').collection('merch');
-            market.insertOne({ 'owner': req.session.key, 'date': new Date(), 'totalSales': 0, 'band': band, 'design': design, 'text':text, 'description':description, 'price': price, 'merchType': merchType, 'picture': picture, 'zipcode':  zipcode, 'color': color}, (err, obj) => {
+            //instance of db for beats
+            var merch = db.db('marketplace').collection('merch');
+            //check to see if the user laready exists
+            merch.find({"type":type}, (err, obj) => {
                 if (err) {
-                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
+                    db.close();
                 } 
-                res.status(200).send('Success').end();	
+                res.status(200).send(obj).end();	
             })
         }, err => {
             console.warn("Couldn't connect to database: " + err)
             res.status(500).end()
         });
     })
-    
-    
-    //route to place an order for merch, todo: determine if the user should be charged when the order is filled or placed
-    router.post('/market/orderMerch', (req,res)=>{
+
+    //get merch by owner
+    router.post('/market/getMerchByOwner', (req,res) =>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
             res.status(400).end();
             return;
         }
-    
+        
         //if the request has no body
         if (!req.body) {
-                res.status(400).send('No body sent');
+            res.status(400).send('No body sent');
             return;
         }
-    
-        //store the parameters
-        const {sizes, colors, quantity, cost, design, itemIds, band, gig, address, merchType} = req.body;
-        
+
+        var owner = req.body.owner;
         //connect to the db
         database.connect(db => {
             console.log("Got in database connect");
-            //place the order in the mercg orders collection
-            let market = db.db('market').collection('activeMerchOrders');
-            market.insertOne({ 'owner': req.session.key,
-             'date': new Date(),
-              'size': sizes,
-               'colors': colors,
-                'quantity': quantity,
-                 'cost': cost,
-                  'design': design,
-                   'itemIds':itemIds,
-                    'band': band,
-                     'gig': gig,
-                      'address': address,
-                        'type':merchType,
-                            'owner': req.session.key,
-                                'date': new Date()
-                                }, (err, obj) => {
-                        if (err) {
-                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                            res.status(500).end()
-                        } 
-                        //chrage the user for the preorder
-                        chargeUser(req, cost, obj._id, (ourError)=>{
-                            if(ourError){
-                                console.log('We had an error chraging customer: ' + ourError);
-                            }
-                            //update the merch sale stats
-                            let merch = db.db('market').collection('merch');
-                            for(let id in itemIds){
-                                merch.findOne({ '_id': itemId}, (err, obj2) => {
-                                    console.log("Got in find one");
-                                    console.log(JSON.stringify(obj2));
-                                    if (err) {
-                                        console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                                        res.status(500).end()
-                                    }
-                                    ++obj2.totalSales;
-                                    merch.update({'_id':id}, {$set:{'totalSales':obj2.totalSales}}, {upsert:true}, (err4, res4)=>{
-                                        if (err4){
-                                            res.status(500).end();
-                                            db.close();
-                                        }
-                                        else{
-                                            db.close();
-    
-                                        }
-                                });
-                            })
-                        }
-                        res.status(200).send('Success').end();
-                        });
-                    })
-                }, err => {
-                    console.warn("Couldn't connect to database: " + err)
+            //instance of db for beats
+            var merch = db.db('marketplace').collection('merch');
+            //check to see if the user laready exists
+            merch.find({"owner":owner}, (err, obj) => {
+                if (err) {
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
-            });
+                    db.close();
+                } 
+                res.status(200).send(obj).end();	
+            })
+        }, err => {
+            console.warn("Couldn't connect to database: " + err)
+            res.status(500).end()
+        });
     })
-    
-    //route to place an order for a hoody
-    router.post('/market/orderHoody', (req,res)=>{
+
+    //get merch by band
+    router.post('/market/getMerchByBand', (req,res)=>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
             res.status(400).end();
             return;
         }
-    
+        
         //if the request has no body
         if (!req.body) {
-                res.status(400).send('No body sent');
+            res.status(400).send('No body sent');
             return;
         }
-    
-        //store the parameters
-        const {size, color, quantity, cost, design, itemId, band, gig, address, merchType} = req.body;
-        
+
+        var band = req.body.band;
         //connect to the db
         database.connect(db => {
             console.log("Got in database connect");
-            //place the order in the mercg orders collection
-            let market = db.db('market').collection('hoodyOrders');
-            market.insertOne({ 'owner': req.session.key,
-             'date': new Date(),
-              'size': size,
-               'color': color,
-                'quantity': quantity,
-                 'cost': cost,
-                  'design': design,
-                   'itemId':itemId,
-                    'band': band,
-                     'gig': gig,
-                      'address': address,
-                        'type':merchType,
-                            'owner': req.session.key,
-                                'date': new Date()
-                                }, (err, obj) => {
-                        if (err) {
-                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                            res.status(500).end()
-                        } 
-                        //chrage the user for the preorder
-                        chargeUser(req, cost, obj._id, (ourError)=>{
-                            if(ourError){
-                                console.log('We had an error chraging customer: ' + ourError);
-                            }
-                            //update the merch sale stats
-                            let merch = db.db('market').collection('merch');
-                            merch.findOne({ '_id': itemId}, (err, obj2) => {
-                                console.log("Got in find one");
-                                console.log(JSON.stringify(obj2));
-                                if (err) {
-                                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                                    res.status(500).end()
-                                }
-                                ++obj2.totalSales;
-                                merch.update({'_id':id}, {$set:{'totalSales':obj2.totalSales}}, {upsert:true}, (err4, res4)=>{
-                                    if (err4){
-                                        res.status(500).end();
-                                        db.close();
-                                    }
-                                    else{
-                                        db.close();
-                                        res.status(200).send('Success').end();
-                                    }
-                            });
-                        })
-                        });
-                    })
-                }, err => {
-                    console.warn("Couldn't connect to database: " + err)
+            //instance of db for beats
+            var merch = db.db('marketplace').collection('merch');
+            //check to see if the user laready exists
+            merch.find({"bandFor":band}, (err, obj) => {
+                if (err) {
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
-            });
+                    db.close();
+                } 
+                res.status(200).send(obj).end();	
+            })
+        }, err => {
+            console.warn("Couldn't connect to database: " + err)
+            res.status(500).end()
+        });
     })
-    
-    //route to place an order for a hat
-    router.post('/market/orderHat', (req,res)=>{
+
+    //get merch by gig
+    router.post('/market/getMerchByGig', (req,res)=>{
         //if the user is not signed in
         if(!req.session.key){
             console.log('Non logged in user tried to post a band');
             res.status(400).end();
             return;
         }
-    
+        
         //if the request has no body
         if (!req.body) {
-                res.status(400).send('No body sent');
+            res.status(400).send('No body sent');
             return;
         }
-    
-        //store the parameters
-        const {color, quantity, cost, design, itemId, band, gig, address, merchType} = req.body;
-        
+
+        var gig = req.body.gig;
         //connect to the db
         database.connect(db => {
             console.log("Got in database connect");
-            //place the order in the mercg orders collection
-            let market = db.db('market').collection('hatOrders');
-            market.insertOne({ 'owner': req.session.key,
-             'date': new Date(),
-               'color': color,
-                'quantity': quantity,
-                 'cost': cost,
-                  'design': design,
-                   'itemId':itemId,
-                    'band': band,
-                     'gig': gig,
-                      'address': address,
-                        'type':merchType,
-                            'owner': req.session.key,
-                                'date': new Date()
-                                }, (err, obj) => {
-                        if (err) {
-                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                            res.status(500).end()
-                        } 
-                        //chrage the user for the preorder
-                        chargeUser(req, cost, obj._id, (ourError)=>{
-                            if(ourError){
-                                console.log('We had an error chraging customer: ' + ourError);
-                            }
-                            //update the merch sale stats
-                            let merch = db.db('market').collection('merch');
-                            merch.findOne({ '_id': itemId}, (err, obj2) => {
-                                console.log("Got in find one");
-                                console.log(JSON.stringify(obj2));
-                                if (err) {
-                                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                                    res.status(500).end()
-                                }
-                                ++obj2.totalSales;
-                                merch.update({'_id':id}, {$set:{'totalSales':obj2.totalSales}}, {upsert:true}, (err4, res4)=>{
-                                    if (err4){
-                                        res.status(500).end();
-                                        db.close();
-                                    }
-                                    else{
-                                        db.close();
-                                        res.status(200).send('Success').end();
-                                    }
-                            });
-                        })
-                        });
-                    })
-                }, err => {
-                    console.warn("Couldn't connect to database: " + err)
+            //instance of db for beats
+            var merch = db.db('marketplace').collection('merch');
+            //check to see if the user laready exists
+            merch.find({"gigFor":gig}, (err, obj) => {
+                if (err) {
+                    console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
                     res.status(500).end()
-            });
+                    db.close();
+                } 
+                res.status(200).send(obj).end();	
+            })
+        }, err => {
+            console.warn("Couldn't connect to database: " + err)
+            res.status(500).end()
+        });
     })
-    
-    //route to place an order for sweatpants
-    router.post('/market/orderHoody', (req,res)=>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-        //if the request has no body
-        if (!req.body) {
-                res.status(400).send('No body sent');
-            return;
-        }
-    
-        //store the parameters
-        const {size, color, quantity, cost, design, itemId, band, gig, address, merchType} = req.body;
-        
-        //connect to the db
-        database.connect(db => {
-            console.log("Got in database connect");
-            //place the order in the mercg orders collection
-            let market = db.db('market').collection('hoodyOrders');
-            market.insertOne({ 'owner': req.session.key,
-             'date': new Date(),
-              'size': size,
-               'color': color,
-                'quantity': quantity,
-                 'cost': cost,
-                  'design': design,
-                   'itemId':itemId,
-                    'band': band,
-                     'gig': gig,
-                      'address': address,
-                        'type':merchType,
-                            'owner': req.session.key,
-                                'date': new Date()
-                                }, (err, obj) => {
-                        if (err) {
-                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                            res.status(500).end()
-                        } 
-                        //chrage the user for the preorder
-                        chargeUser(req, cost, obj._id, (ourError)=>{
-                            if(ourError){
-                                console.log('We had an error chraging customer: ' + ourError);
-                            }
-                            //update the merch sale stats
-                            let merch = db.db('market').collection('merch');
-                            merch.findOne({ '_id': itemId}, (err, obj2) => {
-                                console.log("Got in find one");
-                                console.log(JSON.stringify(obj2));
-                                if (err) {
-                                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                                    res.status(500).end()
-                                }
-                                ++obj2.totalSales;
-                                merch.update({'_id':id}, {$set:{'totalSales':obj2.totalSales}}, {upsert:true}, (err4, res4)=>{
-                                    if (err4){
-                                        res.status(500).end();
-                                        db.close();
-                                    }
-                                    else{
-                                        db.close();
-                                        res.status(200).send('Success').end();
-                                    }
-                            });
-                        })
-                        });
-                    })
-                }, err => {
-                    console.warn("Couldn't connect to database: " + err)
-                    res.status(500).end()
-            });
-    })
-    
-    //route to place an order for tshirts
-    router.post('/market/orderTshirt', (req,res)=>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-        //if the request has no body
-        if (!req.body) {
-                res.status(400).send('No body sent');
-            return;
-        }
-    
-        //store the parameters
-        const {size, color, quantity, cost, design, itemId, band, gig, address, merchType} = req.body;
-        
-        //connect to the db
-        database.connect(db => {
-            console.log("Got in database connect");
-            //place the order in the mercg orders collection
-            let market = db.db('market').collection('tshirtOrders');
-            market.insertOne({ 'owner': req.session.key,
-             'date': new Date(),
-              'size': size,
-               'color': color,
-                'quantity': quantity,
-                 'cost': cost,
-                  'design': design,
-                   'itemId':itemId,
-                    'band': band,
-                     'gig': gig,
-                      'address': address,
-                        'type':merchType,
-                            'owner': req.session.key,
-                                'date': new Date()
-                                }, (err, obj) => {
-                        if (err) {
-                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                            res.status(500).end()
-                        } 
-                        //chrage the user for the preorder
-                        chargeUser(req, cost, obj._id, (ourError)=>{
-                            if(ourError){
-                                console.log('We had an error chraging customer: ' + ourError);
-                            }
-                            //update the merch sale stats
-                            let merch = db.db('market').collection('merch');
-                            merch.findOne({ '_id': itemId}, (err, obj2) => {
-                                console.log("Got in find one");
-                                console.log(JSON.stringify(obj2));
-                                if (err) {
-                                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                                    res.status(500).end()
-                                }
-                                ++obj2.totalSales;
-                                merch.update({'_id':id}, {$set:{'totalSales':obj2.totalSales}}, {upsert:true}, (err4, res4)=>{
-                                    if (err4){
-                                        res.status(500).end();
-                                        db.close();
-                                    }
-                                    else{
-                                        db.close();
-                                        res.status(200).send('Success').end();
-                                    }
-                            });
-                        })
-                        });
-                    })
-                }, err => {
-                    console.warn("Couldn't connect to database: " + err)
-                    res.status(500).end()
-            });
-    })
-    
-    //route to place an order for long sleeve shirt
-    router.post('/market/orderLongSleeve', (req,res)=>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-        //if the request has no body
-        if (!req.body) {
-                res.status(400).send('No body sent');
-            return;
-        }
-    
-        //store the parameters
-        const {size, color, quantity, cost, design, itemId, band, gig, address, merchType} = req.body;
-        
-        //connect to the db
-        database.connect(db => {
-            console.log("Got in database connect");
-            //place the order in the mercg orders collection
-            let market = db.db('market').collection('longSleeveOrders');
-            market.insertOne({ 'owner': req.session.key,
-             'date': new Date(),
-              'size': size,
-               'color': color,
-                'quantity': quantity,
-                 'cost': cost,
-                  'design': design,
-                   'itemId':itemId,
-                    'band': band,
-                     'gig': gig,
-                      'address': address,
-                        'type':merchType,
-                            'owner': req.session.key,
-                                'date': new Date()
-                                }, (err, obj) => {
-                        if (err) {
-                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                            res.status(500).end()
-                        } 
-                        //chrage the user for the preorder
-                        chargeUser(req, cost, obj._id, (ourError)=>{
-                            if(ourError){
-                                console.log('We had an error chraging customer: ' + ourError);
-                            }
-                            //update the merch sale stats
-                            let merch = db.db('market').collection('merch');
-                            merch.findOne({ '_id': itemId}, (err, obj2) => {
-                                console.log("Got in find one");
-                                console.log(JSON.stringify(obj2));
-                                if (err) {
-                                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                                    res.status(500).end()
-                                }
-                                ++obj2.totalSales;
-                                merch.update({'_id':id}, {$set:{'totalSales':obj2.totalSales}}, {upsert:true}, (err4, res4)=>{
-                                    if (err4){
-                                        res.status(500).end();
-                                        db.close();
-                                    }
-                                    else{
-                                        db.close();
-                                        res.status(200).send('Success').end();
-                                    }
-                            });
-                        })
-                        });
-                    })
-                }, err => {
-                    console.warn("Couldn't connect to database: " + err)
-                    res.status(500).end()
-            });
-    })
-    
-    //route to place an order for a sticker
-    router.post('/market/orderSticker', (req,res)=>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-        //if the request has no body
-        if (!req.body) {
-                res.status(400).send('No body sent');
-            return;
-        }
-    
-        //store the parameters
-        const {color, quantity, cost, design, itemId, band, gig, address, merchType} = req.body;
-        
-        //connect to the db
-        database.connect(db => {
-            console.log("Got in database connect");
-            //place the order in the mercg orders collection
-            let market = db.db('market').collection('stickerOrders');
-            market.insertOne({ 'owner': req.session.key,
-             'date': new Date(),
-               'color': color,
-                'quantity': quantity,
-                 'cost': cost,
-                  'design': design,
-                   'itemId':itemId,
-                    'band': band,
-                     'gig': gig,
-                      'address': address,
-                        'type':merchType,
-                            'owner': req.session.key,
-                                'date': new Date()
-                                }, (err, obj) => {
-                        if (err) {
-                            console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                            res.status(500).end()
-                        } 
-                        //chrage the user for the preorder
-                        chargeUser(req, cost, obj._id, (ourError)=>{
-                            if(ourError){
-                                console.log('We had an error chraging customer: ' + ourError);
-                            }
-                            //update the merch sale stats
-                            let merch = db.db('market').collection('merch');
-                            merch.findOne({ '_id': itemId}, (err, obj2) => {
-                                console.log("Got in find one");
-                                console.log(JSON.stringify(obj2));
-                                if (err) {
-                                    console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-                                    res.status(500).end()
-                                }
-                                ++obj2.totalSales;
-                                merch.update({'_id':id}, {$set:{'totalSales':obj2.totalSales}}, {upsert:true}, (err4, res4)=>{
-                                    if (err4){
-                                        res.status(500).end();
-                                        db.close();
-                                    }
-                                    else{
-                                        db.close();
-                                        res.status(200).send('Success').end();
-                                    }
-                            });
-                        })
-                        });
-                    })
-                }, err => {
-                    console.warn("Couldn't connect to database: " + err)
-                    res.status(500).end()
-            });
-    })
-    
-    
-    router.post('/market/shipMerch', (req, res) =>{
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-        //if the request has no body
-        if (!req.body) {
-                res.status(400).send('No body sent');
-            return;
-        }
-    
-        //store the parameters
-        const {quantity, merchType} = req.body;
-        //hoody, hat, sweatpants, tshirt, longSleeveShirt, sticker, poster
-        if(merchType == 'hoody'){
-            shipHoodies(quantity);
-        }else if(merchTypee == 'hat'){
-    
-        }else if(merchType == 'sweatpants'){
-    
-        }else if(merchType == 'tshirt'){
-    
-        }else if(merchType ==  'longSleeveShirt'){
-    
-        }else if(merchType == 'sticker'){
-    
-        }else if(merchType == 'poster'){
-    
-        }
-    
-    })
-    
-    
+
+    //generates a unique batch id for the merch iteam
+    function createBatchID(type, color, price, creator, band, gig){
+        return "this will be an id";
+    }
+
     //calls the stripe api to create a transaction
     function chargeUser(req, price, marketID, cb){
         console.log('PRICE IN CHARGE: ' + price);
@@ -1335,41 +673,10 @@ module.exports = router => {
         });
     }
     
-    //ships the oldest orders of hoodies in the collection
-    function shipHoodies(quantity){
-        //if the user is not signed in
-        if(!req.session.key){
-            console.log('Non logged in user tried to post a band');
-            res.status(400).end();
-            return;
-        }
-    
-        //if the request has no body 
-        //change
-        if (!req.body) {
-                res.status(400).send('No body sent');
-            return;
-        }
-    
-        
-        // //connect to the db
-        // database.connect(db => {
-        // 	console.log("Got in database connect");
-        //     //place the order in the mercg orders collection
-        //     let market = db.db('market').collection('hoodyOrders');
-        //     market.find( (err, obj) => {
-        //                 if (err) {
-        //                     console.error(`Login request from ${req.ip} (for ${username}) returned error: ${err}`)
-        //                     res.status(500).end()
-        //                 } 
-        //                 //chrage the user for the preorder
-                        
-        // 	        })
-        //         }, err => {
-        // 	        console.warn("Couldn't connect to database: " + err)
-        // 	        res.status(500).end()
-        //     });
+    function fillOrders(obj){
+        console.log("this function will fill orders for the batch and remove the orders from preorders")
     }
+    
     
     } /* end module.exports */
     
