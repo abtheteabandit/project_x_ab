@@ -46,4 +46,7 @@ module.exports = router => {
   router.get('/map', (req,res)=>{
     res.redirect('/eventMap');
   });
+  router.get('/donate', (req,res)=>{
+    res.render('donate.html');
+  });
 }
