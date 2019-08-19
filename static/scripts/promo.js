@@ -1,4 +1,5 @@
 // Globals
+
 var createCouponState = false;
 //user has logged in to these socials
 var hasSnap = false;
@@ -20,6 +21,7 @@ var the_promo_ID = "";
 //if the user has made gigS
 var hasGigs = false;
 var ourUser = {};
+
 
 
 class SearchResult {
@@ -133,8 +135,13 @@ class SearchResult {
 
 function init(){
   setUpStepTwo();
-  checkUserSocials();
+  //checkUserSocials();
+  // disable relevant buttons if they are already connected
+
   getGigs();
+//  document.getElementById('modal-facebook-login-banda-modal-post').style.display = 'block';
+ // document.getElementById("modal-wrapper-tos").style.display = "block";
+  // document.getElementById("modal-facebook-login-banda-modal-post").style.visibility = "hidden";
 
   var parsedURL =  parseURL(window.location.href);
   console.log("parsed url is below")
@@ -157,6 +164,26 @@ function init(){
 
 
 }
+
+jQuery(function($) {
+    $('#terms-of-service').on('scroll', function() {
+        if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+					var acceptBtn = document.getElementById("accept-tos");
+					acceptBtn.style.opacity = 1.0;
+					acceptBtn.disabled = false;
+        }else{
+					var acceptBtn = document.getElementById("accept-tos");
+					acceptBtn.style.opacity = 0.5;
+					acceptBtn.disabled = true;
+				}
+    });
+    $('#scroll-to-bottom-btn').on('click',function(){
+      var tos = $('#terms-of-service');
+      $(tos).scrollTop(999999);
+      console.log("terms of service scroll click");
+    });
+});
+
 function getGigs(){
   $.get('/user', {'query':'nada'}, res=>{
     if (res==""){
@@ -660,6 +687,18 @@ function checkUserSocials(){
         hasSnap=true;
       }
       console.log('SOCIALS FRO USER IS (true means we already have their info for that social): ' + JSON.stringify(res.data));
+      if(hasTwitter){
+        document.getElementById('connect-twitter-button').href = "#";
+        document.getElementById('connect-twitter-button').className = 'deactivated-social-buttons';
+      }
+      if(hasFB){
+        document.getElementById('connect-fb-button').href = "#";
+        document.getElementById('connect-fb-button').className = 'deactivated-social-buttons';
+      }
+      if(hasInsta){
+        document.getElementById('connect-insta-button').href = "#";
+        document.getElementById('connect-insta-button').className = 'deactivated-social-buttons';
+      }
     }
     else{
       console.log('There was an error using this route');
@@ -832,9 +871,10 @@ function selectMainFacebookPage(){
     console.log("this will post to the facebook route")
 
     //make post request to store the page token and page statistics
-    $.post('http://localhost:1600/getFacebookPageTokens', {pageId: valueSelected, pageName: textSelected}, res=>{
+    $.post('https://www.banda-inc.com/getFacebookPageTokens', {pageId: valueSelected, pageName: textSelected}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-select-social-page").style.display = "none";
+//      document.getElementById('modal-wrapper-tos').style.visibility = "visible";
     });
   });
 }
@@ -848,14 +888,49 @@ function selectMainInstagramPage(){
     var instagramUsername = document.getElementById("instagramUsername").value;
     console.log("VALUE SELECTED IS: " + valueSelected);
     console.log("TEXT SELECTED IS: " + textSelected);
-
+    if(instagramUsername == ''){
+      alert("Please enter your instagram username!")
+      return;
+    }
     console.log("this will post request the insta route")
     // //make post request to store the page token and page statistics
     console.log(valueSelected +  " Is the page id");
-    $.post('http://localhost:1600/storeInstData', {pageId: valueSelected, pageName: textSelected, username: instagramUsername}, res=>{
+    $.post('https://www.banda-inc.com/storeInstData', {pageId: valueSelected, pageName: textSelected, username: instagramUsername}, res=>{
       alert(res);
       document.getElementById("modal-wrapper-select-social-page-insta").style.display = "none";
       document.getElementById("modal-wrapper-select-social-page").style.display = "none";
     });
+  });
+}
+
+function postFacebookLoginSubmit(){
+  //boothe look here for post
+  console.log('submit ')
+  const facebookUsername = $("#facebookPostingEmail").val();
+  const facebookPassword = $("#facebookPostingPassword").val();
+  const requestObject = {"post_permission":true, "data_permission" :true, "username":facebookUsername, "password": facebookPassword };
+  $.post('/updateMe', {'query':{$set:{'facebook':{'permissions':{'post_permission':true}, 'username':facebookUsername, 'password':facebookPassword}}}}, res=>{
+    alert('You can now post to your Facebook within Banda!')
+    document.getElementById('modal-facebook-login-banda-modal-post').hidden=true
+    document.getElementById('modal-facebook-login-banda-modal-post').style.display='none';
+  })
+  // todo: post the request object to the  server, hash the  password and store it
+}
+//document.getElementById("modal-facebook-login-banda-modal-post").style.visibility
+
+function displayTOS(){
+  document.getElementById("modal-wrapper-tos").hidden=false
+  document.getElementById("modal-wrapper-tos").style.display = 'block';
+}
+
+function acceptedFBTos(){
+  document.getElementById('modal-wrapper-tos').style.display='none';
+  document.getElementById('modal-facebook-login-banda-modal-post').hidden=false
+  document.getElementById('modal-facebook-login-banda-modal-post').style.display='block';
+}
+function declineFB(){
+  document.getElementById('modal-wrapper-tos').style.display='none'
+  $.post('/updateMe', {'query':{$set:{'facebook':{'permissions':{'post_permission':false}}}}}, res=>{
+    alert('We have disabled automatic posting for your Facebook.')
   });
 }

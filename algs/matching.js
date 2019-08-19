@@ -601,66 +601,6 @@ module.exports = {
         }
       });
     }
-  },
-
-  findLiveEvents : function findLiveEvents(time, lat, lng, gigs, searchText, cb){
-    console.log('Got gigs in mathcing: ' + JSON.stringify(gigs))
-    var genresFromStr=[];
-    var instsFromStr=[];
-    var gigTypesFromStr=[];
-    var vibesFromStr=[];
-    var cats = null;
-
-    if (searchText){
-      //store categories
-      var categories={"genres":[genreBank,genresFromStr,genreMult], "insts":[instBank,instsFromStr,instMult],"vibes":[vibeBank,vibesFromStr,vibeMult],"gigTypes":[gigTypeBank,gigTypesFromStr,typeMult]};
-      cats = parseQueryString(searchText, categories);
-    }
-
-    var gigsToScore = [];
-
-    for (var g in gigs){
-      var gig = gigs[g];
-      console.log('gig nae on: ' + gig.name);
-
-      //score on location
-      var dist = Math.sqrt((gig.lat-lat)*(gig.lat-lat)+(gig.lng-lng)*(gig.lng-lng));
-
-      //score on time
-      var now = new Date()
-      now = now.addHours(time);
-      var timeDiff = diff_minutes(gig.date, now.toString());
-
-      var queryStrScore = 0;
-
-      //score on text
-      if (searchText && gig.hasOwnProperty('categories')){
-
-        for (key in cats){
-          console.log("for key in cat and the key is: " + key);
-          //if the category matches the gig
-          if (cats.hasOwnProperty(key)){
-            if (gig.categories.hasOwnProperty(key)){
-              var contents = cats[key];
-              var fromStr=contents[1];
-              var mult=contents[2];
-              //for each worcd ni the description
-              for (var word in fromStr){
-                //push back the word if it matches
-                if (gig.categories[key].includes(fromStr[word])){
-                  queryStrScore+=(1*mult);
-                }
-              }
-            }
-          }
-        }
-      }
-      var totalScore = -timeDiff-dist+queryStrScore;
-      gigsToScore.push([gig, totalScore]);
-    }
-    var sortedGigs = sortDict(gigsToScore);
-    cb(null, sortedGigs);
-
   }
 }
 
@@ -730,7 +670,7 @@ module.exports = {
     //for each open date
     for (var key in bandOpenDates){
       var bandDay = bandOpenDates[key][0];
-      //if the days dont match continue
+      //id the days dont match continue
       if (!(bandDay == gigDay)){
         continue;
       }
@@ -763,11 +703,7 @@ module.exports = {
     }
 
   }
-  // date manipulation
-  Date.prototype.addHours = function(h) {
-    this.setTime(this.getTime() + (h*60*60*1000));
-    return this;
-  }
+
   //determine the score for a distance between a band and a gig
   function scoreOnDist (myBandMaxDist, lat1, lon1, lat2, lon2){
     //negate final

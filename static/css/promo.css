@@ -267,6 +267,26 @@ body{
   display: none;
 }
 
+.deactivated-social-buttons{
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  background-color: #000000;
+  margin: 10px;
+  border-radius: 40%;
+  box-shadow: 0 5px 20px -1px #D3D3D3;
+  overflow: hidden;
+  position: relative;
+  opacity: 0.4;
+}
+
+.deactivated-social-buttons i{
+  line-height: 80px;
+  font-size: 30px;
+  transition: 0.5s linear;
+  color: #D3D3D3;
+}
+
 .social-buttons{
   display: inline-block;
   width: 80px;
@@ -339,7 +359,7 @@ body{
 
 #promo-name{
   display: inline;
-  width: 620px;
+  width: 610px;
   margin-left: 8px
 }
 
@@ -381,7 +401,7 @@ body{
 }
 
 #promo-url{
-  width: 589px;
+  width: 579px;
 }
 
 #promo-loc-label{
@@ -390,7 +410,7 @@ body{
 }
 
 #promo-loc{
-  width: 584px;
+  width: 574px;
 }
 
 #promo-grid-2{
@@ -722,7 +742,7 @@ body{
     height: 20px;
   }
   #promo-name{
-    width: 290px;
+    width: 280px;
   }
   #promo-grid-1{
     display: grid;
@@ -744,10 +764,10 @@ body{
   }
 
   #promo-url{
-    width: 274px;
+    width: 264px;
   }
   #promo-loc{
-    width: 270px;
+    width: 260px;
   }
   #promo-grid-2{
     margin-top: 10px;

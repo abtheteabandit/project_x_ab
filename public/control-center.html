@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-145396306-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-145396306-1');
+</script> 
+      <meta name="description" content="find bands find gigs control your future. Find music artists gigs events connections links money/>$
+
     <link rel="shortcut icon" type = "image/png" href = "/assets/Home/favicon.ico">
     <meta charset="utf-8">
     <meta http-equiv="ScreenOrientation" content="autoRotate:disabled">
@@ -109,7 +120,7 @@
         <p id="create-pull-p">This is a promotion for <em>you </em>  that allows you to quantify your entire social media following and let the world know you are a Banda recognized artist or event owner. Every click on this link will increase your "pull" on Banda which will be displayed on your profile, making you an even better contact for other users. Just select one of your bands or events to add pull to.</p>
         <p id="create-pull-social-text">post to</p>
         <div id="create-pull-social-grid">
-          <input class="create-pull-social" type="button" value="fb" id="create-pull-fb" onclick="toggleActiveSocial(this);"/>
+          <input class="create-pull-social" type="button" value="fb" id="create-pull-fb" onclick="toggleActiveSocial(this);"hidden='true' />
           <!-- <input class="create-pull-social" type="button" value="insta" id="create-pull-insta" onclick="toggleActiveSocial(this);"/> -->
           <input class="create-pull-social" type="button" value="twitter" id="create-pull-twitter" onclick="toggleActiveSocial(this);"/>
           <i id="create-pull-dl" onclick="downloadFromCreatePull()" class="fas fa-arrow-circle-down"></i>
@@ -131,7 +142,7 @@
         </div>
         <p id="promo-req-social-text">post to</p>
         <div id="promo-req-social-grid">
-          <input class="promo-req-social" type="button" value="fb" id="promo-req-fb" onclick="toggleActiveSocial(this);"/>
+          <input class="promo-req-social" type="button" value="fb" id="promo-req-fb" onclick="toggleActiveSocial(this);" hidden='true'/>
           <!-- <input class="promo-req-social" type="button" value="insta" id="promo-req-insta" onclick="toggleActiveSocial(this);"/> -->
           <input class="promo-req-social" type="button" value="twitter" id="promo-req-twitter" onclick="toggleActiveSocial(this);"/>
           <i id="promo-req-dl" onclick="downloadFromPromoRequest()" class="fas fa-arrow-circle-down"></i>
@@ -200,7 +211,7 @@
         </div>
         <p id="promo-sb-social-text">post to</p>
         <div id="promo-sb-social-grid">
-          <input class="promo-sb-social" type="button" value="" id="promo-sb-fb" onclick="toggleActiveSocial(this);" />
+          <input class="promo-sb-social" type="button" value="" id="promo-sb-fb" onclick="toggleActiveSocial(this);" hidden='true' />
           <!-- <input class="promo-sb-social" type="button" value="" id="promo-sb-insta" onclick="toggleActiveSocial(this);"/> -->
           <input class="promo-sb-social" type="button" value="" id="promo-sb-twitter" onclick="toggleActiveSocial(this);"/>
           <i id="promo-req-dl" onclick="downloadFromPromoSB()" class="fas fa-arrow-circle-down"></i>
@@ -389,7 +400,6 @@
         </div>
       </form>
     </div>
-
     <div id="modal-wrapper-credit" class="modal-card">
       <span onclick="document.getElementById('modal-wrapper-credit').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
       <form id="payment-form">
@@ -402,6 +412,7 @@
           <div id="card-element">
             <!-- A Stripe Element will be inserted here. -->
           </div>
+
           <!-- Used to display form errors. -->
           <div id="card-errors" role="alert"></div>
         </div>
@@ -411,7 +422,6 @@
         <div id="loader-new-card" class="loader"></div>
       </form>
     </div>
-
     <div id="modal-wrapper-bank">
       <div id="bank-content">
         <span onclick="document.getElementById('modal-wrapper-bank').style.display='none'" class="close-bank" title="Close PopUp">&times;</span>
@@ -474,7 +484,6 @@
         <img alt="stripe"src="/assets/Control-Center/stripelogo.png" class="stripe-logo" />
       </div>
     </div>
-
     <div id="modal-wrapper-current-band">
       <form id="current-band-form" class="animate" enctype="multipart/form-data" method="post" action="#">
         <div>
@@ -542,6 +551,7 @@
         <span onclick="document.getElementById('modal-wrapper-notification-settings').style.display='none'" id="notification-close" title="Close PopUp">&times;</span>
         <div id="notification-settings-grid">
           <input type="number" id="notification-settings-phone" placeholder="phone number...no dashes or spaces (10 digits)" maxlength="11" minlength='11' />
+          <input type='email' id='notification-settings-email' placeholder='enter email here...'/>
           <label class="notification-settings-grid-item">Notify me of new events in my area
             <input id="notify-new-events" type="checkbox" checked="checked" onchange='clickNotify("events")'>
             <span class="checkmark" id='new-events-check'></span>
@@ -616,7 +626,6 @@
       </div>
 
       <div class="bottom-bar" id="bottom-bar-mobile">
-
         <img id="ticker-img" src="/assets/Control-Center/bottom-bar.png" alt="ticker" />
         <!-- Minh's Edit -->
          <div class="container">
@@ -647,13 +656,6 @@
          <!-- Minh end -->
          <button href="#" id="select-gig-to-ad" onclick="document.getElementById('modal-wrapper-link-application').style.display='block'">Ask user to apply to event...</button>
         <button href="#" id="contacts-button">contacts</button>
-        <div id='radio_div'>
-          <audio controls id='localized_radio' >
-
-            <!--<source src="/assets/Control-Center/Steal_Flowers.wav" type="audio/mp3">-->
-          </audio>
-          <a href='#' id='skip_song' onclick='skipSong()'>skip</a>
-        </div>
       </div>
 
       <div id="contacts-sidebar">

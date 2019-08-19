@@ -541,23 +541,6 @@ open gig Elements
   font-size: 20pt;
   z-index: 100;
 }
-#localized_radio{
-  width: 200px;
-  background-color: transparent;
-  color: transparent;
-
-}
-#skip_song{
-  width: 100px;
-  color: white;
-  z-index: 100;
-  height: 100%;
-}
-#radio_div{
-  width: 250px;
-  background-color: transparent;
-  z-index: 100;
-}
 
 #contacts-button:hover{
   cursor: pointer;

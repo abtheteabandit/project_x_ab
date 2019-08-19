@@ -87,7 +87,7 @@ app.use(session({
 		client: client,
 		ttl: 100000
 	}),
-	saveUninitialized: false,
+	saveUninitialized: true,
 	resave: false,
 	// cookie: { secure: true, maxAge: 86400000 }
 }));
@@ -207,10 +207,11 @@ router.post('/messages', (req, res)=>{
 /*Start of v1.1*/
 
 //instialize passport js for user login with facebook
+//instialize passport js for user login with facebook
 passport.use('auth_facebook',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-	callbackURL: '/facebook/return',
+	callbackURL: 'https://www.banda-inc.com/facebook/return',
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
@@ -219,6 +220,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 	let token = accessToken
 	let refresh = refreshToken
 
+	console.log(profile);
 	//create the url to request profile data
 	let url = "https://graph.facebook.com/v3.3/me?" + "fields=name,email&access_token=" + token;
 
@@ -229,6 +231,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 		}, function (err, response, body) {
 				//store the needed values from the facebook api  call
 				let email = body.email;
+				console.log(email + " IS THE EMAIL!!!!!!!!!!!!!!!!");
 				let username = body.name.replace(/\s+/g, '_')
 				//check for null values
 				if (!username) {
@@ -241,20 +244,23 @@ function(req, accessToken, refreshToken, profile, cb) {
 					//set database path
 					var users = db.db('users').collection('users');
 					//check to see if the user laready exists
-					users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
+					users.find({email: email}).toArray((err1, obj) => {
+						console.log(JSON.stringify(obj))
 						//catch error
-						if (err) {
-							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
+						if (err1) {
+							console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err1}`)
 							db.close();
 						}
 
 						//if the user already exists
-						else if (obj) {
+						else if (obj.length > 0) {
 							//sign the user in
 							req.session.key = username;
 							req.session.cookie.expires = false
 							req.session.save()
+
 							db.close();
+							cb(null, profile);
 						} else {
 							//if not, create a new user
 							users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
@@ -270,25 +276,27 @@ function(req, accessToken, refreshToken, profile, cb) {
 									req.session.cookie.expires = false
 									req.session.save()
 									db.close();
+									cb(null, profile);
 								}
 							});
 						}
-					})
-				}, err => {
+					}), err => {
 					console.warn("Couldn't connect to database: " + err)
 					res.status(500).send()
-				});
+				};
 			});
 	//done(null, profile);
-	return cb(null, profile);
-}));
+	// return cb(null, profile);
+	});
+
+}))
 
 //intialize twitter auth for passport
 passport.use('auth_twitter', new TwitterStrategy({
 	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
 	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
 	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
-	callbackURL: "http://localhost:1600/auth/twitter/callback",
+	callbackURL: "https://www.banda-inc.com/auth/twitter/callback",
   passReqToCallback: true
 },
 function(req, token, tokenSecret, profile, done) {
@@ -296,7 +304,19 @@ function(req, token, tokenSecret, profile, done) {
 
 	//store profile info
 	let username = profile.username
-	let email = profile.emails[0].value
+  let email = null
+  if (profile.hasOwnProperty('emails')){
+    if (profile.emails.length>0){
+      let email = profile.emails[0].value
+    }
+    else{
+      email = 'banda.help.cusomters@gmail.com'
+    }
+  }
+  else{
+     email = 'banda.help.cusomters@gmail.com'
+  }
+
 
 	//check for null values
 	if (!username) {
@@ -312,14 +332,14 @@ function(req, token, tokenSecret, profile, done) {
 		//set database path
 		var users = db.db('users').collection('users');
 		//check to see if the user laready exists
-		users.findOne({ $or: [{email: email}, {username: username}]}, (err, obj) => {
+		users.find({username: username}).toArray((err, obj) => {
 			//catch error
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
 			//if the user already exists
-			else if (obj) {
+			else if (obj.length > 0) {
 				//sign the user in
 				console.log(username + " is the username")
 				req.session.key = username;
@@ -327,10 +347,11 @@ function(req, token, tokenSecret, profile, done) {
 				req.session.save()
 				console.log(req.session)
 				console.log('Req session key after inserting user for register is: ' + req.session.key);
-				db.close();
+				return done(null, null);
+        db.close();
 			} else {
 				//if not, create a new user
-				users.insertOne({ email: email, username: username, contacts:[]}, (err, obj) => {
+				users.updateOne({'email':email},{ $set:{email: email, username: username, contacts:[], phone:''}}, {upsert:true},(err, obj) => {
 					//catch error
 					if (err) {
 						console.error(`Register request from ${req.ip} (for ${username}, ${email}) returned error: ${err}`);
@@ -343,6 +364,10 @@ function(req, token, tokenSecret, profile, done) {
 						req.session.save()
 						console.log(req.session)
 						console.log('Req session key after inserting user for register is: ' + req.session.key);
+            console.log()
+            console.log('TWITTER CRETAED USER: ')
+            console.log(email)
+            return done(null, null);
 						db.close();
 					}
 				});
@@ -351,7 +376,8 @@ function(req, token, tokenSecret, profile, done) {
 	}, err => {
 		console.warn("Couldn't connect to database: " + err)
 	});
-	done(null, null);
+	//done(null, null);
+	//return cb(null, profile);
 }
 ));
 
@@ -370,36 +396,42 @@ router.get('/loginWithFacebook', passport.authenticate('auth_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/return',
-  passport.authenticate('auth_facebook', { failureRedirect: 'http://localhost:1600/facebook/successAuth' }),
+  passport.authenticate('auth_facebook', { failureRedirect: 'https://www.banda-inc.com/facebook/failedAuth' }),
   function(req, res) {
-    res.redirect('http://localhost:1600/facebook/failedAuth');
+    res.redirect('https://www.banda-inc.com/facebook/successAuth');
 	});
 
 //route for failed oauth callback for facebook
 router.get('/facebook/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index#');
+  console.log('req query: ' + JSON.stringify(req.query));
+	return res.redirect('https://www.banda-inc.com/index#');
 })
 
 //route for succesful oauth callback for facebook
 router.get('/facebook/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index#');
+  console.log('req query: ' + JSON.stringify(req.query));
+	return res.redirect('https://www.banda-inc.com/index#');
 })
 
 //route for failed oauth callback for twitter
 router.get('/twitter/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index#');
+	req.session.cookie.expires = false
+	req.session.save()
+	return res.redirect('https://www.banda-inc.com/index#');
 })
 
 //route for succesful oauth callback for twitter
 router.get('/twitter/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/index');
+	req.session.cookie.expires = false
+	req.session.save()
+	return res.redirect('https://www.banda-inc.com/index');
 })
 
 //authenticate twitter redirect url
 router.get('/auth/twitter', passport.authenticate('auth_twitter'))
 
 //callback route for twitter authenication
-router.get('/auth/twitter/callback', passport.authenticate('auth_twitter', {successRedirect: '/twitter/failedAuth', failureRedirect: '/twitter/successAuth'}))
+router.get('/auth/twitter/callback', passport.authenticate('auth_twitter', {successRedirect: '/twitter/successAuth', failureRedirect: '/twitter/failedAuth'}))
 
 
 
@@ -411,7 +443,7 @@ passport.use("token_twitter", new TwitterTokenStrategy({
 	consumerKey: 'vTzIdwGET3J1GVoytgt1maOqC',
 	consumerSecret: 'lk77gRVrv5BptNuZvc1m8y42Lim9SXnOIhLkolGRYf42y8Eh6b',
 	userProfileURL: "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
-	callbackURL: "http://localhost:1600/token/twitter/callback",
+	callbackURL: "https://www.banda-inc.com/token/twitter/callback",
   passReqToCallback: true
 },
 function(req, token, tokenSecret, profile, done) {
@@ -492,19 +524,19 @@ function(req, token, tokenSecret, profile, done) {
 
 //route for failed oauth callback for twitter
 router.get('/twitter/token/failedAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/promo#?isPromo=true');
+	return res.redirect('https://www.banda-inc.com/promo#?isPromo=true');
 })
 
 //route for succesful oauth callback for twitter
 router.get('/twitter/token/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/promo#?isPromo=true');
+	return res.redirect('https://www.banda-inc.com/promo#?isPromo=true');
 })
 
 //authenticate twitter redirect url
 router.get('/token/twitter', passport.authenticate('token_twitter'))
 
 //callback route for twitter authenication
-router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: '/twitter/token/failedAuth', failureRedirect: '/twitter/token/successAuth'}))
+router.get('/token/twitter/callback', passport.authenticate('token_twitter', {successRedirect: 'https://www.banda-inc.com/twitter/token/failedAuth', failureRedirect: 'https://www.banda-inc.com/twitter/token/successAuth'}))
 
 //post request to post a tweet to twitter
 router.post('/postTweet', (req, res) =>{
@@ -654,8 +686,8 @@ router.post('/postPhotoTweet', function(req, res){
 passport.use('token_facebook',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-	callbackURL: 'http://localhost:1600/facebook/token/return',
-	//callbackURL: 'http://localhost:1600/facebook/return',
+	callbackURL: 'https://www.banda-inc.com/facebook/token/return',
+	//callbackURL: 'https://www.banda-inc.com/facebook/return',
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
@@ -664,32 +696,33 @@ function(req, accessToken, refreshToken, profile, cb) {
 	let token = accessToken
 	let refresh = refreshToken
 
-axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
-	.then(function (response) {
+	axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
+		.then(function (response) {
 
-		// handle success
-		var longToken = response.data.access_token
-		const date = Math.floor(new Date() / 1000)
-		console.log(req.session.key + " owns the token " + longToken)
-		database.connect(db => {
+			// handle success
+			var longToken = response.data.access_token
+			const date = Math.floor(new Date() / 1000)
+			console.log(JSON.stringify(req.session))
+			console.log(req.session.key + " owns the token " + longToken)
+			database.connect(db => {
 
-		//store the access tokens and profile information
-		db.db('users').collection('users').updateOne({'username':req.session.key},{$set:{'facebook':{'accessToken': longToken,
-																																																	'profile':profile,
-																																																	'date': date}}}
-				, (err4, res4)=>{
-					if (err4){
-						res.status(500).end();
-						db.close();
-					}
-					else{
-						console.log("the token was stored YOU FUCKING FUCKS QQQQQQQQQQQQQQQ")
-						db.close();
-					}
+			//store the access tokens and profile information
+			db.db('users').collection('users').updateOne({'username':req.session.key},{$set:{'facebook':{'accessToken': longToken,
+																																																		'profile':profile,
+																																																		'date': date}}}
+					, (err4, res4)=>{
+						if (err4){
+							res.status(500).end();
+							db.close();
+						}
+						else{
+							db.close();
+							return cb(null, profile);
+						}
+			});
+		}, err => {
+			console.warn("Couldn't connect to database: " + err)
 		});
-	}, err => {
-		console.warn("Couldn't connect to database: " + err)
-	});
 
 	})
 	.catch(function (error) {
@@ -698,7 +731,6 @@ axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_
 	})
 	.finally(function () {
 		// always executed
-		return cb(null, profile);
 	});
 
 }));
@@ -714,9 +746,9 @@ router.get('/getFacebookToken', passport.authenticate('token_facebook', { scope:
 
 //route for facebook oauth callback
 router.get('/facebook/token/return',
-  passport.authenticate('token_facebook', { failureRedirect: 'http://localhost:1600/facebook/token/successAuth' }),
+  passport.authenticate('token_facebook', { failureRedirect: 'https://www.banda-inc.com/facebook/token/successAuth' }),
   function(req, res) {
-    res.redirect('http://localhost:1600/facebook/token/failedAuth');
+    res.redirect('https://www.banda-inc.com/facebook/token/failedAuth');
 	});
 
 //route for failed token callback for facebook
@@ -727,6 +759,7 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 		//set database path
 		db.db('users').collection('users').findOne({username: req.session.key}, (err, obj) => {
 			//catch error
+			console.log(JSON.stringify(obj))
 			if (err) {
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
@@ -743,7 +776,7 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 				.finally(function () {
 					// always executed
 					//redirect to the page selection modal
-					var xurl = 'http://localhost:1600/promo#?'
+					var xurl = 'https://www.banda-inc.com/promo#?'
 					for(let i = 0; i < pageData.data.length; i++){
 						console.log("page is below")
 						console.log(pageData.data[i])
@@ -762,17 +795,18 @@ router.get('/facebook/token/failedAuth', (req, res) => {
 
 //route for succesful token  callback for facebook
 router.get('/facebook/token/successAuth', (req, res) => {
-	return res.redirect('http://localhost:1600/promo#');
+	return res.redirect('https://www.banda-inc.com/promo#');
 })
 
-//get the page access token for facebook based on selected page in modal
-router.post('/getFacebookPageTokens', (req, res) =>{
-	let pageId = req.body.pageId
-	let pageName = req.body.pageName
+//route to get and store the facebook page token and page data
+router.post('/getFBPageToken', (req, res) => {
+	console.log("!!!!!!!!!!!!!!!!!!!!" + req.session.key + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+	const pageId = req.body.pageId
+	const pageName = req.body.pageName
 
 	console.log("the page id is " + pageId)
 	console.log("the page name is " + pageName)
-
+	
 	database.connect(db => {
 		//set database path
 		db.db('users').collection('users').findOne({username: req.session.key}, (err, obj) => {
@@ -781,20 +815,27 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 				console.error(`User find request from ${req.ip} (for ${username}) returned error: ${err}`)
 				db.close();
 			}
+			console.log('-----------------------------------------------------------------------------------------------------')
+			console.log(obj)
+			console.log('-----------------------------------------------------------------------------------------------------')
+			console.log(obj.facebook)
+			//res.status(200).send('Success');
 
 			let token = obj.facebook.accessToken
+			console.log("the token is " + token)
 			//get short term page token
 			axios.get('https://graph.facebook.com/' + pageId + '?fields=access_token&access_token=' + token)
 				.then(function (response) {
 					console.log(response.data);
-					let pageToken = response.data.access_token
-					console.log("the short term page token  is " + pageToken)
+					let pageToken = response.data.access_token;
+					console.log("the short term page token  is " + pageToken);
 
 					//get long term page token
 					axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + pageToken)
 						.then(function (response) {
 							let pageToken = response.data.access_token
 
+							console.log(pageToken + " is page token");
 					 		//get the number of followers on a page
 							axios.get('https://graph.facebook.com/' + pageId + '?access_token=' + pageToken + '&fields=name,fan_count')
 							.then(function (response) {
@@ -812,7 +853,7 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 											totalConsumption += values[i].value
 										}
 										console.log(totalConsumption  + " total consumption")
-
+										console.log(token +  " is the token before storage")
 										//store all values from the facebook api in the database
 										database.connect(db => {
 											//store the access tokens and profile information
@@ -861,11 +902,9 @@ router.post('/getFacebookPageTokens', (req, res) =>{
 		console.warn("Couldn't connect to database: " + err)
 		res.status(500).send()
 	});
+
 })
-
-
 //for image processing
-
 
 
 //make post on facebook using message parameter
@@ -1070,7 +1109,7 @@ database.connect(db => {
       //string concatination with handles, caption and coupon description nad our own Banda stuff
 
       //testing imgURL
-			var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'http://localhost:1600/');
+			var imgURL = promo.imgURL.replace('www.banda-inc.com//', 'https://www.banda-inc.com/');
 			//conver the impage
       Jimp.read(imgURL, (err4, img)=>{
         if (err4){
@@ -1142,7 +1181,7 @@ database.connect(db => {
 passport.use('inst_data',new FacebookStrategy({
 	clientID: 475851112957866,
 	clientSecret: '5c355ad2664c4b340a5a72e5ce7b9134',
-	callbackURL: 'http://localhost:1600/inst/token/return',
+	callbackURL: 'https://www.banda-inc.com/inst/token/return',
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, cb) {
@@ -1153,6 +1192,7 @@ function(req, accessToken, refreshToken, profile, cb) {
 	const date = Math.floor(new Date() / 1000)
 	console.log("the insta token is " + token)
 	console.log("the profile id " + profile_id)
+	console.log("the session name is " + req.session.key)
 
 	axios.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=475851112957866&client_secret=5c355ad2664c4b340a5a72e5ce7b9134&fb_exchange_token=' + token)
 		.then(function (response) {
@@ -1226,15 +1266,16 @@ router.get('/getInstData', passport.authenticate('inst_data', { scope: [
 
 //route for facebook oauth callback
 router.get('/inst/token/return',
-  passport.authenticate('inst_data', { failureRedirect: 'http://localhost:1600/inst/token/failedAuth' }),
+  passport.authenticate('inst_data', { failureRedirect: 'https://www.banda-inc.com/inst/token/failedAuth' }),
   function(req, res) {
 		console.log("inst token callback")
-    res.redirect('http://localhost:1600/inst/token/successAuth');
+    res.redirect('https://www.banda-inc.com/inst/token/successAuth');
 	});
 
 //route for failed token callback for facebook
 router.get('/inst/token/failedAuth', (req, res) => {
 	console.log("failuere reached")
+	console.log(req.session.key + " is the session key")
 	database.connect(db => {
 		//set database path
 		var users = db.db('users').collection('users');
@@ -1253,7 +1294,7 @@ router.get('/inst/token/failedAuth', (req, res) => {
 			else{
 				token = obj.instagram.accessToken
 			}
-			let xurl = 'http://localhost:1600/promo#?'
+			let xurl = 'https://www.banda-inc.com/promo#?'
 			//store the access tokens and profile information
 			axios.get("https://graph.facebook.com/v3.2/me/accounts?access_token=" + token)
 				.then(function (response) {
@@ -1280,12 +1321,13 @@ router.get('/inst/token/failedAuth', (req, res) => {
 		console.warn("Couldn't connect to database: " + err)
 		res.status(500).send()
 	});
-	return res.redirect('http://localhost:1600/promo#');
+	return res.redirect('https://www.banda-inc.com/promo#');
 })
 
 //route for succesful token  callback for facebook
 router.get('/inst/token/successAuth', (req, res) => {
 	console.log("success reached")
+	console.log(req.session.key + " is the session key")
 	database.connect(db => {
 		//set database path
 		var users = db.db('users').collection('users');
@@ -1304,7 +1346,7 @@ router.get('/inst/token/successAuth', (req, res) => {
 			else{
 				token = obj.instagram.accessToken
 			}
-			let xurl = 'http://localhost:1600/promo#?'
+			let xurl = 'https://www.banda-inc.com/promo#?'
 			//store the access tokens and profile information
 			axios.get("https://graph.facebook.com/v3.2/me/accounts?access_token=" + token)
 				.then(function (response) {
@@ -1359,6 +1401,9 @@ router.post('/storeInstData', (req,res)=>{
 				db.close();
 			}
 			//console.log(obj.instagram[obj.instagram.length - 1].accessToken)
+			console.log(obj)
+			console.log(obj.instagram)
+			console.log(obj.instagram.accessToken)
 			token = obj.instagram.accessToken
 			//query for the account id
 			axios.get("https://graph.facebook.com/v3.2/" + instaId + "?fields=instagram_business_account&access_token=" + token)

@@ -25,7 +25,7 @@ var rain = null,
 drops = [],
 rainTimer = null,
 maxDrops = 15;
-getLocation();
+//getLocation();
 setInterval(getCurrentEvents(), 1000*60*15);
 
 var categories = {};
@@ -406,7 +406,13 @@ function RandImg(){
 
 (function($) {
 	$(function() {
-		$('#login_button').click(loginHit);
+    if (logged){
+      document.getElementById('logout-wrapper-modal').style.diplay='block'
+    }
+    else{
+      $('#login_button').click(loginHit);
+    }
+
 		$('#sign_in_button').click(signInHit);
 	});
 })(jQuery);
@@ -423,7 +429,7 @@ console.log("script was loaded int the htmllll!");
 //register goes here
 function loginHit(){
 	console.log("got into login hit");
-  document.getElementById('"modal-wrapper-login"').style.display='block';
+  document.getElementById('modal-wrapper-login').style.display='block';
 };
 function signInHit(){
 	console.log("got into signInHit");
@@ -636,9 +642,11 @@ function diff_minutes(dt2, dt1) {
 
 				document.getElementById('login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
+          document.getElementById("modal-wrapper-login").style.display="none";
 				});
         document.getElementById('mobile_login_or_out').addEventListener('click', function(){
 					document.getElementById("modal-wrapper-logout").style.display="block";
+          document.getElementById("modal-wrapper-login").style.display="none";
 				});
 				return true;
 			}else{
@@ -708,7 +716,7 @@ function diff_minutes(dt2, dt1) {
 			}
 			else{
 				alert(res);
-        document.location.reload();
+        
 			}
 
     });
@@ -734,9 +742,30 @@ function diff_minutes(dt2, dt1) {
 		 return code;
 	 }
 
-// music map
+//forgot password
 
-function goMap(){
-  var searchStr = document.getElementById('search_input').value
-  window.location='/eventMap?search='+searchStr;
+function forgotPassword(){
+  console.log('Forgot password');
+  username = document.getElementById('loginUsername').value;
+  if (username=="" || username==" " || username==null || username==undefined ){
+    alert('Sorry, you must enter your username. If you have forgotten both please email banda.help.customers@gmail.com to speak with our live support team.')
+    return
+  }
+  else{
+    $.post('/forgotPassword', {'username':username}, res=>{
+      if (res){
+        if (res==''){
+          alert('Hmmm...something went wrong on our end. Please resfresh this page and try again. If this problem persists please email banda.help.customers@gmail.com to speak with our live support team.')
+        }
+        else{
+          alert(res)
+          return;
+        }
+      }
+      else{
+        alert('Hmmm...something went wrong on our end. Please resfresh this page and try again. If this problem persists please email banda.help.customers@gmail.com to speak with our live support team.')
+
+      }
+    })
+  }
 }

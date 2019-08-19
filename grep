@@ -1,0 +1,11 @@
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 127.0.0.1:27017         0.0.0.0:*               LISTEN      31881/mongod        
+tcp        0      0 127.0.0.1:6379          0.0.0.0:*               LISTEN      29863/redis-server  
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      746/systemd-resolve 
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1024/sshd           
+tcp6       0      0 ::1:6379                :::*                    LISTEN      29863/redis-server  
+tcp6       0      0 :::22                   :::*                    LISTEN      1024/sshd           
+tcp6      13      0 :::3001                 :::*                    LISTEN      9491/node           
+tcp6       8      0 :::443                  :::*                    LISTEN      9491/node           
+udp        0      0 127.0.0.53:53           0.0.0.0:*                           746/systemd-resolve 

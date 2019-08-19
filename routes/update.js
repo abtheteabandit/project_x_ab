@@ -7,34 +7,27 @@ module.exports = router => {
     if (!req.body) {
   		 res.status(400).send('No body sent').end();
     }
-    else{
-      //query the database
-      database.connect(db=>{
-        var {id, query} = req.body;
-        var newvalues = query;
-        console.log(JSON.stringify(newvalues));
-        if (newvalues.hasOwnProperty('$inc')){
-          console.log('has $inc');
-          var increase = parseInt(newvalues.$inc.attendies);
-          newvalues.$inc.attendies=increase
-        }
-        //update the gigs based on id
-        db.db('gigs').collection("gigs").updateOne({'_id':ObjectId(id)}, newvalues, result =>{
-          console.log("updated gig " + id);
-          res.status(200).send(result);
-          db.close();
 
-        }, error =>{
-          console.log("There was an error: " + error);
-          res.send("Internal server error").end();
-          db.close();
-        });
-      }, err=>{
-        console.log("Couldn't connec to mongo with error: "+err);
-        res.status(500).end();
+    //query the database
+    database.connect(db=>{
+      var {id, query} = req.body;
+      var newvalues = query;
+      console.log(JSON.stringify(newvalues));
+      //update the gigs based on id
+      db.db('gigs').collection("gigs").updateOne({'_id':ObjectId(id)}, newvalues, result =>{
+        console.log("updated gig " + id);
+        res.status(200).send(result);
+        db.close();
+
+      }, error =>{
+        console.log("There was an error: " + error);
+        res.send("Internal server error").end();
+        db.close();
       });
-
-    }
+    }, err=>{
+      console.log("Couldn't connec to mongo with error: "+err);
+      res.status(500).end();
+    });
 
   });
 

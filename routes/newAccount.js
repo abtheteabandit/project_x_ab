@@ -101,13 +101,13 @@ module.exports = router =>{
   });
 
   router.get('/account_status', (req, res)=>{
+    if (!req.session.key){
+      console.log('No logged in user tried to create an account');
+      res.status(404).end();
+    }
     if (!req.query){
       console.log('no req query sent');
       res.status(401).end();
-    }
-    if (!req.session.key){
-      console.log('No logged in user tried to create an account');
-      res.status(200).send(false);
     }
     else{
       database.connect(db=>{

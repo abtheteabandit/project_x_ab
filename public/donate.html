@@ -1,0 +1,87 @@
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://js.stripe.com/v3/"></script>
+    <!-- Fontawesome Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <!-- External CSS -->
+    <link rel="shortcut icon" type = "image/png" href = "/assets/Home/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/createPullModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/creditTicketsModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/donations/donation.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/referralModal.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/eventMap/bankReferralModal.css">
+    <title>Help Us Build Communties</title>
+
+    <script type="text/javascript">
+			(function($) {
+				$(function() {
+					$('#mainbtn').click(function(){
+						$('.deg0, .deg30, .deg60, .deg90').toggleClass('open')
+					});
+				});
+			})(jQuery);
+		</script>
+  </head>
+  <body>
+    <h1 align='right'>Thank You</h1>
+    <div id="modal-wrapper-credit-tickets" class="modal-card">
+      <span onclick="document.getElementById('modal-wrapper-credit-tickets').style.display='none'" class="close-stripe" title="Close PopUp">&times;</span>
+      <form id="payment-form">
+        <label id="buy-ticket-email-l" class="ticket-form-label" for="buy-ticket-email">
+          email
+        </label>
+        <input type="email" class="credit-tickets-input" id='doante-email' placeholder='email...'></input>
+        <label id="buy-ticket-username-l" class="ticket-form-label" for="donate-amount">
+          amount $:
+        </label>
+         <input type="number" class="credit-tickets-input" id='donate-amount' value=5.00></input>
+        <div class="form-row">
+          <label class="ticket-form-label" for="card-element">
+            credit or debit card
+          </label>
+          <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+          </div>
+          <!-- Used to display form errors. -->
+          <div id="card-errors" role="alert"></div>
+        </div>
+        <button class="stripe-button-card" >Donate Now</button>
+        <p class="stripe-footer">We use the secure payment platform <a href="https://stripe.com/" class="stripe-link">Stripe</a>
+          to allow you to donate to the cause. After you enter your card information, you will be emailed a certificate of donation. Banda does not and will not store your credit-card information. We use Stripe to handle secure payments as it is one of the most widely used payment proccesing platforms. Thank you for taking the time to consider donating.</p>
+        <div id="loader-new-card" class="loader"></div>
+        <div class="paragraph">
+
+          <em>Alternativley</em>
+          <div>
+          You can Venmo us at:<div> <a href='https://venmo.com/Banda-BandTogether'>Banda's Venmo</a></div>
+            <div>
+              Or on the Venmo app: <div>@Banda-BandTogether</div>
+            </div>
+            <div>
+              Or send cash to our dorm:
+              <div>
+               Apartment 1N
+              6053 Waterman
+              St. Louis, MO 63112
+              </div>
+            </div>
+        </div>
+
+
+        </div>
+      </form>
+    </div>
+  </body>
+  <script src='/scripts/donate.js'></script>
+</html>

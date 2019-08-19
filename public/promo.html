@@ -1,5 +1,15 @@
 <html lang="en">
 <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-145396306-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-145396306-1');
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -66,7 +76,7 @@
    <div id="ssp-insta-content" class="animate">
      <h1 id="ssp-insta-h1">select your main page from the dropdown below</h1>
      <select id="ssp-insta-select"></select>
-     <input type="text" placeholder="Instagram Username" id="instagramUsername" value="banda.inc">
+     <input type="text" placeholder="Instagram Username" id="instagramUsername">
      <input id="ssp-insta-submit" type="button" value="continue with selected page" onclick="selectMainInstagramPage()">
      <input id="ssp-insta-skip" type="button" value="Cancel" onclick="document.getElementById('modal-wrapper-select-social-page-insta').style.display = 'none';">
    </div>
@@ -98,12 +108,12 @@
     <div id="step-1-content">
       <div class="social-buttons-wrapper">
         <!-- <a onclick="linkFacebook()" href="#" class = "social-buttons"><i class="fab fa-facebook-f"></i></a> -->
-        <a href="http://localhost:1600/getFacebookToken" class = "social-buttons"><i class="fab fa-facebook-f"></i></a>
+        <a id="connect-fb-button" href="https://banda-inc.com/getFacebookToken" class = "social-buttons"><i class="fab fa-facebook-f"></i></a>
         <!-- <a onclick="linkSnapchat()" href="#" class = "social-buttons"><i class="fab fa-snapchat-ghost"></i></a> -->
         <!-- <a onclick="linkTwitter()" href="#" class = "social-buttons"><i class="fab fa-twitter"></i></a> -->
-        <a href="http://localhost:1600/token/twitter" class = "social-buttons"><i class="fab fa-twitter"></i></a>
+        <a id="connect-twitter-button" href="https://www.banda-inc.com/token/twitter" class = "social-buttons"><i class="fab fa-twitter"></i></a>
         <!-- <a onclick="linkInstagram()" href="#" class = "social-buttons"><i class="fab fa-instagram"></i></a> -->
-        <a href="http://localhost:1600/getInstData" class = "social-buttons"><i class="fab fa-instagram"></i></a>
+        <a id="connect-insta-button" href="https://banda-inc.com/getInstData" class = "social-buttons"><i class="fab fa-instagram"></i></a>
       </div>
       <input onclick="finishStepOne()" type="button" id="finish-step-1" value="finish" class="finish-btn"/>
     </div>
@@ -129,7 +139,7 @@
         <input id="promo-loc" class="promo-input" type="text" />
         <div id="promo-grid-2">
           <input id="promo-insta" type="button" class="promo-social-icon deactivated-social" onclick="clickedSocial2()" />
-          <input id="promo-fb" type="button" class="promo-social-icon deactivated-social" onclick="clickedSocial1()" />
+          <input hidden='true'  id="promo-fb" type="button" class="promo-social-icon deactivated-social" onclick="clickedSocial1()" />
           <input id="save-promo" type="button" onclick='submit_promotion()'value="save"/>
           <input id="promo-twitter" type="button" class="promo-social-icon deactivated-social" onclick="clickedSocial4()"  />
           <input id="promo-snap" type="button" class="promo-social-icon deactivated-social" onclick="clickedSocial3()" />

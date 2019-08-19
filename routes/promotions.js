@@ -113,7 +113,15 @@ module.exports = router =>{
                               }
                             }
                           }
-                          var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':poster.twitter.access_token, 'secret_token':poster.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':poster.facebook.pageId, 'pageToken':poster.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':ourCoupon, 'promo':ourPromo};
+                          var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':null, 'promo':fakePromo};
+                          if (twitterOk){
+                            data.twitter['access_token']=poster.twitter.access_token;
+                            data.twitter['secret_token']=poster.twitter.token_secret;
+                          }
+                          if (facebookOk){
+                            data.facebook['pageId']=poster.facebook.pageId;
+                            data.facebook['pageToken']=poster.facebook.pageToken;
+                          }
                           res.status(200).json({'success':true, 'data':data});
                           db.close();
                         }
@@ -384,7 +392,7 @@ router.get('/search_promos', (req, res)=>{
                 }
               }, okCB=>{
                 console.log('Got in ok CB');
-                if (okCB.length>20){
+		if (okCB.length>20){
                   okCB=okCB.slice(0,21)
                 }
                 res.status(200).json({success: true, data:okCB});
@@ -1474,7 +1482,15 @@ router.post('/pull', (req,res)=>{
               }
             }
             var fakePromo = {'handles':"", 'imgURL':imgURL, 'caption':postableCaption};
-            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk, 'access_token':ourUser.twitter.access_token, 'secret_token':ourUser.twitter.token_secret}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk, 'pageId':ourUser.facebook.pageId, 'pageToken':ourUser.facebook.pageToken}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':null, 'promo':fakePromo};
+            var data = {'twitter':{'wanted':wantsTwitter, 'ok':twitterOk}, 'facebook':{'wanted':wantsFB, 'ok':facebookOk}, 'instagram':{'wants':wantsInstagram, 'ok':false, }, 'coupon':null, 'promo':fakePromo};
+            if (twitterOk){
+              data.twitter['access_token']=ourUser.twitter.access_token;
+              data.twitter['secret_token']=ourUser.twitter.token_secret;
+            }
+            if (facebookOk){
+              data.facebook['pageId']=ourUser.facebook.pageId;
+              data.facebook['pageToken']=ourUser.facebook.pageToken;
+            }
             res.status(200).json({'success':true, 'data':data});
             db.close();
           }
