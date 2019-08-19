@@ -321,6 +321,8 @@ function(req, token, tokenSecret, profile, done) {
 	}, err => {
 		console.warn("Couldn't connect to database: " + err)
 	});
+
+	
 	done(null, null);
 }
 ));

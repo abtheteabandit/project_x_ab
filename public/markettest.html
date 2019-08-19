@@ -45,8 +45,12 @@
   <script>
         console.log("hello world!")
         jQuery(function($) {
-            $.post('/market/uploadBeat', {'songSrc':"songsrc", 'imgSrc':"imgsrc", 'price':100, 'songName':'songName', 'description':"this is text"}, res3=>{
+            // $.post('/market/uploadBeat', {'songSrc':"songsrc", 'imgSrc':"imgsrc", 'price':100, 'songName':'songName', 'description':"this is text"}, res3=>{
+            //     alert(res3);
+            // });
+            $.post('/market/getAllBeats', {}, res3=>{
                 alert(res3);
+                console.log(res3)
             });
         })
     </script>
