@@ -140,9 +140,11 @@ router.post('/login', (req, res) => {
 	console.log("GOt password it is : " + password);
 	console.log(" ");
 	if (!username) {
-	  res.status(200).send('No username supplied')
+		res.status(200).send('No username supplied')
+		return;
 	} else if (!password) {
-	  res.status(200).send('No password supplied')
+		res.status(200).send('No password supplied')
+		return;
 	}
 
 	//password = hashPassword(password);
