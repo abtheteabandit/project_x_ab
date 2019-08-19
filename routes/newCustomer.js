@@ -18,7 +18,7 @@ module.exports = router =>{
     else{
       //store values from the request
       console.log('REQ body:' + JSON.stringify(req.body));
-      var {card_token, email} = req.body;
+      var {card_token, email, amount} = req.body;
       console.log('card token: ' + card_token);
       var username = req.session.key;
       var description = 'Event owner with username:  ' + username;
