@@ -10,7 +10,7 @@ function prepareCardElement(){
   //https://stripe.com/docs/connect -> doc for connection
 
   //var stripe = Stripe('pk_live_DNKY2aDxqfPlR6EC7SVd0jmx00f1BVUG0b');
-   var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
+  var stripe = Stripe('pk_test_ZDSEcXSIaHCCNQQFwikWyDad0053mxeMlz');
 
   // Create an instance of Elements.
   var elements = stripe.elements();

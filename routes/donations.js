@@ -16,43 +16,58 @@ module.exports = router=>{
       console.log('card token: ' + card_token);
       var description = 'Donator with email:  ' + email;
       console.log('CUSTOMER EMAIL: '+ email);
-
-      //create a new stripe customer
-      stripe.customers.create({
-        description: description,
-        email:email,
-        source:card_token
-      }, (err2, customer)=>{
-        if (err2){
-          console.log('There was an error creating the customer for email: ' + email);
-          console.log('STRIPE ERROR WAS: ' + err2);
-          res.status(200).send(err2);
-        }
-        else{
-          console.log(' Craeeted customer: ' + JSON.stringify(customer));
-          var cus_id = customer['id'];
-          console.log('Default source is: ' + customer.default_source);
-          database.connect(db=>{
-            //update the stripe and user collections with the new customer
-            db.db('donators').collection('donators').update({'email':email},{$set:{'stripe_id':cus_id, 'charges':[], 'src_id':card_token}}, {upsert:true}, (err20, res4)=>{
-              if (err20){
-                console.log('There was an error inserting/ updating the customer account for user: ' +email+ ' Error: ' + err20);
-                res.status(500).end();
-                db.close();
-              }
-              else{
-                res.status(200).send('Thank you so very much for your donation. Feel free to go to our front page and listen to some of our arists, or email us with any questions or concerns and we will personally email you within 24 hours.\nA Change Is Gunna Come.');
-                db.close();
-              }
-            });
-          }, dbErr=>{
-            console.log('There was an error conencting to mongo: ' + dbErr);
-            res.status(500).end();
-          });
-
-        }
-      });
-      // create customer
+      database.connect(db=>{
+        db.db('donators').collection('donators').findOne({'email':email}, (donator_error_2, our_donator)=>{
+          if (donator_error_2){
+            console.log('There was a error finding donator at: ' +donator_error_2 )
+            res.status(200).send('Sorry, it seems soemthing went wrong on our end. Please refresh and try again or send your donation to our Venmo or Dorm address.');
+            db.close();
+          }
+          else{
+            if (our_donator){
+              console.log('There was a error finding donator at: ' +donator_error_2 )
+              res.status(200).send('Thank you for being a repeat donar. Your kindness is amazing!');
+              db.close();
+            }
+            else{
+              //create a new stripe customer
+              stripe.customers.create({
+                description: description,
+                email:email,
+                source:card_token
+              }, (err2, customer)=>{
+                if (err2){
+                  console.log('There was an error creating the customer for email: ' + email);
+                  console.log('STRIPE ERROR WAS: ' + err2);
+                  res.status(200).send('Sorry, it seems soemthing went wrong on our end. Please refresh and try again or send your donation to our Venmo or Dorm address.');
+                  db.close();
+                }
+                else{
+                  console.log(' Craeeted customer: ' + JSON.stringify(customer));
+                  var cus_id = customer['id'];
+                  console.log('Default source is: ' + customer.default_source);
+                    //update the stripe and user collections with the new customer
+                  db.db('donators').collection('donators').update({'email':email},{$set:{'stripe_id':cus_id, 'charges':[], 'src_id':card_token}}, {upsert:true}, (err20, res4)=>{
+                    if (err20){
+                      console.log('There was an error inserting/ updating the customer account for user: ' +email+ ' Error: ' + err20);
+                      res.status(500).end();
+                      db.close();
+                    }
+                    else{
+                      console.log('Created stripe cus with email: ' + email)
+                      res.status(200).send('Thank you so very much for your donation. Feel free to go to our front page and listen to some of our arists, or email us with any questions or concerns and we will personally email you within 24 hours.\nA Change Is Gunna Come.');
+                      db.close();
+                    }
+                  });
+                }
+              });
+            }
+          }
+        })
+      }, dbErr=>{
+        console.log('There was an error conencting to mongo: ' + dbErr);
+        res.status(500).end();
+      })
 
     }
   });
@@ -179,7 +194,7 @@ module.exports = router=>{
         }
     });
     mailOptions = {
-       attachments : [{'path':'/static/assets/Donations/thankyou.png'}],
+       attachments : [{'path':'static/assets/Donations/thankyou.png'}],
        from: "banda.confirmation@gmail.com", // our address
        to: email, // who we sending to
        subject: "Thank you for donating to Banda!", // Subject line
