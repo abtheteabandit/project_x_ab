@@ -12,3 +12,8 @@ body{
 .aboutUs{
   margin-left: 5em;
 }
+.notUSDiv{
+  margin-top: 35em;
+  color: black;
+  background-color: white
+}
