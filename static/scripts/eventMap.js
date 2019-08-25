@@ -81,6 +81,75 @@ class EventItem{
       this.eventContainer.header = this.eventHeader;
       this.eventContainer.body = this.eventBody;
       this.AddEventListeners(this.eventContainer);
+      //mobile
+      this.mobileContainer = document.createElement("div");
+      this.mobileContainer.className = 'event-item-mobile';
+      this.mobileHeader = document.createElement('div');
+      this.mobileHeader.className = 'event-item-mobile-header';
+      this.mobileHeaderContent = document.createElement('div');
+      this.mobileHeaderContent.className = 'event-item-mobile-header-content';
+      this.mobileDate = document.createElement('p');
+      this.mobileDate.className = "event-item-mobile-date";
+      this.mobileDate.innerHTML = '<span class="event-item-mobile-date-span">' + obj.date + "</span> " + obj.day + " • " + obj.startTime;
+      this.mobileTitle = document.createElement('p');
+      this.mobileTitle.className = 'event-item-mobile-title';
+      this.mobileTitle.innerHTML = obj.name;
+      this.mobileAddress = document.createElement('p');
+      this.mobileAddress.className = 'event-item-mobile-address';
+      this.mobileAddress.innerHTML = obj.address;
+      this.mobileHeaderContent.append(this.mobileDate);
+      this.mobileHeaderContent.append(this.mobileTitle);
+      this.mobileHeaderContent.append(this.mobileAddress);
+      this.mobileHeaderDots = document.createElement('i');
+      this.mobileHeaderDots.className = 'fas fa-ellipsis-v';
+      this.mobileHeader.append(this.mobileHeaderContent);
+      this.mobileHeader.append(this.mobileHeaderDots);
+      this.mobileBody = document.createElement('div');
+      this.mobileBody.className = 'event-item-mobile-body';
+      this.mobileBodyContainer = document.createElement('div');
+      this.mobileBodyContainer.className = 'event-item-mobile-body-container';
+      this.mobileBodyClose = document.createElement('i');
+      this.mobileBodyClose.className = 'fas fa-times';
+      this.mobileLineupBox = document.createElement('div');
+      this.mobileLineupBox.className = 'event-item-mobile-lineup-box';
+      this.mobileLineupP = document.createElement('p');
+      this.mobileLineupP.innerHTML = 'Lineup';
+      this.mobileLineupList = document.createElement("ul");
+      this.mobileLineupLi = document.createElement('li');
+      this.mobileLineupLi.innerHTML = this.band.name;
+      this.mobileLineupList.append(this.mobileLineupLi);
+      this.mobileLineupBox.append(this.mobileLineupP);
+      this.mobileLineupBox.append(this.mobileLineupList);
+      this.mobileDescBox = document.createElement('div');
+      this.mobileDescBox.className = 'event-item-mobile-description-box';
+      this.mobileDescP = document.createElement('p');
+      this.mobileDescP.innerHTML = 'Description';
+      this.mobileDesc = document.createElement('p');
+      this.mobileDesc.className = "event-item-mobile-description";
+      this.mobileDesc.innerHTML = obj.description;
+      this.mobileDescBox.append(this.mobileDescP);
+      this.mobileDescBox.append(this.mobileDesc);
+      this.mobileButtonsBox = document.createElement('div');
+      this.mobileButtonsBox.className = 'event-item-mobile-buttons-box';
+      this.mobileTicket = document.createElement('button');
+      this.mobileTicket.innerHTML = 'Get Tickets';
+      this.mobileRefer = document.createElement('button');
+      this.mobileRefer.innerHTML = 'Refer This Event';
+      this.mobileButtonsBox.append(this.mobileTicket);
+      this.mobileButtonsBox.append(this.mobileRefer);
+      this.mobileBodyContainer.append(this.mobileBodyClose);
+      this.mobileBodyContainer.append(this.mobileLineupBox);
+      this.mobileBodyContainer.append(this.mobileDescBox);
+      this.mobileBodyContainer.append(this.mobileButtonsBox);
+      this.mobileBody.append(this.mobileBodyContainer);
+      this.mobileContainer.append(this.mobileHeader);
+      this.mobileContainer.append(this.mobileBody);
+      this.mobileContainer.dots = this.mobileHeaderDots;
+      this.mobileContainer.body = this.mobileBody;
+      this.mobileContainer.close = this.mobileBodyClose;
+      this.mobileContainer.ticket = this.mobileTicket;
+      this.mobileContainer.refer = this.mobileRefer;
+      this.AddMobileEvents(this.mobileContainer);
       cb(this);
     });
   }
@@ -108,6 +177,28 @@ class EventItem{
         }
         obj.body.classList.toggle('expanded');
         obj.body.classList.toggle('collapsed');
+      });
+    }
+  }
+  AddMobileEvents(obj){
+    if(obj.hasOwnProperty('ticket')){
+      obj.ticket.addEventListener("click",function(){
+        console.log(obj.gig._id);
+      });
+    }
+    if(obj.hasOwnProperty('refer')){
+      obj.refer.addEventListener("click",function(){
+        console.log(obj.gig._id);
+      });
+    }
+    if(obj.hasOwnProperty('close')){
+      obj.close.addEventListener("click",function(){
+        obj.body.style.display = 'none';
+      });
+    }
+    if(obj.hasOwnProperty('dots')){
+      obj.dots.addEventListener("click",function(){
+        obj.body.style.display = 'block';
       });
     }
   }
@@ -560,6 +651,7 @@ function showPosition(position) {
         console.log(JSON.stringify(curr_event));
         var eventItem = new EventItem(curr_event, cb => {
           eventList.append(cb.eventContainer);
+          eventList.append(cb.mobileContainer);
         });
         var feature = {'event':curr_event, position: new google.maps.LatLng(curr_event.lat, curr_event.lng)};
         features.push(feature);
