@@ -11,6 +11,108 @@ var ourUser=null;
 checkSession();
 getReferer();
 
+class EventItem{
+  constructor(obj, cb){
+    this.eventContainer = document.createElement('div');
+    this.eventContainer.className = 'event-item-container';
+    this.eventHeader = document.createElement('div');
+    this.eventHeader.className = 'event-item-header';
+    this.eventImageBox = document.createElement('div');
+    this.eventImageBox.className = 'event-item-image-box';
+    this.eventImage = document.createElement('img');
+    this.eventImage.src = obj.picture;
+    this.eventImage.alt = obj.name + " pic";
+    this.eventImageBox.append(this.eventImage);
+    this.eventTitleBox = document.createElement('div');
+    this.eventTitleBox.className = 'event-item-title-box';
+    this.eventTitle = document.createElement('h2');
+    this.eventTitle.innerHTML = obj.name;
+    this.eventLoc = document.createElement('p');
+    this.eventLoc.innerHTML = obj.address;
+    this.eventTitleBox.append(this.eventTitle);
+    this.eventTitleBox.append(this.eventLoc);
+    this.eventDateBox = document.createElement('div');
+    this.eventDateBox.className = 'event-item-date-box';
+    this.eventDate = document.createElement('h2');
+    this.eventDate.innerHTML = obj.date;
+    this.eventDay = document.createElement('p');
+    this.eventDay.innerHTML = obj.day + " • " + obj.startTime;
+    this.eventDateBox.append(this.eventDate);
+    this.eventDateBox.append(this.eventDay);
+    this.eventTicket = document.createElement('button');
+    this.eventTicket.innerHTML = 'Buy Tickets';
+    this.eventHeader.append(this.eventImageBox);
+    this.eventHeader.append(this.eventDateBox);
+    this.eventHeader.append(this.eventTitleBox);
+    this.eventHeader.append(this.eventTicket);
+    this.eventBody = document.createElement('div');
+    this.eventBody.className = 'event-item-body';
+    this.eventBandBox = document.createElement('div');
+    this.eventBandBox.className = 'event-item-band-box';
+    this.actsP = document.createElement('p');
+    this.actsP.innerHTML = 'Acts:';
+    this.actsList = document.createElement('ul');
+    getBandInfo(obj.bandFor, res=>{
+      this.band = res;
+      this.newLi = document.createElement('li');
+      this.newLi.innerHTML = this.band.name;
+      this.actsList.append(this.newLi);
+      this.eventBandBox.append(this.actsP);
+      this.eventBandBox.append(this.actsList);
+      this.eventDescBox = document.createElement('div');
+      this.eventDescBox.className = 'event-item-description-box';
+      this.eventDescLabel = document.createElement('p');
+      this.eventDescLabel.innerHTML = 'Description:';
+      this.eventDesc = document.createElement('p');
+      this.eventDesc.className = 'event-item-description';
+      this.eventDesc.innerHTML = obj.description;
+      this.eventDescBox.append(this.eventDescLabel);
+      this.eventDescBox.append(this.eventDesc);
+      this.referBtn = document.createElement('button');
+      this.referBtn.innerHTML = 'Refer This Event';
+      this.eventBody.append(this.eventBandBox);
+      this.eventBody.append(this.eventDescBox);
+      this.eventBody.append(this.referBtn);
+      this.eventContainer.append(this.eventHeader);
+      this.eventContainer.append(this.eventBody);
+      this.eventContainer.gig = obj;
+      this.eventContainer.ticket = this.eventTicket;
+      this.eventContainer.refer = this.referBtn;
+      this.eventContainer.header = this.eventHeader;
+      this.eventContainer.body = this.eventBody;
+      this.AddEventListeners(this.eventContainer);
+      cb(this);
+    });
+  }
+  toggleBodyDisplay(el){
+
+  }
+  AddEventListeners(obj){
+    if(obj.hasOwnProperty('ticket')){
+      obj.ticket.addEventListener("click",function(){
+        console.log(obj.gig._id);
+      });
+    }
+    if(obj.hasOwnProperty('refer')){
+      obj.refer.addEventListener("click",function(){
+        console.log(obj.gig._id);
+      });
+    }
+    if(obj.hasOwnProperty('header')){
+      obj.header.addEventListener("click",function(){
+        console.log('class list: ' + obj.body.classList);
+        if(obj.body.classList.contains('expanded')){
+          obj.body.style.display = 'none';
+        }else{
+          obj.body.style.display = 'grid';
+        }
+        obj.body.classList.toggle('expanded');
+        obj.body.classList.toggle('collapsed');
+      });
+    }
+  }
+}
+
 class EventListItem{
   constructor(obj, cb){
     this.eventContainer = document.createElement('div');
@@ -456,7 +558,7 @@ function showPosition(position) {
       for (var e in res.data){
         var curr_event = res.data[e][0];
         console.log(JSON.stringify(curr_event));
-        var eventItem = new EventListItem(curr_event, cb => {
+        var eventItem = new EventItem(curr_event, cb => {
           eventList.append(cb.eventContainer);
         });
         var feature = {'event':curr_event, position: new google.maps.LatLng(curr_event.lat, curr_event.lng)};
@@ -1054,4 +1156,12 @@ function diff_minutes(dt2Str, dt1Str) {
   diff /= 60;
   console.log("diff is : " + diff);
   return Math.round(diff);
+ }
+
+ var eventOpen = false;
+
+function toggleBodyDisplay(){
+  const el = document.getElementById("the-body-event")
+ el.classList.toggle('expanded')
+ el.classList.toggle('collapsed')
  }

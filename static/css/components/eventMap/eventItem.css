@@ -1,0 +1,86 @@
+#event-list{
+  margin-top: 80px;
+  margin-bottom: 200px;
+}
+
+#the-body-event{
+}
+
+.event-item-container{
+  margin-top: 20px;
+}
+
+.event-item-header{
+  display: grid;
+  grid-template-columns: 100px 200px 600px 100px;
+  width: 1020px;
+  margin: 0 auto;
+  color: white;
+  align-items: center;
+  background-color: black;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.event-item-image-box img{
+  max-height: 100px;
+  max-width: 100px;
+  border-top: 1px solid #56dff0;
+  border-bottom: 1px solid #56dff0;
+}
+
+.event-item-title-box{
+  text-align: left;
+}
+
+.event-item-header button{
+  color: #56dff0;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+}
+
+.event-item-body{
+  display: none;
+  grid-template-columns: 300px 600px 100px;
+  width: 1020px;
+  margin: 0 auto;
+  border-top: 1px dotted #56dff0;
+  color: white;
+  background-color: black;
+  padding: 10px;
+  border-radius: 0px 0px 40px 40px;
+  text-align: left;
+  margin-top: -100%;
+  transition: all .4s;
+}
+
+.event-item-body.expanded{
+  margin-top: 0;
+}
+
+.event-item-body button{
+  color: #56dff0;
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+}
+
+.event-item-body ul{
+  list-style-type: none;
+  padding: 0px;
+}
+
+.event-item-body ul li{
+  cursor: pointer;
+  color: #56dff0;
+}
+.event-item-body ul li:hover{
+  color: white;
+}
+
+.event-item-description{
+  max-height: 200px;
+  overflow:scroll;
+}
