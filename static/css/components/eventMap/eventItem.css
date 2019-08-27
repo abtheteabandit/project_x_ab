@@ -30,15 +30,26 @@
   border-bottom: 1px solid #56dff0;
 }
 
+.event-item-date-box h2{
+  font-size: 22px;
+  margin-top: 8px;
+}
+
+.event-item-date-box p{
+  padding-top: 4px;
+}
+
 .event-item-title-box{
   text-align: left;
 }
 
 .event-item-header button{
+  margin: 0px;
+  padding: 0px;
   color: #56dff0;
   background-color: transparent;
   border: none;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 .event-item-body{
@@ -112,7 +123,13 @@
   color: #56dff0;
 }
 
-.event-item-mobile-header-content p{
+.event-item-mobile-title{
+  font-size: 28px;
+  line-height: 34px;
+  margin-bottom: 4px;
+}
+
+.event-item-mobile-date, .event-item-mobile-address{
   margin: 0;
   padding: 0;
   font-size: 18px;
@@ -128,19 +145,28 @@
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(220,220,220,0.7);
   top: 0;
 }
 
 .event-item-mobile-body-container{
   position: absolute;
-  background-color: white;
+  background-color: rgb(40,40,40);
+  color: white;
   border-radius: 20px 20px 0px 0px;
+  width: 100%;
   height: 50%;
   text-align: left;
   bottom: 0;
   padding: 40px;
   overflow: scroll;
+}
+
+.event-item-mobile-body-container h2{
+  font-size: 22px;
+  font-style: italic;
+  text-decoration: underline;
+  color: white;
 }
 
 .event-item-mobile-body-container i{
@@ -159,8 +185,6 @@
   text-shadow: 0px -1px 2px rgba(0, 0, 140, 1);
   background-color: transparent;
 }
-
-
 
 
 @media(max-width: 1040px){

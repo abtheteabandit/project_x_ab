@@ -68,30 +68,28 @@
     <!-- modals -->
     <div id="modal-wrapper-event-on-map">
       <div id="modal-content-event-on-map" class="animate">
-        <span onclick="document.getElementById('modal-wrapper-event-on-map').style.display='none'" class="close-support" title="Close PopUp">&times;</span>
-        <div class="container">
+        <span onclick="document.getElementById('modal-wrapper-event-on-map').style.display='none'" class="close-event-on-map" title="Close PopUp">&times;</span>
+        <div>
           <h1 id='map-event-name'>a name for an event goes here</h1>
-
           <div class="event-on-map-grid">
             <div>
               <img src='/assets/Home/Art/5.jpeg' id='interested-img'></img>
               <img id="interested-img-frame" src = "/assets/Home/orangebox.png" />
             </div>
             <div>
-              <p id='attendies-interested'>0 people attending this event</p>
+              <p id="event-on-map-plus">+</p>
             </div>
             <div>
               <img src='/assets/Home/Art/7.jpeg' id='interested-band-img'></img>
-              <div id="interested-band-nameplate">
-                <p id="interested-band-name">the man band of the land the man band of the</p>
-              </div>
               <img id="interested-band-img-frame" src = "/assets/Home/pinkbox.png" />
             </div>
           </div>
-
+          <p id='attendies-interested'>0 people attending this event</p>
           <p id='map-event-description'>a description for this event goes here lorem ipsum issa biaaslk sdk s bita dslkj eeh djd dkk fos x skdlj fast brown fox goes into the</p>
-          <button id='want-to-refer-button' onclick='referralClicked()'>Refer this event...</button>
-          <button id='interested-button' onclick='attendClicked()'>I Want To Attend!</button>
+          <div id="map-event-bottom-grid">
+            <button id='want-to-refer-button' onclick='referralClicked()'>Refer this event</button>
+            <button id='interested-button' onclick='attendClicked()'>I Want To Attend!</button>
+          </div>
         </div>
       </div>
     </div>

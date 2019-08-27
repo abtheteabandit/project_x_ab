@@ -423,7 +423,7 @@ Search Bar elements
     width: 600px;
   }
   #map{
-    width: 700px;
+    width: 100%;
   }
 }
 @media(max-width: 750px){
@@ -434,9 +434,6 @@ Search Bar elements
   .slider{
     width: 400px;
   }
-  #map{
-    width: 500px;
-  }
 }
 @media(max-width: 550px){
   #slide-grid{
@@ -446,9 +443,6 @@ Search Bar elements
   .slider{
     width: 300px;
   }
-  #map{
-    width: 400px;
-  }
 }
 @media(max-width: 450px){
   #slide-grid{
@@ -457,9 +451,6 @@ Search Bar elements
   }
   .slider{
     width: 200px;
-  }
-  #map{
-    width: 300px;
   }
 }
 
