@@ -348,7 +348,7 @@ function showPosition(position) {
 	console.log("curr lng is: " + currLng);
   var myLoc = {lat: currLat, lng: currLng};
    map = new google.maps.Map(
-      document.getElementById('map'), {zoom: 7, center: myLoc,   styles: [
+      document.getElementById('map'), {zoom: 7, center: myLoc, disableDefaultUI: true, zoomControl: true,   styles: [
   {
     "elementType": "geometry",
     "stylers": [
