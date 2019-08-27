@@ -159,12 +159,14 @@ class EventItem{
   AddEventListeners(obj){
     if(obj.hasOwnProperty('ticket')){
       obj.ticket.addEventListener("click",function(){
-        console.log(obj.gig._id);
+        event_interesed = obj.gig;
+        attendClicked();
       });
     }
     if(obj.hasOwnProperty('refer')){
       obj.refer.addEventListener("click",function(){
-        console.log(obj.gig._id);
+        event_interesed = obj.gig;
+        referralClicked();
       });
     }
     if(obj.hasOwnProperty('header')){
@@ -183,12 +185,14 @@ class EventItem{
   AddMobileEvents(obj){
     if(obj.hasOwnProperty('ticket')){
       obj.ticket.addEventListener("click",function(){
-        console.log(obj.gig._id);
+        event_interesed = obj.gig;
+        attendClicked();
       });
     }
     if(obj.hasOwnProperty('refer')){
       obj.refer.addEventListener("click",function(){
-        console.log(obj.gig._id);
+        event_interesed = obj.gig;
+        referralClicked();
       });
     }
     if(obj.hasOwnProperty('close')){

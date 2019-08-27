@@ -20,26 +20,67 @@
   height: 564px;
   padding-bottom: 80px;
   color: white;
+  padding-left: 20px;
 }
 
 #referer-header{
-  margin-top: 50px;
-  font-size: 28pt;
+  padding-top: 20px;
+  font-size: 50px;
 }
 #referer-description{
+  margin-top: 80px;
   font-size: 18pt;
 }
-
 #referer-span{
   font-family: Industry;
   font-size: 18pt;
+  display: block;
 }
-
 #get-referral-code-btn{
   color: #56dff0;
   font-size: 32pt;
   display: block;
   background-color: transparent;
   border: none;
-  float: right;
+  width: 400px;
+  margin: 0 auto;
+  margin-top: 90px;
+}
+
+@media(max-width: 850px){
+  #modal-content-referral{
+    width: 400px;
+    height: 564px;
+    padding-right: 10px;
+  }
+  #referer-header{
+    padding-top: 16px;
+    font-size: 32px;
+  }
+  #referer-description{
+    margin-top: 16px;
+  }
+  #get-referral-code-btn{
+    font-size: 26pt;
+    margin-top: 16px;
+  }
+}
+@media(max-width: 450px){
+  #modal-content-referral{
+    width: 300px;
+    height: 564px;
+  }
+  #referer-header{
+    padding-top: 16px;
+    font-size: 28px;
+  }
+  #referer-description, #referer-span{
+    margin-top: 16px;
+    font-size: 20px;
+  }
+  #get-referral-code-btn{
+    width: 300px;
+    font-size: 28px;
+    margin-top: 16px;
+  }
 }
