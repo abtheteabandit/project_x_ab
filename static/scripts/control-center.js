@@ -5718,6 +5718,9 @@ function getRadioSongs(){
   $.get('/localRadio', res=>{
     if (res.success){
       console.log('AUDIO SAMPLES DATA: ' + JSON.stringify(res.data));
+      if (res.data.length==0){
+        return
+      }
       samples = res.data
       var controller = document.getElementById('localized_radio');
       console.log('CONTROL: ' + controller);

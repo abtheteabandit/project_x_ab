@@ -37,6 +37,11 @@ const database = require('../database.js')
           res.status(200).send("Deleted stripe_customers");
           db.close();
         }
+        if (mode=='users'){
+          db.db('users').collection('users').drop();
+          res.status(200).send("Deleted users");
+          db.close();
+        }
         //invalid request
         else{
           res.status(401).end();
@@ -218,7 +223,7 @@ const database = require('../database.js')
                         console.log('deleted gig: ' + id);
                         res.status(200).send('We have deleted this event from Banda!');
                         db.close();
-                      }  
+                      }
                     }
                   });
                 }
