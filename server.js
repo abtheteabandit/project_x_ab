@@ -67,6 +67,7 @@ app.set('views', PUBLIC_DIR);
 app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
 
+
 // this is how sessions are handled
 app.use(session({
 	secret: 'secret password here ;p',
@@ -105,6 +106,11 @@ app.use(TokenPassport.session());
 // Make statics readable
 app.use(express.static(STATIC_DIR));
 
+//alow cors request
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   next();
+// });
 
 // create the router
 var router = express.Router();

@@ -46,6 +46,9 @@ module.exports = router => {
   router.get('/map', (req,res)=>{
     res.redirect('/eventMap');
   });
+  router.get('/toReact', (req,res)=>{
+    res.redirect('http://localhost:3001')
+  });
 
   //test code for testing marketplace
   router.get('/market', (req,res)=>{
