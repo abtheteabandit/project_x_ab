@@ -5796,3 +5796,7 @@ function skipSong(){
   console.log('AUDIO: ' + song.song.audio);
   controller.innerHTML = '<source src="'+song.song.audio+'" type="audio/wav" /><img src='+song.song.picture+'/>'
 }
+
+function submitTicketForm(){
+  // BOTHE 
+}
