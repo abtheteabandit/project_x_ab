@@ -145,6 +145,7 @@ class EventItem{
       this.mobileContainer.append(this.mobileHeader);
       this.mobileContainer.append(this.mobileBody);
       this.mobileContainer.dots = this.mobileHeaderDots;
+      this.mobileContainer.gig = obj;
       this.mobileContainer.body = this.mobileBody;
       this.mobileContainer.close = this.mobileBodyClose;
       this.mobileContainer.ticket = this.mobileTicket;
@@ -192,6 +193,7 @@ class EventItem{
     if(obj.hasOwnProperty('refer')){
       obj.refer.addEventListener("click",function(){
         event_interesed = obj.gig;
+        console.log("interested gig is: "+obj.gig);
         referralClicked();
       });
     }

@@ -43,6 +43,8 @@ var notifyConnect=true;
 var notificationForBooking=true;
 var newGigNotification = true;
 var ourPhone = "";
+
+var gigToAddTickets = null;
 //CHNAGE GIGS SECTION:?////////
 
 
@@ -55,6 +57,11 @@ class OpenGig{
     this.titleDiv = document.createElement("div");
     this.titleReal = document.createElement("h3");
     this.titleReal.innerHTML = gig.name;
+    if(!gig.hasOwnProperty("tickets")){
+      this.ticketBtn = document.createElement("button");
+      this.ticketBtn.className = "gig-ticket-btn";
+      this.ticketBtn.innerHTML = "add tickets";
+    }
     this.deleteBtn = document.createElement("input");
     this.deleteBtn.type = "button";
     this.deleteBtn.className = "delete-btn";
@@ -63,6 +70,9 @@ class OpenGig{
       presentDeleteModal("gig",gig.name,gig._id);
     });
     this.titleDiv.append(this.titleReal);
+    if(!gig.hasOwnProperty("tickets")){
+      this.titleDiv.append(this.ticketBtn);
+    }
     this.titleDiv.append(this.deleteBtn);
     this.container = document.createElement("div");
     this.container.className = "open-gig";
@@ -298,6 +308,11 @@ class OpenGig{
             this.container.append(this.carEl);
             this.container.append(this.applicantList);
             this.titleDiv.append(this.container);
+            if(!gig.hasOwnProperty("tickets")){
+              this.titleDiv.ticketBtn = this.ticketBtn;
+              this.titleDiv.gigID = gig._id;
+              this.AddOverlayEventListeners(this.titleDiv);
+            }
             // tier 0
             // openGigs.append(this.container);
             openGigCallback(this);
@@ -334,6 +349,11 @@ class OpenGig{
         // tier 1
         this.container.append(this.info);
         this.titleDiv.append(this.container);
+        if(!gig.hasOwnProperty("tickets")){
+          this.titleDiv.ticketBtn = this.ticketBtn;
+          this.titleDiv.gigID = gig._id;
+          this.AddOverlayEventListeners(this.titleDiv);
+        }
         // tier 0
         // openGigs.append(this.container);
         openGigCallback(this);
@@ -369,11 +389,25 @@ class OpenGig{
       // tier 1
       this.container.append(this.info);
       this.titleDiv.append(this.container);
+      if(!gig.hasOwnProperty("tickets")){
+        this.titleDiv.ticketBtn = this.ticketBtn;
+        this.titleDiv.gigID = gig._id;
+        this.AddOverlayEventListeners(this.titleDiv);
+      }
       // tier 0
       // openGigs.append(this.container);
       openGigCallback(this);
     }
 
+  }
+
+  AddOverlayEventListeners(obj){
+    if(obj.hasOwnProperty("ticketBtn")){
+      obj.ticketBtn.addEventListener("click",function(){
+        gigToAddTickets = obj.gigID;
+        document.getElementById("modal-wrapper-add-ticket").style.display = 'block';
+      });
+    }
   }
 }
 
@@ -385,6 +419,11 @@ class BookedGig {
     this.titleEl = document.createElement("h3");
     this.titleEl.innerHTML = gig.name;
     this.titleEl.className = "gig-title";
+    if(!gig.hasOwnProperty("tickets")){
+      this.ticketBtn = document.createElement("button");
+      this.ticketBtn.className = "gig-ticket-btn";
+      this.ticketBtn.innerHTML = "add tickets";
+    }
     this.locEl = document.createElement("h3");
     this.locEl.innerHTML = gig.address;
     this.gigContent = document.createElement("div");
@@ -485,6 +524,10 @@ class BookedGig {
           this.gigContent.append(this.gigConfirm);
       // tier 1
           this.container.append(this.titleEl);
+          if(!gig.hasOwnProperty("tickets")){
+            this.container.append(this.ticketBtn);
+            this.gigAct.ticketBtn = this.ticketBtn;
+          }
           this.container.append(this.locEl);
           this.container.append(this.gigContent);
       // tier 0
@@ -531,6 +574,12 @@ class BookedGig {
           document.location.reload();
         });
       })
+    }
+    if(obj.hasOwnProperty("ticketBtn")){
+      obj.ticketBtn.addEventListener("click",function(){
+        gigToAddTickets = obj.gigID;
+        document.getElementById("modal-wrapper-add-ticket").style.display = 'block';
+      });
     }
   }
   GigIsPastStartDate(myGig){

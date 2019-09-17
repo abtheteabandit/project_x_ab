@@ -89,7 +89,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true }));
-app.use(require('morgan')('combined'));
+// app.use(require('morgan')('combined'));
 
 // Initialize Passport and restore authentication state, if any, from the session.
 app.use(passport.initialize());
