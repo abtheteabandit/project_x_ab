@@ -34,3 +34,36 @@
       padding: 20px;
       padding-top: 80px;
   }
+
+  #content-box-add-ticket > p{
+      font-size: 18px;
+      line-height: 27px;
+  }
+
+  #add-ticket-form{
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  #add-ticket-form > input{
+      background-color: rgba(0,0,0,0.7);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      height: 40px;
+      display: block;
+      margin: 0 auto;
+  }
+
+  #add-ticket-form > button{
+    color: #56dff0;
+    border: 1px solid #56dff0;
+    border-radius: 8px;
+    height: 40px;
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.7);
+    margin: 0 auto;
+    margin-top: 20px;
+    width: 200px;
+  }
