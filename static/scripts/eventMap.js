@@ -334,7 +334,7 @@ function initMap() {
 function getLocationAndShowPosition() {
   if (navigator.geolocation) {
     console.log('nav geo')
-    navigator.geolocation.getCurrentPosition(showPosition, posErr, {timeout:10000});
+    navigator.geolocation.getCurrentPosition(showPosition, posErr, {timeout:20000});
   } else {
     console.log("browser doesnt support geolocator api");
   }
@@ -343,11 +343,11 @@ function getLocationAndShowPosition() {
 
 function showPosition(position) {
   console.log('In show')
-	console.log(position);
-	currLat=position["coords"]["latitude"];
-	currLng=position["coords"]["longitude"];
+console.log(position);
+currLat=position["coords"]["latitude"];
+currLng=position["coords"]["longitude"];
   console.log("curr Lat is: " + currLat);
-	console.log("curr lng is: " + currLng);
+console.log("curr lng is: " + currLng);
   var myLoc = {lat: currLat, lng: currLng};
    map = new google.maps.Map(
       document.getElementById('map'), {zoom: 7, center: myLoc, disableDefaultUI: true, zoomControl: true,   styles: [
@@ -682,11 +682,12 @@ var displayEventInfo = function(pin){
     document.getElementById('attendies-interested').innerHTML='People going: ' + pin.attendies;
   }
   document.getElementById('interested-img').src = pin.picture;
-  document.getElementById('map-event-description').innerHTML=pin.description;
+  document.getElementById('map-event-description').innerHTML='Date: '+pin.date +' Location: '+pin.address+' Description: '+pin.description;
   document.getElementById("modal-wrapper-event-on-map").style.display='block'
 
 }
 function referralClicked(){
+  document.getElementById('referer-description').innerHTML='Recieve a referer code/link to post and distribute. If someone uses this code you will recieve: $'+event_interesed.tickets.price * .2;
   document.getElementById('modal-wrapper-referral').style.display = 'block';
   document.getElementById('modal-wrapper-event-on-map').style.display = 'none';
 }
@@ -699,6 +700,15 @@ function attendClicked(){
   $.post('/updateGig', {'id':event_interesed._id, 'query':{$inc:{'attendies':1}}}, res=>{
     if (res){
       console.log('Res: ' + JSON.stringify(res));
+    }
+
+    if (event_interesed.hasOwnProperty('tickets') && (ourUser)){
+        if (event_interesed.tickets.hasOwnProperty('users')){
+          if(event_interesed.tickets.users.hasOwnProperty(ourUser.username)){
+            alert('You already have been emailed a ticket for this event. Please check your email.')
+            return
+          }
+        }
     }
 
     //for testing
@@ -718,6 +728,7 @@ function attendClicked(){
         document.getElementById("buy-ticket-confirm-l").style.display = 'none';
 
       }
+
       prepareCardElement();
 
 
@@ -892,19 +903,21 @@ function attemptCreditSubmission(token_id){
   if (referal){
     $.post('/buyTicket', {'gigID':event_interesed._id, 'email':email, 'username':username, 'password':password, 'card_token':token_id, 'referal':referal}, res=>{
       alert(res);
-      document.getElementById("loader-new-card").style.display = "none";
+      document.getElementById("modal-wrapper-credit-tickets").style.display = "none";
+      /*
       document.getElementById("modal-wrapper-credit").style.display = 'none';
       document.getElementById('modal-wrapper-event-on-map').style.display='none'
       document.getElementById("modal-wrapper-referral").style.display='block';
+      */
     });
   }
   else{
     $.post('/buyTicket', {'gigID':event_interesed._id, 'email':email, 'username':username, 'password':password, 'card_token':token_id}, res=>{
       alert(res);
-      document.getElementById("loader-new-card").style.display = "none";
-      document.getElementById("modal-wrapper-credit").style.display = 'none';
-      document.getElementById('modal-wrapper-event-on-map').style.display='none'
-      document.getElementById("modal-wrapper-referral").style.display='block';
+      document.getElementById("modal-wrapper-credit-tickets").style.display = "none";
+      //document.getElementById("modal-wrapper-credit").style.display = 'none';
+      //document.getElementById('modal-wrapper-event-on-map').style.display='none'
+      //document.getElementById("modal-wrapper-referral").style.display='block';
     });
   }
 
@@ -965,7 +978,7 @@ function posErr(err){
 }
 
 function checkSession(){
-  	$.get('/hasSession', {}, res=>{
+  $.get('/hasSession', {}, res=>{
       if (res.success){
         loggedIn = true;
         $.get('/user', {}, res2=>{
@@ -1030,7 +1043,7 @@ function getReferalCode(){
       $.get('/account_status', {'who':'is my account'}, res2=>{
         console.log('GOt res for acct status: ' + res2);
         if (res2==true || res2=='true'){
-          alert('Your referal link is: ' + res.data + '.\nPost this everywhere you can to start promoting this event and making money, see your email for details. Thank you.');
+          alert('Your referal link is: ' + res.data.link + '.\nPost this everywhere you can to start promoting this event and making money, see your email for details. Thank you.');
         }
         else{
           prepareBankElement();

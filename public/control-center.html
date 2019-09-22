@@ -7,15 +7,15 @@
     <title>Your Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Fontawesome Icons -->
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-		<!-- jQuery library -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<!-- Popper JS -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
     <!-- External CSS -->
     <link rel="stylesheet" type="text/css" href="/css/control-center.css">
     <link rel="stylesheet" type="text/css" href="/css/modals/supportModal.css">
@@ -43,6 +43,7 @@
     <link rel="stylesheet" type="text/css" href="/css/modals/addTicketModal.css">
     <link rel="stylesheet" type="text/css" href="/css/chat/chatButtons.css">
     <link rel="stylesheet" type="text/css" href="/css/chat/chat.css">
+    <link rel="stylesheet" type="text/css" href="/css/modals/createTicketsModal.css">
 
 
     <!-- jquery -->
@@ -56,14 +57,14 @@
 
     <!-- Radial Menu -->
     <script type="text/javascript">
-			(function($) {
-				$(function() {
-					$('#mainbtn').click(function(){
-						$('.deg30, .deg60, .deg90').toggleClass('open')
-					});
-				});
-			})(jQuery);
-		</script>
+(function($) {
+$(function() {
+$('#mainbtn').click(function(){
+$('.deg30, .deg60, .deg90').toggleClass('open')
+});
+});
+})(jQuery);
+</script>
   </head>
   <body onload="init();">
 
@@ -71,7 +72,7 @@
       <div id="modal-content-add-ticket">
           <span onclick="document.getElementById('modal-wrapper-add-ticket').style.display='none'; gigToAddTickets = null;" class="close-add-ticket" title="close">&times;</span>
           <div id="content-box-add-ticket">
-            <p>Adding tickets to your event will be awesome. Your money is safe with us. So we will take around 50% of your money. Just let us know how much each ticket is and how many you can sell!</p>
+            <p>Looking to drive more traffic to your event? Run your ticket sales through Banda! We create a custom referal system for your event, allowing everyday people and influencers to promote your event for a small cut of each ticket they sell. This is a completely free service that requires no time or oversite on your end. In addtion to more traffic, you get 30% of each ticket sold!</p>
             <div id="add-ticket-form">
               <label for="ticket-price">ticket price</label>
               <input id="ticket-price" type="number" placeholder="ex. 50"/>
@@ -492,6 +493,34 @@
       </div>
     </div>
 
+    <div id="modal-wrapper-create-tickets">
+      <div id="create-tickets-content" class="animate">
+        <h1 id="create-tickets-header">add tickets</h1>
+        <input type="button" value="" id="close-create-tickets" onclick="document.getElementById('modal-wrapper-create-tickets').style.display = 'none';"/>
+        <div id="create-tickets-grid">
+
+          <div id="create-tickets-pic-div">
+            <img id="create-tickets-pic" src="/assets/Promo/bandapromo1.2.png"/>
+            <img id="create-tickets-frame" src="/assets/Home/pinkbox.png"/>
+          </div>
+
+          <div id='ticket-input-wrapper'>
+            <label for='tickets-price'>Price:</label>
+            <input id='tickets-price'/>
+            <label for='tickets-price'>Quanity:</label>
+            <input id='tickets-qt'/>
+          </div>
+        </div>
+        <p id="create-tickets-select-p">select a event to add tickets to</p>
+        <select id="create-tickets-select" onchange='changedticketsPicker()'>
+
+        </select>
+        <p id="create-tickets-p">Use this to set up tickts for your event. We will encourage users to post the link to buy your tickets. Banda uses a unique referal system to encourage traffic to venue and increase your revenue</p>
+        <button value="accept" id="create-tickets-accept" onclick='addticketsAccept()'>accept</button>
+      </div>
+    </div>
+
+
     <div id="modal-wrapper-current-band">
       <form id="current-band-form" class="animate" enctype="multipart/form-data" method="post" action="#">
         <div>
@@ -645,6 +674,7 @@
                          <a href="#" onclick="prepareCardElement()">Post Event</a>
                          <a href="promo">Create a Promotion</a>
                          <a href="#" onclick="openAddPullModal()">Add Pull</a>
+                         <a href="#" onclick="openTicketsModal()">Add Tickets To An Event</a>
                        </div>
                    <button id = "create-button"><i class="fas fa-plus"></i></button>
                  </div>

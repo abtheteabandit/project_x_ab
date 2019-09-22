@@ -752,6 +752,7 @@ class GigSection{
         break;
       }
       break;
+
       case "open":
       var openGigs = document.createElement("div");
       openGigs.className = "booked-gigs";
@@ -777,6 +778,7 @@ class GigSection{
         break;
       }
       break;
+
       case "past-hosted":
       var pastGigs = document.createElement("div");
       pastGigs.className = "past-gigs";
@@ -2861,8 +2863,8 @@ function getUserInfo(user){
 
       document.getElementById('userNameHeader').innerHTML=user['username'];
       createWebPage(user);
-  	});
-	});
+  });
+});
 
 }
 function buildBands(bands, buildBandsCallback){
@@ -5766,6 +5768,12 @@ var samples = [];
 function getRadioSongs(){
   $.get('/localRadio', res=>{
     if (res.success){
+      if (res.data==null || res.data==""){
+        return;
+      }
+      if (res.data.length==0){
+        return;
+      }
       console.log('AUDIO SAMPLES DATA: ' + JSON.stringify(res.data));
       samples = res.data
       var controller = document.getElementById('localized_radio');
@@ -5797,6 +5805,40 @@ function skipSong(){
   controller.innerHTML = '<source src="'+song.song.audio+'" type="audio/wav" /><img src='+song.song.picture+'/>'
 }
 
+function openTicketsModal(){
+  document.getElementById('modal-wrapper-create-tickets').style.display='block';
+
+}
 function submitTicketForm(){
-  // BOTHE 
+  // BOTHE
+  $.get('/account_status', {'q':'x'}, res2=>{
+    console.log(res2)
+    if (res2==true || res2=='true'){
+      var price = document.getElementById('ticket-price').value;
+      var qt = document.getElementById('ticket-quantity').value;
+      if (price<1 || price==null){
+        alert('Sorry! We require a minimum price of $1.00 per ticket.');
+        return;
+      }
+      if (qt<5 || qt==null){
+        alert('Sorry! We require a minimum quantity of 5 tickets.');
+        return;
+      }
+      $.post('/createTickets', {'price':price, 'qt':qt, 'gigID':gigToAddTickets}, res=>{
+        console.log('ot res back')
+        if (res=='' || res==null){
+          alert('Sorry, it seems soemthign went wrong on our end. Please try again.')
+        }
+        else{
+          alert(res)
+        }
+      })
+    }
+    else{
+      alert('Sorry, you must add your bank account information to set up ticket sales so we can transfer you your cut. Just click "account settings" on the left, then "add/change bank account".')
+      return
+    }
+  })
+
+
 }

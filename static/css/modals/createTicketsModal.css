@@ -1,0 +1,251 @@
+#modal-wrapper-create-tickets{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#create-tickets-content{
+  background-image: url("/assets/Control-Center/promo-req-bg.png");
+  background-color: transparent;
+  background-size: cover;
+  background-clip: border-box;
+  background-repeat: no-repeat;
+  margin: 4% auto 15% auto;
+  width: 800px;
+  height: 564px;
+  padding-bottom: 80px;
+  color: white;
+}
+
+#create-tickets-header{
+  display: inline;
+  margin-left: 20px;
+  margin-top: 20px;
+  color: #56dff0;
+  font-size: 50pt;
+}
+
+#close-create-tickets{
+  cursor: pointer;
+  display: inline;
+  background-image: url('/assets/Control-Center/pretty-close.png');
+  background-size: contain;
+  background-color: transparent;
+  border: none;
+  height: 44px;
+  width: 44px;
+  float: right;
+  margin-right: 20px;
+  margin-top: 20px;
+}
+
+#create-tickets-grid{
+  display: grid;
+  grid-template-columns: auto auto auto;
+  width: 760px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+#create-tickets-pic-div{
+  width: 210px;
+}
+
+#create-tickets-pic{
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  object-fit: cover;
+  z-index: 119;
+  border-radius: 12px;
+}
+
+#create-tickets-frame{
+  position: absolute;
+  z-index: 120;
+  width: 200px;
+  height: 200px;
+}
+
+#create-tickets-caption, #create-tickets-boiler{
+  width: 240px;
+  height: 200px;
+  background-color: #333d44;
+  border-radius: 10px;
+  color: white;
+  border: none;
+  padding: 10px;
+  resize: none;
+}
+#create-tickets-select-p{
+  margin-left: 20px;
+  display: inline;
+}
+
+#create-tickets-select{
+  background-color: rgba(0,0,0,0.7);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  height: 40px;
+}
+
+#create-tickets-p{
+  font-size: 12pt;
+  margin: 0px;
+  margin-left: 20px;
+}
+
+#create-tickets-social-text{
+  font-size: 24pt;
+  margin-left: 20px;
+}
+
+#create-tickets-social-grid{
+  margin-left: 60px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  width: 500px;
+}
+
+.create-tickets-social{
+  color: transparent;
+  width: 60px;
+  height: 60px;
+  background-color: transparent;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  filter: grayscale(100%);
+}
+
+#create-tickets-fb{
+  background-image: url('/assets/Control-Center/fb.png');
+  background-size: contain;
+}
+#create-tickets-insta{
+  background-image: url('/assets/Control-Center/insta.png');
+  background-size: contain;
+}
+#create-tickets-twitter{
+  background-image: url('/assets/Control-Center/twitter.png');
+  background-size: contain;
+}
+#ticket-input-wrapper{
+  margin-left: 20px;
+  display: inline;
+}
+
+.active-social {
+  animation: pulse 1s infinite;
+  filter: grayscale(0%);
+}
+
+@keyframes pulse {
+  0% {
+    border: 3px solid black;
+  }
+  100% {
+    border: 3px solid #56dff0;
+  }
+}
+
+#create-tickets-accept{
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  color: #56dff0;
+  font-size: 40pt;
+  float: right;
+  margin-right: 20px;
+  margin-top: -80px;
+}
+
+#create-tickets-dl{
+  cursor: pointer;
+  color: #56dff0;
+  width: 60px;
+  height: 60px;
+  font-size: 60px;
+}
+
+@media(max-width: 800px){
+  #modal-wrapper-create-tickets{
+    overflow: scroll;
+  }
+  #create-tickets-content{
+    width: 500px;
+    height: 780px;
+  }
+  #create-tickets-header{
+    font-size: 30pt;
+  }
+  #close-create-tickets {
+    margin-right: 10px;
+    margin-top: 10px;
+  }
+  #create-tickets-grid{
+    grid-template-columns: auto auto;
+    width: 450px;
+    margin: 0 auto;
+  }
+  #create-tickets-caption{
+    width: 220px;
+    margin-left: -220px;
+  }
+  #create-tickets-boiler{
+    width: 450px;
+    height: 100px;
+    margin-top: 20px;
+  }
+  #create-tickets-accept{
+    margin-top: 0px;
+  }
+}
+
+@media(max-width: 550px){
+  #create-tickets-content{
+    width: 300px;
+    height: 1200px;
+  }
+  #create-tickets-header{
+    font-size: 22pt;
+    margin-left: 10px;
+  }
+  #close-create-tickets {
+    margin-right: 10px;
+    margin-top: 10px;
+  }
+  #create-tickets-grid{
+    grid-template-columns: auto;
+    width: 300px;
+  }
+  #create-tickets-pic-div{
+    height: 220px;
+    margin: 0 auto;
+  }
+  #create-tickets-caption{
+    margin-left: 0px;
+    margin: 0 auto;
+  }
+  #create-tickets-boiler{
+    width: 250px;
+    height: 160px;
+    margin-top: 20px;
+    margin: 20px auto;
+  }
+  #create-tickets-select{
+    display: block;
+    margin: 0 auto;
+  }
+  #create-tickets-social-grid{
+    width: 300px;
+    margin-left: 20px;
+  }
+
+}
